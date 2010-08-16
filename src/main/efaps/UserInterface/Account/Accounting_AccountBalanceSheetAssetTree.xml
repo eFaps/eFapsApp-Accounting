@@ -17,9 +17,9 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 5181 $
-  Last Changed:    $Date: 2010-08-06 13:14:50 -0500 (Fri, 06 Aug 2010) $
-  Last Changed By: $Author: miguel.a.aranya $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 
@@ -28,8 +28,8 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>f1b8c30c-14e7-4617-aba7-43c940259d23</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
-    <file-revision>$Rev: 5181 $</file-revision>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>

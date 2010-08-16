@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 4233 $
- Last Changed:    $Date: 2010-04-23 09:03:23 -0500 (Fri, 23 Apr 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 
@@ -27,8 +27,8 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f144830e-3464-49f7-a093-6f18fa533d54</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
-    <file-revision>$Rev: 4233 $</file-revision>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PaymentCheck2Document</name>

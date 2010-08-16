@@ -36,10 +36,10 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id: Transaction.java 4759 2010-06-14 17:34:27Z miguel.a.aranya $
+ * @version $Id$
  */
 @EFapsUUID("f3b159cd-31f5-4d41-b880-645a3405bad0")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public class FieldValue
     extends FieldValue_Base
 {

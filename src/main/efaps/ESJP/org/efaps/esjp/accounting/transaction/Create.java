@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id: Transaction.java 4759 2010-06-14 17:34:27Z miguel.a.aranya $
+ * @version $Id$
  */
 @EFapsUUID("020b2a66-b652-473e-b75e-a474900c657e")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public class Create
     extends Create_Base
 {

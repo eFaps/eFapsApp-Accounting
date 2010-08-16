@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a8ac11ce-feb9-4ba6-bffd-8174906190f5</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00012</specification>
 
@@ -42,42 +42,36 @@
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>ID</name>
             <type>Long</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Company</name>
             <type>CompanyLink</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>COMPANYID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Name</name>
             <type>String</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>FromDate</name>
             <type>Date</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>FROMDATE</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>ToDate</name>
             <type>Date</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>TODATE</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>CurrencyLink</name>
             <type>LinkWithRanges</type>
@@ -90,34 +84,29 @@
                 <property name="Type">ERP_Currency</property>
             </trigger>
         </attribute>
-
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>CREATOR</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Created</name>
             <type>Created</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>CREATED</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Modifier</name>
             <type>ModifierLink</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>MODIFIER</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Modified</name>
             <type>Modified</type>
             <sqltable>Accounting_PeriodeSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
-
     </definition>
 </datamodel-type>

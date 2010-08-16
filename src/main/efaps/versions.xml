@@ -25,7 +25,7 @@
 
 <install xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <application>eFaps-ERP-Accounting</application>
+    <application>eFapsApp-Accounting</application>
     <dependencies>
         <dependency order="0">
             <groupId>org.efaps</groupId>
@@ -38,23 +38,23 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="2">
-            <groupId>org.efaps.module</groupId>
-            <artifactId>efaps-crm-contacts</artifactId>
+            <groupId>org.efaps.apps</groupId>
+            <artifactId>contacts</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="3">
-            <groupId>org.efaps.module</groupId>
-            <artifactId>efaps-erp-commons</artifactId>
+            <groupId>org.efaps.apps</groupId>
+            <artifactId>commons</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="4">
-            <groupId>org.efaps.module</groupId>
-            <artifactId>efaps-erp-products</artifactId>
+            <groupId>org.efaps.apps</groupId>
+            <artifactId>products</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="5">
-            <groupId>org.efaps.module</groupId>
-            <artifactId>efaps-erp-sales</artifactId>
+            <groupId>org.efaps.apps</groupId>
+            <artifactId>sales</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -71,7 +71,7 @@
             import java.net.URL
             import java.io.File;
 
-            EFAPS_LOGGER.info("Importing Data for eFaps-ERP-Accounting");
+            EFAPS_LOGGER.info("Importing Data for eFapsApp-Accounting");
 
             SearchQuery query = new SearchQuery();
             query.setQueryTypes("Admin_User_JAASKey");

@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e291aa35-0228-486e-b55c-93bce20276e9</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00035</specification>
 
@@ -44,7 +44,6 @@
             <sqltable>Accounting_ReportNodeSQLTable</sqltable>
             <sqlcolumn>PARENTID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>AccountLink</name>
             <type>Link</type>

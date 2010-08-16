@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2fcc8a51-d6c1-40c1-a003-8e2cc56e36a7</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00019</specification>
 
@@ -44,7 +44,6 @@
             <sqltable>Accounting_AccountSQLTable</sqltable>
             <sqlcolumn>PERIODEID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>ContactLink</name>
             <type>Link</type>

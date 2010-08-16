@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id: Transaction.java 4759 2010-06-14 17:34:27Z miguel.a.aranya $
+ * @version $Id$
  */
 @EFapsUUID("176728b7-7144-423c-95f8-d299a0e398dd")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public class Trigger
     extends Trigger_Base
 {

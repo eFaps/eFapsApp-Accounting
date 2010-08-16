@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>743fc633-6f55-4b81-9670-38ee94b482b3</uuid>
-    <file-application>eFaps-Contacts</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
@@ -35,6 +35,5 @@
         <name>Accounting_ReportNodePositionSequence</name>
         <format>#000000</format>
         <startvalue>1</startvalue>
-
     </definition>
 </numbergenerator>

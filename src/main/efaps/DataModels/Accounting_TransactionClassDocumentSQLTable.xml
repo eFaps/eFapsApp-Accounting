@@ -26,21 +26,20 @@
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>576a03ed-3570-4453-9bed-9757b7807e80</uuid>
-  <file-application>eFaps-ERP-Accounting</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>576a03ed-3570-4453-9bed-9757b7807e80</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Accounting_TransactionClassDocumentSQLTable</name>
-    <database>
-      <table-name>T_ACCTRANSACTIONCLASSDOC</table-name>
-      <!-- columns -->
-      <column name="TRANSID"        type="INTEGER"           not-null="true"/>
-      <column name="DOCID"          type="INTEGER"           not-null="true"/>
-      <foreign name="T_ACCTRANSACTIONCLASS_FK_TRANSID"   key="TRANSID"   reference="T_ACCTRANSACTION(ID)"/>
-      <foreign name="T_ACCTRANSACTIONCLASS_FK_DOCID"     key="DOCID"     reference="T_ERPDOC(ID)"/>
-     </database>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionClassDocumentSQLTable</name>
+        <database>
+            <table-name>T_ACCTRANSACTIONCLASSDOC</table-name>
+            <!-- columns -->
+            <column name="TRANSID"  type="INTEGER" not-null="true" />
+            <column name="DOCID"    type="INTEGER" not-null="true" />
+            <foreign name="T_ACCTRANSACTIONCLASS_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASS_FK_DOCID"      key="DOCID"     reference="T_ERPDOC(ID)" />
+        </database>
+    </definition>
 </datamodel-sqltable>

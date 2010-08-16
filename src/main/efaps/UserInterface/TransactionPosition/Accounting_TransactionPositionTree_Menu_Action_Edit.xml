@@ -26,9 +26,8 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>902cef19-918e-4170-abc5-67c0245c3586</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
@@ -51,5 +50,4 @@
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">615</property>
     </definition>
-
 </ui-command>

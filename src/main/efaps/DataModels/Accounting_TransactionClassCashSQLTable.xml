@@ -26,21 +26,20 @@
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>089f636c-a493-41c1-a864-639c85ac40ac</uuid>
-  <file-application>eFaps-ERP-Accounting</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>089f636c-a493-41c1-a864-639c85ac40ac</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Accounting_TransactionClassCashSQLTable</name>
-    <database>
-      <table-name>T_ACCTRANSACTIONCLASSCASH</table-name>
-      <!-- columns -->
-      <column name="TRANSID"        type="INTEGER"           not-null="true"/>
-      <column name="CONTACTID"      type="INTEGER"           not-null="true"/>
-      <foreign name="T_ACCTRANSACTIONCLASS_FK_TRANSID"   key="TRANSID"   reference="T_ACCTRANSACTION(ID)"/>
-      <foreign name="T_ACCTRANSACTIONCLASS_FK_CONTACTID" key="CONTACTID" reference="T_COCONTACT(ID)"/>
-     </database>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionClassCashSQLTable</name>
+        <database>
+            <table-name>T_ACCTRANSACTIONCLASSCASH</table-name>
+            <!-- columns -->
+            <column name="TRANSID"      type="INTEGER" not-null="true" />
+            <column name="CONTACTID"    type="INTEGER" not-null="true" />
+            <foreign name="T_ACCTRANSACTIONCLASS_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASS_FK_CONTACTID"  key="CONTACTID" reference="T_COCONTACT(ID)" />
+        </database>
+    </definition>
 </datamodel-sqltable>

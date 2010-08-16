@@ -41,10 +41,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
+ * @version $Id$
  */
 @EFapsUUID("137e3d98-fe02-466e-8af4-4bb7287b82bf")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public abstract class Trigger_Base
 {
     /**

@@ -24,42 +24,35 @@
 -->
 
 <import xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd"
->
-  <object type="Admin_User_JAASKey">
-    <attribute name="Key">Accounting_Admin</attribute>
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <object type="Admin_User_JAASKey">
+        <attribute name="Key">Accounting_Admin</attribute>
+        <linkattribute name="UserLink" type="Admin_User_Role">
+            <queryattribute name="Name">Accounting_Admin</queryattribute>
+        </linkattribute>
+        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
 
-    <linkattribute name="UserLink" type="Admin_User_Role">
-      <queryattribute name="Name">Accounting_Admin</queryattribute>
-    </linkattribute>
+    <object type="Admin_User_JAASKey">
+        <attribute name="Key">Accounting_Modifier</attribute>
+        <linkattribute name="UserLink" type="Admin_User_Role">
+            <queryattribute name="Name">Accounting_Modifier</queryattribute>
+        </linkattribute>
+        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
 
-    <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
-      <queryattribute name="Name">eFaps</queryattribute>
-    </linkattribute>
-  </object>
-
-  <object type="Admin_User_JAASKey">
-    <attribute name="Key">Accounting_Modifier</attribute>
-
-    <linkattribute name="UserLink" type="Admin_User_Role">
-      <queryattribute name="Name">Accounting_Modifier</queryattribute>
-    </linkattribute>
-
-    <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
-      <queryattribute name="Name">eFaps</queryattribute>
-    </linkattribute>
-  </object>
-
-  <object type="Admin_User_JAASKey">
-    <attribute name="Key">Accounting_Reader</attribute>
-
-    <linkattribute name="UserLink" type="Admin_User_Role">
-      <queryattribute name="Name">Accounting_Reader</queryattribute>
-    </linkattribute>
-
-    <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
-      <queryattribute name="Name">eFaps</queryattribute>
-    </linkattribute>
-  </object>
+    <object type="Admin_User_JAASKey">
+        <attribute name="Key">Accounting_Reader</attribute>
+        <linkattribute name="UserLink" type="Admin_User_Role">
+            <queryattribute name="Name">Accounting_Reader</queryattribute>
+        </linkattribute>
+        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
 
 </import>

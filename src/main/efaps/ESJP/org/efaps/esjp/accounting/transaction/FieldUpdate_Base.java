@@ -52,10 +52,10 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
+ * @version $Id$
  */
 @EFapsUUID("af9547fa-3caf-4013-9e81-d637736ac62b")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public abstract class FieldUpdate_Base
     extends Transaction
 {

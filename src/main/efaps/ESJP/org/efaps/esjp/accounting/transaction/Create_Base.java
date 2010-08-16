@@ -60,10 +60,10 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
+ * @version $Id$
  */
 @EFapsUUID("7b2870fe-4566-4688-b015-263c910c34e2")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public abstract class Create_Base
     extends Create
 {

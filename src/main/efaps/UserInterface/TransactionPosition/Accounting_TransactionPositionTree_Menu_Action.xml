@@ -26,9 +26,8 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>5ea944dc-0070-4fb4-b3f0-386861b2c191</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
@@ -39,5 +38,4 @@
             <child>Accounting_TransactionPositionTree_Menu_Action_Edit</child>
         </childs>
     </definition>
-
 </ui-menu>

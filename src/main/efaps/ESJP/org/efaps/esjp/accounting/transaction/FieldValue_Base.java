@@ -77,10 +77,10 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
+ * @version $Id$
  */
 @EFapsUUID("5075c0e0-e95a-418c-864b-3a90c1dac404")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public abstract class FieldValue_Base
     extends Transaction
 {

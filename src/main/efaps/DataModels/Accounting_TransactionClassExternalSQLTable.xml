@@ -27,7 +27,7 @@
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0cf34df0-64e0-4336-b876-261db600133c</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
@@ -44,5 +44,4 @@
             <foreign name="T_ACCTRANSACTIONCLASSEX_FK_DOCID"      key="DOCID"      reference="T_ERPDOC(ID)"/>
         </database>
     </definition>
-
 </datamodel-sqltable>

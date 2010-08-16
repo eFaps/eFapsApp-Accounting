@@ -17,9 +17,9 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 3771 $
-  Last Changed:    $Date: 2010-02-22 02:41:06 -0500 (Mon, 22 Feb 2010) $
-  Last Changed By: $Author: jan.moxter $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 
@@ -27,8 +27,8 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>1ac46f8b-a3fb-47a5-b0ea-88156118bfe6</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
-    <file-revision>$Rev: 3771 $</file-revision>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -39,7 +39,7 @@
         <access-type>read</access-type>
         <access-type>checkout</access-type>
 
-       <type>Accounting_ExternalVoucher</type>
+        <type>Accounting_ExternalVoucher</type>
 
         <status group="Accounting_ExternalVoucherStatus">
             <key>Open</key>

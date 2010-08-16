@@ -26,20 +26,19 @@
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>a1d5a594-c08c-4864-9783-a20932bf26ea</uuid>
-  <file-application>eFaps-ERP-Accounting</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>a1d5a594-c08c-4864-9783-a20932bf26ea</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Accounting_Transaction2ClassSQLTable</name>
-    <database>
-      <table-name>T_ACCTRANSACTION2CLASS</table-name>
-      <!-- columns -->
-       <column name="TRANSID"      type="INTEGER"        not-null="true" />
-       <column name="CLASSTYPEID"  type="INTEGER"        not-null="true" />
-       <foreign name="T_ACCTRANSACTION2CLASS_FK_TRANSID"   key="TRANSID"   reference="T_ACCTRANSACTION(ID)"/>
-     </database>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_Transaction2ClassSQLTable</name>
+        <database>
+            <table-name>T_ACCTRANSACTION2CLASS</table-name>
+            <!-- columns -->
+            <column name="TRANSID"      type="INTEGER" not-null="true" />
+            <column name="CLASSTYPEID"  type="INTEGER" not-null="true" />
+            <foreign name="T_ACCTRANSACTION2CLASS_FK_TRANSID" key="TRANSID" reference="T_ACCTRANSACTION(ID)" />
+        </database>
+    </definition>
 </datamodel-sqltable>

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,13 +32,13 @@
     * Module Definition
     ************************************************************************* -->
     <packaging>jar</packaging>
-    <groupId>org.efaps.module</groupId>
-    <artifactId>efaps-erp-accounting</artifactId>
+    <groupId>org.efaps.apps</groupId>
+    <artifactId>accounting</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>eFaps ERP Accounting Module</name>
     <description>
-  </description>
-    
+    </description>
+
     <url>http://www.efaps.org</url>
     <licenses>
         <license>
@@ -74,7 +74,7 @@
         <name>The eFaps Team</name>
         <url>http://www.efaps.org</url>
     </organization>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -111,7 +111,7 @@
         </repository>
     </distributionManagement>
 
-   <!-- ************************************************************************
+    <!-- ************************************************************************
     * Profiles
     ************************************************************************* -->
     <profiles>
@@ -136,7 +136,7 @@
                             <skip>true</skip>
                         </configuration>
                     </plugin>
-                   <!-- Attach Sources -->
+                    <!-- Attach Sources -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -172,7 +172,7 @@
                             <updateReleaseInfo>true</updateReleaseInfo>
                         </configuration>
                     </plugin>
-                     <!-- signing the artefact with gpg -->
+                    <!-- signing the artefact with gpg -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
@@ -228,7 +228,7 @@
                     <minmemory>128m</minmemory>
                     <maxmemory>1g</maxmemory>
                     <level>private</level>
-                    <detectLinks/>
+                    <detectLinks />
                 </configuration>
             </plugin>
             <!-- source code -->
@@ -263,12 +263,12 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <configuration/>
+                <configuration />
             </plugin>
         </plugins>
     </reporting>
 
-<!-- ************************************************************************
+    <!-- ************************************************************************
   * Project itself
   ************************************************************************* -->
     <build>
@@ -327,8 +327,8 @@
     <dependencies>
         <!-- eFaps ERP Products Module -->
         <dependency>
-            <groupId>org.efaps.module</groupId>
-            <artifactId>efaps-erp-sales</artifactId>
+            <groupId>org.efaps.apps</groupId>
+            <artifactId>sales</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

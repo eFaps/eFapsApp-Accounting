@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6878d2ac-e038-4f35-bae6-ad65f84b511b</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00014</specification>
 
@@ -41,7 +41,6 @@
             <sqltable>Accounting_TransactionWithPosSQLView</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>ID</name>
             <type>Long</type>
@@ -80,14 +79,12 @@
             <sqltable>Accounting_TransactionWithPosSQLView</sqltable>
             <sqlcolumn>ACCOUNTID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Amount</name>
             <type>Decimal</type>
             <sqltable>Accounting_TransactionWithPosSQLView</sqltable>
             <sqlcolumn>AMOUNT</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>CurrencyLink</name>
             <type>LinkWithRanges</type>
@@ -101,7 +98,6 @@
                 <property name="Type">ERP_Currency</property>
             </trigger>
         </attribute>
-
         <attribute>
             <name>RateCurrencyLink</name>
             <type>LinkWithRanges</type>
@@ -131,6 +127,5 @@
                 name="Accounting_Transaction.Status.RANGE_VALUE"
                 event="RANGE_VALUE" />
         </attribute>
-
     </definition>
 </datamodel-type>

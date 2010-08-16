@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id: Transaction.java 4759 2010-06-14 17:34:27Z miguel.a.aranya $
+ * @version $Id$
  */
 @EFapsUUID("c810deee-d2d8-42d2-bc7f-0fe59fc537bf")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public class FieldUpdate
     extends FieldUpdate_Base
 {

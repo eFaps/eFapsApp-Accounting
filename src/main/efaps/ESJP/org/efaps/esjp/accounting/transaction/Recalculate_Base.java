@@ -68,10 +68,10 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
+ * @version $Id$
  */
 @EFapsUUID("3748924a-3e33-45d5-805e-9c749d9fb1d6")
-@EFapsRevision("$Rev: 4759 $")
+@EFapsRevision("$Rev$")
 public abstract class Recalculate_Base
     extends Transaction
 {

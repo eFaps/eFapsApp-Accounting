@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 4914 $
- Last Changed:    $Date: 2010-06-29 16:51:26 -0500 (Tue, 29 Jun 2010) $
- Last Changed By: $Author: jan.moxter $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 
@@ -27,8 +27,8 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>49b5b768-9b2a-4a16-82db-ef40f42ffdb3</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
-    <file-revision>$Rev: 4914 $</file-revision>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
     <specification>DM00006</specification>
 
     <definition>
@@ -79,8 +79,7 @@
             <sqltable>Accounting_PaymentSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_PaymentAbstract.CurrencyLink.RANGE_VALUE"
-                event="RANGE_VALUE">
+                name="Accounting_PaymentAbstract.CurrencyLink.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
@@ -92,8 +91,7 @@
             <sqltable>Accounting_PaymentSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                    name="Accounting_PaymentAbstract.StatusAbstract.RANGE_VALUE"
-                    event="RANGE_VALUE"/>
+                name="Accounting_PaymentAbstract.StatusAbstract.RANGE_VALUE" event="RANGE_VALUE" />
         </attribute>
         <attribute>
             <name>Date</name>
@@ -125,6 +123,5 @@
             <sqltable>Accounting_PaymentSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
-
     </definition>
 </datamodel-type>

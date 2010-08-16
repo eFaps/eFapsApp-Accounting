@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e84d98ed-1e3a-439a-922b-b5d18194047d</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00014</specification>
 
@@ -81,8 +81,7 @@
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
-                event="RANGE_VALUE">
+                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
@@ -100,8 +99,7 @@
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>RATECURRENCYID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
-                event="RANGE_VALUE">
+                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
@@ -111,10 +109,8 @@
             <type>Rate</type>
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>RATE,RATEDENOM</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.Currency"
-                method="getRateValue"
-                name="Sales_PositionAbstract.Rate.RATE_VALUE"
-                event="RATE_VALUE"/>
+            <trigger program="org.efaps.esjp.erp.Currency" method="getRateValue"
+                name="Sales_PositionAbstract.Rate.RATE_VALUE" event="RATE_VALUE" />
             <property name="CurrencyAttribute4Rate">RateCurrencyLink</property>
             <property name="TargetCurrencyAttribute4Rate">CurrencyLink</property>
         </attribute>

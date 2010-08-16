@@ -27,7 +27,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f1962037-c73b-4b55-94d8-f33e47a219d6</uuid>
-    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00013</specification>
     <definition>
@@ -41,8 +41,7 @@
             <sqltable>Accounting_TransactionSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Accounting_Transaction.Status.RANGE_VALUE"
-                event="RANGE_VALUE" />
+                name="Accounting_Transaction.Status.RANGE_VALUE" event="RANGE_VALUE" />
         </attribute>
     </definition>
 </datamodel-type>

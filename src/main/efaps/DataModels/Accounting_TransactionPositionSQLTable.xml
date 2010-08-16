@@ -26,38 +26,37 @@
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>87cc1d8f-9a81-4319-82f1-397f59af2b8d</uuid>
-  <file-application>eFaps-ERP-Accounting</file-application>
-  <file-revision>$Rev$</file-revision>
-  <specification></specification>
+    <uuid>87cc1d8f-9a81-4319-82f1-397f59af2b8d</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <specification></specification>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Accounting_TransactionPositionSQLTable</name>
-    <typeid-column>TYPEID</typeid-column>
-    <database>
-      <table-name>T_ACCTRANSACTIONPOS</table-name>
-      <!-- columns -->
-      <column name="TYPEID"          type="INTEGER"         not-null="true"/>
-      <column name="TRANSACTIONID"   type="INTEGER"         not-null="true"/>
-      <column name="ACCOUNTID"       type="INTEGER"         not-null="true"/>
-      <column name="AMOUNT"          type="DECIMAL"                           length="12" scale="2"/>
-      <column name="CURRENCYID"      type="INTEGER"         not-null="true"/>
-      <column name="RATECURRENCYID"  type="INTEGER"         not-null="true"/>
-      <column name="RATE"            type="DECIMAL"         not-null="true"   length="14" scale="6"/>
-      <column name="RATEDENOM"       type="DECIMAL"                           length="14" scale="6"/>
-      <column name="RATEAMOUNT"      type="DECIMAL"                           length="12" scale="2"/>
-      <column name="CREATOR"         type="INTEGER"         not-null="true"/>
-      <column name="CREATED"         type="DATETIME"        not-null="true"/>
-      <column name="MODIFIER"        type="INTEGER"         not-null="true"/>
-      <column name="MODIFIED"        type="DATETIME"        not-null="true"/>
-      <foreign name="T_ACCTRANSACTIONPOS_FK_REPORTID"    key="TRANSACTIONID"   reference="T_ACCTRANSACTION(ID)"/>
-      <foreign name="T_ACCTRANSACTIONPOS_FK_ACCOUNTID"   key="ACCOUNTID"       reference="T_ACCACCOUNT(ID)"/>
-      <foreign name="T_ACCTRANSACTIONPOS_CURRENCYID"     key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
-      <foreign name="T_ACCTRANSACTIONPOS_RATECURRENCYID" key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
-      <foreign name="T_ACCTRANSACTIONPOS_FK_CRTR"        key="CREATOR"         reference="T_USERPERSON(ID)"/>
-      <foreign name="T_ACCTRANSACTIONPOS_FK_MDFR"        key="MODIFIER"        reference="T_USERPERSON(ID)"/>
-     </database>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionPositionSQLTable</name>
+        <typeid-column>TYPEID</typeid-column>
+        <database>
+            <table-name>T_ACCTRANSACTIONPOS</table-name>
+            <!-- columns -->
+            <column name="TYPEID"           type="INTEGER"  not-null="true" />
+            <column name="TRANSACTIONID"    type="INTEGER"  not-null="true" />
+            <column name="ACCOUNTID"        type="INTEGER"  not-null="true" />
+            <column name="AMOUNT"           type="DECIMAL"                  length="12" scale="2" />
+            <column name="CURRENCYID"       type="INTEGER"  not-null="true" />
+            <column name="RATECURRENCYID"   type="INTEGER"  not-null="true" />
+            <column name="RATE"             type="DECIMAL"  not-null="true" length="14" scale="6" />
+            <column name="RATEDENOM"        type="DECIMAL"                  length="14" scale="6" />
+            <column name="RATEAMOUNT"       type="DECIMAL"                  length="12" scale="2" />
+            <column name="CREATOR"          type="INTEGER"  not-null="true" />
+            <column name="CREATED"          type="DATETIME" not-null="true" />
+            <column name="MODIFIER"         type="INTEGER"  not-null="true" />
+            <column name="MODIFIED"         type="DATETIME" not-null="true" />
+            <foreign name="T_ACCTRANSACTIONPOS_FK_REPORTID"     key="TRANSACTIONID"  reference="T_ACCTRANSACTION(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS_FK_ACCOUNTID"    key="ACCOUNTID"      reference="T_ACCACCOUNT(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS_CURRENCYID"      key="CURRENCYID"     reference="T_ERPCUR(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS_RATECURRENCYID"  key="RATECURRENCYID" reference="T_ERPCUR(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS_FK_CRTR"         key="CREATOR"        reference="T_USERPERSON(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS_FK_MDFR"         key="MODIFIER"       reference="T_USERPERSON(ID)" />
+        </database>
+    </definition>
 </datamodel-sqltable>
