@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 4459 $
+  Last Changed:    $Date: 2010-05-18 11:55:31 -0500 (Tue, 18 May 2010) $
+  Last Changed By: $Author: miguel.a.aranya $
+
+-->
+
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>0ad3ca3f-89ee-4364-88b7-1dc6a335ba83</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev: 4459 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionOpeningBalance</name>
+        <!-- fields -->
+        <field name="setPeriode">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="setPeriodeUIFieldValue"
+                name="Accounting_TransactionForm.setPeriode.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="date">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Date"
+                name="Accounting_TransactionForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="accountLink_Debit">
+            <property name="SelectAlternateOID">linkto[AccountLink].oid</property>
+            <property name="Select">linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionOpeningBalance.accountLink.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.Account"
+                method="autoComplete4Account"
+                name="Accounting_TransactionOpeningBalancePositionTable.accountLink_Debit.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="TypePostfix">Debit</property>
+                <property name="ShowSumAccount">false</property>
+           </trigger>
+           <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Account"
+                name="Accounting_TransactionOpeningBalancePositionTable.accountLink_Debit.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                <property name="TypePostfix">Debit</property>
+            </trigger>
+        </field>
+        <field name="description_Debit">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionOpeningBalance.description.Label</property>
+        </field>
+
+        <field name="transactionPosition" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Accounting_TransactionOpeningBalance.transactionPosition.Heading</property>
+        </field>
+        <field name="transactionPositionTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <table>Accounting_TransactionOpeningBalancePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Accounting_TransactionPositionCredit</property>
+                <property name="LinkFroms">TransactionLink</property>
+            </evaluate>
+        </field>
+    </definition>
+</ui-form>

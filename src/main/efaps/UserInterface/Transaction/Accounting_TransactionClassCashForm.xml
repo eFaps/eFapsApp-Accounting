@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>2f0b758d-eba9-429c-8bf6-33b93cf62dd0</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionClassCashForm</name>
+        <type>Accounting_TransactionClassCash</type>
+        <field name="contact4Read">
+            <property name="ModeCreate">NONE</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="SelectAlternateOID">linkto[ContactLink].oid</property>
+            <property name="Select">linkto[ContactLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionClassCash/ContactLink.Label</property>
+        </field>
+        <field name="contact">
+            <property name="Attribute">ContactLink</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="autoComplete4Contact"
+                name="Accounting_TransactionClassCashForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.erp.Contacts"
+                method="updateFields4Contact"
+                name="Accounting_TransactionClassCashForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Accounting_TransactionClassCashForm/contactData.Label</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+    </definition>
+</ui-form>

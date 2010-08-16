@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 4983 $
+  Last Changed:    $Date: 2010-07-15 09:45:59 -0500 (Thu, 15 Jul 2010) $
+  Last Changed By: $Author: jan.moxter $
+
+-->
+
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e61e5cca-de1d-4f7a-8091-c19504ff2d54</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev: 4983 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionCreate4ExternalVoucherForm</name>
+        <field name="setPeriode">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="setPeriodeUIFieldValue"
+                name="Accounting_TransactionCreate4ExternalForm.setPeriode.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="case">true</property>
+            </trigger>
+        </field>
+         <field name="caseGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+        </field>
+        <field name="case">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.case.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getCaseFieldValue"
+                name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Accounting_CaseExternalRegister</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Case"
+                name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="updateButton" character="Command">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.updateButton.Label</property>
+            <property name="CmdIcon">ACCEPT</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="executeButton"
+                name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_CMD"
+                event="UI_FIELD_CMD">
+            </trigger>
+        </field>
+        <field name="checkbox4Account" >
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.select4Account.Label</property>
+           <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="checked">true</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4checkbox4Account"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+         <field name="contactGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+        </field>
+        <field name="contact">
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="autoComplete4Contact"
+                name="Accounting_TransactionCreate4ExternalForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type">Sales_ContactsSupplier</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Contact"
+                name="Accounting_TransactionCreate4ExternalForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="typeLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getTypeLinkFieldValue"
+                name="Accounting_TransactionCreate4ExternalForm.typeLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="number">
+            <property name="Label">Accounting_TransactionClassExternal/Number.Label</property>
+            <property name="Attribute">Number</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getNumberFieldValueUI"
+                name="Accounting_TransactionCreate4ExternalForm.number.UI_Field_Value"
+                event="UI_FIELD_VALUE">
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="updateNumberFieldValueUI"
+                name="Accounting_TransactionCreate4ExternalForm.number.UI_Field_Update"
+                event="UI_FIELD_UPDATE">
+            </trigger>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="dateGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+        </field>
+        <field name="date">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="updateNumberValueUI"
+                name="Accounting_TransactionCreate4ExternalForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+            </trigger>
+        </field>
+        <field name="amountExternal">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.amountExternal.Label</property>
+        </field>
+        <field name="currencyExternal">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.currencyExternal.Label</property>
+             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getCurrencySelectFieldValue"
+                name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="extNameGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+        </field>
+        <field name="extName">
+            <property name="Label">Accounting_TransactionClassExternal/ExtName.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Description</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="extDate">
+            <property name="Label">Accounting_TransactionClassExternal/Date4Transaction.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="description">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Description</property>
+            <property name="Required">true</property>
+            <property name="Columns">80</property>
+        </field>
+        <field name="transactionPositionDebit" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.transactionPositionDebit.Heading</property>
+        </field>
+        <field name="transactionPositionDebitTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Accounting_TransactionPositionDebitTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Accounting_TransactionPositionDebit</property>
+                <property name="LinkFroms">TransactionLink</property>
+            </evaluate>
+        </field>
+        <field name="sumDebit">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.sumDebit.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="transactionPositionCredit" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.transactionPositionCredit.Heading</property>
+        </field>
+        <field name="transactionPositionCreditTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Accounting_TransactionPositionCreditTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Accounting_TransactionPositionCredit</property>
+                <property name="LinkFroms">TransactionLink</property>
+            </evaluate>
+        </field>
+        <field name="sumCredit">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.sumCredit.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="sumTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.sumTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+    </definition>
+</ui-form>

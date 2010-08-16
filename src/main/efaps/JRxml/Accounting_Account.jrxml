@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Account" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" language="groovy">
+	<style name="TableHeading" isDefault="false" mode="Transparent" forecolor="#000000" backcolor="#CCCCCC" fill="Solid" hAlign="Left" vAlign="Top" markup="styled" isBlankWhenNull="false" fontName="SansSerif" fontSize="12" isBold="true" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false">
+		<pen lineWidth="1.0"/>
+		<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+			<pen lineWidth="1.0"/>
+			<topPen lineWidth="1.0" lineStyle="Solid"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<style name="TableRow" isDefault="false" vAlign="Top" fontName="SansSerif" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false">
+		<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+			<pen lineWidth="1.0"/>
+			<topPen lineWidth="0.0" lineStyle="Solid"/>
+			<leftPen lineWidth="1.0"/>
+			<bottomPen lineWidth="1.0"/>
+			<rightPen lineWidth="0.0" lineStyle="Solid"/>
+		</box>
+	</style>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="53613f42-7a13-4599-93e1-210effe726bf"/>
+		<property name="Type" value="Accounting_TransactionPositionAbstract"/>
+		<property name="expandChildTypes" value="true"/>
+	</parameter>
+	<field name="transaction" class="java.lang.String">
+		<property name="Select" value="linkto[TransactionLink].attribute[Description]"/>
+	</field>
+	<field name="account" class="java.lang.String">
+		<property name="Select" value="linkto[AccountLink].attribute[Name]"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[Amount]"/>
+	</field>
+	<field name="transdate" class="org.joda.time.DateTime">
+		<property name="Select" value="linkto[TransactionLink].attribute[Date]"/>
+	</field>
+	<field name="contact" class="java.lang.String">
+		<property name="Select" value="linkto[TransactionLink].class[Accounting_TransactionClassCash].linkto[ContactLink].attribute[Name]"/>
+	</field>
+	<sortField name="transdate"/>
+	<variable name="sum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<variable name="sumDebit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<variable name="sumCredit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<pageHeader>
+		<band height="30" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement style="TableHeading" mode="Opaque" x="562" y="24" width="80" height="19"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_TransactionPositionDebit.Label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TableHeading" mode="Opaque" x="1" y="24" width="82" height="19" backcolor="#CCCCCC">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction/Date.Label}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="704" y="0" width="30" height="14">
+					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<text><![CDATA[Lima,]]></text>
+			</staticText>
+			<textField pattern="dd.MM.yyyy">
+				<reportElement isPrintRepeatedValues="false" x="734" y="0" width="69" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="TableHeading" mode="Opaque" x="722" y="24" width="80" height="19"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement markup="styled">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="TableHeading" mode="Opaque" x="83" y="24" width="304" height="19" backcolor="#CCCCCC">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.Label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TableHeading" mode="Opaque" x="642" y="24" width="80" height="19"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_TransactionPositionCredit.Label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TableHeading" mode="Opaque" x="387" y="24" width="175" height="19" backcolor="#CCCCCC">
+					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction/Name.Label}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="1" y="0" width="82" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{transdate}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="642" y="0" width="80" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" markup="html">
+					<font isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="562" y="0" width="80" height="16" isPrintWhenDetailOverflows="true"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" markup="html">
+					<font isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="83" y="0" width="304" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{transaction}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="722" y="0" width="80" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="387" y="0" width="175" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{contact}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="20" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="562" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumDebit}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="642" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCredit}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="722" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sum}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="435" y="0" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="515" y="0" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

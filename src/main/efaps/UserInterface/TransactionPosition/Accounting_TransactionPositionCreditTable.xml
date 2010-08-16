@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<ui-table xmlns="http://www.efaps.org/xsd"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>d6f3a047-4897-406d-a666-0c6c06401e0a</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionPositionCreditTable</name>
+        <field name="type_Credit">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/Type.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getTypeFieldValue"
+                name="Accounting_TransactionPositionCreditTable.type.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Accounting_TransactionPositionCredit</property>
+            </trigger>
+        </field>
+        <field name="amount_Credit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Amount</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/Amount.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Required">true</property>
+            <property name="Columns">8</property>
+            <property name="Width">1</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Amount"
+                name="Accounting_TransactionPositionCreditTable.amount_Credit.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+                <property name="TypePostfix">Credit</property>
+            </trigger>
+        </field>
+        <field name="rateCurrencyLink_Credit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">RateCurrencyLink</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/RateCurrencyLink.Label</property>
+            <property name="Required">true</property>
+            <property name="Width">2</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getCurrencyFieldValue"
+                name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Credit.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Currency"
+                name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Credit.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+                <property name="TypePostfix">Credit</property>
+            </trigger>
+        </field>
+        <field name="rate_Credit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Rate</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/Rate.Label</property>
+            <property name="Required">true</property>
+            <property name="Width">1</property>
+            <property name="Columns">8</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getRateFieldValue"
+                name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Rate"
+                name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+                <property name="TypePostfix">Credit</property>
+            </trigger>
+        </field>
+        <field name="amountRate_Credit">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Width">1</property>
+            <property name="Label">Accounting_TransactionPositionTable.amountRate.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="accountLink_Credit">
+            <property name="SelectAlternateOID">linkto[AccountLink].oid</property>
+            <property name="Select">linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionPositionTable.accountID.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Width">1</property>
+            <property name="Columns">16</property>
+            <trigger program="org.efaps.esjp.accounting.Account"
+                method="autoComplete4Account"
+                name="Accounting_TransactionPositionTable.accountLink_Credit.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="TypePostfix">Credit</property>
+                <property name="ShowSumAccount">false</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Account"
+                name="Accounting_TransactionPositionCreditTable.accountLink_Credit.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                <property name="TypePostfix">Credit</property>
+            </trigger>
+        </field>
+        <field name="description_Credit">
+            <property name="Select">linkto[AccountLink].attribute[Description]</property>
+            <property name="Label">Accounting_TransactionPositionTable.description.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Width">4</property>
+        </field>
+        <field name="labelLink_Credit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/labelLink.Label</property>
+            <property name="Required">true</property>
+            <property name="Width">2</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getLabelFieldValue"
+                name="Accounting_TransactionPositionCreditTable.labelLink_Credit.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="account2account_Credit">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionPositionCreditTable.account2account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Width">10</property>
+        </field>
+    </definition>
+</ui-table>

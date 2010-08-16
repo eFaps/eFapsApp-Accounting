@@ -1,0 +1,417 @@
+/*
+ * Copyright 2003 - 2010 The eFaps Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
+ */
+
+
+package org.efaps.esjp.accounting.transaction;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.document.DocumentSum;
+import org.efaps.ui.wicket.util.EFapsKey;
+import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+
+/**
+ * TODO comment!
+ *
+ * @author The eFaps Team
+ * @version $Id: $
+ */
+@EFapsUUID("3748924a-3e33-45d5-805e-9c749d9fb1d6")
+@EFapsRevision("$Rev: 4759 $")
+public abstract class Recalculate_Base
+    extends Transaction
+{
+    /**
+     * Method to obtain html with information of the document selected.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return ret Return Sniplett.
+     * @throws EFapsException on error.
+     */
+    public Return transactionOnRecalculateFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance docInst = Instance.get(_parameter.getParameterValue("selectedRow"));
+        if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            final StringBuilder html = new StringBuilder();
+            html.append("<span name=\"").append(fieldValue.getField().getName()).append("\" ")
+                            .append(UIInterface.EFAPSTMPTAG).append(">")
+                            .append(getRecalculateInfo(_parameter, docInst)).append("</span>");
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
+        return ret;
+    }
+
+    /**
+     * Method for recalculate and return string.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _docInst Instance of the document selected.
+     * @return String.
+     * @throws EFapsException on error.
+     */
+    protected String getRecalculateInfo(final Parameter _parameter,
+                                        final Instance _docInst)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final PrintQuery print = new PrintQuery(_docInst);
+        print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentSumAbstract.CrossTotal,
+                        CISales.DocumentSumAbstract.RateCurrencyId,
+                        CISales.DocumentSumAbstract.CurrencyId,
+                        CISales.DocumentSumAbstract.Date,
+                        CISales.DocumentSumAbstract.Name);
+        print.execute();
+
+        final BigDecimal rateCross = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+        final String nameDoc = print.<String>getAttribute(CISales.DocumentSumAbstract.Name);
+        final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
+                        print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+        final Instance currentInst = Instance.get(CIERP.Currency.getType(),
+                        print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+        final CurrencyInst tarCurr = new CurrencyInst(targetCurrInst);
+        final CurrencyInst curr = new CurrencyInst(currentInst);
+
+        final PriceUtil priceUtil = new PriceUtil();
+        final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
+        final BigDecimal rate = rates[2];
+
+        final BigDecimal newCrossTotal = rateCross.compareTo(BigDecimal.ZERO) == 0
+                                            ? BigDecimal.ZERO : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal gainloss = newCrossTotal.subtract(crossTotal);
+
+        final Map<String, String[]> map = validateInfo(_parameter, gainloss);
+        final String[] accs = map.get("accs");
+        final String[] check = map.get("check");
+
+        html.append("<table>")
+            .append("<tr>")
+            .append("<td>").append(DBProperties.getProperty("Sales_Invoice.Label")).append("</td>")
+            .append("<td colspan=\"2\">").append(nameDoc).append("</td>")
+            .append("</tr>")
+            .append("<td>")
+            .append(DBProperties.getProperty("Sales_DocumentAbstract/RateCrossTotal.Label")).append("</td>")
+            .append("<td>").append(rateCross).append(" ").append(tarCurr.getSymbol()).append("</td>")
+            .append("<td>").append(crossTotal).append(" ").append(curr.getSymbol()).append("</td>")
+            .append("</tr>")
+            .append("<tr>")
+            .append("<td>")
+                .append(DBProperties.getProperty("Accounting_TransactionRecalculateForm.newTotal.Label"))
+            .append("</td>")
+            .append("<td colspan=\"2\" align=\"right\">").append(newCrossTotal).append(" ")
+                                                                .append(curr.getSymbol()).append("</td>")
+            .append("</tr>")
+            .append("<tr>")
+            .append("<td>");
+        if (gainloss.compareTo(BigDecimal.ZERO) == -1) {
+            html.append(DBProperties.getProperty("Accounting_TransactionRecalculateForm.loss.Label"));
+        } else {
+            html.append(DBProperties.getProperty("Accounting_TransactionRecalculateForm.gain.Label"));
+        }
+        html.append("</td>")
+            .append("<td colspan=\"2\" align=\"right\">").append(gainloss.abs()).append(" ")
+                                                                .append(curr.getSymbol()).append("</td>")
+            .append("</tr>")
+            .append("<tr>")
+            .append("<td>")
+            .append(DBProperties.getProperty("Accounting_TransactionPositionDebit.Label")).append("</td>")
+            .append("<td colspan=\"2\" align=\"right\">");
+        if (checkAccounts(accs, 0, check).length() > 0) {
+            html.append(checkAccounts(accs, 0, check));
+        } else {
+            html.append(DBProperties.getProperty("Accounting_TransactionRecalculateForm.reviseConfig.Label"));
+        }
+        html.append("</td>")
+            .append("</tr>")
+            .append("<tr>")
+            .append("<td>")
+            .append(DBProperties.getProperty("Accounting_TransactionPositionCredit.Label")).append("</td>")
+            .append("<td colspan=\"2\" align=\"right\">");
+        if (checkAccounts(accs, 1, check).length() > 0) {
+            html.append(checkAccounts(accs, 1, check));
+        } else {
+            html.append(DBProperties.getProperty("Accounting_TransactionRecalculateForm.reviseConfig.Label"));
+        }
+        html.append("</td>")
+            .append("</tr>")
+            .append("</table>");
+        return html.toString();
+    }
+
+    /**
+     * Method for update rate and transactions if changed date to return html and rate amount.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return ret with values.
+     * @throws EFapsException on error.
+     */
+    public Return update4DateOnRecalculate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final Instance docInst = Instance.get(_parameter.getParameterValue("docInst"));
+        if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+            final BigDecimal rate = getCurrencyRate(_parameter, docInst);
+
+            final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(
+                            Context.getThreadContext().getLocale());
+            formater.applyPattern("#,##0.############");
+            formater.setRoundingMode(RoundingMode.HALF_UP);
+            final String rateStr = formater.format(rate);
+            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put("rate", rateStr);
+            final StringBuilder js = new StringBuilder();
+            js.append("document.getElementsByName('transactions')[0].innerHTML='")
+                .append(StringEscapeUtils.escapeJavaScript(getRecalculateInfo(_parameter, docInst))).append("';");
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    /**
+     * Method to recalculate rate.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return recalculateRate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInst = Instance.get(_parameter.getParameterValue("docInst"));
+        final PrintQuery print = new PrintQuery(docInst);
+        print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
+                           CISales.DocumentSumAbstract.CrossTotal,
+                           CISales.DocumentSumAbstract.RateCurrencyId,
+                           CISales.DocumentSumAbstract.CurrencyId,
+                           CISales.DocumentSumAbstract.Date,
+                           CISales.DocumentSumAbstract.Name);
+        print.execute();
+
+        final BigDecimal rateCross = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+        final DateTime dateDoc = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
+        final String nameDoc = print.<String>getAttribute(CISales.DocumentSumAbstract.Name);
+        final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
+                        print.<Long> getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+        final Instance currentInst = Instance.get(CIERP.Currency.getType(),
+                        print.<Long> getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+        final CurrencyInst tarCurr = new CurrencyInst(targetCurrInst);
+        final CurrencyInst curr = new CurrencyInst(currentInst);
+
+        final PriceUtil priceUtil = new PriceUtil();
+        final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
+        final BigDecimal rate = rates[2];
+
+        final BigDecimal newCrossTotal = rateCross.compareTo(BigDecimal.ZERO) == 0
+                                            ? BigDecimal.ZERO : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal gainloss = newCrossTotal.subtract(crossTotal);
+        final Map<String, String[]> map = validateInfo(_parameter, gainloss);
+        final String[] accs = map.get("accs");
+        final String[] check = map.get("check");
+        if (checkAccounts(accs, 0, check).length() > 0 && checkAccounts(accs, 1, check).length() > 0) {
+            if (gainloss.compareTo(BigDecimal.ZERO) != 0) {
+                if (!tarCurr.equals(curr)) {
+                    final String[] accOids = map.get("accountOids");
+
+                    final Insert insert = new Insert(CIAccounting.Transaction);
+                    final StringBuilder description = new StringBuilder();
+                    final DateTimeFormatter formater = DateTimeFormat.mediumDate();
+                    final String dateStr = dateDoc.withChronology(Context.getThreadContext().getChronology()).toString(
+                                    formater.withLocale(Context.getThreadContext().getLocale()));
+                    description.append(DBProperties
+                                .getProperty("Accounting_TransactionRecalculateForm.TxnRecalculate.Label"))
+                                .append(" ").append(nameDoc).append(" ").append(dateStr);
+                    insert.add(CIAccounting.Transaction.Description, description);
+                    insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
+                    insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                    insert.add(CIAccounting.Transaction.Status,
+                                                    Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                    insert.execute();
+
+                    final Instance instance = insert.getInstance();
+                    // create classifications
+                    final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
+                    final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
+                    relInsert1.add(classification1.getRelLinkAttributeName(), instance.getId());
+                    relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
+                    relInsert1.execute();
+
+                    final Insert classInsert1 = new Insert(classification1);
+                    classInsert1.add(classification1.getLinkAttributeName(), instance.getId());
+                    classInsert1.execute();
+
+                    final Classification classification =
+                                    (Classification) CIAccounting.TransactionClassDocument.getType();
+                    final Insert relInsert = new Insert(classification.getClassifyRelationType());
+                    relInsert.add(classification.getRelLinkAttributeName(), instance.getId());
+                    relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
+                    relInsert.execute();
+
+                    final Insert classInsert = new Insert(classification);
+                    classInsert.add(classification.getLinkAttributeName(), instance.getId());
+                    classInsert.add(CIAccounting.TransactionClassDocument.DocumentLink, docInst.getId());
+                    classInsert.execute();
+
+                    final Insert insert2 = new Insert(CIAccounting.TransactionPositionCredit);
+                    insert2.add(CIAccounting.TransactionPositionCredit.TransactionLink, instance.getId());
+                    insert2.add(CIAccounting.TransactionPositionCredit.AccountLink, Instance.get(accOids[1]).getId());
+                    insert2.add(CIAccounting.TransactionPositionCredit.CurrencyLink, curr.getInstance().getId());
+                    insert2.add(CIAccounting.TransactionPositionCredit.RateCurrencyLink, curr.getInstance().getId());
+                    insert2.add(CIAccounting.TransactionPositionCredit.Rate, new Object[] { 1, 1 });
+                    insert2.add(CIAccounting.TransactionPositionCredit.RateAmount, gainloss.abs());
+                    insert2.add(CIAccounting.TransactionPositionCredit.Amount, gainloss.abs());
+                    insert2.execute();
+
+                    final Insert insert3 = new Insert(CIAccounting.TransactionPositionDebit);
+                    insert3.add(CIAccounting.TransactionPositionDebit.TransactionLink, instance.getId());
+                    insert3.add(CIAccounting.TransactionPositionDebit.AccountLink, Instance.get(accOids[0]).getId());
+                    insert3.add(CIAccounting.TransactionPositionDebit.CurrencyLink, curr.getInstance().getId());
+                    insert3.add(CIAccounting.TransactionPositionDebit.RateCurrencyLink, curr.getInstance().getId());
+                    insert3.add(CIAccounting.TransactionPositionDebit.Rate, new Object[] { 1, 1 });
+                    insert3.add(CIAccounting.TransactionPositionDebit.RateAmount, gainloss.abs().negate());
+                    insert3.add(CIAccounting.TransactionPositionDebit.Amount, gainloss.abs().negate());
+                    insert3.execute();
+
+                    _parameter.put(ParameterValues.INSTANCE, docInst);
+                    new DocumentSum().recalculateRate(_parameter);
+                }
+            }
+        }
+        return new Return();
+    }
+
+
+    /**
+     * Method for check if account name exits for proceed to create.
+     *
+     * @param _accountValues String array with values.
+     * @param _pos position if type credit or debit.
+     * @param _checkValues values true or false.
+     * @return str String.
+     */
+    protected String checkAccounts(final String[] _accountValues,
+                                 final int _pos,
+                                 final String[] _checkValues)
+    {
+        final StringBuilder str = new StringBuilder();
+        if (_checkValues[_pos] != null && "true".equals(_checkValues[_pos])) {
+            str.append(_accountValues[_pos]);
+        }
+        return str.toString();
+
+    }
+
+    /**
+     * Method for obtain map with values to validate accounts.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _gainloss BigDecimal of the gain or loss in the document.
+     * @return map.
+     * @throws EFapsException on error.
+     */
+    private Map<String, String[]> validateInfo(final Parameter _parameter,
+                                               final BigDecimal _gainloss)
+        throws EFapsException
+    {
+        // Accounting-Configuration
+        final SystemConfiguration acc = SystemConfiguration.get(UUID
+                        .fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
+        final Properties gainLoss = acc.getObjectAttributeValueAsProperties(_parameter.getInstance());
+        final String accStr;
+
+        if (_gainloss.signum() < 0) {
+            accStr = gainLoss.getProperty("ExchangeLoss");
+        } else {
+            accStr = gainLoss.getProperty("ExchangeGain");
+        }
+        String[] accs = new String[2];
+        final String[] check = new String[2];
+        final String[] accOids = new String[2];
+        if (accStr != null) {
+            accs = accStr.split(";");
+
+            if (accs.length > 0) {
+                for (int i = 0; i < accs.length; i++) {
+                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                    queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                            _parameter.getInstance().getId());
+                    queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accs[i].toString());
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CIAccounting.AccountAbstract.OID);
+                    multi.execute();
+                    while (multi.next()) {
+                        check[i] = "true";
+                        accOids[i] = multi.<String>getAttribute(CIAccounting.AccountAbstract.OID);
+                    }
+                }
+            }
+        }
+        final Map<String, String[]> map = new HashMap<String, String[]>();
+        map.put("check", check);
+        map.put("accs", accs);
+        map.put("accountOids", accOids);
+        return map;
+    }
+}

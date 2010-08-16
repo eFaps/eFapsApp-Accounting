@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5dc05099-b140-4a6c-9479-54de73de767e</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <specification></specification>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_CaseSQLTable</name>
+        <typeid-column>TYPEID</typeid-column>
+        <database>
+            <table-name>T_ACCCASE</table-name>
+            <!-- columns -->
+            <column name="TYPEID"    type="INTEGER"      not-null="true" />
+            <column name="COMPANYID" type="INTEGER"         not-null="true"/>
+            <column name="PERIODEID" type="INTEGER"      not-null="true"/>
+            <column name="NAME"      type="STRING_SHORT" not-null="true" length="128" />
+            <column name="DESCR"     type="STRING_SHORT" not-null="true" length="256" />
+            <column name="ACTIVE"    type="BOOLEAN" />
+            <column name="CREATOR"   type="INTEGER"      not-null="true" />
+            <column name="CREATED"   type="DATETIME"     not-null="true" />
+            <column name="MODIFIER"  type="INTEGER"      not-null="true" />
+            <column name="MODIFIED"  type="DATETIME"     not-null="true" />
+            <foreign name="T_ACCCASE_FK_PERIODEID" key="PERIODEID" reference="T_ACCPERIODE(ID)" />
+            <foreign name="T_ACCCASE_FK_CRTR"      key="CREATOR"   reference="T_USERPERSON(ID)" />
+            <foreign name="T_ACCCASE_FK_MDFR"      key="MODIFIER"  reference="T_USERPERSON(ID)" />
+        </database>
+    </definition>
+</datamodel-sqltable>

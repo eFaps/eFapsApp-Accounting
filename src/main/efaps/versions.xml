@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<install xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <application>eFaps-ERP-Accounting</application>
+    <dependencies>
+        <dependency order="0">
+            <groupId>org.efaps</groupId>
+            <artifactId>efaps-kernel-install</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="1">
+            <groupId>org.efaps</groupId>
+            <artifactId>efaps-webapp-install</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="2">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-crm-contacts</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="3">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-erp-commons</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="4">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-erp-products</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="5">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-erp-sales</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <version number="1" reloadCache="false" login="true" compile="true">
+        <description>Install ERP-Accounting Basic Modul.</description>
+        <script type="groovy">
+
+            import org.efaps.admin.runlevel.RunLevel;
+            import org.efaps.db.Context;
+            import org.efaps.db.SearchQuery;
+            import org.efaps.esjp.admin.ui.UIUpdate;
+            import org.efaps.importer.DataImport;
+
+            import java.net.URL
+            import java.io.File;
+
+            EFAPS_LOGGER.info("Importing Data for eFaps-ERP-Accounting");
+
+            SearchQuery query = new SearchQuery();
+            query.setQueryTypes("Admin_User_JAASKey");
+            query.addWhereExprEqValue("Key", "Accounting_Admin");
+            query.addSelect("OID");
+            query.execute();
+            if (!query.next()) {
+
+                RunLevel.init("shell");
+                RunLevel.execute();
+                URL url1 = new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml");
+                DataImport imp1 = DataImport.readFile(url1);
+                imp1.updateInDB();
+
+            }
+            <!-- Accounting_MyDesk, MainToolBar -->
+            UIUpdate update = new UIUpdate();
+            update.add2Menu("250c6cd3-f4c4-4dd2-aa12-6f497260afce", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
+
+            <!-- connect the Accounting_ERP_CurrencyTree_Rate_Menu_Action_Create Menu to the ERP_CurrencyTree_Rate_Menu_Action menu -->
+            update.add2Menu("d9480319-83fb-45ae-9a0b-877271acc034", "590181bd-a12f-4969-b403-5dc68d5089ef", -1);
+
+            <!-- connect the Accounting_Sales_TaxTree_Account Menu to the Sales_TaxTree menu -->
+            update.add2Menu("bc6cce90-6292-40ec-85c4-81c0e2110ae7", "d40d45b3-b2a1-45e8-ae72-fc991cb945f7", -1);
+
+             <!-- connect the Accounting_Sales_AbstractAttrMyDesk_Menu_Action_Create_TypeAttr Menu to the Sales_AbstractAttrMyDesk_Menu_Action menu -->
+            update.add2Menu("c37de04e-c086-405a-a4b1-aa6eb2fd9bdf", "cc4a3bc2-26a7-4b51-b8e5-fabfef5ce2fa", -1);
+
+             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_InvoiceTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "55f86f49-d9a5-4654-9bdb-9d0b61e4b8e5", -1);
+
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_CreditNoteTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "22a08697-2de1-4ef7-9dbb-10b2a61553cd", -1);
+
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_ReminderTree  menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "1f64d98c-eb58-421d-adb5-e2da34ff49d4", -1);
+
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_ReceiptTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "9e4252a9-09de-4426-b2d2-8ca573de07a9", -1);
+
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_ReturnSlipTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "f092435c-f527-41e8-af3b-ec64b9f96387", -1);
+
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_DeliveryNoteTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "275af5de-041b-4d8a-8fa8-80951035c616", -1);
+
+            <!-- connect the Accounting_ExternalVoucherTree_Transaction to Sales_IncomingInvoiceTree menu -->
+            update.add2Menu("20bda4db-6afa-4223-abcf-6746bc4b2a18", "0370fa3a-6733-4481-841a-645d0e78e54f", -1);
+        </script>
+    </version>
+</install>

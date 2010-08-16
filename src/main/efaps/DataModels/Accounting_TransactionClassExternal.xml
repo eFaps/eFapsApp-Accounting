@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4e1ccb8a-c71c-47eb-b4c9-3612aeade5f0</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionClassExternal</name>
+        <parent>Accounting_TransactionClass</parent>
+        <purpose classification="true">
+            <LinkColumn>TransactionLink</LinkColumn>
+        </purpose>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>TransactionLink</name>
+            <type>Link</type>
+            <typelink>Accounting_Transaction</typelink>
+            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
+            <sqlcolumn>TRANSID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DocumentLink</name>
+            <type>Link</type>
+            <typelink>ERP_DocumentAbstract</typelink>
+            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Number</name>
+            <type>String</type>
+            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
+            <sqlcolumn>NUMBER</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>TypeLink</name>
+            <type>LinkWithRanges</type>
+            <typelink>Accounting_ExternalTypeAttr</typelink>
+            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
+            <sqlcolumn>EXTYPEID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Accounting_TransactionClassExternal.TypeLink.RANGE_VALUE" event="RANGE_VALUE">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Accounting_ExternalTypeAttr</property>
+            </trigger>
+        </attribute>
+    </definition>
+</datamodel-type>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>b59068e5-1c8c-4bbc-9080-ebc9f92e1368</uuid>
+    <file-application>eFaps-ERP-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionPositionForm</name>
+        <!-- fields -->
+        <field name="setPeriode">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="setPeriodeUIFieldValue"
+                name="Accounting_TransactionForm.setPeriode.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="type">
+            <property name="Attribute">Type</property>
+        </field>
+        <field name="rateAmountGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="rateAmount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">RateAmount</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="rateCurrencyLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Accounting_TransactionPositionForm.rateCurrencyLink.Label</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="rateCurrencyFieldValueUI"
+                name="Accounting_TransactionPositionForm.rateCurrencyLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4CurrenyRate"
+                name="Accounting_TransactionPositionForm.rateCurrencyLink.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="rateCurrencyLink4View">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
+            <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionPositionForm.rateCurrencyLink.Label</property>
+        </field>
+        <field name="rate">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionForm.rate.Label</property>
+            <property name="Attribute">Rate</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="accountLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="SelectAlternateOID">linkto[AccountLink].oid</property>
+            <property name="Select">linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionPositionForm.accountLink.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.Account"
+                method="autoComplete4Account"
+                name="Accounting_TransactionPositionForm.accountID.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+        </field>
+        <field name="amountGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="amount">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Amount</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="currencyLink">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="transactionLink">
+            <property name="SelectAlternateOID">linkto[TransactionLink].oid</property>
+            <property name="Phrase">$&lt;linkto[TransactionLink].attribute[Name]&gt; - $&lt;linkto[TransactionLink].attribute[Date]&gt;</property>
+            <property name="Label">Accounting_TransactionPositionForm.transactionLink.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="createGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="modifyGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+    </definition>
+</ui-form>
