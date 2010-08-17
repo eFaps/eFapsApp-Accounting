@@ -573,7 +573,8 @@ public abstract class Create_Base
             final Document doc = trans.new Document(docInst);
             final Map<Long, Rate> rates = new HashMap<Long, Rate>();
             trans.getCostInformation(_parameter, null, doc, rates);
-            if (doc.isCostValidated() && doc.getDifference().compareTo(BigDecimal.ZERO) == 0) {
+            if (validateDoc(_parameter, doc) && doc.isCostValidated()
+                            && doc.getDifference().compareTo(BigDecimal.ZERO) == 0) {
                 final Insert insert = new Insert(CIAccounting.Transaction);
                 insert.add(CIAccounting.Transaction.Name, name);
                 insert.add(CIAccounting.Transaction.Description, description);
@@ -593,6 +594,20 @@ public abstract class Create_Base
             }
         }
         return new Return();
+    }
+
+    /**
+     * To be overwritten from implementation.
+     * @param _parameter    Paramter as passed from the eFaps API
+     * @param _doc          Document to be validates
+     * @return true if validation succeded else false
+     * @throws EFapsException on error
+     */
+    protected boolean validateDoc(final Parameter _parameter,
+                                final Document _doc)
+        throws EFapsException
+    {
+        return true;
     }
 
     /**
