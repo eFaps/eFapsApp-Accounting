@@ -44,6 +44,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Periode;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
@@ -80,7 +81,15 @@ public abstract class Create_Base
                                        final String _description)
         throws EFapsException
     {
-        final Instance parent = _parameter.getCallInstance();
+        Instance parent = _parameter.getCallInstance();
+        // in case that an accountis the parent the periode is searched
+        if (parent.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+            final PrintQuery print = new PrintQuery(parent);
+            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).oid();
+            print.addSelect(sel);
+            print.execute();
+            parent = Instance.get(print.<String>getSelect(sel));
+        }
         final Insert insert = new Insert(CIAccounting.Transaction);
         insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
         insert.add(CIAccounting.Transaction.Description, _description);
