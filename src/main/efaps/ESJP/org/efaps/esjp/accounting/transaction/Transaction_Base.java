@@ -31,9 +31,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
@@ -41,8 +41,8 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -184,7 +184,8 @@ public abstract class Transaction_Base
                 queryBldr.addWhereAttrEqValue(CIAccounting.ERP_CurrencyRateAccounting.CurrencyLink, _currId);
                 queryBldr.addWhereAttrLessValue(CIAccounting.ERP_CurrencyRateAccounting.ValidFrom,
                                 _date.plusMinutes(1));
-                queryBldr.addWhereAttrGreaterValue(CIAccounting.ERP_CurrencyRateAccounting.ValidUntil, _date);
+                queryBldr.addWhereAttrGreaterValue(CIAccounting.ERP_CurrencyRateAccounting.ValidUntil,
+                                _date.minusMinutes(1));
                 final MultiPrintQuery print = queryBldr.getPrint();
                 final SelectBuilder valSel = new SelectBuilder()
                                 .attribute(CIAccounting.ERP_CurrencyRateAccounting.Rate).value();

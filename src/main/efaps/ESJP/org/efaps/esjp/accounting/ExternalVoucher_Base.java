@@ -25,11 +25,12 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -63,6 +64,7 @@ public abstract class ExternalVoucher_Base
      * @return new Return
      * @throws EFapsException on error
      */
+    @SuppressWarnings("unchecked")
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -92,7 +94,7 @@ public abstract class ExternalVoucher_Base
         final Insert docInsert = new Insert(CIAccounting.ExternalVoucher);
         docInsert.add(CIAccounting.ExternalVoucher.Contact, contactInst.getId());
         docInsert.add(CIAccounting.ExternalVoucher.Name, _parameter.getParameterValue("extName"));
-        docInsert.add(CIAccounting.ExternalVoucher.Date, _parameter.getParameterValue("extDate"));
+        docInsert.add(CIAccounting.ExternalVoucher.Date, _parameter.getParameterValue("date"));
         docInsert.add(CIAccounting.ExternalVoucher.RateCrossTotal, amount);
         docInsert.add(CIAccounting.ExternalVoucher.RateNetTotal, amount);
         docInsert.add(CIAccounting.ExternalVoucher.RateDiscountTotal, BigDecimal.ZERO);
@@ -107,6 +109,10 @@ public abstract class ExternalVoucher_Base
         docInsert.execute();
 
         _parameter.put(ParameterValues.INSTANCE, docInsert.getInstance());
+
+        final Map<String, Object> parameters = (Map<String, Object>) _parameter.get(ParameterValues.PARAMETERS);
+        parameters.put("date", _parameter.getParameterValues("extDate"));
+        _parameter.put(ParameterValues.PARAMETERS, parameters);
 
         new Create().create4External(_parameter);
 

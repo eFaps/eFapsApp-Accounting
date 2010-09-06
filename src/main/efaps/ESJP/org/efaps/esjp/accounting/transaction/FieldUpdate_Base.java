@@ -32,8 +32,8 @@ import java.util.Map;
 
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -349,7 +349,7 @@ public abstract class FieldUpdate_Base
     {
         Return retVal = new Return();
         final String number = _parameter.getParameterValue("number");
-        final String date = _parameter.getParameterValue("date4class_eFapsDate");
+        final String date = _parameter.getParameterValue("date_eFapsDate");
         String number4read;
         if (!number.isEmpty() && number.trim().length() > 0) {
             final Integer month = DateUtil.getDateFromParameter(date).getMonthOfYear();
@@ -388,7 +388,10 @@ public abstract class FieldUpdate_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final DateTime date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date4class_eFapsDate"));
+        final String dateSel = (_parameter.getParameterValue("extDate_eFapsDate") != null
+                                                ? _parameter.getParameterValue("extDate_eFapsDate")
+                                                                : _parameter.getParameterValue("date_eFapsDate"));
+        final DateTime date = DateUtil.getDateFromParameter(dateSel);
         final DateTime newDate = new DateTime(date);
         final DateTime firstDate = newDate.dayOfMonth().withMinimumValue();
         final DateTime lastDate = newDate.dayOfMonth().withMaximumValue();
