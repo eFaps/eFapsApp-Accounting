@@ -143,14 +143,14 @@
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>
         </field>
-        <field name="date">
+        <field name="extDate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="updateNumberValueUI"
-                name="Accounting_TransactionCreate4ExternalForm.date.UI_FIELD_UPDATE"
+                name="Accounting_TransactionCreate4ExternalForm.extDate.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
             </trigger>
         </field>
@@ -179,12 +179,16 @@
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
         </field>
-        <field name="extDate">
+        <field name="date">
             <property name="Label">Accounting_TransactionClassExternal/Date4Transaction.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Date"
+                name="Accounting_TransactionCreate4ExternalToBookForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
