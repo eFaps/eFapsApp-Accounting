@@ -55,7 +55,7 @@ public abstract class ExpenseReport_Base
 {
 
     /**
-     * Get the name for the report
+     * Get the name for the report.
      * @param _parameter Parameter as passed form the eFaps API
      * @param _from fromdate
      * @param _to   to date
@@ -91,10 +91,10 @@ public abstract class ExpenseReport_Base
      * @see org.efaps.esjp.common.jasperreport.EFapsDataSource_Base#getFieldValue(net.sf.jasperreports.engine.JRField)
      */
     @Override
-    public Object getFieldValue(final JRField field)
+    public Object getFieldValue(final JRField _field)
         throws JRException
     {
         // TODO Auto-generated method stub
-        return super.getFieldValue(field);
+        return super.getFieldValue(_field);
     }
 }

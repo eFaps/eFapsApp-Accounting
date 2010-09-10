@@ -50,7 +50,7 @@ public abstract class AccountingDataSource_Base
     private int current = -1;
 
     /**
-     * @param _jasperReport JasperReport
+     * @param _values JasperReport
      * @throws EFapsException on error
      */
     public AccountingDataSource_Base(final List<List<Node>> _values)

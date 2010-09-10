@@ -53,6 +53,7 @@ public abstract class AccountDataSource_Base extends EFapsDataSource
      * @see org.efaps.esjp.common.jasperreport.EFapsDataSource_Base#init(net.sf.jasperreports.engine.JasperReport)
      * @param _jasperReport  JasperReport
      * @param _parameter Parameter
+     * @param _parentSource JRDataSource
      * @throws EFapsException on error
      */
     @Override

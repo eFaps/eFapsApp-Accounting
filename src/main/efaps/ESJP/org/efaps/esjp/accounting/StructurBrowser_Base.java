@@ -28,8 +28,8 @@ import java.util.Map;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -78,8 +78,7 @@ public abstract class StructurBrowser_Base implements EventExecution
      * with.
      * @param instance
      *
-     * @param _types types
-     * @param _expandChildTypes must the query be expanded
+     * @param _parameter as passed from eFaps API.
      * @return Return with instances
      * @throws EFapsException on error
      */

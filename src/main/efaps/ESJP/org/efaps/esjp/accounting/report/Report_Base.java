@@ -27,9 +27,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -43,8 +43,8 @@ import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -234,6 +234,11 @@ public abstract class Report_Base
         return ret;
     }
 
+    /**
+     * Class to obtain a report.
+     * @author jorge.
+     *
+     */
     class ReportTree
     {
 
@@ -243,7 +248,7 @@ public abstract class Report_Base
         private final List<Node> rootNodes = new ArrayList<Node>();
 
         /**
-         * Instance of this report
+         * Instance of this report.
          */
         private final Instance instance;
 
@@ -290,6 +295,9 @@ public abstract class Report_Base
             return this.rootNodes;
         }
 
+        /**
+         * @throws EFapsException on error.
+         */
         public void addChildren()
             throws EFapsException
         {
@@ -323,6 +331,9 @@ public abstract class Report_Base
             });
         }
 
+        /**
+         * @return ret.
+         */
         public List<List<Node>> getTable()
         {
             final List<List<Node>> ret = new ArrayList<List<Node>>();
@@ -332,6 +343,10 @@ public abstract class Report_Base
             return ret;
         }
 
+        /**
+         * @param _parent Node.
+         * @return ret
+         */
         private List<Node> flatten(final Node _parent)
         {
             final List<Node> ret = new ArrayList<Node>();
@@ -753,9 +768,6 @@ public abstract class Report_Base
         implements CustomExpression
     {
 
-        /**
-         *
-         */
         private static final long serialVersionUID = 1L;
         private final int level;
         private final String key;

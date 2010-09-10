@@ -45,7 +45,7 @@ public class AccountingDataSource
     /**
      * Constructor.
      *
-     * @param _jasperReport JasperReport
+     * @param _values List
      * @throws EFapsException on error
      */
     public AccountingDataSource(final List<List<Node>> _values)
