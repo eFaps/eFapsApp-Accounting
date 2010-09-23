@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 5317 $
+  Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (Mon, 16 Aug 2010) $
+  Last Changed By: $Author: miguel.a.aranya $
+
+-->
+
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>da24b6a7-7eb7-4d00-bf0b-47ea296daef8</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev: 5317 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_Journal_CreateForm</name>
+        <!-- fields -->
+        <field name="mime">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_Journal_CreateForm.mime.Label</property>
+            <trigger program="org.efaps.esjp.ui.print.UserInterface"
+                method="getMimeFieldValueUI"
+                name="Accounting_Journal_CreateForm.mime.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="dateFrom">
+            <property name="Label">Accounting_Journal_CreateForm.dateFrom.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <trigger program="org.efaps.esjp.accounting.JournalDataSource"
+                method="getDateFromFieldValue"
+                name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
+        </field>
+        <field name="dateTo">
+            <property name="Label">Accounting_Journal_CreateForm.dateTo.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+        </field>
+    </definition>
+</ui-form>

@@ -779,7 +779,6 @@ public abstract class Report_Base
             this.key = _key;
         }
 
-        @SuppressWarnings("unchecked")
         public Object evaluate(final Map _fields,
                                final Map _variables,
                                final Map _parameters)
@@ -788,9 +787,9 @@ public abstract class Report_Base
             final Object value = getCurrentValue();
             if (value != null) {
                 final FieldMapWrapper fields = (FieldMapWrapper) _fields;
-                final Set set = fields.entrySet();
+                final Set<?> set = fields.entrySet();
                 for (final Object entryObj : set) {
-                    final Entry entry = ((Entry) entryObj);
+                    final Entry<?,?> entry = ((Entry<?,?>) entryObj);
                     if (entry.getKey().equals(this.key)) {
                         final JRFillField field = (JRFillField) entry.getValue();
                         if (field != null) {
