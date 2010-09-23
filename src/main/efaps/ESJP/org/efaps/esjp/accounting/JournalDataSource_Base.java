@@ -85,9 +85,10 @@ public abstract class JournalDataSource_Base
             final DateTime dateTo = new DateTime(getParameter().getParameterValue("dateTo"));
 
             final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.TransactionAbstract);
-            queryBuilder.addWhereAttrLessValue("Date", dateTo.plusDays(1));
-            queryBuilder.addWhereAttrGreaterValue("Date", dateFrom.minusSeconds(1));
-            queryBuilder.addOrderByAttributeAsc("Date");
+            queryBuilder.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, getInstance().getId());
+            queryBuilder.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
+            queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
+            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
             setPrint(queryBuilder.getPrint());
             getPrint().setEnforceSorted(true);
             if (getJasperReport().getMainDataset().getFields() != null) {
