@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.accounting.report.Report_Base.Node;
+import org.efaps.esjp.accounting.report.Report_Base.AbstractNode;
 import org.efaps.util.EFapsException;
 
 /**
@@ -41,14 +41,13 @@ import org.efaps.util.EFapsException;
 public class AccountingDataSource
     extends AccountingDataSource_Base
 {
-
     /**
      * Constructor.
      *
      * @param _values List
      * @throws EFapsException on error
      */
-    public AccountingDataSource(final List<List<Node>> _values)
+    public AccountingDataSource(final List<List<AbstractNode>> _values)
         throws EFapsException
     {
         super(_values);

@@ -50,16 +50,19 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.jasper.JasperUtil;
 import org.efaps.ci.CIAdminProgram;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 import ar.com.fdvs.dj.core.FieldMapWrapper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -86,6 +89,16 @@ import ar.com.fdvs.dj.domain.entities.conditionalStyle.ConditionalStyle;
 public abstract class Report_Base
     extends StandartReport
 {
+
+    /**
+     * Date the transaction must be older.
+     */
+    private DateTime dateFrom;
+
+    /**
+     * Date the transaction must be younger.
+     */
+    private DateTime dateTo;
 
     /**
      * Method renders a drop down field containing the mime types.
@@ -119,6 +132,57 @@ public abstract class Report_Base
     }
 
     /**
+     * Called from a field value event to get the value for the date from field.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return  new Return containing value
+     * @throws EFapsException on error
+     */
+    public Return getDateFromFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.ReportAbstract.PeriodeLink)
+            .attribute(CIAccounting.Periode.FromDate);
+        print.addSelect(sel);
+        DateTime date;
+        if (print.execute()) {
+            date = print.getSelect(sel);
+        } else {
+            date = new DateTime();
+        }
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, date);
+        return ret;
+    }
+
+    /**
+     * Called from a field value event to get the value for the date from field.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return  new Return containing value
+     * @throws EFapsException on error
+     */
+    public Return getDateToFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.ReportAbstract.PeriodeLink)
+            .attribute(CIAccounting.Periode.ToDate);
+        print.addSelect(sel);
+        DateTime date;
+        if (print.execute()) {
+            date = print.getSelect(sel);
+        } else {
+            date = new DateTime();
+        }
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, date);
+        return ret;
+    }
+
+
+    /**
      * Executed to create a report account node from the UserInterface.
      *
      * @param _parameter Parameter as passed from the eFasp API
@@ -129,12 +193,13 @@ public abstract class Report_Base
         throws EFapsException
     {
         final Insert insert = new Insert(CIAccounting.ReportNodeAccount);
-        insert.add("ParentLink", _parameter.getInstance().getId());
-        insert.add("Number", _parameter.getParameterValue("number"));
-        insert.add("Label", _parameter.getParameterValue("label"));
-        insert.add("ShowAllways", _parameter.getParameterValue("showAllways"));
-        insert.add("ShowSum", _parameter.getParameterValue("showSum"));
-        insert.add("AccountLink", Instance.get(_parameter.getParameterValue("accountLink")).getId());
+        insert.add(CIAccounting.ReportNodeAccount.ParentLink, _parameter.getInstance().getId());
+        insert.add(CIAccounting.ReportNodeAccount.Number, _parameter.getParameterValue("number"));
+        insert.add(CIAccounting.ReportNodeAccount.Label, _parameter.getParameterValue("label"));
+        insert.add(CIAccounting.ReportNodeAccount.ShowAllways, _parameter.getParameterValue("showAllways"));
+        insert.add(CIAccounting.ReportNodeAccount.ShowSum, _parameter.getParameterValue("showSum"));
+        insert.add(CIAccounting.ReportNodeAccount.AccountLink,
+                        Instance.get(_parameter.getParameterValue("accountLink")).getId());
         insert.execute();
         return new Return();
     }
@@ -152,13 +217,17 @@ public abstract class Report_Base
     {
         final Return ret = new Return();
         final String mime = _parameter.getParameterValue("mime");
+
+        this.dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
+        this.dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+
         final ReportTree dataTree = new ReportTree(_parameter.getInstance());
         dataTree.addChildren();
-        for (final Node node : dataTree.getRootNodes()) {
+        for (final AbstractNode node : dataTree.getRootNodes()) {
             node.getSum();
         }
 
-        final List<List<Node>> table = dataTree.getTable();
+        final List<List<AbstractNode>> table = dataTree.getTable();
         try {
 
             final DynamicReportBuilder drb = new DynamicReportBuilder();
@@ -171,8 +240,8 @@ public abstract class Report_Base
             columnStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
             int max = 0;
             Integer y = 0;
-            for (final List<Node> nodes : table) {
-                for (final Node node : nodes) {
+            for (final List<AbstractNode> nodes : table) {
+                for (final AbstractNode node : nodes) {
                     if (node.getLevel() > max) {
                         max = node.getLevel();
                     }
@@ -239,13 +308,13 @@ public abstract class Report_Base
      * @author jorge.
      *
      */
-    class ReportTree
+    public class ReportTree
     {
 
         /**
          * List of nodes belonging to this report.
          */
-        private final List<Node> rootNodes = new ArrayList<Node>();
+        private final List<AbstractNode> rootNodes = new ArrayList<AbstractNode>();
 
         /**
          * Instance of this report.
@@ -290,7 +359,7 @@ public abstract class Report_Base
          *
          * @return value of instance variable {@link #rootNodes}
          */
-        public List<Node> getRootNodes()
+        public List<AbstractNode> getRootNodes()
         {
             return this.rootNodes;
         }
@@ -315,16 +384,16 @@ public abstract class Report_Base
                 final Boolean showAllways = print.<Boolean> getAttribute(CIAccounting.ReportNodeRoot.ShowAllways);
                 final Boolean showSum = print.<Boolean> getAttribute(CIAccounting.ReportNodeRoot.ShowSum);
                 final Long position = print.<Long> getAttribute(CIAccounting.ReportNodeRoot.Position);
-                final Node child = new RootNode(null, oidTmp, number, label, showAllways, showSum, position);
+                final AbstractNode child = new RootNode(null, oidTmp, number, label, showAllways, showSum, position);
                 this.rootNodes.add(child);
             }
-            for (final Node root : this.rootNodes) {
+            for (final AbstractNode root : this.rootNodes) {
                 root.addChildren(1);
             }
-            Collections.sort(this.rootNodes, new Comparator<Node>() {
+            Collections.sort(this.rootNodes, new Comparator<AbstractNode>() {
 
-                public int compare(final Node _node1,
-                                   final Node _node2)
+                public int compare(final AbstractNode _node1,
+                                   final AbstractNode _node2)
                 {
                     return _node1.getPosition().compareTo(_node2.getPosition());
                 }
@@ -334,10 +403,10 @@ public abstract class Report_Base
         /**
          * @return ret.
          */
-        public List<List<Node>> getTable()
+        public List<List<AbstractNode>> getTable()
         {
-            final List<List<Node>> ret = new ArrayList<List<Node>>();
-            for (final Node node : this.rootNodes) {
+            final List<List<AbstractNode>> ret = new ArrayList<List<AbstractNode>>();
+            for (final AbstractNode node : this.rootNodes) {
                 ret.add(flatten(node));
             }
             return ret;
@@ -347,14 +416,14 @@ public abstract class Report_Base
          * @param _parent Node.
          * @return ret
          */
-        private List<Node> flatten(final Node _parent)
+        private List<AbstractNode> flatten(final AbstractNode _parent)
         {
-            final List<Node> ret = new ArrayList<Node>();
+            final List<AbstractNode> ret = new ArrayList<AbstractNode>();
             if (_parent.isShowAllways()
                             || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0)) {
                 ret.add(_parent);
             }
-            for (final Node child : _parent.getChildren()) {
+            for (final AbstractNode child : _parent.getChildren()) {
                 ret.addAll(flatten(child));
             }
             return ret;
@@ -401,32 +470,67 @@ public abstract class Report_Base
         }
     }
 
-    public abstract class Node
+    /**
+     * Base class for all types of nodes.
+     */
+    public abstract class AbstractNode
     {
+        /**
+         * List of children for this node.
+         */
+        private final List<Report.AbstractNode> children = new ArrayList<Report.AbstractNode>();
 
-        protected final List<Report.Node> children = new ArrayList<Report.Node>();
-
+        /**
+         * OID of this node.
+         */
         private final String oid;
+
+        /**
+         * NUmber of this node.
+         */
         private final String number;
+
+        /**
+         * Label for this node.
+         */
         private final String label;
+
+        /**
+         * Show allways.
+         */
         private final boolean showAllways;
+
+        /**
+         * Show sum.
+         */
         private final boolean showSum;
 
-        private final Node parent;
+        /**
+         * Parent node of this node.
+         */
+        private final AbstractNode parent;
 
+        /**
+         * Position of this node.
+         */
         private final Long position;
 
+        /**
+         * Level of this node.
+         */
         private final int level;
 
         /**
+         * @param _parent  paent of this node
          * @param _oid oid of the node
          * @param _number number of the node
          * @param _label label of the node
-         * @param _showAllways must the node allways be shown
+         * @param _showAllways must the node always be shown
          * @param _showSum must a sum be shown
          * @param _position the position of the node
+         * @param _level level of this node
          */
-        public Node(final Node _parent,
+        public AbstractNode(final AbstractNode _parent,
                     final String _oid,
                     final String _number,
                     final String _label,
@@ -470,7 +574,7 @@ public abstract class Report_Base
          *
          * @return value of instance variable {@link #parent}
          */
-        public Node getParent()
+        public AbstractNode getParent()
         {
             return this.parent;
         }
@@ -480,12 +584,12 @@ public abstract class Report_Base
          *
          * @return value of instance variable {@link #children}
          */
-        public List<Report.Node> getChildren()
+        public List<Report.AbstractNode> getChildren()
         {
-            Collections.sort(this.children, new Comparator<Report.Node>() {
+            Collections.sort(this.children, new Comparator<Report.AbstractNode>() {
 
-                public int compare(final Node _node1,
-                                   final Node _node2)
+                public int compare(final AbstractNode _node1,
+                                   final AbstractNode _node2)
                 {
                     return _node1.getPosition().compareTo(_node2.getPosition());
                 }
@@ -495,13 +599,16 @@ public abstract class Report_Base
 
         /**
          * Add the children to this node instance.
-         *
+         * @param _level levle for the child nodes
          * @throws EFapsException on error
          */
         protected abstract void addChildren(final int _level)
             throws EFapsException;
 
-        abstract BigDecimal getSum();
+        /**
+         * @return the sum for this node.
+         */
+        protected abstract BigDecimal getSum();
 
         /**
          * Getter method for instance variable {@link #oid}.
@@ -555,7 +662,7 @@ public abstract class Report_Base
 
         /**
          * @see java.lang.Object#toString()
-         * @return
+         * @return String representation of this node
          */
         @Override
         public String toString()
@@ -563,7 +670,7 @@ public abstract class Report_Base
             final ToStringBuilder ret = new ToStringBuilder(this);
             ret.append("number", this.number).append("label", this.label).append("sum", getSum()).append("showSum",
                             this.showSum).append("showAllways", this.showAllways);
-            for (final Node node : getChildren()) {
+            for (final AbstractNode node : getChildren()) {
                 ret.append("\n     ");
                 ret.append("child", node.toString());
             }
@@ -572,26 +679,31 @@ public abstract class Report_Base
 
     }
 
-    class RootNode
-        extends Node
+    /**
+     *  Root Node.
+     */
+    public class RootNode
+        extends Report.AbstractNode
     {
 
         /**
-         * @param oid
-         * @param number
-         * @param label
-         * @param showAllways
-         * @param showSum
+         * @param _parent  paent of this node
+         * @param _oid oid of the node
+         * @param _number number of the node
+         * @param _label label of the node
+         * @param _showAllways must the node always be shown
+         * @param _showSum must a sum be shown
+         * @param _position the position of the node
          */
-        public RootNode(final Node _parent,
-                        final String oid,
-                        final String number,
-                        final String label,
-                        final boolean showAllways,
-                        final boolean showSum,
-                        final Long position)
+        public RootNode(final AbstractNode _parent,
+                        final String _oid,
+                        final String _number,
+                        final String _label,
+                        final boolean _showAllways,
+                        final boolean _showSum,
+                        final Long _position)
         {
-            super(_parent, oid, number, label, showAllways, showSum, position, 0);
+            super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, 0);
         }
 
         /**
@@ -604,62 +716,68 @@ public abstract class Report_Base
             final Instance rootInst = Instance.get(getOid());
 
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeTree);
-            queryBldr.addWhereAttrEqValue("ParentLink", rootInst.getId());
+            queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeTree.ParentLink, rootInst.getId());
             final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute("OID", "Number", "Label", "ShowAllways", "ShowSum", "Position");
+            print.addAttribute(CIAccounting.ReportNodeTree.OID, CIAccounting.ReportNodeTree.Number,
+                            CIAccounting.ReportNodeTree.Label, CIAccounting.ReportNodeTree.ShowAllways,
+                            CIAccounting.ReportNodeTree.ShowSum, CIAccounting.ReportNodeTree.Position);
             print.execute();
             while (print.next()) {
-                final String oidTmp = print.<String> getAttribute("OID");
-                final String number = print.<String> getAttribute("Number");
-                final String label = print.<String> getAttribute("Label");
-                final Boolean showAllways = print.<Boolean> getAttribute("ShowAllways");
-                final Boolean showSum = print.<Boolean> getAttribute("ShowAllways");
-                final Long position = print.<Long> getAttribute("Position");
-                final Node child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position, _level);
-                this.children.add(child);
+                final String oidTmp = print.<String> getAttribute(CIAccounting.ReportNodeTree.OID);
+                final String number = print.<String> getAttribute(CIAccounting.ReportNodeTree.Number);
+                final String label = print.<String> getAttribute(CIAccounting.ReportNodeTree.Label);
+                final Boolean showAllways = print.<Boolean> getAttribute(CIAccounting.ReportNodeTree.ShowAllways);
+                final Boolean showSum = print.<Boolean> getAttribute(CIAccounting.ReportNodeTree.ShowAllways);
+                final Long position = print.<Long> getAttribute(CIAccounting.ReportNodeTree.Position);
+                final AbstractNode child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position, _level);
+                getChildren().add(child);
             }
-            for (final Node child : this.children) {
+            for (final AbstractNode child : getChildren()) {
                 child.addChildren(_level + 1);
             }
         }
 
         /**
-         * @see org.efaps.esjp.accounting.report.Report_Base.Node#getSum()
-         * @return
+         * {@inheritDoc}
          */
         @Override
         public BigDecimal getSum()
         {
             BigDecimal temp = BigDecimal.ZERO;
-            for (final Node child : getChildren()) {
+            for (final AbstractNode child : getChildren()) {
                 temp = temp.add(child.getSum());
             }
             return temp;
         }
-
     }
 
-    class TreeNode
-        extends Node
+    /**
+     * Tree Node.
+     */
+    public class TreeNode
+        extends Report.AbstractNode
     {
 
         /**
-         * @param oid
-         * @param number
-         * @param label
-         * @param showAllways
-         * @param showSum
+         * @param _parent  parent of this node
+         * @param _oid oid of the node
+         * @param _number number of the node
+         * @param _label label of the node
+         * @param _showAllways must the node always be shown
+         * @param _showSum must a sum be shown
+         * @param _position the position of the node
+         * @param _level level of this node
          */
-        public TreeNode(final Node _parent,
-                        final String oid,
-                        final String number,
-                        final String label,
-                        final boolean showAllways,
-                        final boolean showSum,
-                        final Long position,
+        public TreeNode(final AbstractNode _parent,
+                        final String _oid,
+                        final String _number,
+                        final String _label,
+                        final boolean _showAllways,
+                        final boolean _showSum,
+                        final Long _position,
                         final int _level)
         {
-            super(_parent, oid, number, label, showAllways, showSum, position, _level);
+            super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, _level);
         }
 
         /**
@@ -672,28 +790,35 @@ public abstract class Report_Base
             final Instance treeInst = Instance.get(getOid());
 
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeChildAbstract);
-            queryBldr.addWhereAttrEqValue("ParentLinkAbstract", treeInst.getId());
+            queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeChildAbstract.ParentLinkAbstract, treeInst.getId());
             final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute("OID", "Number", "Label", "ShowAllways", "ShowSum", "Position", "AccountLink");
+            print.addAttribute(CIAccounting.ReportNodeChildAbstract.OID, CIAccounting.ReportNodeChildAbstract.Number,
+                            CIAccounting.ReportNodeChildAbstract.Label,
+                            CIAccounting.ReportNodeChildAbstract.ShowAllways,
+                            CIAccounting.ReportNodeChildAbstract.ShowSum,
+                            CIAccounting.ReportNodeChildAbstract.Position,
+                            CIAccounting.ReportNodeAccount.AccountLink);
             print.execute();
             while (print.next()) {
-                final String oidTmp = print.<String> getAttribute("OID");
-                final String number = print.<String> getAttribute("Number");
-                final String label = print.<String> getAttribute("Label");
-                final Boolean showAllways = print.<Boolean> getAttribute("ShowAllways");
-                final Boolean showSum = print.<Boolean> getAttribute("ShowAllways");
-                final Long position = print.<Long> getAttribute("Position");
-                final Long accountLink = print.<Long> getAttribute("AccountLink");
-                final Node child;
+                final String oidTmp = print.<String> getAttribute(CIAccounting.ReportNodeChildAbstract.OID);
+                final String number = print.<String> getAttribute(CIAccounting.ReportNodeChildAbstract.Number);
+                final String label = print.<String> getAttribute(CIAccounting.ReportNodeChildAbstract.Label);
+                final Boolean showAllways = print.<Boolean> getAttribute(
+                                CIAccounting.ReportNodeChildAbstract.ShowAllways);
+                final Boolean showSum = print.<Boolean> getAttribute(CIAccounting.ReportNodeChildAbstract.ShowAllways);
+                final Long position = print.<Long> getAttribute(CIAccounting.ReportNodeChildAbstract.Position);
+                final Long accountLink = print.<Long> getAttribute(CIAccounting.ReportNodeAccount.AccountLink);
+                final AbstractNode child;
                 if (print.getCurrentInstance().getType().getUUID().equals(CIAccounting.ReportNodeAccount.uuid)) {
-                    child = new AccountNode(this, oidTmp, number, label, showAllways, showSum, position, _level, accountLink);
+                    child = new AccountNode(this, oidTmp, number, label, showAllways, showSum, position, _level,
+                                    accountLink);
                 } else {
                     child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position, _level);
                 }
-                this.children.add(child);
+                getChildren().add(child);
             }
 
-            for (final Node child : this.children) {
+            for (final AbstractNode child : getChildren()) {
                 child.addChildren(_level + 1);
             }
         }
@@ -702,7 +827,7 @@ public abstract class Report_Base
         public BigDecimal getSum()
         {
             BigDecimal temp = BigDecimal.ZERO;
-            for (final Node child : getChildren()) {
+            for (final AbstractNode child : getChildren()) {
                 temp = temp.add(child.getSum());
             }
             return temp;
@@ -710,32 +835,46 @@ public abstract class Report_Base
 
     }
 
-    class AccountNode
-        extends Node
+    /**
+     * Account Node.
+     */
+    public class AccountNode
+        extends Report.AbstractNode
     {
 
+        /**
+         * Id of the account.
+         */
         private final long accountId;
+
+        /**
+         * Sum for his account.
+         */
         private BigDecimal sum = BigDecimal.ZERO;
 
         /**
-         * @param oid
-         * @param number
-         * @param label
-         * @param showAllways
-         * @param showSum
+         * @param _parent       parent of this node
+         * @param _oid          oid of the node
+         * @param _number       number of the node
+         * @param _label        label of the node
+         * @param _showAllways  must the node always be shown
+         * @param _showSum      must a sum be shown
+         * @param _position     the position of the node
+         * @param _level        level of this node
+         * @param _accountId    id of the account
          */
-        public AccountNode(final Node _parent,
-                           final String oid,
-                           final String number,
-                           final String label,
-                           final boolean showAllways,
-                           final boolean showSum,
-                           final Long position,
+        public AccountNode(final AbstractNode _parent,
+                           final String _oid,
+                           final String _number,
+                           final String _label,
+                           final boolean _showAllways,
+                           final boolean _showSum,
+                           final Long _position,
                            final int _level,
-                           final long accountId)
+                           final long _accountId)
         {
-            super(_parent, oid, number, label, showAllways, showSum, position, _level);
-            this.accountId = accountId;
+            super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, _level);
+            this.accountId = _accountId;
         }
 
         /**
@@ -745,13 +884,22 @@ public abstract class Report_Base
         protected void addChildren(final int _level)
             throws EFapsException
         {
+            final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+            transQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
+                            Report_Base.this.dateTo.plusDays(1));
+            transQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date,
+                            Report_Base.this.dateFrom.minusSeconds(1));
+            final AttributeQuery attrQuery = transQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID);
+
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-            queryBldr.addWhereAttrEqValue("AccountLink", this.accountId);
+            queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, this.accountId);
+            queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
             final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute("Amount");
+            print.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
             print.execute();
             while (print.next()) {
-                final BigDecimal amount = print.<BigDecimal> getAttribute("Amount");
+                final BigDecimal amount = print.<BigDecimal>getAttribute(
+                                CIAccounting.TransactionPositionAbstract.Amount);
                 this.sum = this.sum.add(amount);
             }
         }
@@ -763,15 +911,33 @@ public abstract class Report_Base
         }
     }
 
+    /**
+     * Padding conditional for the report.
+     */
     public class PaddingCondition
         extends ConditionStyleExpression
         implements CustomExpression
     {
 
+        /**
+         * Needed for serialization.
+         */
         private static final long serialVersionUID = 1L;
+
+        /**
+         * Level.
+         */
         private final int level;
+
+        /**
+         * Key.
+         */
         private final String key;
 
+        /**
+         * @param _level    level
+         * @param _key      key
+         */
         public PaddingCondition(final int _level,
                                 final String _key)
         {
@@ -779,6 +945,13 @@ public abstract class Report_Base
             this.key = _key;
         }
 
+        /**
+         * @see ar.com.fdvs.dj.domain.CustomExpression#evaluate(java.util.Map, java.util.Map, java.util.Map)
+         * @param _fields       fields
+         * @param _variables    variables
+         * @param _parameters   parameters
+         * @return Boolean
+         */
         public Object evaluate(final Map _fields,
                                final Map _variables,
                                final Map _parameters)
@@ -789,7 +962,7 @@ public abstract class Report_Base
                 final FieldMapWrapper fields = (FieldMapWrapper) _fields;
                 final Set<?> set = fields.entrySet();
                 for (final Object entryObj : set) {
-                    final Entry<?,?> entry = ((Entry<?,?>) entryObj);
+                    final Entry<?, ?> entry = (Entry<?, ?>) entryObj;
                     if (entry.getKey().equals(this.key)) {
                         final JRFillField field = (JRFillField) entry.getValue();
                         if (field != null) {
@@ -804,6 +977,10 @@ public abstract class Report_Base
             return ret;
         }
 
+        /**
+         * @see ar.com.fdvs.dj.domain.CustomExpression#getClassName()
+         * @return class name
+         */
         public String getClassName()
         {
             return Boolean.class.getName();

@@ -29,7 +29,7 @@ import net.sf.jasperreports.engine.JRField;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.accounting.report.Report_Base.Node;
+import org.efaps.esjp.accounting.report.Report_Base.AbstractNode;
 import org.efaps.util.EFapsException;
 
 /**
@@ -45,7 +45,7 @@ public abstract class AccountingDataSource_Base
     implements JRDataSource
 {
 
-    private final List<List<Node>> values;
+    private final List<List<AbstractNode>> values;
     private final int size;
     private int current = -1;
 
@@ -53,12 +53,12 @@ public abstract class AccountingDataSource_Base
      * @param _values JasperReport
      * @throws EFapsException on error
      */
-    public AccountingDataSource_Base(final List<List<Node>> _values)
+    public AccountingDataSource_Base(final List<List<AbstractNode>> _values)
         throws EFapsException
     {
         this.values = _values;
         int max = 0;
-        for (final List<Node> list : _values) {
+        for (final List<AbstractNode> list : _values) {
             if (max < list.size()) {
                 max = list.size();
             }
@@ -78,9 +78,9 @@ public abstract class AccountingDataSource_Base
         final int rootIndex = Integer.parseInt(_field.getPropertiesMap().getProperty("rootIndex"));
         _field.getPropertiesMap().removeProperty("level");
         Object ret = null;
-        final List<Node> nodes = this.values.get(rootIndex);
+        final List<AbstractNode> nodes = this.values.get(rootIndex);
         if (this.current < nodes.size()) {
-            final Node node = nodes.get(this.current);
+            final AbstractNode node = nodes.get(this.current);
             if (_field.getValueClass().equals(BigDecimal.class)) {
                 ret = node.getSum();
             } else {

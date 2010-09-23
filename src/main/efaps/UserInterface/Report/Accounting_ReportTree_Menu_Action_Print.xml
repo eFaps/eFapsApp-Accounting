@@ -33,7 +33,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportTree_Menu_Action_Print</name>
         <target>
-            <form>Accounting_AccountReportForm</form>
+            <form>Accounting_Report_PrintForm</form>
             <execute program="org.efaps.esjp.accounting.report.Report">
                 <property name="JasperReport">Accounting_GeneralBalance</property>
             </execute>
