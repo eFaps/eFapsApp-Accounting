@@ -56,6 +56,6 @@
             <sqlcolumn>TRANSID</sqlcolumn>
         </attribute>
         <classifies type="Accounting_Transaction" relType="Accounting_Transaction2Class"
-            relLinkAttribute="TransactionLink" relTypeAttribute="ClassTypeId" />
+            relLinkAttribute="TransactionLink" relTypeAttribute="ClassTypeId" multipleSelect="true"/>
     </definition>
 </datamodel-type>
