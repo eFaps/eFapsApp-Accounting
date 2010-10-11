@@ -46,6 +46,12 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
+        </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
