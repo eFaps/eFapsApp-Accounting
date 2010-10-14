@@ -835,7 +835,7 @@ public abstract class Transaction_Base
             .append("eFapsSetFieldValue(document.getElementsByName('sumDebit')[0].id,'sumDebit','")
             .append(_doc.getDebitSumFormated()).append("');")
             .append("eFapsSetFieldValue(document.getElementsByName('sumCredit')[0].id,'sumCredit','")
-            .append(_doc.getDebitSumFormated()).append("');")
+            .append(_doc.getCreditSumFormated()).append("');")
             .append("eFapsSetFieldValue(document.getElementsByName('sumTotal')[0].id,'sumTotal','")
             .append(_doc.getDifferenceFormated()).append("');");
         return ret;
