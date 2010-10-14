@@ -459,14 +459,16 @@ public abstract class FieldUpdate_Base
         final Map<Long, Rate> curr2Rate = new HashMap<Long, Rate>();
         final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
                         Transaction_Base.PERIODE_SESSIONKEY);
-        for (int i = 0; i < currIds.length; i++) {
-            final Long id = Long.parseLong(currIds[i]);
-            final Rate rate = getExchangeRate(periodeInstance, id, date, curr2Rate);
-            ret.append("document.getElementsByName('").append(_targetFieldName).append("')[").append(i)
-                .append("].value='").append(rate.getLabel()).append("';")
-                .append("document.getElementsByName('").append(_targetFieldName).append(RateUI.INVERTEDSUFFIX)
-                .append("')[").append(i).append("].value='").append(rate.getCurInstance().isInvert())
-                .append("';");
+        if (currIds != null) {
+            for (int i = 0; i < currIds.length; i++) {
+                final Long id = Long.parseLong(currIds[i]);
+                final Rate rate = getExchangeRate(periodeInstance, id, date, curr2Rate);
+                ret.append("document.getElementsByName('").append(_targetFieldName).append("')[").append(i)
+                    .append("].value='").append(rate.getLabel()).append("';")
+                    .append("document.getElementsByName('").append(_targetFieldName).append(RateUI.INVERTEDSUFFIX)
+                    .append("')[").append(i).append("].value='").append(rate.getCurInstance().isInvert())
+                    .append("';");
+            }
         }
         return ret;
     }
