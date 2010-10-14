@@ -108,7 +108,8 @@ public abstract class TransactionDataSource_Base
     @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
-                     final JRDataSource _parentSource)
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
         throws EFapsException
     {
         final Instance instance = _parameter.getInstance();

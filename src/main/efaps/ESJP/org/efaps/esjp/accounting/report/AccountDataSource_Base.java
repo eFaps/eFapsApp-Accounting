@@ -21,6 +21,7 @@
 package org.efaps.esjp.accounting.report;
 
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
@@ -33,7 +34,6 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.util.EFapsException;
@@ -46,7 +46,8 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("bcdd8bf3-b076-403a-af2f-f09b52bb92e7")
 @EFapsRevision("$Rev$")
-public abstract class AccountDataSource_Base extends EFapsDataSource
+public abstract class AccountDataSource_Base
+    extends EFapsDataSource
 {
 
     /**
@@ -54,33 +55,32 @@ public abstract class AccountDataSource_Base extends EFapsDataSource
      * @param _jasperReport  JasperReport
      * @param _parameter Parameter
      * @param _parentSource JRDataSource
+     * @param _jrParameters map that contains the report parameters
      * @throws EFapsException on error
      */
     @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
-                     final JRDataSource _parentSource) throws EFapsException
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
+        throws EFapsException
     {
         Instance instance = null;
         if (_parameter.getInstance() != null) {
             instance = _parameter.getInstance();
         } else {
-            new QueryBuilder(CIAccounting.AccountAbstract);
+            final QueryBuilder query = new QueryBuilder(CIAccounting.AccountAbstract);
+            query.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, "101");
+            final MultiPrintQuery multi = query.getPrint();
+            multi.addAttribute(CIAccounting.AccountAbstract.OID);
+            multi.execute();
 
-            final SearchQuery query = new SearchQuery();
-            query.setQueryTypes("Accounting_AccountAbstract");
-            query.setExpandChildTypes(true);
-            query.addWhereExprEqValue("Name", "101");
-            query.addSelect("OID");
-            query.execute();
-
-            if (query.next()) {
-                instance = (Instance.get((String) query.get("OID")));
+            while (multi.next()) {
+                instance = Instance.get(multi.<String>getAttribute(CIAccounting.AccountAbstract.OID));
             }
-            query.close();
         }
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-        queryBldr.addWhereAttrEqValue("AccountLink", instance.getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, instance.getId());
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances  = query.execute();
 
