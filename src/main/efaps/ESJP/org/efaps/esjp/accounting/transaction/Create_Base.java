@@ -32,8 +32,8 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -454,15 +454,23 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Instance parent = _parameter.getCallInstance();
-
         final String amountStr = _parameter.getParameterValue("rateAmount");
         final String account = _parameter.getParameterValue("accountLink");
         final String rateCurrencyLink = _parameter.getParameterValue("rateCurrencyLink");
 
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String typeName = (String) properties.get("Type");
-        final Instance curInstance = new Periode().getCurrency(_parameter.getCallInstance()).getInstance();
-
+        final Instance curInstance;
+        if (parent.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
+            final PrintQuery print = new PrintQuery(parent);
+            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.TransactionAbstract.PeriodeLink).oid();
+            print.addSelect(sel);
+            print.execute();
+            final Instance periodeInst = Instance.get(print.<String>getSelect(sel));
+            curInstance = new Periode().getCurrency(periodeInst).getInstance();
+        } else {
+            curInstance = new Periode().getCurrency(_parameter.getCallInstance()).getInstance();
+        }
         BigDecimal amount = DecimalType.parseLocalized(amountStr);
         final Type type = Type.get(typeName);
         if (!type.getUUID().equals(CIAccounting.TransactionPositionCredit.uuid)) {
