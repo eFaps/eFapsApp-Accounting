@@ -134,7 +134,7 @@
         </field>
         <field name="date">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
