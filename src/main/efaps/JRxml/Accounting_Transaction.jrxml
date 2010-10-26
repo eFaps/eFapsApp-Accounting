@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" language="groovy">
-	<property name="ireport.zoom" value="1.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28">
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
@@ -19,10 +19,19 @@
 		<property name="Select" value="attribute[Date]"/>
 	</field>
 	<field name="externalTaxNumber" class="java.lang.String">
-		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[ContactLink].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="docTaxNumber" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="externalContact" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
+	</field>
+	<field name="docContact" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
 	</field>
 	<pageHeader>
-		<band height="22">
+		<band height="20">
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="439" y="0" width="100" height="20"/>
 				<textElement/>
@@ -33,17 +42,17 @@
 	<columnHeader>
 		<band height="63">
 			<textField>
-				<reportElement x="0" y="0" width="335" height="20"/>
+				<reportElement x="0" y="0" width="539" height="16"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="20" width="179" height="20"/>
+				<reportElement x="0" y="16" width="439" height="16"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="439" y="20" width="100" height="20"/>
+				<reportElement x="439" y="16" width="100" height="16"/>
 				<textElement/>
 				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
@@ -63,20 +72,27 @@
 				<text><![CDATA[Credito]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="495" y="50" width="40" height="13"/>
+				<reportElement x="495" y="50" width="44" height="13"/>
 				<textElement/>
 				<text><![CDATA[Cambio]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="179" y="20" width="142" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{externalTaxNumber}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="110" y="50" width="100" height="13"/>
 				<textElement/>
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="0" y="32" width="539" height="16"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[($F{externalContact} != null && $F{externalContact}.length() > 0)
+ ? $F{externalContact} + " - " + $F{externalTaxNumber}
+ : $F{docContact} + " - " + $F{docTaxNumber}
+
+
+
+
+]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
