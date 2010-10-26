@@ -85,7 +85,8 @@ public abstract class Create_Base
         // in case that an accountis the parent the periode is searched
         if (parent.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
             final PrintQuery print = new PrintQuery(parent);
-            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).oid();
+            final SelectBuilder sel = new SelectBuilder()
+                .linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).oid();
             print.addSelect(sel);
             print.execute();
             parent = Instance.get(print.<String>getSelect(sel));

@@ -23,9 +23,6 @@ package org.efaps.esjp.accounting.report;
 
 import java.util.List;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
-
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -85,16 +82,5 @@ public abstract class ExpenseReport_Base
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         return query.getValues();
-    }
-
-    /* (non-Javadoc)
-     * @see org.efaps.esjp.common.jasperreport.EFapsDataSource_Base#getFieldValue(net.sf.jasperreports.engine.JRField)
-     */
-    @Override
-    public Object getFieldValue(final JRField _field)
-        throws JRException
-    {
-        // TODO Auto-generated method stub
-        return super.getFieldValue(_field);
     }
 }
