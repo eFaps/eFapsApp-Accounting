@@ -17,52 +17,37 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5317 $
+ Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (Mon, 16 Aug 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
 -->
 
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>86ed696d-8cc7-4b93-a356-05d7ecfd6637</uuid>
+    <uuid>5b4f8626-c8f8-44b5-823d-1ba5817631d1</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-    <specification>DM00038</specification>
+    <file-revision>$Rev: 5317 $</file-revision>
+    <specification></specification>
 
     <definition>
+
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Account2AccountAbstract</name>
-        <parent>Accounting_Account2ObjectAbstract</parent>
-        <purpose abstract="true"/>
+        <name>Accounting_ActionDefinitionPettyCash2Case</name>
         <attribute>
-            <name>FromAccountLink</name>
+            <name>FromLink</name>
             <type>Link</type>
-            <typelink>Accounting_AccountAbstract</typelink>
-            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <typelink>Accounting_ActionDefinitionPettyCash</typelink>
+            <sqltable>Accounting_ActionDefinition2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>ToAccountLink</name>
+            <name>ToLink</name>
             <type>Link</type>
-            <typelink>Accounting_AccountAbstract</typelink>
-            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <typelink>Accounting_CaseAbstract</typelink>
+            <sqltable>Accounting_ActionDefinition2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Numerator</name>
-            <type>Integer</type>
-            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
-            <sqlcolumn>NUMERATOR</sqlcolumn>
-            <defaultvalue>1</defaultvalue>
-        </attribute>
-        <attribute>
-            <name>Denominator</name>
-            <type>Integer</type>
-            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
-            <sqlcolumn>DENOMINATOR</sqlcolumn>
-            <defaultvalue>1</defaultvalue>
         </attribute>
     </definition>
 </datamodel-type>

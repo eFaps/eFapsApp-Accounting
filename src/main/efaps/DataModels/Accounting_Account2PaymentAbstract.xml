@@ -34,6 +34,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2PaymentAbstract</name>
         <parent>Accounting_Account2ObjectAbstract</parent>
+        <purpose abstract="true"/>
 
         <attribute>
             <name>FromAbstractLink</name>

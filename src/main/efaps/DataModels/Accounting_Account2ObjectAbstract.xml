@@ -35,7 +35,7 @@
 
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2ObjectAbstract</name>
-
+        <purpose abstract="true"/>
         <attribute>
             <name>Type</name>
             <type>Type</type>
