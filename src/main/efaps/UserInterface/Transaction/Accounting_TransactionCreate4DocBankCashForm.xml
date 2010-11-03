@@ -45,7 +45,7 @@
         </field>
         <field name="document">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionForm.document.Label</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.document.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDocumentFieldValue"
@@ -56,7 +56,7 @@
         </field>
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Accounting_TransactionForm.case.Label</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.case.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCaseFieldValue"
@@ -71,7 +71,7 @@
         </field>
         <field name="updateButton" character="Command">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionForm.updateButton.Label</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.updateButton.Label</property>
             <property name="CmdIcon">ACCEPT</property>
             <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
                 method="executeButton"
@@ -127,7 +127,7 @@
         </field>
         <field name="docStatus">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionCreate4ExternalForm.docStatus.Label</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.docStatus.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4DocBankCashForm.docStatus.UI_FIELD_VALUE"
@@ -138,7 +138,7 @@
         <field name="transactionPositionDebit" character="Heading">
             <property name="Level">2</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionForm.transactionPositionDebit.Heading</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.transactionPositionDebit.Heading</property>
         </field>
         <field name="transactionPositionDebitTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
@@ -156,7 +156,7 @@
         <field name="transactionPositionCredit" character="Heading">
             <property name="Level">2</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionForm.transactionPositionCredit.Heading</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.transactionPositionCredit.Heading</property>
         </field>
         <field name="transactionPositionCreditTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
@@ -168,13 +168,39 @@
         </field>
         <field name="sumCredit">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionForm.sumCredit.Label</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.sumCredit.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.sumTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="paymentGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="payment">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.payment.Label</property>
+            <trigger program="org.efaps.esjp.accounting.Payment"
+                method="getPaymentFieldValue"
+                name="Accounting_TransactionCreate4ExternalToBookForm.payment.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="columnCount">5</property>
+            </trigger>
+        </field>
+        <field name="paymentStatus">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4DocBankCashForm.paymentStatus.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Accounting_TransactionCreate4ExternalToBookForm.paymentStatus.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                    <property name="checked">true</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>
