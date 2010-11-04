@@ -28,28 +28,29 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
@@ -824,38 +825,43 @@ public abstract class FieldValue_Base
     public Return getLabelFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelProject);
-        queryBldr.addWhereAttrEqValue(CIAccounting.LabelProject.Active, true);
-        final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute(CIAccounting.LabelProject.OID,
-                           CIAccounting.LabelProject.Name,
-                           CIAccounting.LabelProject.Description);
-        print.execute();
-        final Map<String, String> values = new TreeMap<String, String>();
-        while (print.next()) {
-            values.put(print.<String>getAttribute(CIAccounting.LabelProject.Name) + " - "
-                            + print.<String>getAttribute(CIAccounting.LabelProject.Description),
-                            print.<String>getAttribute(CIAccounting.LabelProject.OID));
-        }
-
-        final Set<String> oidDoc = new HashSet<String>();
-        oidDoc.addAll(getSelectedLabel(_parameter));
-
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-
-        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
-        html.append("<option value=\"0\"></option>");
-        for (final Entry<String, String> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue()).append("\">");
-            String value = entry.getKey();
-            if (oidDoc.contains(entry.getValue())) {
-                value = "> " + value;
+        final FieldValue field = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (field.getDisplay().equals(Display.EDITABLE)) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelProject);
+            queryBldr.addWhereAttrEqValue(CIAccounting.LabelProject.Active, true);
+            final MultiPrintQuery print = queryBldr.getPrint();
+            print.addAttribute(CIAccounting.LabelProject.OID,
+                               CIAccounting.LabelProject.Name,
+                               CIAccounting.LabelProject.Description);
+            print.execute();
+            final Map<String, String> values = new TreeMap<String, String>();
+            while (print.next()) {
+                values.put(print.<String>getAttribute(CIAccounting.LabelProject.Name) + " - "
+                                + print.<String>getAttribute(CIAccounting.LabelProject.Description),
+                                print.<String>getAttribute(CIAccounting.LabelProject.OID));
             }
-            html.append(StringEscapeUtils.escapeHtml(value)).append("</option>");
+
+            final Set<String> oidDoc = new HashSet<String>();
+            oidDoc.addAll(getSelectedLabel(_parameter));
+
+
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+
+            html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
+                            .append(UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
+            html.append("<option value=\"0\"></option>");
+            for (final Entry<String, String> entry : values.entrySet()) {
+                html.append("<option value=\"").append(entry.getValue()).append("\">");
+                String value = entry.getKey();
+                if (oidDoc.contains(entry.getValue())) {
+                    value = "> " + value;
+                }
+                html.append(StringEscapeUtils.escapeHtml(value)).append("</option>");
+            }
+            html.append("</select>");
         }
-        html.append("</select>");
+
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
