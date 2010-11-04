@@ -27,34 +27,31 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>20619039-4a9f-4271-a117-2bf8183d8abb</uuid>
+    <uuid>31881fd3-1a16-4b9b-872d-30236ccff415</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_CaseTable</name>
+        <name>Accounting_ActionDefinition2CaseTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">Accounting_CaseAbstract/Type.Label</property>
-            <property name="ModeSearch">READONLY</property>
+            <property name="Label">Accounting_Account2CaseAbstract/Type.Label</property>
         </field>
-        <field name="name">
-            <property name="Attribute">Name</property>
-            <property name="Label">Accounting_CaseAbstract/Name.Label</property>
-            <property name="ModeSearch">READONLY</property>
+        <field name="toLink">
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
+            <property name="Phrase">$&lt;linkto[ToLink].type.label&gt; -  $&lt;linkto[ToLink].attribute[Name]&gt;</property>
+            <property name="Label">Accounting_ActionDefinitionPettyCash2Case/ToLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="description">
-            <property name="Attribute">Description</property>
-            <property name="ModeSearch">READONLY</property>
-            <property name="Label">Accounting_CaseAbstract/Description.Label</property>
-        </field>
-        <field name="active">
-            <property name="Attribute">Active</property>
-            <property name="ModeSearch">READONLY</property>
-            <property name="Label">Accounting_CaseAbstract/Active.Label</property>
+        <field name="periodeLink">
+            <property name="SelectAlternateOID">linkto[ToLink].linkto[PeriodeAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkto[ToLink].linkto[PeriodeAbstractLink].attribute[Name]&gt;</property>
+            <property name="Label">Accounting_ActionDefinitionPettyCash2Case/PeriodeLink.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>

@@ -35,6 +35,7 @@
 
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinitionPettyCash2Case</name>
+        <parent>Accounting_ActionDefinition2ObjectAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>

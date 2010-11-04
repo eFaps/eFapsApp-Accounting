@@ -42,6 +42,10 @@
         <!-- type tree for -->
         <type>Accounting_ActionDefinitionAbstract</type>
 
+        <childs>
+            <child>Accounting_ActionDefinitionTree_Case</child>
+        </childs>
+
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
