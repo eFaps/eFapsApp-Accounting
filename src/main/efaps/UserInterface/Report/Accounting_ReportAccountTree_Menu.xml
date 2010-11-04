@@ -27,21 +27,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>1c9990d1-8e5a-4f8d-9869-96735aa5d2d0</uuid>
+    <uuid>48e3a407-04de-49df-95f0-4d897409eeb5</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportMyDesk_Menu_Action</name>
+        <name>Accounting_ReportAccountTree_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateBalance</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateProfitLoss</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateTransaction</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_ImportBalance</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateAccount</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_Delete</child>
+            <child>Accounting_ReportAccountTree_Menu_Action</child>
         </childs>
     </definition>
 

@@ -23,26 +23,34 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>1c9990d1-8e5a-4f8d-9869-96735aa5d2d0</uuid>
+    <uuid>c2f7d97f-919a-476f-ba94-ed148c0b993f</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportMyDesk_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateBalance</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateProfitLoss</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateTransaction</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_ImportBalance</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_CreateAccount</child>
-            <child>Accounting_ReportMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Accounting_ReportMyDesk_Menu_Action_CreateAccount</name>
+
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+
+        <!-- target definitions -->
+        <target>
+            <form>Accounting_ReportForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Accounting_ReportAccount</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 
-</ui-menu>
+</ui-command>
