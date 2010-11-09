@@ -31,14 +31,15 @@ import java.util.UUID;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Context.FileParameter;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -47,7 +48,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.db.Context.FileParameter;
 import org.efaps.esjp.admin.common.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
@@ -186,6 +186,7 @@ public abstract class Periode_Base
         Periode_Base.TYPE2TYPE.put("Root", CIAccounting.ReportNodeRoot);
         Periode_Base.TYPE2TYPE.put("Tree", CIAccounting.ReportNodeTree);
         Periode_Base.TYPE2TYPE.put("Account", CIAccounting.ReportNodeAccount);
+        Periode_Base.TYPE2TYPE.put("ReportAccount", CIAccounting.ReportAccount);
     }
 
     /**
