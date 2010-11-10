@@ -36,15 +36,15 @@
 		<property name="Key" value="winLossFinal"/>
 	</field>
 	<sortField name="accountName"/>
-	<variable name="background" class="java.lang.Integer" calculation="DistinctCount">
+	<variable name="background" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[$F{accountName}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
 	</variable>
 	<variable name="SumAmountDebit" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{amountDebit}.abs()]]></variableExpression>
+		<variableExpression><![CDATA[$F{amountDebit}]]></variableExpression>
 	</variable>
 	<variable name="SumAmountCredit" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{amountCredit}.abs()]]></variableExpression>
+		<variableExpression><![CDATA[$F{amountCredit}]]></variableExpression>
 	</variable>
 	<variable name="SaldoNegativ" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$F{amountDebit}.add($F{amountCredit}).compareTo(BigDecimal.ZERO)<0

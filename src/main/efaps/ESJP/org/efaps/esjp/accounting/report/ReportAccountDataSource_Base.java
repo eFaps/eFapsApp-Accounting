@@ -119,7 +119,7 @@ public abstract class ReportAccountDataSource_Base
         final PrintQuery printRep = new PrintQuery(instance);
         printRep.addAttribute(CIAccounting.ReportAbstract.Name);
         printRep.execute();
-        final String name = printRep.<String>getAttribute(CIAccounting.ReportAbstract.Name);
+        final String name = printRep.<String>getAttribute(CIAccounting.ReportAbstract.Name).replaceAll(" ", "_");
         _jrParameters.put("FileName", name);
 
         // get the root node, only the first one will be used
