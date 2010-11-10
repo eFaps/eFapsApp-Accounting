@@ -43,5 +43,9 @@
             method="positionDebitUpdateTrigger"
             name="Accounting_TransactionPositionCredit.UPDATE_POST"
             event="UPDATE_POST"/>
+        <trigger program="org.efaps.esjp.accounting.transaction.Trigger"
+            method="positionDebitDeleteTrigger"
+            name="Accounting_TransactionPositionDebit.DELETE_PRE"
+            event="DELETE_PRE"/>
     </definition>
 </datamodel-type>

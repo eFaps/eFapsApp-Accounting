@@ -28,7 +28,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Delete;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -61,6 +63,7 @@ public abstract class Trigger_Base
         updateSumReport(_parameter.getInstance());
         return new Return();
     }
+
     /**
      * Method is executed as trigger after the update of an
      * Accounting_TransactionPositionCredit.
@@ -75,6 +78,22 @@ public abstract class Trigger_Base
         updateSumReport(_parameter.getInstance());
         return new Return();
     }
+
+    /**
+     * Method is executed as trigger before the deletion of an
+     * Accounting_TransactionPositionCredit.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return positionCreditDeleteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        deleteRelations(_parameter.getInstance());
+        return new Return();
+    }
+
     /**
      * Method is executed as trigger after the insert of an
      * Accounting_TransactionPositionDebit.
@@ -102,6 +121,21 @@ public abstract class Trigger_Base
         throws EFapsException
     {
         updateSumReport(_parameter.getInstance());
+        return new Return();
+    }
+
+    /**
+     * Method is executed as trigger before the deletion of an
+     * Accounting_TransactionPositionDebit.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return positionDebitDeleteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        deleteRelations(_parameter.getInstance());
         return new Return();
     }
 
@@ -138,6 +172,24 @@ public abstract class Trigger_Base
         final Update update = new Update(accountInst);
         update.add(CIAccounting.AccountAbstract.SumReport, total);
         update.executeWithoutAccessCheck();
+    }
+
+    /**
+     * Remove the relations to Labels of the Position.
+     * @param _instance Instance the Relations will be removed for
+     * @throws EFapsException on error
+     */
+    protected void deleteRelations(final Instance _instance)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Label2PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Label2PositionAbstract.ToPositionAbstractLink, _instance.getId());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            final Delete del = new Delete(query.getCurrentValue());
+            del.execute();
+        }
     }
 
 }
