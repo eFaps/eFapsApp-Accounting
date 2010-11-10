@@ -1,0 +1,52 @@
+"[Report_Type]","[Report_Name]","[Report_Description]","[Report_Numbering]","[Node_Type]","[Node_ShowAllways]","[Node_ShowSum]","[Node_Number]","[Level 0]","[Level 1]",,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Root",FALSE,FALSE,,"Raiz",,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,10,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,12,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,14,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,16,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,19,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,20,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,21,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,23,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,24,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,25,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,26,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,27,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,28,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,29,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,31,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,33,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,34,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,38,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,39,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,40,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,41,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,42,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,46,," "
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",FALSE,FALSE,,,45,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,47,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,49,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,50,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,58,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,59,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,60,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,61,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,62,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,63,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,64,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,65,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,66,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,67,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,FALSE,,,68,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,TRUE,,,69,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,70,," "
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,73,,
+"ReportAccount","BalAcc","Balance de Comprobacion",,"Account",TRUE,TRUE,,,74,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,75,," "
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,76,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",TRUE,TRUE,,,77,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,FALSE,,,79,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,TRUE,,,92,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,TRUE,,,94,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,TRUE,,,95,,
+"ReportAccount","BalAcc","Balance de Comprobacion","-","Account",FALSE,TRUE,,,97,,

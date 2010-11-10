@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ReportAccount" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="326"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
@@ -132,15 +132,14 @@
 	<variable name="SumLossFinal" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$V{LossFinal}]]></variableExpression>
 	</variable>
-	<variable name="WinLossPassiv" class="java.math.BigDecimal">
+	<variable name="ActivPassiv" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$V{SumActiv}.subtract($V{SumPassiv}).compareTo(BigDecimal.ZERO)>0
 ?$V{SumActiv}.subtract($V{SumPassiv}).abs()
 :BigDecimal.ZERO]]></variableExpression>
 	</variable>
-	<variable name="WinLossActiv" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$V{SumActiv}.subtract($V{SumPassiv}).compareTo(BigDecimal.ZERO)< 0
-? $V{SumActiv}.subtract($V{SumPassiv}).abs()
-:BigDecimal.ZERO]]></variableExpression>
+	<variable name="show" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Boolean ($F{amountDebit}.compareTo(BigDecimal.ZERO)!=0
+|| $F{amountCredit}.compareTo(BigDecimal.ZERO)!=0)]]></variableExpression>
 	</variable>
 	<pageHeader>
 		<band height="17" splitType="Stretch">
@@ -355,6 +354,7 @@
 	</columnHeader>
 	<detail>
 		<band height="12" splitType="Stretch">
+			<printWhenExpression><![CDATA[$V{show}]]></printWhenExpression>
 			<rectangle>
 				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="802" height="12" backcolor="#DBD8D8">
 					<printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{background}.intValue() % 2)==1)]]></printWhenExpression>
@@ -644,7 +644,9 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{WinLossActiv}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumActiv}.subtract($V{SumPassiv}).compareTo(BigDecimal.ZERO)<0
+?$V{SumActiv}.subtract($V{SumPassiv}).abs()
+:BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="497" y="14" width="61" height="14"/>
@@ -652,7 +654,9 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{WinLossPassiv}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumActiv}.subtract($V{SumPassiv}).compareTo(BigDecimal.ZERO)>0
+?$V{SumActiv}.subtract($V{SumPassiv}).abs()
+:BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="436" y="28" width="61" height="14"/>
@@ -660,7 +664,9 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumActiv}.add($V{WinLossActiv})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumActiv}.subtract($V{SumPassiv}).compareTo(BigDecimal.ZERO)<0
+?$V{SumActiv}.add($V{SumActiv}.subtract($V{SumPassiv}).abs())
+:$V{SumActiv}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="497" y="28" width="61" height="14"/>
@@ -668,71 +674,89 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumPassiv}.add($V{WinLossPassiv})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumActiv}.subtract($V{SumPassiv}).compareTo(BigDecimal.ZERO)>0
+?$V{SumPassiv}.add($V{SumActiv}.subtract($V{SumPassiv}).abs())
+:$V{SumPassiv}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="619" y="14" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{WinLossActiv}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossNeto}.subtract($V{SumWinNeto}).compareTo(BigDecimal.ZERO)>0
+?$V{SumLossNeto}.subtract($V{SumWinNeto}).abs()
+:BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="741" y="14" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{WinLossActiv}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossFinal}.subtract($V{SumWinFinal}).compareTo(BigDecimal.ZERO)>0
+?$V{SumLossFinal}.subtract($V{SumWinFinal}).abs()
+:BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="558" y="14" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{WinLossPassiv}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossNeto}.subtract($V{SumWinNeto}).compareTo(BigDecimal.ZERO)<0
+?$V{SumLossNeto}.subtract($V{SumWinNeto}).abs()
+:BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="680" y="14" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{WinLossPassiv}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossFinal}.subtract($V{SumWinFinal}).compareTo(BigDecimal.ZERO)<0
+?$V{SumLossFinal}.subtract($V{SumWinFinal}).abs()
+:$V{SumLossFinal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="619" y="28" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumWinNeto}.add($V{WinLossActiv})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossNeto}.subtract($V{SumWinNeto}).compareTo(BigDecimal.ZERO)>0
+?$V{SumWinNeto}.add($V{SumLossNeto}.subtract($V{SumWinNeto}).abs())
+:$V{SumWinNeto}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="741" y="28" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumWinFinal}.add($V{WinLossActiv})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossFinal}.subtract($V{SumWinFinal}).compareTo(BigDecimal.ZERO)>0
+?$V{SumWinFinal}.add($V{SumLossFinal}.subtract($V{SumWinFinal}).abs())
+:$V{SumWinFinal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="558" y="28" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossNeto}.add($V{WinLossPassiv})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossNeto}.subtract($V{SumWinNeto}).compareTo(BigDecimal.ZERO)<0
+?$V{SumLossNeto}.add($V{SumLossNeto}.subtract($V{SumWinNeto}).abs())
+:$V{SumLossNeto}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField evaluationTime="Report" pattern="#,##0.00">
 				<reportElement x="680" y="28" width="61" height="14"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossFinal}.add($V{WinLossPassiv})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{SumLossFinal}.subtract($V{SumWinFinal}).compareTo(BigDecimal.ZERO)<0
+?$V{SumLossFinal}.add($V{LossFinal}.subtract($V{SumWinFinal}).abs())
+:$V{SumLossFinal}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
