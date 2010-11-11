@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ExpenseReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
 	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="44"/>
+	<property name="ireport.x" value="1354"/>
 	<property name="ireport.y" value="0"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
@@ -16,6 +16,9 @@
 	<parameter name="Mime" class="java.lang.String"/>
 	<parameter name="Rate" class="java.math.BigDecimal"/>
 	<parameter name="Currency" class="java.lang.String"/>
+	<field name="id" class="java.lang.Long">
+		<property name="Select" value="id"/>
+	</field>
 	<field name="externalName" class="java.lang.String">
 		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].attribute[Name]"/>
 	</field>
@@ -28,6 +31,9 @@
 	<field name="contactName" class="java.lang.String">
 		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
 	</field>
+	<field name="netTotal" class="java.math.BigDecimal">
+		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].attribute[NetTotal]"/>
+	</field>
 	<field name="crossTotal" class="java.math.BigDecimal">
 		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].attribute[CrossTotal]"/>
 	</field>
@@ -37,32 +43,49 @@
 	<field name="typeUUID" class="java.util.UUID">
 		<property name="Select" value="type.uuid"/>
 	</field>
-	<field name="id" class="java.lang.Long">
-		<property name="Select" value="id"/>
-	</field>
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
 	</field>
 	<field name="externalType" class="java.lang.String">
 		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[TypeLink].attribute[Value]"/>
 	</field>
-	<field name="netTotal" class="java.math.BigDecimal">
-		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].attribute[NetTotal]"/>
-	</field>
-	<sortField name="externalType"/>
 	<sortField name="date"/>
+	<sortField name="externalType"/>
 	<variable name="background" class="java.lang.Integer" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{id}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
 	</variable>
+	<variable name="isNegativ" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Boolean($F{externalType}.equals("07"))]]></variableExpression>
+	</variable>
+	<variable name="crossTotal" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{isNegativ}
+? $F{crossTotal}.multiply($P{Rate}).negate()
+: $F{crossTotal}.multiply($P{Rate})]]></variableExpression>
+	</variable>
+	<variable name="netTotal" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{isNegativ}
+? $F{netTotal}.multiply($P{Rate}).negate()
+: $F{netTotal}.multiply($P{Rate})]]></variableExpression>
+	</variable>
 	<variable name="sumWithoutVAT" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{crossTotal}.subtract($F{netTotal}).compareTo(BigDecimal.ZERO) ==0
-? $F{crossTotal}.multiply( $P{Rate} )
+? $V{crossTotal}
+: BigDecimal.ZERO]]></variableExpression>
+	</variable>
+	<variable name="sumSubTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{crossTotal}.subtract($F{netTotal}).compareTo(BigDecimal.ZERO) !=0
+? $V{netTotal}
+: BigDecimal.ZERO]]></variableExpression>
+	</variable>
+	<variable name="sumVAT" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{crossTotal}.subtract($F{netTotal}).compareTo(BigDecimal.ZERO) !=0
+? $V{crossTotal}.subtract($V{netTotal})
 : BigDecimal.ZERO]]></variableExpression>
 	</variable>
 	<variable name="sumWithVAT" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{crossTotal}.subtract($F{netTotal}).compareTo(BigDecimal.ZERO) !=0
-? $F{crossTotal}.multiply( $P{Rate} )
+? $V{crossTotal}
 : BigDecimal.ZERO]]></variableExpression>
 	</variable>
 	<pageHeader>
@@ -409,7 +432,7 @@ EMISIÓN]]></text>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{crossTotal}.multiply($P{Rate})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{crossTotal}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00##" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="770" y="0" width="32" height="12">
@@ -428,7 +451,7 @@ EMISIÓN]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="598" y="0" width="60" height="12">
-					<printWhenExpression><![CDATA[new Boolean($F{crossTotal}.subtract($F{netTotal}).compareTo(BigDecimal.ZERO) !=0)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{crossTotal}.subtract($V{netTotal}).compareTo(BigDecimal.ZERO) !=0)]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
@@ -439,7 +462,7 @@ EMISIÓN]]></text>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{netTotal}.multiply($P{Rate})]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{netTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="534" y="0" width="64" height="12">
@@ -454,7 +477,7 @@ EMISIÓN]]></text>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{crossTotal}.multiply( $P{Rate} )]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{crossTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="658" y="0" width="48" height="12">
@@ -469,7 +492,7 @@ EMISIÓN]]></text>
 				<textElement textAlignment="Right">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{crossTotal}.subtract($F{netTotal}).multiply( $P{Rate} )]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{crossTotal}.subtract($V{netTotal})]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -477,13 +500,35 @@ EMISIÓN]]></text>
 		<band height="16" splitType="Stretch">
 			<textField pattern="#,##0.00">
 				<reportElement x="706" y="0" width="64" height="14"/>
-				<textElement textAlignment="Right"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumWithVAT}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement x="534" y="0" width="64" height="14"/>
-				<textElement textAlignment="Right"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumWithoutVAT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="598" y="0" width="60" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumSubTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="658" y="0" width="48" height="14"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumVAT}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnFooter>
