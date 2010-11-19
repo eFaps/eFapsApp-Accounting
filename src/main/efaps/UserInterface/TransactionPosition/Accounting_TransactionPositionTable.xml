@@ -69,6 +69,11 @@
             <property name="Label">Accounting_TransactionPositionTable.transactionLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
+        <field name="date">
+            <property name="SelectAlternateOID">linkto[TransactionLink].oid</property>
+            <property name="Select">linkto[TransactionLink].attribute[Date]</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/Date.Label</property>
+        </field>
         <field name="rateAmount">
             <property name="Attribute">RateAmount</property>
             <property name="Label">Accounting_TransactionPositionAbstract/RateAmount.Label</property>
