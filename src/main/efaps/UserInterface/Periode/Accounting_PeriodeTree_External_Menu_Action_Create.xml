@@ -41,7 +41,9 @@
             <execute program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="create" />
             <validate program="org.efaps.esjp.accounting.transaction.Transaction"
-                method="validate" />
+                method="validate">
+                <property name="Types">Accounting_ExternalVoucher</property>
+            </validate>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

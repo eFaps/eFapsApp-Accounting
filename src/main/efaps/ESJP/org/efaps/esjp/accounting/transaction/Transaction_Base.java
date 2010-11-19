@@ -38,6 +38,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -456,11 +457,17 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        final StringBuilder html = validateUsedName(_parameter);
         if (evalValues(_parameter, "Debit") && evalValues(_parameter, "Credit")) {
             final BigDecimal debit = getSum(_parameter, "Debit", null, null, null);
             final BigDecimal credit = getSum(_parameter, "Credit", null, null, null);
             if (credit.subtract(debit).compareTo(BigDecimal.ZERO) == 0) {
-                ret.put(ReturnValues.TRUE, true);
+                if (html.length() == 0) {
+                    ret.put(ReturnValues.TRUE, true);
+                } else {
+                    ret.put(ReturnValues.SNIPLETT, html.toString());
+                    ret.put(ReturnValues.TRUE, true);
+                }
             } else {
                 Instance inst = _parameter.getCallInstance();
                 if (!inst.getType().getUUID().equals(CIAccounting.Periode.uuid)) {
@@ -472,7 +479,6 @@ public abstract class Transaction_Base
                 query.addAttribute("Symbol");
                 query.execute();
                 final String symbol = query.getAttribute("Symbol");
-                final StringBuilder html = new StringBuilder();
                 html.append("Debit: ").append(debit).append(symbol).append(" &lt;&gt; ").append("Credit: ")
                                 .append(credit).append(symbol);
                 ret.put(ReturnValues.SNIPLETT, html.toString());
@@ -481,6 +487,36 @@ public abstract class Transaction_Base
             ret.put(ReturnValues.SNIPLETT, "Check");
         }
         return ret;
+    }
+
+    /**
+     * Method to validate if the name of the external voucher was used.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @return StringBuilder
+     * @throws EFapsException on error.
+     */
+    private StringBuilder validateUsedName(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String types = (String) properties.get("Types");
+        final StringBuilder html = new StringBuilder();
+        if (types != null && Type.get(types).isKindOf(CIAccounting.ExternalVoucher.getType())) {
+            final Instance contact = Instance.get(_parameter.getParameterValue("contact"));
+            final String name = _parameter.getParameterValue("extName");
+            if (contact != null && contact.isValid() && name != null) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ExternalVoucher);
+                queryBldr.addWhereAttrEqValue(CIAccounting.ExternalVoucher.Contact, contact.getId());
+                queryBldr.addWhereAttrEqValue(CIAccounting.ExternalVoucher.Name, name);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.execute();
+                if (multi.next()) {
+                    html.append(DBProperties.getProperty("org.efaps.esjp.accounting.transaction.usedName"));
+                }
+            }
+        }
+        return html;
     }
 
     /**
