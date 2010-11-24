@@ -21,9 +21,14 @@
 
 package org.efaps.esjp.accounting;
 
+import java.util.Map;
+
 import net.sf.jasperreports.engine.JRField;
 
+import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -84,11 +89,23 @@ public abstract class JournalDataSource_Base
             final DateTime dateFrom = new DateTime(getParameter().getParameterValue("dateFrom"));
             final DateTime dateTo = new DateTime(getParameter().getParameterValue("dateTo"));
 
+            final Map<?, ?> props = (Map<?, ?>) getParameter().get(ParameterValues.PROPERTIES);
             final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.TransactionAbstract);
             queryBuilder.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, getInstance().getId());
             queryBuilder.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
             queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
             queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
+
+            if (props.containsKey("Classifications")) {
+                final String classStr = (String) props.get("Classifications");
+                final String[] clazzes = classStr.split(";");
+                for (final String clazz : clazzes) {
+                    final Classification classif = (Classification) Type.get(clazz);
+                    if (classif != null) {
+                        queryBuilder.addWhereClassification(classif);
+                    }
+                }
+            }
             setPrint(queryBuilder.getPrint());
             getPrint().setEnforceSorted(true);
             if (getJasperReport().getMainDataset().getFields() != null) {
@@ -103,6 +120,4 @@ public abstract class JournalDataSource_Base
             getPrint().execute();
         }
     }
-
-
 }
