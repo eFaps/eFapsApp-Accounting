@@ -41,6 +41,7 @@
             <child>Accounting_PeriodeTree_Menu_Action_ExpenseReport</child>
             <child>Accounting_PeriodeTree_Menu_Action_OpeningBalance</child>
             <child>Accounting_PeriodeTree_Menu_Action_Recalculate</child>
+            <child>Accounting_PeriodeTree_Menu_Action_ExternalVoucherJournal</child>
         </childs>
     </definition>
 
