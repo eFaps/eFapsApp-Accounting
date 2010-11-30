@@ -74,16 +74,6 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="662" y="17" width="70" height="16"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement>
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="46" y="17" width="67" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
@@ -108,7 +98,7 @@
 				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="732" y="17" width="70" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="662" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -148,6 +138,16 @@
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="732" y="17" width="70" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

@@ -39,7 +39,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{accountName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="323" y="0" width="70" height="14"/>
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="253" y="0" width="70" height="14"/>
 				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -51,7 +51,7 @@
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="253" y="0" width="70" height="14"/>
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="323" y="0" width="70" height="14"/>
 				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
