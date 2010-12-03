@@ -458,7 +458,7 @@ public abstract class FieldValue_Base
             while (multi.next()) {
                 final Instance prodInst = Instance.get(multi.<String>getSelect(oidSel));
                 if (first) {
-                    first= false;
+                    first = false;
                     html.append("<tr>")
                         .append("<th>").append(getLabel(multi.getCurrentInstance(), CISales.PositionAbstract.Quantity))
                         .append("</th>")

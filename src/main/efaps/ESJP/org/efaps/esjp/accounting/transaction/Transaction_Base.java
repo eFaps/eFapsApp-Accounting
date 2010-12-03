@@ -496,7 +496,7 @@ public abstract class Transaction_Base
      * @return StringBuilder
      * @throws EFapsException on error.
      */
-    private StringBuilder validateUsedName(final Parameter _parameter)
+    protected StringBuilder validateUsedName(final Parameter _parameter)
         throws EFapsException
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);

@@ -638,8 +638,9 @@ public abstract class Periode_Base
     }
 
     /**
-     * Called from a tree menu command to present the documents realted with stock movement
-     * that are not connected with the period and therefor must be worked on still.
+     * Called from a tree menu command to present the documents related with
+     * stock movement that are not connected with the period and therefor
+     * must be worked on still.
      *
      * @param _parameter Paremeter
      * @return List if Instances
