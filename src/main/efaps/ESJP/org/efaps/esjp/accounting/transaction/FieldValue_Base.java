@@ -491,13 +491,13 @@ public abstract class FieldValue_Base
                 costQueryBuilder.addOrderByAttributeDesc(CIProducts.ProductCost.ID);
                 final InstanceQuery query = costQueryBuilder.getQuery();
                 query.setLimit(1);
-                query.execute();
+                query.executeWithoutAccessCheck();
                 if (query.next()) {
                     final PrintQuery print = new PrintQuery(query.getCurrentValue());
                     print.addAttribute(CIProducts.ProductCost.Price);
                     final SelectBuilder currSel = new SelectBuilder().linkto(CIProducts.ProductCost.CurrencyLink).oid();
                     print.addSelect(currSel);
-                    print.execute();
+                    print.executeWithoutAccessCheck();
                     final BigDecimal price = print.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
                     final String currOid = print.<String>getSelect(currSel);
                     final CurrencyInst currInst;
