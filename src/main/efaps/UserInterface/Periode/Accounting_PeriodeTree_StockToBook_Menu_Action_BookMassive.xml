@@ -37,11 +37,14 @@
 
         <!-- target definitions -->
         <target>
+            <form>Accounting_BookMassivForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
                 method="create4DocMassive"/>
         </target>
         <!-- properties -->
-        <property name="AskUser">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="TargetMode">create</property>
         <property name="Submit">true</property>
     </definition>
 

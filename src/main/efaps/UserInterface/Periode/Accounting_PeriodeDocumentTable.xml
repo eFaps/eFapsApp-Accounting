@@ -47,6 +47,10 @@
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
         <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH:3</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>

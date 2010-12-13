@@ -30,6 +30,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -51,6 +52,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.admin.common.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -573,6 +575,10 @@ public abstract class Periode_Base
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final DocMulti multi = new DocMulti();
+        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
+
         final InstanceQuery query = queryBldr.getQuery();
 
         final List<Instance> instances = query.execute();
@@ -631,6 +637,10 @@ public abstract class Periode_Base
                                       Status.find(CISales.ReminderStatus.uuid, "Paid").getId());
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final DocMulti multi = new DocMulti();
+        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
+
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances = query.execute();
 
@@ -669,6 +679,10 @@ public abstract class Periode_Base
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentStockAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentStockAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentStockAbstract.ID, attrQuery);
+
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final DocMulti multi = new DocMulti();
+        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
 
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances = query.execute();
@@ -709,6 +723,10 @@ public abstract class Periode_Base
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final DocMulti multi = new DocMulti();
+        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
 
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances = query.execute();
@@ -751,7 +769,8 @@ public abstract class Periode_Base
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
         attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassExternal.TransactionLink, transAttrQuery);
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassExternal.DocumentLink);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                        CIAccounting.TransactionClassExternal.DocumentLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
@@ -761,9 +780,35 @@ public abstract class Periode_Base
                                         Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Paid").getId());
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final DocMulti multi = new DocMulti();
+        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
+
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances = query.execute();
         return instances;
+    }
+
+    /**
+     * MultiPrint for the Documents.
+     */
+    public class DocMulti
+        extends MultiPrint
+    {
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected boolean analyzeTable(final Parameter _parameter,
+                                       final Map<?, ?> _filter,
+                                       final QueryBuilder _queryBldr,
+                                       final Type _type)
+            throws EFapsException
+        {
+            return super.analyzeTable(_parameter, _filter, _queryBldr, _type);
+        }
+
     }
 
     /**

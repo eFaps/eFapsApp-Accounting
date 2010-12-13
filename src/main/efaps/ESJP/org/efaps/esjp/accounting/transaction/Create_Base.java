@@ -582,9 +582,21 @@ public abstract class Create_Base
     public Return create4DocMassive(final Parameter _parameter)
         throws EFapsException
     {
-        final String[] oids = (String[]) _parameter.get(ParameterValues.OTHERS);
-        for (final String oid : oids) {
+        String[] oids = new String[0];
+        final Object obj = _parameter.get(ParameterValues.OTHERS);
+        if (obj instanceof String[]) {
+            oids = (String[]) obj;
+        } else if (Context.getThreadContext().containsSessionAttribute("storeOIDS")
+                        && Context.getThreadContext().getSessionAttribute("storeOIDS") != null) {
+            oids = (String[]) Context.getThreadContext().getSessionAttribute("storeOIDS");
+            Context.getThreadContext().setSessionAttribute("storeOIDS", null);
+        }
 
+        final DateTime date = _parameter.getParameterValue("date") != null
+                                    ? new DateTime(_parameter.getParameterValue("date"))
+                                    : new DateTime().withTime(0, 0, 0, 0);
+
+        for (final String oid : oids) {
             Context.getThreadContext()
                  .setSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY, _parameter.getInstance());
 
@@ -600,13 +612,13 @@ public abstract class Create_Base
             final Instance docInst = Instance.get(oid);
             final Document doc = trans.new Document(docInst);
             final Map<Long, Rate> rates = new HashMap<Long, Rate>();
-            trans.getCostInformation(_parameter, null, doc, rates);
-            if (validateDoc(_parameter, doc) && doc.isCostValidated()
-                            && doc.getDifference().compareTo(BigDecimal.ZERO) == 0) {
+            trans.getCostInformation(_parameter, date, doc, rates);
+            if (doc.isCostValidated() && doc.getDifference().compareTo(BigDecimal.ZERO) == 0
+                            && validateDoc(_parameter, doc, oids)) {
                 final Insert insert = new Insert(CIAccounting.Transaction);
                 insert.add(CIAccounting.Transaction.Name, name);
                 insert.add(CIAccounting.Transaction.Description, description);
-                insert.add(CIAccounting.Transaction.Date, new DateTime().withTime(0, 0, 0, 0));
+                insert.add(CIAccounting.Transaction.Date, date);
                 insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
                 insert.add(CIAccounting.Transaction.Status,
                                 Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
@@ -628,11 +640,13 @@ public abstract class Create_Base
      * To be overwritten from implementation.
      * @param _parameter    Paramter as passed from the eFaps API
      * @param _doc          Document to be validates
+     * @param _oids         Array of OIDs the ,method iterates
      * @return true if validation succeded else false
      * @throws EFapsException on error
      */
     protected boolean validateDoc(final Parameter _parameter,
-                                final Document _doc)
+                                  final Document _doc,
+                                  final String[] _oids)
         throws EFapsException
     {
         return true;

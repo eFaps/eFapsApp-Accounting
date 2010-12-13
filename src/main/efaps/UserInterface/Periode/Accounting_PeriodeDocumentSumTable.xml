@@ -53,10 +53,14 @@
             <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
         </field>
         <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH:3</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
-            <field name="rateCrosstotal">
+        <field name="rateCrosstotal">
             <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/RateCrossTotal.Label</property>
