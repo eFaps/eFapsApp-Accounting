@@ -91,7 +91,9 @@
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Date"
                 name="Accounting_TransactionCreate4StockToBookForm.date.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+                event="UI_FIELD_UPDATE" >
+                <property name="UpdateDocInfo">true</property>
+            </trigger>
         </field>
         <field name="checkbox4Account" >
             <property name="ModeCreate">READONLY</property>

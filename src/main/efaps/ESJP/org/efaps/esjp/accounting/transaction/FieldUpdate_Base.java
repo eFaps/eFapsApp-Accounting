@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -264,10 +265,26 @@ public abstract class FieldUpdate_Base
         throws EFapsException
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final StringBuilder js = new StringBuilder();
+        if ("true".equalsIgnoreCase((String) props.get("UpdateDocInfo"))) {
+            final String docOid = _parameter.getParameterValue("document");
+            final Instance docInst = Instance.get(docOid);
+            if (docInst.isValid()) {
+                final Document doc = new Document(docInst);
+                final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+                final DateTime date = DateUtil.getDateFromParameter(dateStr);
+                final Map<Long, Rate> rates = new HashMap<Long, Rate>();
+                final FieldValue fielValue = new FieldValue();
+                js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
+                    .append(StringEscapeUtils.escapeJavaScript(fielValue.getDocumentFieldValue(_parameter, doc).toString()))
+                    .append(StringEscapeUtils.escapeJavaScript(fielValue.getCostInformation(_parameter, date, doc, rates).toString()))
+                    .append("'; ")
+                    .append(fielValue.getScript(_parameter, doc, rates));
+            }
+        }
 
         final Map<String, String> map = new HashMap<String, String>();
-        final StringBuilder js = new StringBuilder();
-
         js.append(getCurrencyJS(_parameter, "rateCurrencyLink_Debit", "rate_Debit"))
             .append(getCurrencyJS(_parameter, "rateCurrencyLink_Credit", "rate_Credit"));
         map.put("eFapsFieldUpdateJS", js.toString());
@@ -276,9 +293,6 @@ public abstract class FieldUpdate_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
-
-
-
 
     /**
      * Method is executed on update trigger for the rate field in the debit

@@ -291,124 +291,151 @@ public abstract class FieldValue_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         final String selected = Context.getThreadContext().getParameter("selectedRow");
-
-        if (selected != null) {
-            final Document doc = new Document(Instance.get(selected));
-            doc.setFormater(getFormater(2, 2));
-            //Selects
-            final SelectBuilder accSel = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact)
-                            .clazz(CISales.Contacts_ClassClient)
-                            .linkfrom(CIAccounting.AccountCurrentDebtor2ContactClassClient,
-                                            CIAccounting.AccountCurrentDebtor2ContactClassClient.ToClassClientLink)
-                            .linkto(CIAccounting.AccountCurrentDebtor2ContactClassClient.FromAccountLink);
-            final SelectBuilder accOidSel = new SelectBuilder(accSel).oid();
-            final SelectBuilder accNameSel = new SelectBuilder(accSel).attribute(CIAccounting.AccountAbstract.Name);
-            final SelectBuilder accDescSel = new SelectBuilder(accSel)
-                            .attribute(CIAccounting.AccountAbstract.Description);
-            final SelectBuilder currSymbSel = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
-            final SelectBuilder rateCurrSymbSel = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
-            final SelectBuilder rateCurrOidSel = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).oid();
-
-            final SelectBuilder contNameSel = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
-            final SelectBuilder rateLabelSel = new SelectBuilder()
-                            .attribute(CISales.DocumentSumAbstract.Rate).label();
-
-            final PrintQuery print = new PrintQuery(doc.getInstance());
-            if (doc.isSumsDoc()) {
-                print.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
-                                   CISales.DocumentSumAbstract.NetTotal,
-                                   CISales.DocumentSumAbstract.RateCrossTotal,
-                                   CISales.DocumentSumAbstract.RateNetTotal);
-                print.addSelect(rateLabelSel, currSymbSel, rateCurrSymbSel, rateCurrOidSel);
-            }
-            print.addAttribute(CISales.DocumentAbstract.Name,
-                               CISales.DocumentAbstract.Date,
-                               CISales.DocumentAbstract.StatusAbstract);
-            print.addSelect(accDescSel, accNameSel, accOidSel, contNameSel);
-            print.execute();
-
-            final DateTime datetime = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-            doc.setDate(datetime);
-
-            //Basic information for all documents
-            final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
-            final String contactName = print.<String>getSelect(contNameSel);
-            final Long statusId = print.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract);
-            final TargetAccount account = new TargetAccount(print.<String>getSelect(accOidSel),
-                                                            print.<String>getSelect(accNameSel),
-                                                            print.<String>getSelect(accDescSel),
-                                                            BigDecimal.ZERO);
-            if (account.getOid() == null) {
-                setAccounts4Debit(_parameter, doc);
-            }
-
-            html.append("<input type=\"hidden\" name=\"document\" value=\"").append(selected).append("\"/>")
-                .append("<table>").append("<tr>")
-                .append("<td colspan=\"4\">").append(doc.getInstance().getType().getLabel())
-                .append("</td>").append("</tr><tr>")
-                .append("<td>").append(getLabel(doc.getInstance(), CISales.DocumentAbstract.Name))
-                .append("</td>").append("<td>").append(name).append("</td>")
-                .append("<td>").append(getLabel(doc.getInstance(), CISales.DocumentAbstract.Date))
-                .append("</td>").append("<td>").append(doc.getDateString()).append("</td>")
-                .append("</tr><tr>")
-                .append("<td>").append(getLabel(doc.getInstance(), CISales.DocumentAbstract.Contact))
-                .append("</td>").append("<td colspan=\"3\">").append(contactName).append(" -> ")
-                .append(CIAccounting.AccountCurrentDebtor.getType().getLabel())
-                .append(": ").append(doc.getDebtorAccount() == null ? "" : doc.getDebtorAccount().getName())
-                    .append("</td>")
-                .append("</tr><tr>")
-                .append("<td>").append(getLabel(doc.getInstance(), "Status"))
-                .append("</td><td colspan=\"").append(doc.isSumsDoc() ? 1 : 3).append("\">")
-                .append(Status.get(statusId).getLabel()).append("</td>");
-
-            if (doc.isSumsDoc()) {
-                final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                final BigDecimal netTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
-                final BigDecimal rateCrossTot = print.<BigDecimal>getAttribute(
-                                CISales.DocumentSumAbstract.RateCrossTotal);
-                final BigDecimal rateNetTotal = print.<BigDecimal>getAttribute(
-                                CISales.DocumentSumAbstract.RateNetTotal);
-                final String currSymbol = print.<String>getSelect(currSymbSel);
-                doc.setCurrSymbol(currSymbol);
-                final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel);
-                doc.setRateCurrOID(print.<String>getSelect(rateCurrOidSel));
-
-                final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
-
-                html.append("<td>").append(getLabel(doc.getInstance(), CISales.DocumentSumAbstract.Rate))
-                    .append("</td><td>").append(rate).append("</td>")
-                    .append("</tr><tr>")
-                    .append("<td>").append(getLabel(doc.getInstance(), CISales.DocumentSumAbstract.NetTotal))
-                    .append("</td>").append("<td>")
-                    .append(getFormater(2, 2).format(netTotal)).append(" ").append(currSymbol).append("</td>")
-                    .append("<td>")
-                    .append(getLabel(doc.getInstance(), CISales.DocumentSumAbstract.RateNetTotal))
-                    .append("</td>").append("<td>")
-                    .append(getFormater(2, 2).format(rateNetTotal)).append(" ").append(rateCurrSymbol).append("</td>")
-                    .append("</tr><tr>")
-                    .append("<td>")
-                    .append(getLabel(doc.getInstance(), CISales.DocumentSumAbstract.CrossTotal))
-                    .append("</td>").append("<td>")
-                    .append(getFormater(2, 2).format(crossTotal)).append(" ").append(currSymbol).append("</td>")
-                    .append("<td>")
-                    .append(getLabel(doc.getInstance(), CISales.DocumentSumAbstract.RateCrossTotal))
-                    .append("</td>").append("<td>")
-                    .append(getFormater(2, 2).format(rateCrossTot)).append(" ").append(rateCurrSymbol).append("</td>")
-                    .append("</tr>");
-            }
+        final org.efaps.admin.datamodel.ui.FieldValue fieldValue = (FieldValue) _parameter.get(
+                        ParameterValues.UIOBJECT);
+        final Instance docInst = Instance.get(selected);
+        if (docInst.isValid()) {
+            final Document doc = new Document(docInst);
+            final DateTime date = _parameter.getParameterValue("date") != null
+                ? new DateTime(_parameter.getParameterValue("date"))
+                : new DateTime().withTime(0, 0, 0, 0);
             final Map<Long, Rate> rates = new HashMap<Long, Rate>();
-            html.append(getDocInformation(_parameter, doc))
-                .append("</table>")
-                .append(getCostInformation(_parameter, null, doc, rates))
-                .append(getScript(_parameter, doc, rates));
+            html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">")
+                .append(getDocumentFieldValue(_parameter, doc))
+                .append(getCostInformation(_parameter, date, doc, rates))
+                .append("<script type=\"text/javascript\">")
+                .append(getScript(_parameter, doc, rates))
+                .append("</script>")
+                .append("</span>");
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    /**
+     * Internal method for {@link #getDocumentFieldValue(Parameter)}.
+     * @param _parameter    Parameter as passed from eFaps to an esjp
+     * @param _doc          Document
+     * @return StringBuilder
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getDocumentFieldValue(final Parameter _parameter,
+                                                  final Document _doc)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+
+        _doc.setFormater(getFormater(2, 2));
+        //Selects
+        final SelectBuilder accSel = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.Contact)
+                        .clazz(CISales.Contacts_ClassClient)
+                        .linkfrom(CIAccounting.AccountCurrentDebtor2ContactClassClient,
+                                        CIAccounting.AccountCurrentDebtor2ContactClassClient.ToClassClientLink)
+                        .linkto(CIAccounting.AccountCurrentDebtor2ContactClassClient.FromAccountLink);
+        final SelectBuilder accOidSel = new SelectBuilder(accSel).oid();
+        final SelectBuilder accNameSel = new SelectBuilder(accSel).attribute(CIAccounting.AccountAbstract.Name);
+        final SelectBuilder accDescSel = new SelectBuilder(accSel)
+                        .attribute(CIAccounting.AccountAbstract.Description);
+        final SelectBuilder currSymbSel = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
+        final SelectBuilder rateCurrSymbSel = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+        final SelectBuilder rateCurrOidSel = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).oid();
+
+        final SelectBuilder contNameSel = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
+        final SelectBuilder rateLabelSel = new SelectBuilder()
+                        .attribute(CISales.DocumentSumAbstract.Rate).label();
+
+        final PrintQuery print = new PrintQuery(_doc.getInstance());
+        if (_doc.isSumsDoc()) {
+            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
+                               CISales.DocumentSumAbstract.NetTotal,
+                               CISales.DocumentSumAbstract.RateCrossTotal,
+                               CISales.DocumentSumAbstract.RateNetTotal);
+            print.addSelect(rateLabelSel, currSymbSel, rateCurrSymbSel, rateCurrOidSel);
+        }
+        print.addAttribute(CISales.DocumentAbstract.Name,
+                           CISales.DocumentAbstract.Date,
+                           CISales.DocumentAbstract.StatusAbstract);
+        print.addSelect(accDescSel, accNameSel, accOidSel, contNameSel);
+        print.execute();
+
+        final DateTime datetime = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+        _doc.setDate(datetime);
+
+        //Basic information for all documents
+        final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
+        final String contactName = print.<String>getSelect(contNameSel);
+        final Long statusId = print.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract);
+        final TargetAccount account = new TargetAccount(print.<String>getSelect(accOidSel),
+                                                        print.<String>getSelect(accNameSel),
+                                                        print.<String>getSelect(accDescSel),
+                                                        BigDecimal.ZERO);
+        if (account.getOid() == null) {
+            setAccounts4Debit(_parameter, _doc);
+        }
+
+        html.append("<input type=\"hidden\" name=\"document\" value=\"").append(_doc.getInstance().getOid())
+            .append("\"/>")
+            .append("<table>").append("<tr>")
+            .append("<td colspan=\"4\">").append(_doc.getInstance().getType().getLabel())
+            .append("</td>").append("</tr><tr>")
+            .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Name))
+            .append("</td>").append("<td>").append(name).append("</td>")
+            .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Date))
+            .append("</td>").append("<td>").append(_doc.getDateString()).append("</td>")
+            .append("</tr><tr>")
+            .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Contact))
+            .append("</td>").append("<td colspan=\"3\">").append(contactName).append(" -> ")
+            .append(CIAccounting.AccountCurrentDebtor.getType().getLabel())
+            .append(": ").append(_doc.getDebtorAccount() == null ? "" : _doc.getDebtorAccount().getName())
+                .append("</td>")
+            .append("</tr><tr>")
+            .append("<td>").append(getLabel(_doc.getInstance(), "Status"))
+            .append("</td><td colspan=\"").append(_doc.isSumsDoc() ? 1 : 3).append("\">")
+            .append(Status.get(statusId).getLabel()).append("</td>");
+
+        if (_doc.isSumsDoc()) {
+            final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            final BigDecimal netTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
+            final BigDecimal rateCrossTot = print.<BigDecimal>getAttribute(
+                            CISales.DocumentSumAbstract.RateCrossTotal);
+            final BigDecimal rateNetTotal = print.<BigDecimal>getAttribute(
+                            CISales.DocumentSumAbstract.RateNetTotal);
+            final String currSymbol = print.<String>getSelect(currSymbSel);
+            _doc.setCurrSymbol(currSymbol);
+            final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel);
+            _doc.setRateCurrOID(print.<String>getSelect(rateCurrOidSel));
+
+            final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
+
+            html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
+                .append("</td><td>").append(rate).append("</td>")
+                .append("</tr><tr>")
+                .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.NetTotal))
+                .append("</td>").append("<td>")
+                .append(getFormater(2, 2).format(netTotal)).append(" ").append(currSymbol).append("</td>")
+                .append("<td>")
+                .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateNetTotal))
+                .append("</td>").append("<td>")
+                .append(getFormater(2, 2).format(rateNetTotal)).append(" ").append(rateCurrSymbol).append("</td>")
+                .append("</tr><tr>")
+                .append("<td>")
+                .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.CrossTotal))
+                .append("</td>").append("<td>")
+                .append(getFormater(2, 2).format(crossTotal)).append(" ").append(currSymbol).append("</td>")
+                .append("<td>")
+                .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateCrossTotal))
+                .append("</td>").append("<td>")
+                .append(getFormater(2, 2).format(rateCrossTot)).append(" ").append(rateCurrSymbol).append("</td>")
+                .append("</tr>");
+        }
+        html.append(getDocInformation(_parameter, _doc))
+            .append("</table>");
+        return html;
     }
 
     /**
@@ -610,8 +637,7 @@ public abstract class FieldValue_Base
             if (_doc.isSumsDoc()) {
                 getPriceInformation(_parameter, _doc, _rates);
             }
-            ret.append("<script type=\"text/javascript\">")
-                .append("function setDebit() {");
+            ret .append("function setDebit() {");
             int index = 0;
             for (final TargetAccount account : _doc.getDebitAccounts().values()) {
                 account.setLink(getLinkString(account.getOid(), "_Debit"));
@@ -638,8 +664,7 @@ public abstract class FieldValue_Base
                 .append("removeRows('amount_Debit');")
                 .append("removeRows('amount_Credit');")
                 .append(getScriptValues(_doc))
-                .append(" });")
-                .append("</script>");
+                .append(" });");
         }
         return ret;
     }
