@@ -51,6 +51,7 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.TargetAccount;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
@@ -613,7 +614,12 @@ public abstract class Create_Base
             final Document doc = trans.new Document(docInst);
             final Map<Long, Rate> rates = new HashMap<Long, Rate>();
             trans.getCostInformation(_parameter, date, doc, rates);
+            if (doc.getInstance() != null) {
+                doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
+            }
             if (doc.isCostValidated() && doc.getDifference().compareTo(BigDecimal.ZERO) == 0
+                            && doc.getAmount().compareTo(BigDecimal.ZERO) != 0
+                            && doc.getCreditSum().compareTo(doc.getAmount()) == 0
                             && validateDoc(_parameter, doc, oids)) {
                 final Insert insert = new Insert(CIAccounting.Transaction);
                 insert.add(CIAccounting.Transaction.Name, name);

@@ -569,6 +569,7 @@ public abstract class FieldValue_Base
                 .append("<tr>")
                 .append("</table>");
             _doc.setCostValidated(costValidated);
+            _doc.setAmount(total);
         }
         return html;
     }
