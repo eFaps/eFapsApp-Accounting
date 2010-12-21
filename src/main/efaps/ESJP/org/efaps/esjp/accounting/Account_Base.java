@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Classification;
@@ -36,11 +37,12 @@ import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -101,6 +103,8 @@ public abstract class Account_Base
     {
         final Return ret = new Return();
         final Instance instance = _parameter.getInstance();
+        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
+        final UUID uuidTypeDoc = command.getUUID();
         final PrintQuery print = new PrintQuery(instance);
         print.addAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink);
         print.execute();
@@ -110,7 +114,10 @@ public abstract class Account_Base
         _parameter.put(ParameterValues.INSTANCE, Instance.get(CIAccounting.Periode.getType(), id));
 
         final List<Instance> instances = new Periode().getDocumentsToBookList(_parameter);
-        instances.addAll(new Periode().getExternalsToBookList(_parameter));
+        // Accounting_AccountTree_DocsToPay
+        if (uuidTypeDoc.equals(UUID.fromString("6fd11ce2-72e0-40ef-a959-186e3e664aa9"))) {
+            instances.addAll(new Periode().getExternalsToBookList(_parameter));
+        }
 
         ret.put(ReturnValues.VALUES, instances);
         return ret;

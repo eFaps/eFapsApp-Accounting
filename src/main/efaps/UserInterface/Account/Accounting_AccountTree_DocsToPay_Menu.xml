@@ -27,16 +27,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>b208ec6c-0873-46a4-b5aa-679e798011ad</uuid>
+    <uuid>b8a85ec2-bd64-4b13-b211-2c839d21c8e4</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountTree_DocsToBook_Menu</name>
+        <name>Accounting_AccountTree_DocsToPay_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_AccountTree_DocsToBook_Menu_Action</child>
+            <child>Accounting_AccountTree_DocsToPay_Menu_Action</child>
         </childs>
     </definition>
 

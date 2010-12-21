@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountTree_DocsToBook_Menu_Action_CreateAsCredit</name>
+        <name>Accounting_AccountTree_DocsToGain_Menu_Action_CreateAsCredit</name>
 
         <!-- target definitions -->
         <target>

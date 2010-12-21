@@ -26,25 +26,31 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>63f34c69-fe9a-4e5b-adab-b90268b2a34f</uuid>
+
+    <uuid>72ecc93d-a96b-42c3-a773-51f6022c0f37</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountTree_DocsToBook</name>
+        <name>Accounting_AccountTree_DocsToPay_Menu_Action_CreateAsDebit</name>
+
+        <!-- target definitions -->
         <target>
-            <menu>Accounting_AccountTree_DocsToBook_Menu</menu>
-            <table>Accounting_PeriodeDocumentSumTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Account"
-                method="getDocumentsToBook" />
-            <trigger program="org.efaps.esjp.accounting.Account"
-                name="Accounting_AccountTree_DocsToBook.UI_ACCESSCHECK"
-                method="accessCheck"
-                event="UI_ACCESSCHECK">
-            </trigger>
+            <form>Accounting_TransactionCreate4DocBankCashDebitForm</form>
+            <execute program="org.efaps.esjp.accounting.transaction.Create"
+                method="create4Doc" />
+            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="validate" />
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="Submit">true</property>
     </definition>
+
 </ui-command>

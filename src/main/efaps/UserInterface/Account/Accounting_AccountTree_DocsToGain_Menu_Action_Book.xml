@@ -27,17 +27,17 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>dd995a95-e28f-4d55-95ea-5a046ec5175b</uuid>
+    <uuid>1701b38f-ed20-40af-bd7c-d6a59bf7013c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountTree_DocsToBook_Menu_Action_CreateAsDebit</name>
+        <name>Accounting_AccountTree_DocsToGain_Menu_Action_Book</name>
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_TransactionCreate4DocBankCashDebitForm</form>
+            <form>Accounting_TransactionCreate4DocBankCashForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
                 method="create4Doc" />
             <validate program="org.efaps.esjp.accounting.transaction.Transaction"

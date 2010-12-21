@@ -37,6 +37,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -615,6 +616,8 @@ public abstract class Periode_Base
         throws EFapsException
     {
         final Instance instance = _parameter.getInstance();
+        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
+        final UUID uuidTypeDoc = command.getUUID();
 
         final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
         transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
@@ -636,6 +639,16 @@ public abstract class Periode_Base
                                       Status.find(CISales.ReminderStatus.uuid, "Open").getId(),
                                       Status.find(CISales.ReminderStatus.uuid, "Paid").getId());
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+        // Accounting_AccountTree_DocsToGain
+        if (uuidTypeDoc.equals(UUID.fromString("63f34c69-fe9a-4e5b-adab-b90268b2a34f"))) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
+                                        CISales.Invoice.getType().getId(),
+                                        CISales.Receipt.getType().getId());
+        // Accounting_AccountTree_DocsToPay
+        } else if (uuidTypeDoc.equals(UUID.fromString("6fd11ce2-72e0-40ef-a959-186e3e664aa9"))) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
+                                        CISales.CreditNote.getType().getId());
+        }
 
         final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
         final DocMulti multi = new DocMulti();
