@@ -36,7 +36,8 @@
         <name>Accounting_PeriodeTree_Case_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCash</child>
+            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCashGain</child>
+            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCashPay</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateDocBooking</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateDocRegister</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateExternalBooking</child>

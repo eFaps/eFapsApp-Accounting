@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCash</name>
+        <name>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCashGain</name>
 
         <!-- target definitions -->
         <target>
@@ -44,7 +44,7 @@
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_CaseBankCash</property>
+        <property name="TargetCreateType">Accounting_CaseBankCashGain</property>
         <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodeAbstractLink</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>

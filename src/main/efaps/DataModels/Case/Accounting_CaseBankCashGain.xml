@@ -26,13 +26,13 @@
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0fe5839a-be31-4e68-9c90-47a048354fbb</uuid>
+    <uuid>5aa212cc-3609-48d5-bf71-f8b891cb10b5</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_CaseBankCash</name>
+        <name>Accounting_CaseBankCashGain</name>
         <parent>Accounting_CaseAbstract</parent>
     </definition>
 </datamodel-type>
