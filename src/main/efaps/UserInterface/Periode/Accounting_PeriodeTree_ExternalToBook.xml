@@ -37,7 +37,9 @@
             <menu>Accounting_PeriodeTree_ExternalToBook_Menu</menu>
             <table>Accounting_PeriodeDocumentSumTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode"
-                method="getExternalsToBook" />
+                method="getExternalsToBook" >
+                    <property name="Types">ERP_DocumentAbstract</property>
+            </evaluate>
         </target>
         <!-- properties -->
         <property name="Target">content</property>
