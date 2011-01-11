@@ -37,8 +37,10 @@
         <target>
             <table>Accounting_AccountTable</table>
             <evaluate program="org.efaps.esjp.accounting.StructurBrowser">
-                <property name="Expand">Accounting_AccountAbstract\PeriodeAbstractLink</property>
-                <property name="ExpandChildTypes">true</property>
+                <property name="Types">Accounting_AccountAbstract</property>
+                <property name="LinkFroms">PeriodeAbstractLink</property>
+                <property name="Child_Types">Accounting_AccountAbstract</property>
+                <property name="Child_LinkFroms">ParentLink</property>
             </evaluate>
         </target>
         <!-- property definitions -->
