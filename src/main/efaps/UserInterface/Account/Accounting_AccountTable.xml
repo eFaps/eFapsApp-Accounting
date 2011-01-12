@@ -45,20 +45,23 @@
             <property name="Attribute">Name</property>
             <property name="Label">Accounting_AccountAbstract/Name.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Width">2</property>
         </field>
         <field name="description">
             <property name="ModeSearch">READONLY</property>
             <property name="Attribute">Description</property>
             <property name="Label">Accounting_AccountAbstract/Description.Label</property>
-            <property name="Width">2</property>
+            <property name="Width">4</property>
         </field>
         <field name="sumBooked">
             <property name="Attribute">SumBooked</property>
             <property name="Label">Accounting_AccountAbstract/SumBooked.Label</property>
+            <property name="Align">right</property>
         </field>
         <field name="sumReport">
             <property name="Attribute">SumReport</property>
             <property name="Label">Accounting_AccountAbstract/SumReport.Label</property>
+            <property name="Align">right</property>
         </field>
         <field name="parentLink">
             <property name="SelectAlternateOID">linkto[ParentLink].oid</property>
@@ -69,13 +72,6 @@
         <field name="summary">
             <property name="Attribute">Summary</property>
             <property name="Label">Accounting_AccountAbstract/Summary.Label</property>
-        </field>
-        <field name="periodeLink">
-            <property name="ModeSearch">READONLY</property>
-            <property name="SelectAlternateOID">linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[PeriodeAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_AccountAbstract/PeriodeAbstractLink.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
     </definition>
 </ui-table>

@@ -44,6 +44,7 @@
             <property name="Attribute">Amount</property>
             <property name="Label">Accounting_TransactionPositionAbstract/Amount.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Align">right</property>
         </field>
         <field name="currencyLink">
             <property name="SelectAlternateOID">linkto[CurrencyLink].oid</property>
@@ -77,6 +78,7 @@
         <field name="rateAmount">
             <property name="Attribute">RateAmount</property>
             <property name="Label">Accounting_TransactionPositionAbstract/RateAmount.Label</property>
+            <property name="Align">right</property>
         </field>
         <field name="rateCurrencyLink">
             <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
