@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -46,6 +47,7 @@ import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.document.AbstractDocument;
@@ -231,4 +233,39 @@ public abstract class ExternalVoucher_Base
         return ret;
     }
 
+    public Return createContact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Insert insert = new Insert(CIContacts.Contact);
+        insert.add(CIContacts.Contact.Name, _parameter.getParameterValue("name"));
+        insert.execute();
+
+        final Instance contactInst = insert.getInstance();
+
+        if (contactInst != null && contactInst.isValid()) {
+            // create classifications
+            final Classification classification = (Classification) CIContacts.ClassOrganisation.getType();
+            final Insert relInsert1 = new Insert(classification.getClassifyRelationType());
+            relInsert1.add(classification.getRelLinkAttributeName(), contactInst.getId());
+            relInsert1.add(classification.getRelTypeAttributeName(), classification.getId());
+            relInsert1.execute();
+
+            final Insert classInsert1 = new Insert(classification);
+            classInsert1.add(classification.getLinkAttributeName(), contactInst.getId());
+            classInsert1.add(CIContacts.ClassOrganisation.TaxNumber, _parameter.getParameterValue("taxNumber"));
+            classInsert1.execute();
+
+            final Classification classification2 = (Classification) classification.getParentClassification();
+            final Insert relInsert2 = new Insert(classification2.getClassifyRelationType());
+            relInsert2.add(classification.getRelLinkAttributeName(), contactInst.getId());
+            relInsert2.add(classification.getRelTypeAttributeName(), classification2.getId());
+            relInsert2.execute();
+
+            final Insert classInsert2 = new Insert(classification2);
+            classInsert2.add(classification.getLinkAttributeName(), contactInst.getId());
+            classInsert2.execute();
+        }
+
+        return new Return();
+    }
 }

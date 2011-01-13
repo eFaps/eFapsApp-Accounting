@@ -34,14 +34,14 @@
         <name>Accounting_CreateContactPicker</name>
         <!-- target definitions -->
         <target>
-            <form>Contacts_ContactForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <form>Accounting_CreateContactFormPicker</form>
+            <execute program="org.efaps.esjp.accounting.ExternalVoucher" method="createContact" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Contacts_Contact</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
+        <property name="WindowHeight">360</property>
         <property name="WindowWidth">515</property>
     </definition>
 </ui-command>
