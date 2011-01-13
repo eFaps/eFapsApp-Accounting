@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -51,6 +52,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.document.AbstractDocument;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 
@@ -212,6 +214,12 @@ public abstract class ExternalVoucher_Base
         return ret;
     }
 
+    /**
+     * Executed from an UIACCES tricker to determine if access must be
+     * granted to the field or not.
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing true if access is granted
+     */
     public Return accessCheck4FieldPicker(final Parameter _parameter)
     {
         final Return ret = new Return();
@@ -223,21 +231,44 @@ public abstract class ExternalVoucher_Base
         final SystemConfiguration sysconf = SystemConfiguration.get(
                             UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
         if ("true".equalsIgnoreCase(value)
-                            && sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")) {
+                            && !sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")) {
             ret.put(ReturnValues.TRUE, true);
         } else if ("false".equalsIgnoreCase(value)
-                            && !sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")){
+                            && sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")) {
             ret.put(ReturnValues.TRUE, true);
         }
-
         return ret;
     }
 
-    public Return createContact(final Parameter _parameter)
+    /**
+     * Executed on validate event to check the information for a new contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing true if valid
+     */
+    public Return validateContact(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
+
+    /**
+     * Executed on picker event. Creates a new contact and returns it
+     * as map to the calling form picker.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return map for the picker to fill the form
+     * @throws EFapsException on error
+     */
+    public Return picker4NewContact(final Parameter _parameter)
         throws EFapsException
     {
+        final Return retVal = new Return();
+        final Map<String, String> map = new HashMap<String, String>();
+        retVal.put(ReturnValues.VALUES, map);
+        final String name = _parameter.getParameterValue("name");
         final Insert insert = new Insert(CIContacts.Contact);
-        insert.add(CIContacts.Contact.Name, _parameter.getParameterValue("name"));
+        insert.add(CIContacts.Contact.Name, name);
         insert.execute();
 
         final Instance contactInst = insert.getInstance();
@@ -264,8 +295,11 @@ public abstract class ExternalVoucher_Base
             final Insert classInsert2 = new Insert(classification2);
             classInsert2.add(classification.getLinkAttributeName(), contactInst.getId());
             classInsert2.execute();
-        }
 
-        return new Return();
+            map.put(EFapsKey.PICKER_VALUE.getKey(), name);
+            map.put("contact", contactInst.getOid());
+            map.put("contactData", getFieldValue4Contact(contactInst));
+        }
+        return retVal;
     }
 }

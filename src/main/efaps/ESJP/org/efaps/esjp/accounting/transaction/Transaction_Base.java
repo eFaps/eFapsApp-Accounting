@@ -74,7 +74,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 /**
- * Base class for transactionin accounting.
+ * Base class for transaction in accounting.
  *
  * @author The eFaps Team
  * @version $Id$
@@ -109,21 +109,28 @@ public abstract class Transaction_Base
         if (instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())
                         || instance.getType().isKindOf(CIAccounting.Transaction.getType())) {
             final PrintQuery print = new PrintQuery(instance);
-            print.addSelect("linkto[PeriodeLink].oid");
+            final SelectBuilder sel = new SelectBuilder().linkto(
+                            instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())
+                                            ? CIAccounting.AccountAbstract.PeriodeAbstractLink
+                                            : CIAccounting.Transaction.PeriodeLink).oid();
             print.execute();
-            instance = Instance.get(print.<String>getSelect("linkto[PeriodeLink].oid"));
+            instance = Instance.get(print.<String>getSelect(sel));
         }
         if (instance.getType().isKindOf(CIAccounting.ReportNodeAbstract.getType())) {
             while (!instance.getType().isKindOf(CIAccounting.ReportNodeRoot.getType())) {
                 final PrintQuery print = new PrintQuery(instance);
-                print.addSelect("linkto[ParentLinkAbstract].oid");
+                final SelectBuilder sel = new SelectBuilder()
+                    .linkto(CIAccounting.ReportNodeTree.ParentLinkAbstract).oid();
+                print.addSelect(sel);
                 print.execute();
-                instance = Instance.get(print.<String>getSelect("linkto[ParentLinkAbstract].oid"));
+                instance = Instance.get(print.<String>getSelect(sel));
             }
             final PrintQuery print = new PrintQuery(instance);
-            print.addSelect("linkto[ReportLink].linkto[PeriodeLink].oid");
+            final SelectBuilder sel = new SelectBuilder()
+                .linkto(CIAccounting.ReportNodeRoot.ReportLink).linkto(CIAccounting.ReportAbstract.PeriodeLink).oid();
+            print.addSelect(sel);
             print.execute();
-            instance = Instance.get(print.<String>getSelect("linkto[ReportLink].linkto[PeriodeLink].oid"));
+            instance = Instance.get(print.<String>getSelect(sel));
         }
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (!props.containsKey("case")
