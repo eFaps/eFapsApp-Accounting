@@ -145,11 +145,11 @@ public abstract class Case_Base
             html.append("<select name=\"").append(fieldvalue.getField().getName()).append("\" ")
                             .append(UIInterface.EFAPSTMPTAG).append(" >");
             for (final Entry<String, Long> entry : values.entrySet()) {
-                html.append("<option value=\"").append(entry.getValue());
+                html.append("<option value=\"").append(entry.getValue()).append("\"");
                 if (entry.getValue().equals(fieldvalue.getValue())) {
                     html.append(" selected=\"selected\" ");
                 }
-                html.append("\">").append(entry.getKey()).append("</option>");
+                html.append(">").append(entry.getKey()).append("</option>");
             }
             html.append("</select>");
             ret.put(ReturnValues.SNIPLETT, html.toString());

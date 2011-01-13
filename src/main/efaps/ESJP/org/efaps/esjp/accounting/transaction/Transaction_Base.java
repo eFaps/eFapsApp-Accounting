@@ -37,6 +37,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -760,7 +761,8 @@ public abstract class Transaction_Base
                             .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
                             .attribute(CIAccounting.AccountAbstract.Description);
             print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
-                            CIAccounting.Account2CaseAbstract.Denominator);
+                            CIAccounting.Account2CaseAbstract.Denominator,
+                            CIAccounting.Account2CaseAbstract.LinkValue);
             print.addSelect(oidSel, nameSel, descSel);
             print.execute();
 
@@ -770,14 +772,24 @@ public abstract class Transaction_Base
                 final String desc = print.<String>getSelect(descSel);
                 final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
                 final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
+                final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
                 final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
                                 BigDecimal.ROUND_HALF_UP);
-                final BigDecimal accAmount = mul.multiply(doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                final BigDecimal accAmount;
+                final Type type = print.getCurrentInstance().getType();
+                if (type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
+                                || type.equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
+                    accAmount = mul.multiply(doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                } else {
+                    accAmount = mul.multiply(doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+
                 final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                                                 .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP);
                 String postFix;
                 Map<String, TargetAccount> acounts;
-                if (print.getCurrentInstance().getType().getUUID().equals(CIAccounting.Account2CaseCredit.uuid)) {
+                if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
+                                || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
                     postFix = "_Credit";
                     acounts = doc.getCreditAccounts();
                 } else {
@@ -1023,6 +1035,10 @@ public abstract class Transaction_Base
          */
         private boolean invert;
 
+        /**
+         * Mapping of classification id 2 amount.
+         */
+        private HashMap<Long, BigDecimal> clazz2Amount;
 
         /**
          * Constructor.
@@ -1036,9 +1052,54 @@ public abstract class Transaction_Base
          */
         public Document(final Instance _instance)
         {
-            this.instance = _instance;
-            this.sumsDoc = _instance.getType().isKindOf(CISales.DocumentSumAbstract.getType());
-            this.stockDoc = _instance.getType().isKindOf(CISales.DocumentStockAbstract.getType());
+            setInstance(_instance);
+        }
+
+        /**
+         * @param _linkId   id of the Classification the amount is wanted for
+         * @return Amount
+         * @throws EFapsException on error
+         */
+        public BigDecimal getAmount4Class(final Long _linkId)
+            throws EFapsException
+        {
+            BigDecimal ret;
+            if (isSumsDoc()) {
+                if (this.clazz2Amount == null) {
+                    this.clazz2Amount = new HashMap<Long, BigDecimal>();
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+                    queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance.getId());
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    final SelectBuilder sel = new SelectBuilder()
+                        .linkto(CISales.PositionAbstract.Product).clazz().type();
+                    multi.addSelect(sel);
+                    multi.addAttribute(CISales.PositionAbstract.NetPrice);
+                    multi.execute();
+                    while (multi.next()) {
+                        final BigDecimal posamount = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetPrice);
+                        final List<Classification> clazzes = multi.getSelect(sel);
+                        if (clazzes != null) {
+                            for (final Classification clazz : clazzes) {
+                                Classification classTmp = clazz;
+                                while (classTmp != null) {
+                                    BigDecimal currAmount;
+                                    if (this.clazz2Amount.containsKey(classTmp.getId())) {
+                                        currAmount = this.clazz2Amount.get(classTmp.getId());
+                                    } else {
+                                        currAmount = BigDecimal.ZERO;
+                                    }
+                                    this.clazz2Amount.put(classTmp.getId(), currAmount.add(posamount));
+                                    classTmp = (Classification) classTmp.getParentClassification();
+                                }
+                            }
+                        }
+                    }
+                }
+                ret = this.clazz2Amount.containsKey(_linkId) ?  this.clazz2Amount.get(_linkId) : BigDecimal.ZERO;
+            } else {
+                ret = BigDecimal.ZERO;
+            }
+            return ret;
         }
 
         /**
@@ -1296,6 +1357,8 @@ public abstract class Transaction_Base
         public void setInstance(final Instance _instance)
         {
             this.instance = _instance;
+            this.sumsDoc = _instance.getType().isKindOf(CISales.DocumentSumAbstract.getType());
+            this.stockDoc = _instance.getType().isKindOf(CISales.DocumentStockAbstract.getType());
         }
 
         /**
