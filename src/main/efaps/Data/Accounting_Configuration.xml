@@ -41,5 +41,10 @@
             <value>false</value>
             <description>Deactivate the case.</description>
         </attribute>
+        <attribute>
+            <key>DeactivateFieldPicker4ExternalVoucher</key>
+            <value>false</value>
+            <description>Deactivate the field picker.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

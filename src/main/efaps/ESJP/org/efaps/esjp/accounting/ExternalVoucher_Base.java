@@ -34,6 +34,7 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -206,6 +207,27 @@ public abstract class ExternalVoucher_Base
                 ret = ret.add(rateAmount.divide(rate, 12, BigDecimal.ROUND_HALF_UP));
             }
         }
+        return ret;
+    }
+
+    public Return accessCheck4FieldPicker(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String value = (String) properties.get("hasFieldPicker");
+
+        // Accounting-Configuration
+        final SystemConfiguration sysconf = SystemConfiguration.get(
+                            UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
+        if ("true".equalsIgnoreCase(value)
+                            && sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")) {
+            ret.put(ReturnValues.TRUE, true);
+        } else if ("false".equalsIgnoreCase(value)
+                            && !sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")){
+            ret.put(ReturnValues.TRUE, true);
+        }
+
         return ret;
     }
 
