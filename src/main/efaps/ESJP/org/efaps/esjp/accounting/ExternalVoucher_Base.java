@@ -33,6 +33,7 @@ import java.util.UUID;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -43,7 +44,9 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
@@ -245,12 +248,129 @@ public abstract class ExternalVoucher_Base
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing true if valid
+     * @throws EFapsException on error
      */
     public Return validateContact(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.TRUE, true);
+        final String name = _parameter.getParameterValue("name");
+        final String taxNumber = _parameter.getParameterValue("taxNumber");
+        final StringBuilder html4Name = validateName4Contact(name, taxNumber);
+        StringBuilder html4TaxNumber = new StringBuilder();
+
+        if (html4Name.length() == 0) {
+            html4TaxNumber = validateTaxNumber4Contact(html4Name, taxNumber);
+            if (html4TaxNumber.length() > 0) {
+                ret.put(ReturnValues.SNIPLETT, html4TaxNumber.toString());
+            } else {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        } else {
+            html4TaxNumber = validateTaxNumber4Contact(html4Name, taxNumber);
+            if (html4TaxNumber.length() > 0) {
+                ret.put(ReturnValues.SNIPLETT, html4TaxNumber.toString());
+            } else {
+                ret.put(ReturnValues.SNIPLETT, html4Name.toString());
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+
         return ret;
+    }
+
+    /**
+     * method for return the name of a contact.
+     *
+     * @param _name String
+     * @param _taxnumber String
+     * @return StringBuilder with html.
+     * @throws EFapsException on error
+     */
+    public StringBuilder validateName4Contact(final String _name,
+                                              final String _taxNumber)
+        throws EFapsException
+    {
+        StringBuilder html = new StringBuilder();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
+        queryBldr.addWhereAttrEqValue(CIContacts.Contact.Name, _name).setIgnoreCase(true);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIContacts.Contact.OID);
+        multi.execute();
+        boolean check = true;
+        while (multi.next()) {
+            if (check) {
+                html.append("<div style=\"text-align:center;\">")
+                    .append(DBProperties.getProperty("org.efaps.esjp.Accounting.existingContact"));
+                check = false;
+            }
+        }
+        html = (html.length() > 0 ? html.append("</div>") : new StringBuilder());
+
+        return html;
+    }
+
+    /**
+     * method for return the taxNumber of a contact.
+     *
+     * @param _name StringBuilder
+     * @param _taxnumber String
+     * @return StringBuilder with html.
+     * @throws EFapsException on error.
+     */
+    public StringBuilder validateTaxNumber4Contact(final StringBuilder _name,
+                                                   final String _taxNumber)
+        throws EFapsException
+    {
+        StringBuilder html = new StringBuilder();
+
+        if (_name.length() == 0) {
+            if (_taxNumber != null) {
+                html = queryTaxNumber4Contact(html, _taxNumber);
+            }
+        } else {
+            if (_taxNumber != null) {
+                html = queryTaxNumber4Contact(html, _taxNumber);
+            }
+        }
+
+        return html;
+    }
+
+    /**
+     * Method for search the taxNumber of the Contact if exists
+     * return SNIPLETT.
+     *
+     * @param _html StringBuilder.
+     * @param _taxNumber TaxNumber.
+     * @return html StringBuilder.
+     * @throws EFapsException on error.
+     */
+    private StringBuilder queryTaxNumber4Contact(final StringBuilder _html,
+                                                 final String _taxNumber)
+        throws EFapsException
+    {
+        StringBuilder html = new StringBuilder();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassOrganisation);
+        queryBldr.addWhereAttrEqValue(CIContacts.ClassOrganisation.TaxNumber, _taxNumber);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selOID = new SelectBuilder().linkto(CIContacts.ClassOrganisation.ContactId)
+                                                                    .attribute(CIContacts.Contact.OID);
+        multi.addSelect(selOID);
+        multi.execute();
+        boolean check = true;
+        while (multi.next()) {
+            if (check) {
+                _html.append("<div style=\"text-align:left;\">")
+                     .append(DBProperties.getProperty("org.efaps.esjp.Accounting.existingTaxNumber"));
+                check = false;
+            }
+        }
+        html = (_html.length() > 0 ? _html.append("</div>") : new StringBuilder());
+
+        return html;
     }
 
     /**
