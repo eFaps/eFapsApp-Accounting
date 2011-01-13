@@ -58,11 +58,27 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Default</property>
         </field>
+        <field name="classificationLink">
+            <property name="Attribute">ClassificationLink</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_Account2CaseDebit4Classification/ClassificationLink.Label</property>
+            <trigger program="org.efaps.esjp.accounting.Case"
+                method="classificationLinkFieldValue"
+                name="Accounting_Account2CaseTable.classificationLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Types">Products_Class</property>
+             </trigger>
+             <trigger program="org.efaps.esjp.accounting.Case"
+                method="classificationLinkAccessCheck"
+                name="Accounting_Account2CaseTable.classificationLink.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
         <field name="fromAccountAbstractLink">
             <property name="SelectAlternateOID">linkto[FromAccountAbstractLink].oid</property>
-            <property name="Select">linkto[FromAccountAbstractLink].attribute[Name]</property>
+            <property name="Phrase">$&lt;linkto[FromAccountAbstractLink].attribute[Name]&gt; -  $&lt;linkto[FromAccountAbstractLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_Account2CaseForm.fromAccountAbstractLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="toCaseAbstractLink">
             <property name="SelectAlternateOID">linkto[ToCaseAbstractLink].oid</property>

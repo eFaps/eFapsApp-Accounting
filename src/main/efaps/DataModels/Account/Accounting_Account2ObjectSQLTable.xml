@@ -43,6 +43,7 @@
             <column name="NUMERATOR"    type="INTEGER" />
             <column name="DENOMINATOR"  type="INTEGER" />
             <column name="ACTIVE"       type="BOOLEAN" />
+            <column name="LINKID"       type="INTEGER" />
             <column name="CREATOR"      type="INTEGER"  not-null="true" />
             <column name="CREATED"      type="DATETIME" not-null="true" />
             <column name="MODIFIER"     type="INTEGER"  not-null="true" />

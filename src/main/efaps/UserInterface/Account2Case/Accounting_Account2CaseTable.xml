@@ -60,5 +60,13 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="link">
+            <property name="Attribute">LinkValue</property>
+            <property name="Label">Accounting_Account2CaseAbstract/LinkValue.Label</property>
+            <trigger program="org.efaps.esjp.accounting.Case"
+                method="linkFieldValue"
+                name="Accounting_Account2CaseTable.link.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
+        </field>
     </definition>
 </ui-table>

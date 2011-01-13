@@ -37,7 +37,9 @@
         <!-- childs -->
         <childs>
             <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsCredit</child>
+            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsCredit4Classification</child>
             <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsDebit</child>
+            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsDebit4Classification</child>
             <child>Accounting_CaseTree_Account_Menu_Action_Disconnect</child>
         </childs>
     </definition>

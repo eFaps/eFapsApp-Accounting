@@ -72,5 +72,11 @@
             <sqlcolumn>ACTIVE</sqlcolumn>
             <defaultvalue>false</defaultvalue>
         </attribute>
+        <attribute>
+            <name>LinkValue</name>
+            <type>Long</type>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>LINKID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
