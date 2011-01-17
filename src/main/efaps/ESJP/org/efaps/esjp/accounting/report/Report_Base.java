@@ -530,6 +530,7 @@ public abstract class Report_Base
          * @param _position the position of the node
          * @param _level level of this node
          */
+        //CHECKSTYLE:OFF
         public AbstractNode(final AbstractNode _parent,
                     final String _oid,
                     final String _number,
@@ -538,7 +539,7 @@ public abstract class Report_Base
                     final boolean _showSum,
                     final Long _position,
                     final int _level)
-        {
+        { //CHECKSTYLE:ON
             this.parent = _parent;
             this.oid = _oid;
             this.number = _number;
@@ -729,7 +730,8 @@ public abstract class Report_Base
                 final Boolean showAllways = print.<Boolean> getAttribute(CIAccounting.ReportNodeTree.ShowAllways);
                 final Boolean showSum = print.<Boolean> getAttribute(CIAccounting.ReportNodeTree.ShowAllways);
                 final Long position = print.<Long> getAttribute(CIAccounting.ReportNodeTree.Position);
-                final AbstractNode child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position, _level);
+                final AbstractNode child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position,
+                                _level);
                 getChildren().add(child);
             }
             for (final AbstractNode child : getChildren()) {
@@ -768,6 +770,7 @@ public abstract class Report_Base
          * @param _position the position of the node
          * @param _level level of this node
          */
+        //CHECKSTYLE:OFF
         public TreeNode(final AbstractNode _parent,
                         final String _oid,
                         final String _number,
@@ -776,7 +779,7 @@ public abstract class Report_Base
                         final boolean _showSum,
                         final Long _position,
                         final int _level)
-        {
+        {//CHECKSTYLE:ON
             super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, _level);
         }
 
@@ -863,6 +866,7 @@ public abstract class Report_Base
          * @param _level        level of this node
          * @param _accountId    id of the account
          */
+        //CHECKSTYLE:OFF
         public AccountNode(final AbstractNode _parent,
                            final String _oid,
                            final String _number,
@@ -872,7 +876,7 @@ public abstract class Report_Base
                            final Long _position,
                            final int _level,
                            final long _accountId)
-        {
+        {//CHECKSTYLE:ON
             super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, _level);
             this.accountId = _accountId;
         }

@@ -277,8 +277,10 @@ public abstract class FieldUpdate_Base
                 final Map<Long, Rate> rates = new HashMap<Long, Rate>();
                 final FieldValue fielValue = new FieldValue();
                 js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
-                    .append(StringEscapeUtils.escapeJavaScript(fielValue.getDocumentFieldValue(_parameter, doc).toString()))
-                    .append(StringEscapeUtils.escapeJavaScript(fielValue.getCostInformation(_parameter, date, doc, rates).toString()))
+                    .append(StringEscapeUtils.escapeJavaScript(
+                                    fielValue.getDocumentFieldValue(_parameter, doc).toString()))
+                    .append(StringEscapeUtils.escapeJavaScript(
+                                    fielValue.getCostInformation(_parameter, date, doc, rates).toString()))
                     .append("'; ")
                     .append(fielValue.getScript(_parameter, doc, rates));
             }

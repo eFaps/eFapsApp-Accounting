@@ -465,7 +465,8 @@ public abstract class Account_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.TransactionAbstract.StatusAbstract);
         multi.execute();
-        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.TransactionPositionAbstract.AccountLink).oid();
+        final SelectBuilder sel = new SelectBuilder()
+            .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).oid();
         while (multi.next()) {
             final Long statusId = multi.<Long> getAttribute(CIAccounting.TransactionAbstract.StatusAbstract);
             final QueryBuilder posQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
@@ -509,6 +510,8 @@ public abstract class Account_Base
 
     /**
      * @param _instance instance the sums are calculated
+     * @param _acc2sumReport    account to Sum
+     * @param _acc2sumBooked    account to sum
      * @return array with BigDecimal
      * @throws EFapsException on error
      */
@@ -531,7 +534,7 @@ public abstract class Account_Base
             sumReport = sumReport.add(subSums[1]);
         }
         final BigDecimal newbooked = _acc2sumBooked.containsKey(_instance)
-                ? _acc2sumBooked.get(_instance) : BigDecimal.ZERO ;
+                ? _acc2sumBooked.get(_instance) : BigDecimal.ZERO;
         final BigDecimal newReport = _acc2sumReport.containsKey(_instance)
                 ? _acc2sumReport.get(_instance) : BigDecimal.ZERO;
 

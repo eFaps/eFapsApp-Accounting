@@ -37,7 +37,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("35d9cfa6-4231-42bf-9018-246ace6fe095")
 @EFapsRevision("$Rev$")
-public class Label_Base
+public abstract class Label_Base
 {
     /**
      * Check access to label.
