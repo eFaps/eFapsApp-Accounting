@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2011 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("18251cf7-8cfc-47ce-9a86-08fbb281e432")
 @EFapsRevision("$Rev$")
-public class StructurBrowser extends StructurBrowser_Base
+public class StructurBrowser
+    extends StructurBrowser_Base
 {
 
 }

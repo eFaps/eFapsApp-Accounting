@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2011 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser_Base;
+import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
 import org.efaps.util.EFapsException;
 
 /**
@@ -38,7 +38,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("21b4e990-00b8-44bb-9896-80719fcf8c81")
 @EFapsRevision("$Rev$")
 public abstract class StructurBrowser_Base
-    extends StandartStructurBrowser_Base
+    extends StandartStructurBrowser
 {
     /**
      * Only roots are wanted, that means the the ParentLink must be null.
