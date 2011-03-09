@@ -25,15 +25,12 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -44,18 +41,14 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.document.AbstractDocument;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 
@@ -241,185 +234,5 @@ public abstract class ExternalVoucher_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
-    }
-
-    /**
-     * Executed on validate event to check the information for a new contact.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return Return containing true if valid
-     * @throws EFapsException on error
-     */
-    public Return validateContact(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String name = _parameter.getParameterValue("name");
-        final String taxNumber = _parameter.getParameterValue("taxNumber");
-        final StringBuilder html4Name = validateName4Contact(name, taxNumber);
-        StringBuilder html4TaxNumber = new StringBuilder();
-
-        if (html4Name.length() == 0) {
-            html4TaxNumber = validateTaxNumber4Contact(html4Name, taxNumber);
-            if (html4TaxNumber.length() > 0) {
-                ret.put(ReturnValues.SNIPLETT, html4TaxNumber.toString());
-            } else {
-                ret.put(ReturnValues.TRUE, true);
-            }
-        } else {
-            html4TaxNumber = validateTaxNumber4Contact(html4Name, taxNumber);
-            if (html4TaxNumber.length() > 0) {
-                ret.put(ReturnValues.SNIPLETT, html4TaxNumber.toString());
-            } else {
-                ret.put(ReturnValues.SNIPLETT, html4Name.toString());
-                ret.put(ReturnValues.TRUE, true);
-            }
-        }
-
-        return ret;
-    }
-
-    /**
-     * method for return the name of a contact.
-     *
-     * @param _name String
-     * @param _taxnumber String
-     * @return StringBuilder with html.
-     * @throws EFapsException on error
-     */
-    public StringBuilder validateName4Contact(final String _name,
-                                              final String _taxNumber)
-        throws EFapsException
-    {
-        StringBuilder html = new StringBuilder();
-
-        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
-        queryBldr.addWhereAttrEqValue(CIContacts.Contact.Name, _name).setIgnoreCase(true);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIContacts.Contact.OID);
-        multi.execute();
-        boolean check = true;
-        while (multi.next()) {
-            if (check) {
-                html.append("<div style=\"text-align:center;\">")
-                    .append(DBProperties.getProperty("org.efaps.esjp.Accounting.existingContact"));
-                check = false;
-            }
-        }
-        html = (html.length() > 0 ? html.append("</div>") : new StringBuilder());
-
-        return html;
-    }
-
-    /**
-     * method for return the taxNumber of a contact.
-     *
-     * @param _name StringBuilder
-     * @param _taxnumber String
-     * @return StringBuilder with html.
-     * @throws EFapsException on error.
-     */
-    public StringBuilder validateTaxNumber4Contact(final StringBuilder _name,
-                                                   final String _taxNumber)
-        throws EFapsException
-    {
-        StringBuilder html = new StringBuilder();
-
-        if (_name.length() == 0) {
-            if (_taxNumber != null) {
-                html = queryTaxNumber4Contact(html, _taxNumber);
-            }
-        } else {
-            if (_taxNumber != null) {
-                html = queryTaxNumber4Contact(html, _taxNumber);
-            }
-        }
-
-        return html;
-    }
-
-    /**
-     * Method for search the taxNumber of the Contact if exists
-     * return SNIPLETT.
-     *
-     * @param _html StringBuilder.
-     * @param _taxNumber TaxNumber.
-     * @return html StringBuilder.
-     * @throws EFapsException on error.
-     */
-    private StringBuilder queryTaxNumber4Contact(final StringBuilder _html,
-                                                 final String _taxNumber)
-        throws EFapsException
-    {
-        StringBuilder html = new StringBuilder();
-
-        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassOrganisation);
-        queryBldr.addWhereAttrEqValue(CIContacts.ClassOrganisation.TaxNumber, _taxNumber);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selOID = new SelectBuilder().linkto(CIContacts.ClassOrganisation.ContactId)
-                                                                    .attribute(CIContacts.Contact.OID);
-        multi.addSelect(selOID);
-        multi.execute();
-        boolean check = true;
-        while (multi.next()) {
-            if (check) {
-                _html.append("<div style=\"text-align:left;\">")
-                     .append(DBProperties.getProperty("org.efaps.esjp.Accounting.existingTaxNumber"));
-                check = false;
-            }
-        }
-        html = (_html.length() > 0 ? _html.append("</div>") : new StringBuilder());
-
-        return html;
-    }
-
-    /**
-     * Executed on picker event. Creates a new contact and returns it
-     * as map to the calling form picker.
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @return map for the picker to fill the form
-     * @throws EFapsException on error
-     */
-    public Return picker4NewContact(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final Map<String, String> map = new HashMap<String, String>();
-        retVal.put(ReturnValues.VALUES, map);
-        final String name = _parameter.getParameterValue("name");
-        final Insert insert = new Insert(CIContacts.Contact);
-        insert.add(CIContacts.Contact.Name, name);
-        insert.execute();
-
-        final Instance contactInst = insert.getInstance();
-
-        if (contactInst != null && contactInst.isValid()) {
-            // create classifications
-            final Classification classification = (Classification) CIContacts.ClassOrganisation.getType();
-            final Insert relInsert1 = new Insert(classification.getClassifyRelationType());
-            relInsert1.add(classification.getRelLinkAttributeName(), contactInst.getId());
-            relInsert1.add(classification.getRelTypeAttributeName(), classification.getId());
-            relInsert1.execute();
-
-            final Insert classInsert1 = new Insert(classification);
-            classInsert1.add(classification.getLinkAttributeName(), contactInst.getId());
-            classInsert1.add(CIContacts.ClassOrganisation.TaxNumber, _parameter.getParameterValue("taxNumber"));
-            classInsert1.execute();
-
-            final Classification classification2 = (Classification) classification.getParentClassification();
-            final Insert relInsert2 = new Insert(classification2.getClassifyRelationType());
-            relInsert2.add(classification.getRelLinkAttributeName(), contactInst.getId());
-            relInsert2.add(classification.getRelTypeAttributeName(), classification2.getId());
-            relInsert2.execute();
-
-            final Insert classInsert2 = new Insert(classification2);
-            classInsert2.add(classification.getLinkAttributeName(), contactInst.getId());
-            classInsert2.execute();
-
-            map.put(EFapsKey.PICKER_VALUE.getKey(), name);
-            map.put("contact", contactInst.getOid());
-            map.put("contactData", getFieldValue4Contact(contactInst));
-        }
-        return retVal;
     }
 }

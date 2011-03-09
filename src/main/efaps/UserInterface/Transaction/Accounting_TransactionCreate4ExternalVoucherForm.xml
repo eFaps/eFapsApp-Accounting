@@ -117,7 +117,7 @@
             <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <picker name="Accounting_CreateContactPicker"/>
+            <picker name="Contacts_CreateContactPicker"/>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="accessCheck4FieldPicker"
                 name="Accounting_TransactionCreate4ExternalForm.contact4FieldPicker.UI_ACCESSCHECK"
