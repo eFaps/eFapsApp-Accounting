@@ -28,6 +28,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -46,6 +47,7 @@ public abstract class Label_Base
      * @return Return
      */
     public Return accessCheck4Label(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
         // Accounting-Configuration

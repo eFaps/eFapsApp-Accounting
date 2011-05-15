@@ -217,6 +217,7 @@ public abstract class ExternalVoucher_Base
      * @return Return containing true if access is granted
      */
     public Return accessCheck4FieldPicker(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
 
