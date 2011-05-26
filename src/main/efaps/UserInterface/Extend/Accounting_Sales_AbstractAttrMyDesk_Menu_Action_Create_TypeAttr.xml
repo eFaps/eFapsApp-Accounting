@@ -37,7 +37,7 @@
 
         <!-- target definitions -->
         <target>
-            <form>Sales_AbstractAttrForm</form>
+            <form>ERP_AttributeDefinitionForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />
         </target>
         <!-- properties -->
