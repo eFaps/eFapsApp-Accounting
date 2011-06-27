@@ -1,0 +1,512 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     ac9221b5-7521-47ba-8f07-7478d6848922
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a contabilidad
+<wiki:toc max_depth="3"/>
+
+----
+
+El módulo contabilidad nos ayudara a manejar los siguientes puntos:
+
+  # Periodos
+  # Reportes
+  # Documentos
+  # Cheques
+  # Acciones
+
+==1. Periodo==
+Contamos con los siguientes puntos:
+
+  * 1.1 Editar
+  * 1.2 Libro diario
+  * 1.3 Reporte de gastos
+  * 1.4 Balance de apertura
+  * 1.5 Calcular cuentas
+  * 1.6 Libro diario de compras
+  * 1.7 Cuentas
+  * 1.8 Árbol de cuentas
+  * 1.9 Asientos
+  * 1.10 Casos
+  * 1.11 Centro de costos
+  * 1.12 Documentos p. r.
+  * 1.13 Documentos p. c.
+  * 1.14 Comprobantes p. r.
+  * 1.15 Comprobantes p. c.
+  * 1.16 Stock p.c.
+  * 1.17 Caja y Bancos
+
+===1.1 Editar===
+Los únicos datos que se pueden modificar son el nombre/año, fecha desde y hasta.
+
+===1.2 Libro diario===
+Le sirve para poder obtener un documento con la información del periodo, pero esta información es la que se encuentra en un determinado tiempo(el tiempo se asigna con las fechas desde y hasta), el formato que puede elegir para la impresión son PDF o XLS.
+
+===1.3 Reporte de gastos===
+Este reporte contiene una información reducida de los gastos creada para un contacto, para poder crear este reporte debe de dirigirse a la opción acción y elegir reporte de gastos, inmediatamente le aparecerá la ventana reporte de gastos en ella se visualiza los campos en donde deberá de ingresar la información:
+
+  * Mime : es el tipo de formato que usted deberá de seleccionar ya sea PFD o XLS.
+  * Desde: es la fecha de inicio .
+  * Hasta: es la fecha culminatoria.
+  * Contacto: llama al contacto con solo {{{*}}} o colocando su nombre.
+  * Fecha de cambio: se coloca la fecha correspondiente al tipo de cambio que queremos.
+  * Moneda: elegir el tipo de moneda.
+  * Cambio: es el tipo de cambio que usted escogió mediante la fecha, también puede ser modificable.
+
+===1.4 Balance de apertura===
+Para crear un balance de apertura usted debe de ingresar la siguiente información en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Date: colocar la fecha de creación del documento.
+  * Cuenta: es la cuenta secundaria, para llamarla debe de colocar solo {{{*}}} o llamarla por el nombre.
+
+Secundario: son los que se encuentra en la clasificación posiciones.
+  * Monto: es el monto que va ingresar a la cuenta.
+  * Cuenta: es la cuenta secundaria, para llamarla debe de colocar solo {{{*}}} o llamando por el nombre.
+  * Descripción: es la información principal de la cuenta.
+
+===1.5 Calcular cuentas===
+Cuando usted realiza algún cambio en las cuentas, la función calcular cuentas le ayuda a actualizarlas y colocar la correcta suma.
+
+===1.6 Libro diario de compras===
+Veremos los siguientes puntos:
+  * 1.6.1 Exportar
+
+====1.6.1 Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+
+===1.7 Cuentas===
+Nos muestra todas las cuentas que han sido ingresadas anteriormente, además este menú cuenta con demás opciones como:
+
+  * 1.7.1 Crear
+  * 1.7.2 Borrar seleccionados
+  * 1.7.3 Exportar
+
+====1.7.1 Crear====
+Se dirige a la opción acción y selecciona crear, se muestra la ventana crear nueva cuenta en donde deberá de ingresar la información obligatoria y secundaria:
+
+  * Obligatorio: numero y descripción.
+  * Secundario:
+  * Tipo: seleccionar el tipo de cuenta que desea crear.
+  * Sumar: es usado para que se sumen las cuentas hijas para ello se coloca TRUE y FALSE para que no realice esta operación.
+  * Activo: colocar TRUE para que la cuenta se visualice en la lista o colocar FALSE para que no aparezca en la lista.
+
+====1.7.2 Borrar seleccionados====
+Debe de escoger uno o mas cuentas haciendo check en las casillas, dirigirse a acción y seleccionar borrar seleccionados.
+
+====1.7.3 Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+
+===1.8 Árbol de cuentas===
+Encontramos a las cuentas ordenadas por carpetas, si deseamos ver lo que contiene cada carpeta ingresamos por el signo +.
+
+===1.9 Asientos===
+En este menú veremos los siguientes puntos,
+
+  * 1.9.1 Crear
+  * 1.9.2 Cerrar
+  * 1.9.3 Borrar seleccionados
+  * 1.9.4 Exportar
+
+====1.9.1 Crear====
+Para poder realizar este procedimiento debemos de ingresar a acción y seleccionar crear, nos mostrara la ventana crear nuevo asiento en donde encontrará una lupa, ingresa a esa lupa y selecciona una de las clasificaciones haciendo un check en la casilla, para proseguir ingresa por update, ahora la ventana ya contará con una clasificación además visualizara campos obligatorios y secundarios:
+
+Obligatorio:
+  * Fecha: es la fecha de  creación.
+  * Descripción: es la información detallada de este asiento.
+
+Secundario:
+
+  * Caso: para crear un caso usted debe de dirigirse al menú casos y crear caso general(véase casos). Una vez seleccionado el caso en la ventana crear nuevo asiento, actualiza para que todos los datos del caso aparezcan en la ventana. Para ingresar datos a un caso debe dirigirse al caso(véase show caso).
+  * Monto: es el monto que se le asigna al caso.
+  * Filtro para cuenta: si hace check en la casilla usted podrá filtrar solo las cuenta que contiene el caso y de esa manera crear débito o crédito.
+  * Moneda: seleccionar el tipo de moneda que se va utilizar para este procedimiento.
+
+Débito:
+|| *Monto* || *Moneda original* || *Cambio* || *Monto* || *Cuenta* || *Descripción* || *Centros de costos* || *Enlaces* ||
+|| COLOCA EL MONTO || ELIGE LA MONEDA || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || ELIGE EL CENTRO DE COSTOS || enlace ... ||
+
+Total : aparece el monto total.
+
+
+Crédito:
+|| *Monto* || *Moneda original* || *Cambio* || *Monto* || *Cuenta* || *Descripción* || *Centros de costos* || *Enlaces* ||
+|| COLOCA EL MONTO || ELIGE LA MONEDA || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || ELIGE EL CENTRO DE COSTOS || enlace ... ||
+
+Total : aparece el monto total.
+
+Importante:
+  * Para crear un centro de costos usted debe de dirigirse al menú centro de costos.
+  * Una vez completada la información, acepta.
+
+====1.9.2 Cerrar====
+Para cerrar un asiento usted debe seleccionar el asiento haciendo un check en el casillero, dirigirse a
+la opción acción y seleccionar cerrar.
+
+====1.9.3 Borrar seleccionados====
+Debe de escoger uno o mas asientos haciendo un check en las casillas, dirigirse a acción y seleccionar borrar seleccionados.
+
+====1.9.4 Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+
+===1.10 Casos===
+Trataremos los siguientes puntos:
+
+  * Crear un caso
+  * Borrar
+  * Show caso
+
+====Crear un caso====
+Para crear un caso usted debe de ingresar al tipo de caso que desea,
+
+  * Crear caso para Caja y Bancos – Cobros
+  * Crear caso para Caja y Bancos – Pagos
+  * Crear caso para Documento por Contabilizar
+  * Crear caso para Documento por Registrar
+  * Crear caso para Comprobante por Contabilizar
+  * Crear caso para Comprobante por Registrar
+  * Crear caso para Stock por Contabilizar
+  * Crear caso general
+
+Inmediatamente le aparecera una ventana en donde ingresara la información correspondiente:
+
+  * Nombre: colocar el nombre que identifique a esta cuenta.
+  * Descripción: se detalla la información de la cuenta.
+  * Activo: para que la cuenta se vea en la lista colocar TRUE y para que no se visualice en la lista colocar FALSE.
+
+====Borrar====
+Seleccionar una o mas cuentas haciendo un check en las casillas, dirigirse a acción y seleccionar borrar.
+
+====Show caso====
+Cuando ingresamos a este caso vemos el menú cuentas, ingresamos a este menú y nos dirigimos a acción en donde encontramos Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir Existente como débito (Clasificación), ingresamos a cualquiera de ellas, inmediatamente nos mostrara la ventana buscar cuentas en donde en el campo numero ingresamos el numero de la cuenta o solo {{{*}}}(ingresaremos a una lista completa de cuentas) o podemos ingresar en el campo descripción el nombre de la cuenta o solo {{{*}}}, ahora vera una lista de cuentas, en donde seleccionara la cuenta que quiere haciendo un check en la casilla e interconecta.
+
+Una vez que interconecta, ingresa a estas cuentas por medio de su numerador el cual nos ayudara a visualizar la información de la cuenta y además editarla, para ello debe de dirigirse a acción y cambiar  el default por TRUE.
+
+===1.11 Centros de costos===
+Veremos los siguientes puntos en este menú,
+
+  * 1.11.1 Crear
+  * 1.11.2 Borrar
+  * 1.11.3 Exportar
+
+====1.11.1 Crear====
+Para crear usted debe de ingresar la siguiente información en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Nombre: es el nombre con el cual se identificará el centro de costos creado.
+  * Descripción: es la información fundamental detallada del centro de costos.
+
+Secundario:
+  * Activo: es para que el centro de costos creado aparezca en la lista o no, para ello debemos de seleccionar TRUE para que aparezca y FALSE para que no aparezca.
+
+====1.11.2 Borrar====
+Debe de escoger uno o mas centros de costos haciendo un check en las casillas, dirigirse a acción y seleccionar borrar.
+
+====1.11.3 Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos
+PDF o XLS.
+
+===1.12 Documentos p. r.===
+Veremos los siguientes puntos en este menú,
+
+  * 1.12.1 Registrar documento
+  * 1.12.2 Exportar
+
+====1.12.1 Registrar documento====
+Para registrar un documento usted debe de seleccionar el documento haciendo un check en el casillero, diríjase a acción y seleccione registrar documento, inmediatamente visualizará la ventana registrar documento en donde ingresara información en los campos obligatorios y secundarios,
+
+Obligatorio: fecha y descripción.
+
+Secundarios:
+  * Documento: puede visualizar la información del documento.
+  * Caso: seleccionar el caso para este procedimiento. Para poder tener una lista de casos debemos de crear el caso documento por registrar que se encuentra en el menú casos(véase Show casos) . Cuando actualice van a aparecer los datos del caso en la ventana.
+  * Filtro para cuentas: solo van aparecer las cuentas de este caso.
+  * Marcar contabilizado: es el ultimo paso de la factura o boleta, presentar como culminado. Si desea hacer el paso documento p.c. no hacer check en la casilla.
+  * Débito: Ingresa la información correspondiente.
+  * Crédito: Ingresa la información correspondiente.
+
+====1.12.2 Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+
+===1.13 Documentos p. c.===
+Veremos los siguientes puntos:
+
+  * 1.13.1 Contabilizar documento
+  * 1.13.2 Recalcular documento
+
+====1.13.1 Contabilizar documento====
+Es el paso por el cual se cobra la factura. Una vez realizado el primer paso documentos p.r. va poder realizar este paso, ya que el documento que ha sido registrado aparece en el listado de este menú.
+
+Para poder utilizar este menú debemos de crear un caso para comprobante por contabilizar(véase casos), una vez creado el caso va ingresar por el nombre a la información de este caso y se dirigirá a cuentas(véase show cuentas).
+
+Para contabilizar este documento debe de hacer un check en la casilla, dirigirse a acción y escoger contabilizar documento. La ventana contabilizar documento le brinda la opción de escoger el tipo de caso y le damos actualizar para que aparezcan los datos de los casos agregados en cuentas.
+
+====1.13.2 Recalcular documento====
+Para recalcular un documento debe de seleccionar el documento  haciendo un check en su casillero respectivo dirigirse a la opción acción y seleccionar recalcular documento, inmediatamente le aparecerá la ventana recalcular documento en donde podrá modificar la fecha con el mismo formato mostrado o seleccionarlo del calendario, al momento de aceptar los cambios se habrán realizado.
+
+===1.14 Comprobantes p. r.===
+
+
+===1.15 Comprobantes p. c.===
+
+
+
+===1.16 Stock p.c.===
+
+
+
+===1.17 Caja y Bancos===
+Veremos los siguientes puntos:
+
+  * 1.17.1 Agregar cuenta existente
+  * 1.17.2 Desconectar
+  * 1.17.3 Exportar
+
+====1.17.1 Agregar cuenta existente====
+Dirigirse a la opción acción y seleccionar agregar cuenta existente, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresara la información correspondiente en los campos:
+
+  * Número: se coloca el numero correspondiente de la cuenta que busca(colocar al final {{{*}}}) o solo se coloca {{{*}}}.
+  * Descripción: se coloca la descripción correspondiente de la cuenta que busca(colocar al final {{{*}}}) o solo se coloca {{{*}}}.
+
+====1.17.2 Desconectar====
+Seleccionar las cuentas haciendo un check en sus respectivos casilleros, dirigirse a la opción acción y seleccionar desconectar.
+
+====1.17.3 Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+
+
+==2. Reportes==
+Veremos en este menú la información que contiene a continuación:
+  * 2.1 Balance
+  * 2.2 Ganancia/Perdida
+  * 2.3 Reporte de asientos
+  * 2.4 Reporte de cuentas
+  * 2.5 Reporte diario
+
+===2.1 Balance===
+Los puntos a detallar son:
+
+  * 2.1.1 Editar
+  * 2.1.2 Imprimir
+  * 2.1.3 Raíces
+
+====2.1.1 Editar====
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar balance le mostrara los campos que puede editar y son los siguientes:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====2.1.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el balance, en dos tipos de formatos PDF o XLS.
+
+====2.1.3 Raíces====
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
+
+  * Número: colocar el numero correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===2.2 Ganancia/Perdida===
+Los puntos a detallar son:
+
+  * 2.2.1 Editar
+  * 2.2.2 Imprimir
+  * 2.2.3 Raíces
+
+====2.2.1 Editar====
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar ganancia/perdida le mostrara los campos que puede editar y son los siguientes:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====2.2.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el ganancia/perdida en dos tipos de formatos PDF o XLS.
+
+====2.2.3 Raíces====
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===2.3 Reporte de asientos===
+Los puntos a detallar son:
+
+  * 2.3.1 Editar
+  * 2.3.2 Imprimir
+  * 2.3.3 Raíces
+
+====2.3.1 Editar====
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar reporte de asientos le mostrara los campos que puede editar y son los siguientes:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====2.3.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de asientos en dos tipos de formatos PDF o XLS.
+
+====2.3.3 Raíces====
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===2.4 Reporte de cuentas===
+Los puntos a detallar son:
+
+  * 2.4.1 Editar
+  * 2.4.2 Imprimir
+  * 2.4.3 Raíces
+
+====2.4.1 Editar====
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar reporte de cuentas le mostrara los campos que puede editar y son los siguientes:
+
+  * Nombre
+  * Descripción
+  * Numeración
+====2.4.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de cuentas, en dos tipos de formatos PDF o XLS.
+
+====2.4.3 Raíces====
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===2.5 Reporte diario===
+Los puntos a detallar son:
+
+  * 2.5.1 Editar
+  * 2.5.2 Imprimir
+  * 2.5.3 Raíces
+
+====2.5.1 Editar====
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar reporte diario le mostrara los campos que puede editar y son los siguientes:
+
+  * Nombre
+  * Descripción
+  * Numeración
+====2.5.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte diario, en dos tipos de formatos PDF o XLS.
+
+====2.5.3 Raíces====
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
+
+  * Número: colocar el numero correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+
+==3. Documentos==
+Nos muestra la información de cada documento.
+
+
+==4. Cheques==
+Veremos los siguientes puntos:
+
+  * 4.1 Editar
+  * 4.2 Exportar
+  * 4.3 Cuentas
+  * 4.4 Documentos
+
+===4.1 Editar===
+Cuando usted edita un cheque puede cambiar y colocar nuevos datos, a continuación se le mostrará cuales son los campos para editar y agregar:
+
+Editar
+  * Nombre: se modifica el nombre identificativo del cheque.
+  * Fecha: se modifica la fecha con el mismo formato mostrado o seleccionando la fecha del calendario.
+  * Estado: podra elegir cualquier tipo de estado,
+    * Cancelado: cuando ya se cancelo el cheque.
+    * Cerrado: cuando se culmina el uso de este documento.
+    * Pendiente: es el estado predeterminado, cuando se crea un cheque.
+  * Moneda: se elige el tipo de moneda.
+
+Agregar
+  * Monto: colocar el monto correspondiente.
+
+===4.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+
+===4.3 Cuentas===
+Veremos los siguientes puntos:
+
+  * 4.3.1 Agregar Cuenta Existente para Cheque
+  * 4.3.2 Desconectar
+
+====4.3.1 Agregar Cuenta Existente para Cheque====
+Se dirige a la opción acción y selecciona agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana buscar cuentas en donde encontrará los campos numero y descripción,
+
+  * Numero: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
+  * Descripción: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
+
+====4.3.2 Desconectar====
+  * Para seleccionar las cuentas debe hacer un check en su casillero correspondiente, dirigirse a acción y optar por la opción desconectar.
+
+===4.4 Documentos===
+Veremos los siguientes puntos:
+
+  * 4.4.1 Agregar Documento Existente
+  * 4.4.2 Desconectar
+
+====4.4.1 Agregar Documento Existente====
+Se dirige a la opción acción y selecciona agregar documento existente, inmediatamente le aparecerá la ventana buscar documentos en donde encontrará el campo nombre.
+
+Nombre: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
+
+====4.4.2 Desconectar====
+Para seleccionar los documentos debe hacer un check en su casillero correspondiente, dirigirse a acción y optar por la opción desconectar.
+
+
+==5. Acciones==
+Veremos los siguientes puntos:
+
+  * 5.1 Editar
+  * 5.2 Casos
+
+===5.1 Editar===
+Usted podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Activo
+
+===5.2 Casos===
+Veremos los siguientes puntos:
+
+  * 5.2.1 Agregar existente
+  * 5.2.2 Desconectar
+
+====5.2.1 Agregar existente====
+Para agregar usted debe dirigirse a acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana búsqueda de casos en donde encontrara los siguientes campos:
+
+  * Nombre: coloque parte de la información o la información completa con {{{*}}} al final.
+  * Descripción: coloque parte de la información o la información completa con {{{*}}} al final.
+  * Activo: si usted coloca TRUE podrá buscar todos los casos que se encuentren activos y si coloca FALSE podrá buscar todos los casos que se encuentren desactivados.
+
+====5.2.2 Desconectar====
+Para desconectar debe de seleccionar  los casos haciendo un check en sus respectivos casilleros y dirigirnos a acción desconectar, inmediatamente le aparecerá una ventana de confirmación para que acepte o cancele la acción.
+
+
+
+
+
