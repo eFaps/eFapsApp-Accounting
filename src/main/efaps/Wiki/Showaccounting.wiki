@@ -129,14 +129,14 @@ Secundario:
 
 Débito:
 || *Monto* || *Moneda original* || *Cambio* || *Monto* || *Cuenta* || *Descripción* || *Centros de costos* || *Enlaces* ||
-|| COLOCA EL MONTO || ELIGE LA MONEDA || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || ELIGE EL CENTRO DE COSTOS || enlace ... ||
+|| colocar monto || elegir moneda || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || elige el centro de costos || enlace ||
 
 Total : aparece el monto total.
 
 
 Crédito:
 || *Monto* || *Moneda original* || *Cambio* || *Monto* || *Cuenta* || *Descripción* || *Centros de costos* || *Enlaces* ||
-|| COLOCA EL MONTO || ELIGE LA MONEDA || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || ELIGE EL CENTRO DE COSTOS || enlace ... ||
+|| colocar el monto|| elegir moneda || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || elige el centro de costos|| enlace ||
 
 Total : aparece el monto total.
 
