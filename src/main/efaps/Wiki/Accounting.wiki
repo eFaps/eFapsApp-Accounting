@@ -10,37 +10,37 @@
 #summary Contabilidad
 <wiki:toc max_depth="3"/>
 
-El menú contabilidad nos ayudara a manejar los siguientes puntos:
+El menú contabilidad le ayudará a manejar los siguientes puntos:
 
-  # Periodos
+  # Períodos
   # Reportes
   # Documentos
   # Cheques
   # Acciones
   # Monedas
 
-==1. Periodo==
-Hablaremos de los siguientes puntos:
+==1. Períodos==
+Mostraremos los siguientes puntos:
 
   * 1.1 Crear
   * 1.2 Borrar seleccionado
   * 1.3 Exportar
 
 ===1.1 Crear===
-Se dirige a la opción acción y entra a crear, donde le muestra la ventana crear nuevo periodo, en ella se visualiza los campos obligatorios y secundarios en donde debe ingresar la información:
+Se dirige a la opción acción y entra a crear, inmediatamente le aparecerá la ventana *crear nuevo período* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
   * Obligatorio: Nombre/Año, desde, hasta y moneda(elegir el tipo de moneda).
   * Secundario: tabla de cuentas csv y reportes csv, se puede subir este documento al sistema ingresando a examinar.
 
 ===1.2 Borrar seleccionado===
-Seleccionar una o varias guías de remisión(Devolución), dirigirse a la opción acción y elija borrar seleccionado.
+Seleccionar una o varias guías de remisión(Devolución), dirigirse a la opción acción y elegir borrar seleccionado.
 
 ===1.3 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
 
 ==2. Reportes==
-Contamos con variados reportes, a continuación se le mencionara los tipos de reporte:
+Contamos con variados reportes, a continuación se le mencionará los tipos de reporte:
 
   * 2.1 Crear balance
   * 2.2 Crear ganancia/perdida
@@ -51,7 +51,8 @@ Contamos con variados reportes, a continuación se le mencionara los tipos de re
   * 2.7 Crear reporte diario
 
 ===2.1 Crear balance===
-Se dirige a la opción acción y entra a crear balance, donde le muestra la ventana crear nuevo reporte de balance, en ella se visualiza los campos en donde debe ingresar información,
+Se dirige a la opción acción y selecciona crear balance, inmediatamente le aparecerá la ventana *crear nuevo reporte de balance* en donde
+ingresará la información correspondiente en los siguientes campos:
 
   * Nombre: se coloca un nombre el cual va identificar al  reporte balance.
   * Descripción: es la información mas detallada del balance.
@@ -59,7 +60,8 @@ Se dirige a la opción acción y entra a crear balance, donde le muestra la vent
   * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
 
 ===2.2 Crear ganancia/perdida===
-Se dirige a la opción acción y entra a crear ganancia/perdida, donde le muestra la ventana crear nuevo reporte de ganancia/perdida, en ella se visualiza los campos en donde debe ingresar información,
+Se dirige a la opción acción y selecciona crear ganancia/perdida, inmediatamente le aparecerá la ventana *crear nuevo reporte de ganancia/perdida* en donde
+ingresará la información correspondiente en los siguientes campos:
 
   * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
   * Descripción: es la información mas detallada del reporte ganancia/perdida.
@@ -67,7 +69,8 @@ Se dirige a la opción acción y entra a crear ganancia/perdida, donde le muestr
   * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
 
 ===2.3 Reporte de asientos===
-Se dirige a la opción acción y entra a reporte de asientos, donde le muestra la ventana crear nuevo reporte de asientos, en ella se visualiza los campos en donde debe ingresar información,
+Se dirige a la opción acción y selecciona reporte de asientos, inmediatamente le aparecerá la ventana *crear nuevo reporte de asientos* en donde
+ingresará la información correspondiente en los siguientes campos:
 
   * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
   * Descripción: es la información mas detallada del reporte ganancia/perdida.
@@ -75,17 +78,19 @@ Se dirige a la opción acción y entra a reporte de asientos, donde le muestra l
   * Periodo: llamar al periodo colocando su nombre o solo *(le mostrara todos los periodos).
 
 ===2.4 Importar balance===
-Se dirige a la opción acción y entra a importar balance, donde le muestra la ventana importar balance, en ella se visualiza el campo en donde debe ingresar información,
+Se dirige a la opción acción y selecciona importar balance, inmediatamente le aparecerá la ventana *importar balance* en donde
+ingresará la información correspondiente en los siguientes campos:
 
   * Periodo: llamar al periodo por su nombre o colocando solo * (le mostrara todos los periodos).
   * Reportes csv: vamos a ingresar un balance para ello nos vamos a examinar y seleccionamos nuestro balance.
   * Cuando los dos campos tienen su debida información le damos crear.
 
 ===2.5 Borrar===
-Seleccionamos uno o mas reportes nos dirigimos a la opción acción y elegimos borrar.
+Seleccionar uno o mas reportes, dirigirse a la opción acción y elegir borrar.
 
 ===2.6 Crear reporte de cuentas===
-Se dirige a la opción acción y entra a crear reporte de cuentas, donde le muestra la ventana crear reporte de cuentas, en ella se visualiza los campos en donde debe ingresar información,
+Se dirige a la opción acción y selecciona crear reporte de cuentas, inmediatamente le aparecerá la ventana *crear reporte de cuentas* en donde
+ingresará la información correspondiente en los siguientes campos:
 
   * Nombre: se coloca un nombre el cual va identificar al reporte de cuentas.
   * Descripción: es la información mas detallada del reporte de cuentas.
@@ -93,7 +98,8 @@ Se dirige a la opción acción y entra a crear reporte de cuentas, donde le mues
   * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
 
 ===2.7 Crear reporte diario===
-Se dirige a la opción acción y entra a crear reporte diario, donde le muestra la ventana crear reporte diario, en ella se visualiza los campos en donde debe ingresar información,
+Se dirige a la opción acción y entra a crear reporte diario, inmediatamente le aparecerá la ventana *crear reporte diario* en donde
+ingresará la información correspondiente en los siguientes campos:
 
   * Nombre: se coloca un nombre el cual va identificar al reporte diario.
   * Descripción: es la información mas detallada del reporte diario.
@@ -101,49 +107,52 @@ Se dirige a la opción acción y entra a crear reporte diario, donde le muestra 
   * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
 
 ==3. Documentos==
-Nos muestra la lista de todos los documentos existentes además de los siguientes puntos,
+Le muestra la lista de todos los documentos existentes. A continuación mostraremos los siguientes puntos:
 
   * 3.1 Borrar
   * 3.2 Exportar
 
 ===3.1 Borrar===
-Seleccionar uno o varios documentos, dirigirse a la opción acción y elija borrar.
+Seleccionar uno o varios documentos, dirigirse a la opción acción y elegir borrar.
 
 ===3.2 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
 ==4. Cheques==
-Este menú nos brinda la facilidad de tener una lista completa con todos los cheques registrados, a continuación vamos a mostrarle los siguientes puntos,
+Este menú le brinda la facilidad de tener una lista completa con todos los cheques registrados, a continuación vamos a mostrarle los siguientes puntos,
 
   * 4.1 Crear cheque
   * 4.2 Borrar
   * 4.3 Exportar
 
 ===4.1 Crear cheque===
-Se dirige a la opción acción y entra a crear cheque, donde le muestra la ventana crear nuevo cheque, en ella se visualiza los campos obligatorios y secundarios en donde deberá de ingresar la información,
+Se dirige a la opción acción y selecciona crear cheque, inmediatamente le aparecerá la ventana *crear nuevo cheque* en donde
+ingresará la información correspondiente en los campos obligatorios y secunadarios:
 
 Obligatorio:
   * Desde: colocar el numero desde donde va iniciar a contarse los cheques.
+
 Secundario: nombre prefijo, nombre sufijo, hasta, periodo y cuenta.
 
 ===4.2 Borrar===
-Seleccionar uno o varios cheques, dirigirse a la opción acción y elija borrar.
+Seleccionar uno o varios cheques, dirigirse a la opción acción y elegir borrar.
 
 ===4.3 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
 ==5. Acciones==
-Son llamadas a los distintos casos que se presentan y es necesario una caja chica. Para crear una acción debe de dirigirse a acción y elegir crear acción para caja chica, inmediatamente le aparecerá una ventana en donde deberá ingresar los datos obligatorios y secundarios:
+Son llamadas a los distintos casos que se presentan y es necesario una caja chica. Para crear una acción debe de dirigirse a acción y seleccionar crear acción para caja chica, inmediatamente le aparecerá una ventana
+en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
 Obligatorio:
   * Nombre: coloca un nombre a esta acción.
-  * Activo: indica cuando aparece esta acción en la lista o cuando no, para que aparezca debe colocar true y para que no aparezca colocar false.
+  * Activo: indica la aparición de la acción o no, para que aparezca debe colocar true y para que no aparezca colocar false.
 
 Secundario:
   * Descripción: describe esta acción.
 
 ==6. Monedas==
-Para crear una moneda usted debe de  ingresar información en los siguientes módulos,
+Para crear una moneda usted deberá de ingresar la información correspondiente en los siguientes campos:
 
   * Moneda: ingresar el nombre de la moneda.
   * Código ISO: es el símbolo representativo de la moneda.

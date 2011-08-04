@@ -1,35 +1,20 @@
 <wiki:comment>
 @eFapsPackage  org.efaps.wiki.accounting
-@eFapsUUID     ac9221b5-7521-47ba-8f07-7478d6848922
+@eFapsUUID     a638b6fd-3c0d-453f-bc11-ec60bc46277b
 @eFapsRevision $Rev: 6420 $
 </wiki:comment>
 
 
 
 
-#summary Acceso a contabilidad
+#summary Acceso a período
 <wiki:toc max_depth="3"/>
 
 ----
 
-El menú de contabilidad le ayudará a manejar los siguientes puntos:
-
-  # Períodos
-  # Reportes
-  # Documentos
-  # Cheques
-  # Acciones
-
-==1. Período==
 Contamos con los siguientes puntos:
 
-  * 1.1 Editar
-  * 1.2 Libro diario
-  * 1.3 Reporte de gastos
-  * 1.4 Balance de apertura
-  * 1.5 Calcular cuentas
-  * 1.6 Libro diario de compras
-  * 1.7 Cuentas
+  * 1.1 Cuentas
   * 1.8 Árbol de cuentas
   * 1.9 Asientos
   * 1.10 Casos
@@ -257,10 +242,10 @@ Es el paso por el cual se cobra la factura. Una vez realizado el primer paso doc
 
 Para poder utilizar este menú deberá crear un caso para comprobante por contabilizar(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos casos]), una vez creado el caso va ingresar por el nombre a la información de este caso y se dirigirá a cuentas(véase show cuentas).
 
-Para contabilizar este documento debe de hacer un check en su casilla, dirigirse a la opción acción y escoger contabilizar documento. La ventana *contabilizar documento* le brinda la opción de escoger el tipo de caso, finalmente actualiza para que aparezcan los datos de los casos agregados en cuentas.
+Para contabilizar este documento debe de hacer un check en su casilla, dirigirse a la opción acción y escoger contabilizar documento. La ventana *contabilizar documento* le brinda la opción de escoger el tipo de caso y actualiza para que aparezcan los datos de los casos agregados en cuentas.
 
 ====1.13.2 Recalcular documento====
-Para recalcular un documento debe de seleccionar el documento  haciendo un check en su casillero respectivo dirigirse a la opción acción y seleccionar recalcular documento, inmediatamente le aparecerá la ventana *recalcular documento* en donde podrá modificar la fecha con el mismo formato mostrado o seleccionarlo del calendario, al momento de aceptar los cambios estos son actualizados.
+Para recalcular un documento debe de seleccionar el documento  haciendo un check en su casillero respectivo dirigirse a la opción acción y seleccionar recalcular documento, inmediatamente le aparecerá la ventana *recalcular documento* en donde podrá modificar la fecha con el mismo formato mostrado o seleccionarlo del calendario, al momento de aceptar los cambios se habrán realizado.
 
 ===1.14 Comprobantes p. r.===
 
@@ -274,17 +259,17 @@ Para recalcular un documento debe de seleccionar el documento  haciendo un check
 
 
 ===1.17 Caja y Bancos===
-Mostraremos los siguientes puntos:
+Veremos los siguientes puntos:
 
   * 1.17.1 Agregar cuenta existente
   * 1.17.2 Desconectar
   * 1.17.3 Exportar
 
 ====1.17.1 Agregar cuenta existente====
-Dirigirse a la opción acción y seleccionar agregar cuenta existente, inmediatamente le aparecerá la ventana *buscar cuentas* en donde ingresará la información correspondiente en los siguientes campos:
+Dirigirse a la opción acción y seleccionar agregar cuenta existente, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresara la información correspondiente en los campos:
 
-  * Número: se coloca el número correspondiente de la cuenta que busca(colocar al final {{{*}}}) o solo colocar {{{*}}}.
-  * Descripción: se coloca la descripción correspondiente de la cuenta que busca(colocar al final {{{*}}}) o solo colocar {{{*}}}.
+  * Número: se coloca el numero correspondiente de la cuenta que busca(colocar al final {{{*}}}) o solo se coloca {{{*}}}.
+  * Descripción: se coloca la descripción correspondiente de la cuenta que busca(colocar al final {{{*}}}) o solo se coloca {{{*}}}.
 
 ====1.17.2 Desconectar====
 Seleccionar las cuentas haciendo un check en sus respectivos casilleros, dirigirse a la opción acción y elegir desconectar.
@@ -309,7 +294,7 @@ Los puntos a detallar son:
   * 2.1.3 Raíces
 
 ====2.1.1 Editar====
-Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar balance* en donde podrá editar los siguientes campos:
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar balance le mostrara los campos que puede editar y son los siguientes:
 
   * Nombre
   * Descripción
@@ -319,9 +304,9 @@ Para editar ingresa a la opción acción y selecciona editar, inmediatamente le 
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el balance, en dos tipos de formato PDF o XLS.
 
 ====2.1.3 Raíces====
-Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
 
-  * Número: colocar el número correspondiente.
+  * Número: colocar el numero correspondiente.
   * Título: ingresar el nombre identificativo de la raíz.
   * Posición: colocar la posición respectiva.
   * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
@@ -335,17 +320,17 @@ Los puntos a detallar son:
   * 2.2.3 Raíces
 
 ====2.2.1 Editar====
-Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar ganancia/perdida* en donde podrá editar los siguientes campos:
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar ganancia/perdida le mostrara los campos que puede editar y son los siguientes:
 
   * Nombre
   * Descripción
   * Numeración
 
 ====2.2.2 Imprimir====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en ganancia/perdida en dos tipos de formato PDF o XLS.
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el ganancia/perdida en dos tipos de formato PDF o XLS.
 
 ====2.2.3 Raíces====
-Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
 
   * Número: colocar el número correspondiente.
   * Título: ingresar el nombre identificativo de la raíz.
@@ -361,7 +346,7 @@ Los puntos a detallar son:
   * 2.3.3 Raíces
 
 ====2.3.1 Editar====
-Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte de asientos* en donde podrá editar los siguientes campos:
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar reporte de asientos le mostrara los campos que puede editar y son los siguientes:
 
   * Nombre
   * Descripción
@@ -371,7 +356,7 @@ Para editar ingresa a la opción acción y selecciona editar, inmediatamente le 
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de asientos en dos tipos de formato PDF o XLS.
 
 ====2.3.3 Raíces====
-Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
 
   * Número: colocar el número correspondiente.
   * Título: ingresar el nombre identificativo de la raíz.
@@ -387,7 +372,7 @@ Los puntos a detallar son:
   * 2.4.3 Raíces
 
 ====2.4.1 Editar====
-Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte de cuentas* en donde podrá editar los siguientes campos:
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar reporte de cuentas le mostrara los campos que puede editar y son los siguientes:
 
   * Nombre
   * Descripción
@@ -396,7 +381,7 @@ Para editar ingresa a la opción acción y selecciona editar, inmediatamente le 
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de cuentas, en dos tipos de formato PDF o XLS.
 
 ====2.4.3 Raíces====
-Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
 
   * Número: colocar el número correspondiente.
   * Título: ingresar el nombre identificativo de la raíz.
@@ -412,19 +397,18 @@ Los puntos a detallar son:
   * 2.5.3 Raíces
 
 ====2.5.1 Editar====
-Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte diario* en donde podrá editar los siguientes campos:
+Para editar ingresamos a la opción acción y seleccionamos editar, en donde inmediatamente la ventana editar reporte diario le mostrara los campos que puede editar y son los siguientes:
 
   * Nombre
   * Descripción
   * Numeración
-
 ====2.5.2 Imprimir====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte diario, en dos tipos de formato PDF o XLS.
 
 ====2.5.3 Raíces====
-Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+Nos permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente por cada campo y los campos son:
 
-  * Número: colocar el número correspondiente.
+  * Número: colocar el numero correspondiente.
   * Título: ingresar el nombre identificativo de la raíz.
   * Posición: colocar la posición respectiva.
   * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
@@ -462,37 +446,37 @@ Agregar
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
 ===4.3 Cuentas===
-Mostraremos los siguientes puntos:
+Veremos los siguientes puntos:
 
   * 4.3.1 Agregar Cuenta Existente para Cheque
   * 4.3.2 Desconectar
 
 ====4.3.1 Agregar Cuenta Existente para Cheque====
-Se dirige a la opción acción y selecciona agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana *buscar cuentas* en donde encontrará los campos número y descripción,
+Se dirige a la opción acción y selecciona agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana buscar cuentas en donde encontrará los campos numero y descripción,
 
   * Numero: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
   * Descripción: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
 
 ====4.3.2 Desconectar====
-  * Para seleccionar las cuentas debe hacer un check en su casillero correspondiente, dirigirse a la opción acción y optar por la opción desconectar.
+  * Para seleccionar las cuentas debe hacer un check en su casillero correspondiente, dirigirse a acción y optar por la opción desconectar.
 
 ===4.4 Documentos===
-Mostraremos los siguientes puntos:
+Veremos los siguientes puntos:
 
   * 4.4.1 Agregar Documento Existente
   * 4.4.2 Desconectar
 
 ====4.4.1 Agregar Documento Existente====
-Se dirige a la opción acción y selecciona agregar documento existente, inmediatamente le aparecerá la ventana *buscar documentos* en donde encontrará el campo nombre.
+Se dirige a la opción acción y selecciona agregar documento existente, inmediatamente le aparecerá la ventana buscar documentos en donde encontrará el campo nombre.
 
 Nombre: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
 
 ====4.4.2 Desconectar====
-Para seleccionar los documentos debe hacer un check en su casillero correspondiente, dirigirse a la opción acción y optar por la opción desconectar.
+Para seleccionar los documentos debe hacer un check en su casillero correspondiente, dirigirse a acción y optar por la opción desconectar.
 
 
 ==5. Acciones==
-Mostraremos los siguientes puntos:
+Veremos los siguientes puntos:
 
   * 5.1 Editar
   * 5.2 Casos
@@ -505,20 +489,20 @@ Usted podrá editar los siguientes campos:
   * Activo
 
 ===5.2 Casos===
-Verá los siguientes puntos:
+Veremos los siguientes puntos:
 
   * 5.2.1 Agregar existente
   * 5.2.2 Desconectar
 
 ====5.2.1 Agregar existente====
-Para agregar usted debe dirigirse a acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana *búsqueda de casos* en donde encontrará los siguientes campos:
+Para agregar usted debe dirigirse a acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana búsqueda de casos en donde encontrara los siguientes campos:
 
   * Nombre: coloque parte de la información o la información completa con {{{*}}} al final.
   * Descripción: coloque parte de la información o la información completa con {{{*}}} al final.
   * Activo: si usted coloca TRUE podrá buscar todos los casos que se encuentren activos y si coloca FALSE podrá buscar todos los casos que se encuentren desactivados.
 
 ====5.2.2 Desconectar====
-Para desconectar debe de seleccionar los casos haciendo un check en sus respectivos casilleros, dirigirse a la opción acción y desconectar, inmediatamente le aparecerá una ventana de confirmación para que acepte o cancele la acción.
+Para desconectar debe de seleccionar los casos haciendo un check en sus respectivos casilleros, dirigirse a acción y desconectar, inmediatamente le aparecerá una ventana de confirmación para que acepte o cancele la acción.
 
 
 
