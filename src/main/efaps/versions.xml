@@ -30,32 +30,32 @@
         <dependency order="0">
             <groupId>org.efaps</groupId>
             <artifactId>efaps-kernel-install</artifactId>
-            <version>1.17.0-SNAPSHOT</version>
+            <version>1.18.0-SNAPSHOT</version>
         </dependency>
         <dependency order="1">
             <groupId>org.efaps</groupId>
             <artifactId>efaps-webapp-install</artifactId>
-            <version>1.17.0-SNAPSHOT</version>
+            <version>1.18.0-SNAPSHOT</version>
         </dependency>
         <dependency order="2">
             <groupId>org.efaps.apps</groupId>
             <artifactId>contacts</artifactId>
-            <version>1.17.0-SNAPSHOT</version>
+            <version>1.18.0-SNAPSHOT</version>
         </dependency>
         <dependency order="3">
             <groupId>org.efaps.apps</groupId>
             <artifactId>commons</artifactId>
-            <version>1.17.0-SNAPSHOT</version>
+            <version>1.18.0-SNAPSHOT</version>
         </dependency>
         <dependency order="4">
             <groupId>org.efaps.apps</groupId>
             <artifactId>products</artifactId>
-            <version>1.17.0-SNAPSHOT</version>
+            <version>1.18.0-SNAPSHOT</version>
         </dependency>
         <dependency order="5">
             <groupId>org.efaps.apps</groupId>
             <artifactId>sales</artifactId>
-            <version>1.17.0-SNAPSHOT</version>
+            <version>1.18.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <version number="1" reloadCache="false" login="true" compile="true">
