@@ -237,11 +237,13 @@ Obligatorio: fecha y descripción.
 
 Secundarios:
   * Documento: puede visualizar la información del documento.
-  * Caso: seleccionar el caso para este procedimiento. Para poder tener una lista de casos deberá crear el caso documento por registrar que se encuentra en el menú casos(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos Show casos]). Cuando actualice van a aparecer los datos del caso en la ventana.
+  * Caso: seleccionar el caso para este procedimiento. Para poder tener una lista de casos deberá crear el caso documento por registrar que se encuentra en el menú casos(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos Casos]). Cuando actualice van a aparecer los datos del caso en la ventana.
   * Filtro para cuentas: solo van aparecer las cuentas de este caso.
   * Marcar contabilizado: es el ultimo paso de la factura o boleta, presentar como culminado. Si desea hacer el paso documento p.c. no hacer check en la casilla.
   * Débito: Ingresa la información correspondiente.
   * Crédito: Ingresa la información correspondiente.
+
+Nota: es necesario crear un [./org.efaps.wiki.accounting.Showaccounting.wiki#1.11_Centros_de_costos centro de costos] para registrar un documento.
 
 ====1.12.2 Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
@@ -253,16 +255,21 @@ Mostraremos los siguientes puntos:
   * 1.13.2 Recalcular documento
 
 ====1.13.1 Contabilizar documento====
-Es el paso por el cual se cobra la factura. Una vez realizado el primer paso documentos p.r. va poder realizar este paso, ya que el documento que ha sido registrado aparece en el listado de este menú.
+Una vez realizado el primer paso documentos p.r. va poder realizar este paso, ya que el documento que ha sido registrado aparece en el listado de este menú.
 
-Para poder utilizar este menú deberá crear un caso para comprobante por contabilizar(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos casos]), una vez creado el caso va ingresar por el nombre a la información de este caso y se dirigirá a cuentas(véase show cuentas).
+Para poder utilizar este menú deberá crear un caso para comprobante por contabilizar(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos casos]), una vez creado el caso va ingresar por el nombre a la información de este caso y se dirigirá a cuentas([./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos véase show caso]).
 
-Para contabilizar este documento debe de hacer un check en su casilla, dirigirse a la opción acción y escoger contabilizar documento. La ventana *contabilizar documento* le brinda la opción de escoger el tipo de caso, finalmente actualiza para que aparezcan los datos de los casos agregados en cuentas.
+Ahora para contabilizar este documento deberá hacer un check en su casilla correspondiente, dirigirse a la opción acción y escoger contabilizar documento. La ventana *contabilizar documento* le brinda la opción de escoger el tipo de caso, finalmente actualiza para que aparezcan los datos de los casos agregados en cuentas.
+
+Nota: es necesario crear un [./org.efaps.wiki.accounting.Showaccounting.wiki#1.11_Centros_de_costos centro de costos] para contabilizar un documento.
 
 ====1.13.2 Recalcular documento====
 Para recalcular un documento debe de seleccionar el documento  haciendo un check en su casillero respectivo dirigirse a la opción acción y seleccionar recalcular documento, inmediatamente le aparecerá la ventana *recalcular documento* en donde podrá modificar la fecha con el mismo formato mostrado o seleccionarlo del calendario, al momento de aceptar los cambios estos son actualizados.
 
 ===1.14 Comprobantes p. r.===
+
+
+
 
 
 ===1.15 Comprobantes p. c.===

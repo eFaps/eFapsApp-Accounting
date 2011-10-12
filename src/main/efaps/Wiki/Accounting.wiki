@@ -57,7 +57,7 @@ ingresará la información correspondiente en los siguientes campos:
   * Nombre: se coloca un nombre el cual va identificar al  reporte balance.
   * Descripción: es la información mas detallada del balance.
   * Numeración: es el numero con el cual se va identificar el balance.
-  * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
 
 ===2.2 Crear ganancia/perdida===
 Se dirige a la opción acción y selecciona crear ganancia/perdida, inmediatamente le aparecerá la ventana *crear nuevo reporte de ganancia/perdida* en donde
@@ -66,7 +66,7 @@ ingresará la información correspondiente en los siguientes campos:
   * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
   * Descripción: es la información mas detallada del reporte ganancia/perdida.
   * Numeración: es el numero con el cual se va identificar el reporte ganancia/perdida.
-  * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
 
 ===2.3 Reporte de asientos===
 Se dirige a la opción acción y selecciona reporte de asientos, inmediatamente le aparecerá la ventana *crear nuevo reporte de asientos* en donde
@@ -75,13 +75,13 @@ ingresará la información correspondiente en los siguientes campos:
   * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
   * Descripción: es la información mas detallada del reporte ganancia/perdida.
   * Numeración: es el numero con el cual se va identificar el reporte ganancia/perdida.
-  * Periodo: llamar al periodo colocando su nombre o solo *(le mostrara todos los periodos).
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
 
 ===2.4 Importar balance===
 Se dirige a la opción acción y selecciona importar balance, inmediatamente le aparecerá la ventana *importar balance* en donde
 ingresará la información correspondiente en los siguientes campos:
 
-  * Periodo: llamar al periodo por su nombre o colocando solo * (le mostrara todos los periodos).
+  * Período: llamar al período por su nombre o colocando solo {{{*}}} (se le mostrarán todos los períodos).
   * Reportes csv: vamos a ingresar un balance para ello nos vamos a examinar y seleccionamos nuestro balance.
   * Cuando los dos campos tienen su debida información le damos crear.
 
@@ -95,7 +95,7 @@ ingresará la información correspondiente en los siguientes campos:
   * Nombre: se coloca un nombre el cual va identificar al reporte de cuentas.
   * Descripción: es la información mas detallada del reporte de cuentas.
   * Numeración: es el numero con el cual se va identificar el reporte de cuentas.
-  * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
 
 ===2.7 Crear reporte diario===
 Se dirige a la opción acción y entra a crear reporte diario, inmediatamente le aparecerá la ventana *crear reporte diario* en donde
@@ -104,7 +104,7 @@ ingresará la información correspondiente en los siguientes campos:
   * Nombre: se coloca un nombre el cual va identificar al reporte diario.
   * Descripción: es la información mas detallada del reporte diario.
   * Numeración: es el numero con el cual se va identificar el reporte diario.
-  * Periodo: llamar al periodo colocando su nombre o solo * (le mostrara todos los periodos).
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
 
 ==3. Documentos==
 Le muestra la lista de todos los documentos existentes. A continuación mostraremos los siguientes puntos:
@@ -141,12 +141,12 @@ Seleccionar uno o varios cheques, dirigirse a la opción acción y elegir borrar
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
 ==5. Acciones==
-Son llamadas a los distintos casos que se presentan y es necesario una caja chica. Para crear una acción debe de dirigirse a acción y seleccionar crear acción para caja chica, inmediatamente le aparecerá una ventana
-en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+Son llamadas a los distintos casos que se presentan en la caja chica. Para crear una acción de caja chica deberá dirigirse a la opción acción y seleccionar crear acción para caja chica, inmediatamente le aparecerá la ventana
+*Crear acción para caja chica* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
 Obligatorio:
   * Nombre: coloca un nombre a esta acción.
-  * Activo: indica la aparición de la acción o no, para que aparezca debe colocar true y para que no aparezca colocar false.
+  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
 
 Secundario:
   * Descripción: describe esta acción.
