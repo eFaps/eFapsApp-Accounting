@@ -22,7 +22,7 @@
 --><help-menu xmlns="http://www.efaps.org/xsd"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>187b57d0-4f8e-44bb-aef4-c1bc77f9441d</uuid>
+    <uuid>0a4db149-b673-4ff6-b936-236a403d47bd</uuid>
     <file-application>eFaps-Accounting</file-application>
     <file-revision>$Rev: 6408 $</file-revision>
     <definition>
@@ -32,5 +32,5 @@
         <target>
             <wiki>org.efaps.wiki.accounting.Showperiod.wiki</wiki>
         </target>
-    </definition>
+        </definition>
 </help-menu>

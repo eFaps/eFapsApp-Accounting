@@ -32,5 +32,8 @@
         <target>
             <wiki>org.efaps.wiki.accounting.Showaccounting.wiki</wiki>
         </target>
+         <childs>
+            <child>Showperiod_Accounting</child>
+        </childs>
     </definition>
 </help-menu>

@@ -15,6 +15,7 @@
 El menú de contabilidad le ayudará a manejar los siguientes puntos:
 
   # Períodos
+  # Acceso a período
   # Reportes
   # Documentos
   # Cheques
@@ -107,7 +108,7 @@ Le sirve para poder imprimir una o varias hojas con todos los datos que se encue
 Encontrará las cuentas ordenadas por carpetas, si desea puede ver el contenido de la carpeta haciendo clic en el signo +.
 
 ===1.9 Asientos===
-En este menú verá los siguientes puntos:
+Podrá visualizar todos los documentos p.c. y los comprobantes p.c. que han sido contabilizado, a continuación verá los siguientes puntos en este menú:
 
   * 1.9.1 Crear
   * 1.9.2 Cerrar
@@ -267,14 +268,95 @@ Nota: es necesario crear un [./org.efaps.wiki.accounting.Showaccounting.wiki#1.1
 Para recalcular un documento debe de seleccionar el documento  haciendo un check en su casillero respectivo dirigirse a la opción acción y seleccionar recalcular documento, inmediatamente le aparecerá la ventana *recalcular documento* en donde podrá modificar la fecha con el mismo formato mostrado o seleccionarlo del calendario, al momento de aceptar los cambios estos son actualizados.
 
 ===1.14 Comprobantes p. r.===
+Mostraremos los siguientes puntos en este menú:
 
+  * 1.14.1 Registrar comprobantes
+  * 1.14.2 Crear comprobantes
 
+====1.14.1 Registrar comprobantes====
+Para registrar un comprobante usted debe de seleccionar el documento haciendo un check en su casilla correspondiente, dirigirse a la opción acción y elegir registrar comprobante, inmediatamente le aparecerá la ventana *registrar comprobantes* en donde ingresará la información correspondiente en cada campo obligatorio y secundario:
 
+Obligatorio:
+  * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario
+  * Descripción: es el nombre del comprobante.
+  * Número: es el número identificativo del documento.
 
+Secundarios:
+  * Documento: puede visualizar la información del documento.
+  * Caso: puede seleccionar un caso de la lista o puede [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos crear un caso](Crear caso para comprobante por Registrar).
+    * Importante: cuando actualice, van a aparecer los datos del caso en la ventana.
+  * Filtro para cuentas: solo van aparecer las cuentas de este caso.
+  * Marcar contabilizado: es el ultimo paso de la factura o boleta, presentar como culminado.
+  * Débito: Ingresa la información correspondiente.
+  * Crédito: Ingresa la información correspondiente.
+  * Tipo de comprobante: seleccionar cualquier tipo de comprobante de la lista, si desea ingresar mas tipos de comprantes ingresar [./org.efaps.wiki.definitions.Definitions.wiki#1.5_Crear_tipo_de_comprobante aquí].
+
+Nota: es necesario crear un [./org.efaps.wiki.accounting.Showaccounting.wiki#1.11_Centros_de_costos centro de costos] para registrar un documento.
+
+====1.14.2 Crear comprobantes====
+Para crear un comprobante solo deberá dirigirse a la opción acción y seleccionar crear comprante, inmediatamente le aparecerá la ventana *Crear comprobante* en donde ingresará la información correspondiente en los siguientes campos obligatorios y secundarios:
+
+Obligatorio:
+  * Proveedor: llamar al proveedor colocando su nombre o solo {{{*}}}.
+  * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario
+  * Nº comprobante: es el número identificativo del documento.
+  * Monto: ingresar la cantidad correspondiente.
+  * Fecha de comprobante: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario
+  * Número: es el número identificativo del documento.
+  * Moneda: seleccionar un tipo de [./org.efaps.wiki.sales.Administration.wiki#2.2_Monedas moneda].
+  * Descripción: es el nombre del documento.
+
+Secundario:
+  * Caso: puede seleccionar un caso de la lista o puede [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos crear un caso](Crear caso para comprobante por registrar).
+    * Importante: cuando actualice, van a aparecer los datos del caso en la ventana.
+  * Datos del proveedor: es la información del proveedor seleccionado.
+  * Tipo de comprobante: seleccionar cualquier tipo de comprobante de la lista, si desea ingresar mas tipos de comprantes ingresar [./org.efaps.wiki.definitions.Definitions.wiki#1.5_Crear_tipo_de_comprobante aquí].
+  * Filtro para cuenta: solo van aparecer las cuentas del caso seleccionado.
+
+  * Ingreso de débito y crédito:
+    * Monto: ingresar la cantidad correspondiente.
+    * Moneda original: elegir un tipo de [./org.efaps.wiki.sales.Administration.wiki#2.2_Monedas moneda].
+    * Cambio: es el [./org.efaps.wiki.sales.Showadministration.wiki#2.2.1_Tipo_de_cambio tipo de cambio].
+    * Monto: es el monto final utilizando el tipo de cambio.
+    * Cuenta: llamar a las cuentas con su nombre o {{{*}}}. Si desea agregar cuentas a un caso solo debe ingresar a [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos show caso].
+    * Descripción: es la información de la cuenta seleccionada.
+    * Centro de costos: seleccionar un tipo de costo de la lista y si desea agregar mas tipos de costos ingrese [./org.efaps.wiki.accounting.Showaccounting.wiki#1.11_Centros_de_costos aquí].
+
+  * Suma crédito: mostrará la información correspondiente.
+  * Monto restante: mostrará la información correspondiente.
 
 ===1.15 Comprobantes p. c.===
+Mostraremos los siguientes puntos:
 
+  * 1.15.1 Contabilizar documentos
 
+====1.15.1 Contabilizar documentos====
+Para contabilizar un documento usted debe de seleccionar el documento haciendo un check en su casilla correspondiente, dirigirse a la opción acción y elegir registrar comprobante, inmediatamente le aparecerá la ventana *Contabilizar comprobantes* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario
+  * Descripción: es el nombre del documento.
+
+Secundario:
+  * Documento: es la información del documento.
+  * Caso: puede seleccionar un caso de la lista o puede [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos crear un caso](Crear caso para comprobante por Contabilizar).
+    * Importante: cuando actualice, van a aparecer los datos del caso en la ventana.
+  * Filtro para cuenta: solo van aparecer las cuentas de este caso.
+  * Marcar contabilizado: es el ultimo paso de la factura o boleta, presentar como culminado.
+
+  * Ingreso de débito y crédito:
+    * Monto: se ingresa la cantidad correspondiente.
+    * Moneda original: seleccionar el tipo de [./org.efaps.wiki.sales.Administration.wiki#2.2_Monedas moneda].
+    * Cambio: es el [./org.efaps.wiki.sales.Showadministration.wiki#2.2.1_Tipo_de_cambio tipo de cambio].
+    * Monto: es el monto final utilizando el tipo de cambio.
+    * Cuenta: llamar a las cuentas con su nombre o {{{*}}}. Si desea agregar cuentas a un caso solo debe ingresar a [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos show caso].
+    * Descripción: es el nombre de la cuenta seleccionada.
+    * Centro de costos: seleccionar un tipo de costo de la lista y si desea agregar mas tipos de costos ingrese [./org.efaps.wiki.accounting.Showaccounting.wiki#1.11_Centros_de_costos aquí].
+
+  * Total: mostrará la información correspondiente.
+  * Monto restante: mostrará la información correspondiente.
+  * Cheques: se podrá visualizar los cheques que se utilizarán para el proceso de contabilizar comprobantes.
+  * Girar cheque: para seleccionar esta opción solo deberá hacer un check en la casilla.
 
 ===1.16 Stock p.c.===
 
@@ -299,33 +381,35 @@ Seleccionar las cuentas haciendo un check en sus respectivos casilleros, dirigir
 ====1.17.3 Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
+==2. Acceso a período==
+Ingrese a [./org.efaps.wiki.accounting.Showperiod.wiki Acceso a período].
 
-==2. Reportes==
+==3. Reportes==
 Veremos en este menú la información que contiene a continuación:
-  * 2.1 Balance
-  * 2.2 Ganancia/Perdida
-  * 2.3 Reporte de asientos
-  * 2.4 Reporte de cuentas
-  * 2.5 Reporte diario
+  * 3.1 Balance
+  * 3.2 Ganancia/Perdida
+  * 3.3 Reporte de asientos
+  * 3.4 Reporte de cuentas
+  * 3.5 Reporte diario
 
-===2.1 Balance===
+===3.1 Balance===
 Los puntos a detallar son:
 
-  * 2.1.1 Editar
-  * 2.1.2 Imprimir
-  * 2.1.3 Raíces
+  * 3.1.1 Editar
+  * 3.1.2 Imprimir
+  * 3.1.3 Raíces
 
-====2.1.1 Editar====
+====3.1.1 Editar====
 Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar balance* en donde podrá editar los siguientes campos:
 
   * Nombre
   * Descripción
   * Numeración
 
-====2.1.2 Imprimir====
+====3.1.2 Imprimir====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el balance, en dos tipos de formato PDF o XLS.
 
-====2.1.3 Raíces====
+====3.1.3 Raíces====
 Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
 
   * Número: colocar el número correspondiente.
@@ -334,24 +418,24 @@ Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias.
   * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
   * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
 
-===2.2 Ganancia/Perdida===
+===3.2 Ganancia/Perdida===
 Los puntos a detallar son:
 
-  * 2.2.1 Editar
-  * 2.2.2 Imprimir
-  * 2.2.3 Raíces
+  * 3.2.1 Editar
+  * 3.2.2 Imprimir
+  * 3.2.3 Raíces
 
-====2.2.1 Editar====
+====3.2.1 Editar====
 Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar ganancia/perdida* en donde podrá editar los siguientes campos:
 
   * Nombre
   * Descripción
   * Numeración
 
-====2.2.2 Imprimir====
+====3.2.2 Imprimir====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en ganancia/perdida en dos tipos de formato PDF o XLS.
 
-====2.2.3 Raíces====
+====3.2.3 Raíces====
 Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
 
   * Número: colocar el número correspondiente.
@@ -360,24 +444,24 @@ Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias.
   * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
   * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
 
-===2.3 Reporte de asientos===
+===3.3 Reporte de asientos===
 Los puntos a detallar son:
 
-  * 2.3.1 Editar
-  * 2.3.2 Imprimir
-  * 2.3.3 Raíces
+  * 3.3.1 Editar
+  * 3.3.2 Imprimir
+  * 3.3.3 Raíces
 
-====2.3.1 Editar====
+====3.3.1 Editar====
 Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte de asientos* en donde podrá editar los siguientes campos:
 
   * Nombre
   * Descripción
   * Numeración
 
-====2.3.2 Imprimir====
+====3.3.2 Imprimir====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de asientos en dos tipos de formato PDF o XLS.
 
-====2.3.3 Raíces====
+====3.3.3 Raíces====
 Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
 
   * Número: colocar el número correspondiente.
@@ -386,23 +470,24 @@ Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias.
   * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
   * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
 
-===2.4 Reporte de cuentas===
+===3.4 Reporte de cuentas===
 Los puntos a detallar son:
 
-  * 2.4.1 Editar
-  * 2.4.2 Imprimir
-  * 2.4.3 Raíces
+  * 3.4.1 Editar
+  * 3.4.2 Imprimir
+  * 3.4.3 Raíces
 
-====2.4.1 Editar====
+====3.4.1 Editar====
 Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte de cuentas* en donde podrá editar los siguientes campos:
 
   * Nombre
   * Descripción
   * Numeración
-====2.4.2 Imprimir====
+
+====3.4.2 Imprimir====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de cuentas, en dos tipos de formato PDF o XLS.
 
-====2.4.3 Raíces====
+====3.4.3 Raíces====
 Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
 
   * Número: colocar el número correspondiente.
@@ -411,24 +496,24 @@ Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias.
   * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
   * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
 
-===2.5 Reporte diario===
+===3.5 Reporte diario===
 Los puntos a detallar son:
 
-  * 2.5.1 Editar
-  * 2.5.2 Imprimir
-  * 2.5.3 Raíces
+  * 3.5.1 Editar
+  * 3.5.2 Imprimir
+  * 3.5.3 Raíces
 
-====2.5.1 Editar====
+====3.5.1 Editar====
 Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte diario* en donde podrá editar los siguientes campos:
 
   * Nombre
   * Descripción
   * Numeración
 
-====2.5.2 Imprimir====
+====3.5.2 Imprimir====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte diario, en dos tipos de formato PDF o XLS.
 
-====2.5.3 Raíces====
+====3.5.3 Raíces====
 Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
 
   * Número: colocar el número correspondiente.
@@ -438,19 +523,19 @@ Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias.
   * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
 
 
-==3. Documentos==
+==4. Documentos==
 Le muestra la información de cada documento.
 
 
-==4. Cheques==
+==5. Cheques==
 Veremos los siguientes puntos:
 
-  * 4.1 Editar
-  * 4.2 Exportar
-  * 4.3 Cuentas
-  * 4.4 Documentos
+  * 5.1 Editar
+  * 5.2 Exportar
+  * 5.3 Cuentas
+  * 5.4 Documentos
 
-===4.1 Editar===
+===5.1 Editar===
 Cuando usted edita un cheque puede cambiar y colocar nuevos datos, a continuación se le mostrará cuales son los campos para editar y agregar:
 
 Editar
@@ -465,66 +550,66 @@ Editar
 Agregar
   * Monto: colocar el monto correspondiente.
 
-===4.2 Exportar===
+===5.2 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
-===4.3 Cuentas===
+===5.3 Cuentas===
 Mostraremos los siguientes puntos:
 
-  * 4.3.1 Agregar Cuenta Existente para Cheque
-  * 4.3.2 Desconectar
+  * 5.3.1 Agregar Cuenta Existente para Cheque
+  * 5.3.2 Desconectar
 
-====4.3.1 Agregar Cuenta Existente para Cheque====
+====5.3.1 Agregar Cuenta Existente para Cheque====
 Se dirige a la opción acción y selecciona agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana *buscar cuentas* en donde encontrará los campos número y descripción,
 
   * Numero: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
   * Descripción: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
 
-====4.3.2 Desconectar====
+====5.3.2 Desconectar====
   * Para seleccionar las cuentas debe hacer un check en su casillero correspondiente, dirigirse a la opción acción y optar por la opción desconectar.
 
-===4.4 Documentos===
+===5.4 Documentos===
 Mostraremos los siguientes puntos:
 
-  * 4.4.1 Agregar Documento Existente
-  * 4.4.2 Desconectar
+  * 5.4.1 Agregar Documento Existente
+  * 5.4.2 Desconectar
 
-====4.4.1 Agregar Documento Existente====
+====5.4.1 Agregar Documento Existente====
 Se dirige a la opción acción y selecciona agregar documento existente, inmediatamente le aparecerá la ventana *buscar documentos* en donde encontrará el campo nombre.
 
 Nombre: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
 
-====4.4.2 Desconectar====
+====5.4.2 Desconectar====
 Para seleccionar los documentos debe hacer un check en su casillero correspondiente, dirigirse a la opción acción y optar por la opción desconectar.
 
 
-==5. Acciones==
+==6. Acciones==
 Mostraremos los siguientes puntos:
 
-  * 5.1 Editar
-  * 5.2 Casos
+  * 6.1 Editar
+  * 6.2 Casos
 
-===5.1 Editar===
+===6.1 Editar===
 Usted podrá editar los siguientes campos:
 
   * Nombre
   * Descripción
   * Activo
 
-===5.2 Casos===
+===6.2 Casos===
 Verá los siguientes puntos:
 
-  * 5.2.1 Agregar existente
-  * 5.2.2 Desconectar
+  * 6.2.1 Agregar existente
+  * 6.2.2 Desconectar
 
-====5.2.1 Agregar existente====
+====6.2.1 Agregar existente====
 Para agregar usted debe dirigirse a acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana *búsqueda de casos* en donde encontrará los siguientes campos:
 
   * Nombre: coloque parte de la información o la información completa con {{{*}}} al final.
   * Descripción: coloque parte de la información o la información completa con {{{*}}} al final.
   * Activo: si usted coloca TRUE podrá buscar todos los casos que se encuentren activos y si coloca FALSE podrá buscar todos los casos que se encuentren desactivados.
 
-====5.2.2 Desconectar====
+====6.2.2 Desconectar====
 Para desconectar debe de seleccionar los casos haciendo un check en sus respectivos casilleros, dirigirse a la opción acción y desconectar, inmediatamente le aparecerá una ventana de confirmación para que acepte o cancele la acción.
 
 
