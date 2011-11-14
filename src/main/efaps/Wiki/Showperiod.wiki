@@ -386,36 +386,174 @@ Verá los siguientes puntos:
   * b. Crear crédito
   * c. Borrar seleccionados
 
-Crear débito
+====a. Crear débito====
+Se dirige a la opción acción y selecciona Crear Débito, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde podrá ver los siguientes campos:
 
-Crear crédito
+  * Número: ingresar el número o {{{*}}}(le aparecerá la lista completa de cuentas).
+  * Descripción: ingresar la descripción o {{{*}}}(le aparecerá la lista completa de cuentas).
 
+Una vez ingresada la información hace click en el botón buscar, inmediatamente le aparecerá otra ventana en donde seleccionará una o mas cuentas, haciendo un check en sus casillas correspondientes y finalmente hace click en el botón interconectar.
 
-Borrar seleccionados
+====b. Crear crédito====
+Se dirige a la opción acción y selecciona Crear Crédito, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde podrá ver los siguientes campos:
+
+  * Número: ingresar el número o {{{*}}}(le aparecerá la lista completa de cuentas).
+  * Descripción: ingresar la descripción o {{{*}}}(le aparecerá la lista completa de cuentas).
+
+Una vez ingresada la información hace click en el botón buscar, inmediatamente le aparecerá otra ventana en donde seleccionará una o mas cuentas, haciendo un check en sus casillas correspondientes y finalmente hace click en el botón interconectar.
+
+====c. Borrar seleccionados====
 Seleccionar una o mas posiciones, dirigirse a la opción acción y elegir borrar seleccionados.
 
 ==2.5 Acceso a casos==
 Cuando ingrese a este caso verá el menú cuentas, ahora ingrese al menú cuentas y luego diríjase a la opción acción en donde encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresará la información correspondiente en el campo número, puede ser el número de la cuenta o solo *(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo *(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
 Una vez que interconecta, ingresa a estas cuentas por medio de su numerador el cual le ayudará a visualizar la información de la cuenta y además editarla, para ello debe de dirigirse a acción y cambiar el default por TRUE.
 
+==2.6 Acceso a Centro de costos==
+Cuando ingrese a la opción centro costos podrá visualizar las siguientes opciones:
+
+  * 2.6.1 Editar
+  * 2.6.2 Posiciones
+  * 2.6.3 Proyectos
+
+===2.6.1 Editar===
+Se dirige a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *Edit* en donde podrá editar los siguientes campos:
+
+  * Nombre: puede editar el nombre ingresado anteriormente.
+  * Descripción: puede editar la descripción ingresada anteriormente.
+  * Activo: seleccionar TRUE o FALSE. TRUE es para que aparezca el centro de costos en las listas de búsqueda y FALSE es para que no aparezca.
+
+===2.6.2 Posiciones===
+Encontraremos todas las cuentas que se han utilizado en los distintos procesos de Documentos p.r., Documentos p.c., comprobantes p.r. y comprobantes p.c.,además de sus correspondientes documentos utilizados.
+
+===2.6.3 Proyectos===
+Mostrará solo los proyectos que se encuentran relacionados a este proyecto y a este centro de costos.
+
+==2.7 Acceso a Documentos p. r.==
+
+|| *Tipo* || *Nombre* || *Contacto* || *Fecha* || *Total bruto facturado* || *Total neto facturado* || *Total bruto* || *Total neto* || *Encargado* || *Estado* ||
+|| Factura || *001* || *Multimercados* || 11/11/09 || 141.60 S/. || 120 S/. || 141.60 S/. || 120 S/. || Laura || Pendiente ||
+
+Cuando ingrese a documentos p.r. podrá ver los documentos como facturas o boletas creadas anteriormente. Una factura o boleta también le permite ingresar a los siguientes puntos:
+
+  * Nombre: hacer click en el nombre del documento, ejemplo: 001.
+  * Contacto: hacer click en contacto, ejemplo: Multimercados.
+
+==2.8 Acceso a Documentos p. c.==
+
+|| *Tipo* || *Nombre* || *Contacto* || *Fecha* || *Total bruto facturado* || *Total neto facturado* || *Total bruto* || *Total neto* || *Encargado* || *Estado* ||
+|| Factura || *001* || *Multimercados* || 11/11/09 || 141.60 S/. || 120 S/. || 141.60 S/. || 120 S/. || Laura || Pendiente ||
+
+Cuando ingrese a documentos p.c. podrá ver los documentos como facturas o boletas que han sido registradas anteriormente. Una factura o boleta también le permite ingresar a los siguientes puntos:
+
+  * Nombre: hacer click en el nombre del documento, ejemplo: 001.
+  * Contacto: hacer click en contacto, ejemplo: Multimercados.
+
+==2.9 Acceso a Comprobantes p. r.==
+
+|| *Tipo* || *Nombre* || *Contacto* || *Fecha* || *Total bruto facturado* || *Total neto facturado* || *Total bruto* || *Total neto* || *Encargado* || *Estado* ||
+|| Factura entrante || *001* || *Multimercados* || 11/11/09 || 141.60 S/. || 120 S/. || 141.60 S/. || 120 S/. || Laura || Pendiente ||
+
+Cuando ingrese a Comprobantes p. r. podrá ver las facturas entrantes creadas anteriormente. Una factura entrante también le permite ingresar a los siguientes puntos:
+
+  * Nombre: hacer click en el nombre del documento, ejemplo: 001.
+  * Contacto: hacer click en contacto, ejemplo: Multimercados.
+
+==2.10 Acceso a Comprobantes p. c.==
+
+|| *Tipo* || *Nombre* || *Contacto* || *Fecha* || *Total bruto facturado* || *Total neto facturado* || *Total bruto* || *Total neto* || *Encargado* || *Estado* ||
+|| Factura entrante || *001* || *Multimercados* || 11/11/09 || 141.60 S/. || 120 S/. || 141.60 S/. || 120 S/. || Laura || Pendiente ||
+
+Cuando ingrese a Comprobantes p. c. podrá ver las facturas entrantes registradas anteriormente. Una factura entrante también le permite ingresar a los siguientes puntos:
+
+  * Nombre: hacer click en el nombre del documento, ejemplo: 001.
+  * Contacto: hacer click en contacto, ejemplo: Multimercados.
+
+==2.11 Acceso a Stock p.c.==
 
 
+==2.12 Acceso a Caja y Bancos==
 
+|| *Tipo* || *Número* || *Descripción* || *Suma contabilizada* || *Suma* ||
+|| Cuentas para Caja y Banco || *291* || Mercaderías || - || 710 ||
 
+Cuando ingrese a caja y bancos podrá ver todas las cuentas anexadas, además podrá ingresar a la información de cada una de ellas, solo haciendo click en el número, ejemplo: 291.
 
+Cada cuenta puede presentar las siguientes opciones:
 
+  * 2.12.1 Cuentas
+  * 2.12.2 Cuenta de hijo
+  * 2.12.3 Clasificación de productos
+  * 2.12.4 Documentos por pagar
+  * 2.12.5 Documentos por cobrar
 
+===2.12.1 Cuentas===
+Verá los siguientes puntos en este menú:
 
+  * a. Conectar como enlace
+  * b. Conectar como enlace inverso
+  * c. Conectar como enlace débito
+  * d. Conectar como enlace de crédito
 
+====a. Conectar como enlace====
+Se dirige a la opción acción y selecciona conectar como enlace, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde ingresará la información correspondiente en los siguientes campos:
 
+  * Número: ingresar el número correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
+  * Descripción: ingresar la descripción correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
 
+====b. Conectar como enlace inverso====
+Se dirige a la opción acción y selecciona conectar como enlace inverso, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde ingresará la información correspondiente en los siguientes campos:
 
+  * Número: ingresar el número correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
+  * Descripción: ingresar la descripción correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
 
+====c. Conectar como enlace débito====
+Se dirige a la opción acción y selecciona conectar como enlace débito, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde ingresará la información correspondiente en los siguientes campos:
 
+  * Número: ingresar el número correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
+  * Descripción: ingresar la descripción correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
 
+====d. Conectar como enlace de crédito====
+Se dirige a la opción acción y selecciona conectar como enlace de crédito, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde ingresará la información correspondiente en los siguientes campos:
 
+  * Número: ingresar el número correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
+  * Descripción: ingresar la descripción correspondiente de la cuenta o poner solo {{{*}}}(le aparecerá la lista completa de cuentas).
 
+===2.12.2 Cuenta de hijo===
+Muestra todas las cuentas hijo de esta cuenta, además cuenta con la siguiente opción:
 
+  * a. Crear
 
+====a. Crear====
+Se dirige a la opción acción y seleccione crear, inmediatamente le aparecerá la ventana *Crear cuenta* en donde ingresará la información correspondiente en los siguientes campos:
 
+  * Tipo: seleccionar un tipo de cuenta que se encuentra en la lista.
+  * Número: ingresar el número correspondiente.
+  * Descripción: ingresar la descripción correspondiente.
+  * Sumar: seleccionar TRUE o FALSE. TRUE es para aceptar la suma requerida y FALSE para no aceptar.
+  * Activo: seleccionar TRUE o FALSE. TRUE es para ver la cuenta como activa y FALSE para desactivarla.
 
+===2.12.3 Clasificación de productos===
+Verá las siguientes opciones:
+
+  * a. Crear
+  * b. Desconectar
+
+====a. Crear====
+Se dirige a la opción acción y selecciona crear, inmediatamente le aparecerá la ventana *Crear clasificación* en seleccionará un tipo de producto, para poder relacionarlo con la cuenta.
+
+|| *Tipo* || *Cuenta* || *Clasificación de productos* ||
+|| Clasificación de producto para cuenta || *291* || GyGK_Products_ClassEquipmentVibrator ||
+
+====b. Desconectar====
+Seleccionar uno o mas clasificaciones de productos haciendo un check en su casilla correspondiente, dirigirse a la opción acción y seleccionar desconectar.
+
+===2.12.4 Documentos por pagar===
+Veremos los siguientes puntos en este menú:
+
+  * Contabilizar
+  * Contabilizar como débito(Cobrar).
+  * Contabilizar como crédito(Pagar).
+  * Recalcular documento
+
+===2.12.5 Documentos por cobrar===

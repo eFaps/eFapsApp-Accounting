@@ -134,9 +134,8 @@ Secundario:
   * Filtro para cuenta: si hace check en la casilla usted podrá filtrar solo las cuenta que contiene el caso y de esa manera crear débito o crédito.
   * Moneda: seleccionar el tipo de moneda que se va utilizar para este procedimiento.
 
-  Débito:
-||------||
-
+Débito:
+||-------||
 
 || *Monto* || *Moneda original* || *Cambio* || *Monto* || *Cuenta* || *Descripción* || *Centros de costos* || *Enlaces* ||
 || colocar monto || elegir moneda || 1 || 200 || coloca solo {{{*}}} o llama por nombre || cuenta para.. || elige el centro de costos || enlace ||
@@ -359,8 +358,7 @@ Secundario:
   * Girar cheque: para seleccionar esta opción solo deberá hacer un check en la casilla.
 
 ===1.16 Stock p.c.===
-
-
+Son los productos que han sido utilizados en Guías de remisión, los cuales se encuentran relacionados con una cuenta determinada.
 
 ===1.17 Caja y Bancos===
 Mostraremos los siguientes puntos:
