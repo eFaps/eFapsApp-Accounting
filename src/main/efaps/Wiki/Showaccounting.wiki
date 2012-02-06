@@ -193,7 +193,9 @@ Inmediatamente le aparecerá una ventana en donde ingresará la información cor
 Seleccionar una o mas cuentas haciendo un check en sus casillas, dirigirse a la opción acción y elegir borrar.
 
 ====Show caso====
-Cuando ingrese a este caso verá el menú cuentas, ahora ingrese al menú cuentas y luego diríjase a la opción acción en donde
+Cuando ingrese a este caso podra dirigirse a la opción acción y seleccionar editar para poder colocar TRUE y de esta manera las cuentas le saldran de manera inmediata al momento de
+actualizar en las ventanas que se encuentran en Documentos p.r., Documentos p.c., Comprobante p.r., Comprobante p.c.; también
+verá el menú cuentas, en la cual seleccionará la opción acción en donde
 encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir
 Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana *buscar cuentas* en donde ingresará la información correspondiente en el campo número,
 puede ser el número de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
