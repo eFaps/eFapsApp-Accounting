@@ -193,14 +193,7 @@ Inmediatamente le aparecerá una ventana en donde ingresará la información cor
 Seleccionar una o mas cuentas haciendo un check en sus casillas, dirigirse a la opción acción y elegir borrar.
 
 ====Show caso====
-Cuando ingrese a este caso podra dirigirse a la opción acción y seleccionar editar para poder colocar TRUE y de esta manera las cuentas le saldran de manera inmediata al momento de
-actualizar en las ventanas que se encuentran en Documentos p.r., Documentos p.c., Comprobante p.r., Comprobante p.c.; también
-verá el menú cuentas, en la cual seleccionará la opción acción en donde
-encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir
-Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana *buscar cuentas* en donde ingresará la información correspondiente en el campo número,
-puede ser el número de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
-
-Una vez que interconecta, ingresa a estas cuentas por medio de su numerador el cual le ayudará a visualizar la información de la cuenta y además editarla, para ello debe de dirigirse a acción y cambiar el default por TRUE.
+[./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_casos acceso a caso]
 
 ===1.11 Centros de costos===
 Veremos los siguientes puntos en este menú,

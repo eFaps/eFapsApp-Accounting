@@ -52,7 +52,8 @@ Una vez ingresada a la cuenta podrá ver los siguientes puntos:
   * b. Reporte
   * c. Cuentas
   * d. Cuenta de hijo
-  * e. Clasificación de productos
+  * e. Asientos
+  * f. Clasificación de productos
 
 ===a. Editar===
 Se dirige a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *Editar cuenta del activo* en donde podrá editar los siguientes campos:
@@ -98,6 +99,8 @@ Se dirige a la opción acción y selecciona Conectar como enlace de Débito, inm
 
 Una vez ingresada la información hace click en el botón buscar, inmediatamente le aparecerá otra ventana en donde seleccionará una o mas cuentas, haciendo un check en sus casillas correspondientes y finalmente hace click en el botón interconectar.
 
+Nota: las cuentas que se agreguen como enlace de débito aparecerán en las siguientes ventanas: Documentos p.r., Documentos p.c., Comprobantes p.r. y Documentos p.c., de manera predeterminada al momento de actualizar.
+
 ====Conectar como Enlace de Crédito====
 Se dirige a la opción acción y selecciona Conectar como enlace de Crédito, inmediatamente le aparecerá la ventana *Buscar cuentas* en donde podrá ver los siguientes campos:
 
@@ -105,6 +108,8 @@ Se dirige a la opción acción y selecciona Conectar como enlace de Crédito, in
   * Descripción: ingresar la descripción o {{{*}}}(le aparecerá la lista completa de cuentas).
 
 Una vez ingresada la información hace click en el botón buscar, inmediatamente le aparecerá otra ventana en donde seleccionará una o mas cuentas, haciendo un check en sus casillas correspondientes y finalmente hace click en el botón interconectar.
+
+Nota: las cuentas que se agreguen como enlace de crédito aparecerán en las siguientes ventanas: Documentos p.r., Documentos p.c., Comprobantes p.r. y Documentos p.c., de manera predeterminada al momento de actualizar.
 
 ====Desconectar====
 Seleccionar una o mas cuentas haciendo un check en sus casillas correspondientes, dirigirse a la opción acción y elegir desconectar.
@@ -130,7 +135,19 @@ Secundario:
 ====Borrar====
 Seleccionar una o mas cuentas hijo haciendo un check en su casilla correspondiente, dirigirse a la opción acción y seleccionar borrar.
 
-===e. Clasificación de productos===
+===e. Asientos===
+Solo aparecerá cuando la cuenta tenga en sumar, FALSE. Verá los siguientes puntos en esta opción:
+
+  * Crear como débito
+  * Crear como crédito
+
+====Crear como débito====
+Dirigirse a la opción acción y seleccionar crear como débito.
+
+====Crear como crédito====
+Dirigirse a la opción acción y seleccionar crear como crédito.
+
+===f. Clasificación de productos===
 Veremos los siguientes puntos en este menú:
 
   * Crear
@@ -406,8 +423,10 @@ Una vez ingresada la información hace click en el botón buscar, inmediatamente
 Seleccionar una o mas posiciones, dirigirse a la opción acción y elegir borrar seleccionados.
 
 ==2.5 Acceso a casos==
-Cuando ingrese a este caso verá el menú cuentas, ahora ingrese al menú cuentas y luego diríjase a la opción acción en donde encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresará la información correspondiente en el campo número, puede ser el número de la cuenta o solo *(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo *(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
-Una vez que interconecta, ingresa a estas cuentas por medio de su numerador el cual le ayudará a visualizar la información de la cuenta y además editarla, para ello debe de dirigirse a acción y cambiar el default por TRUE.
+Cuando ingrese a este caso verá el menú cuentas, ahora ingrese al menú cuentas y luego diríjase a la opción acción en donde encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresará la información correspondiente en el campo número, puede ser el número de la cuenta o solo *(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
+Una vez que interconecta, ingresa a estas cuentas por medio de su numerador el cual le ayudará a visualizar la información de la cuenta y además editarla.
+Para que una cuenta salga de forma predetermida en las ventanas de Documentos p.r., Documentos p.c., Comprobante p.r., Comprobante p.c.
+deberá de dirigirse a la opción acción y seleccionar editar, luego cambiar el default por TRUE.
 
 ==2.6 Acceso a Centro de costos==
 Cuando ingrese a la opción centro costos podrá visualizar las siguientes opciones:
