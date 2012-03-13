@@ -37,6 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_ActionDefinitionMyDesk_Menu_Action_CreatePettyCash</child>
+            <child>Accounting_ActionDefinitionMyDesk_Menu_Action_CreatePayrollCasePosition</child>
             <child>Accounting_ActionDefinitionMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

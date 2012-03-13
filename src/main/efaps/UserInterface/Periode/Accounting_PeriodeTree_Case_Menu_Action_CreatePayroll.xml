@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
  Copyright 2003 - 2010 The eFaps Team
@@ -17,35 +16,34 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5317 $
+ Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>76893fdc-70df-47e5-b909-841a4df75753</uuid>
+    <uuid>bee0cd25-20d5-4d13-b8f4-e3043788a67d</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    <file-revision>$Rev: 5317 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinitionTree_Case_Menu_Action_AddExisting</name>
-        <!-- target definition -->
-        <target>
-            <search>Accounting_ActionDefinitionTree_Case_Menu_Action_AddExisting_Search</search>
-            <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Accounting_ActionDefinition2Case</property>
-            </execute>
-        </target>
+        <name>Accounting_PeriodeTree_Case_Menu_Action_CreatePayroll</name>
 
+        <!-- target definitions -->
+        <target>
+            <form>Accounting_CaseForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create"/>
+        </target>
         <!-- properties -->
         <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_CasePayroll</property>
+        <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodeAbstractLink</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
-
 </ui-command>

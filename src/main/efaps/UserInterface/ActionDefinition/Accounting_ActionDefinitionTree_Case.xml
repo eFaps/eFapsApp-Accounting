@@ -37,8 +37,8 @@
             <menu>Accounting_ActionDefinitionTree_Case_Menu</menu>
             <table>Accounting_ActionDefinition2CaseTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_ActionDefinitionPettyCash2Case</property>
-                <property name="LinkFroms">FromLink</property>
+                <property name="Types">Accounting_ActionDefinition2Case</property>
+                <property name="LinkFroms">FromLinkAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

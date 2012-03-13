@@ -34,12 +34,12 @@
     <definition>
 
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinitionPettyCash2Case</name>
+        <name>Accounting_ActionDefinition2Case</name>
         <parent>Accounting_ActionDefinition2ObjectAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Accounting_ActionDefinitionPettyCash</typelink>
+            <typelink>Accounting_ActionDefinitionAbstract</typelink>
             <sqltable>Accounting_ActionDefinition2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>

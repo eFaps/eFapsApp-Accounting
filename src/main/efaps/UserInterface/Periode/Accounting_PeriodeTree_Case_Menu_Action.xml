@@ -44,6 +44,7 @@
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateExternalRegister</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateStockBooking</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateGeneral</child>
+            <child>Accounting_PeriodeTree_Case_Menu_Action_CreatePayroll</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_Delete</child>
         </childs>
     </definition>
