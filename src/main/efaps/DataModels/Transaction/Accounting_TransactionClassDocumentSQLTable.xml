@@ -38,8 +38,8 @@
             <!-- columns -->
             <column name="TRANSID"  type="INTEGER" not-null="true" />
             <column name="DOCID"    type="INTEGER" not-null="true" />
-            <foreign name="T_ACCTRANSACTIONCLASS_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
-            <foreign name="T_ACCTRANSACTIONCLASS_FK_DOCID"      key="DOCID"     reference="T_ERPDOC(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASSDOC_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASSDOC_FK_DOCID"      key="DOCID"     reference="T_ERPDOC(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>

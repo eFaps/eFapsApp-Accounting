@@ -38,8 +38,8 @@
             <!-- columns -->
             <column name="TRANSID"      type="INTEGER" not-null="true" />
             <column name="CONTACTID"    type="INTEGER" not-null="true" />
-            <foreign name="T_ACCTRANSACTIONCLASS_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
-            <foreign name="T_ACCTRANSACTIONCLASS_FK_CONTACTID"  key="CONTACTID" reference="T_COCONTACT(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASSCASH_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASSCASH_FK_CONTACTID"  key="CONTACTID" reference="T_COCONTACT(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>
