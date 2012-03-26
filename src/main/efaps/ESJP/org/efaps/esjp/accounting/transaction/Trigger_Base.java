@@ -28,6 +28,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Delete;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -148,6 +149,7 @@ public abstract class Trigger_Base
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_instance);
+        print.addAttribute(CIAccounting.TransactionPositionAbstract.TransactionLink);
         print.addSelect("linkto[AccountLink].oid");
         print.addSelect("linkto[AccountLink].attribute[SumBooked]");
         print.execute();
@@ -158,16 +160,21 @@ public abstract class Trigger_Base
         }
 
         final Instance accountInst = Instance.get(print.<String>getSelect("linkto[AccountLink].oid"));
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionWithPos);
-        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionWithPos.AccountLink, accountInst.getId());
-        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionWithPos.Status,
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction);
+        attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.Status,
                         Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accountInst.getId());
+
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIAccounting.TransactionWithPos.Amount);
+        multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
         multi.execute();
 
         while (multi.next()) {
-            total = total.add((BigDecimal) multi.getAttribute(CIAccounting.TransactionWithPos.Amount));
+            total = total.add((BigDecimal) multi.getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
         }
         final Update update = new Update(accountInst);
         update.add(CIAccounting.AccountAbstract.SumReport, total);
