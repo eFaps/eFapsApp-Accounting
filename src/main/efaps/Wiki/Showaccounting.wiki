@@ -33,7 +33,7 @@ Contamos con los siguientes puntos:
   * 1.7 Cuentas
   * 1.8 Árbol de cuentas
   * 1.9 Asientos
-  * 1.10 Casos
+  * 1.10 Definiciones de asientos
   * 1.11 Centro de costos
   * 1.12 Documentos p. r.
   * 1.13 Documentos p. c.
@@ -164,24 +164,25 @@ Debe de escoger uno o mas asientos haciendo un check en sus casillas, dirigirse 
 ====1.9.4 Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
-===1.10 Casos===
+===1.10 Definiciones de asientos===
 Verá los siguientes puntos:
 
-  * Crear un caso
+  * Crear una definición
   * Borrar
-  * Show caso
+  * Show definición
 
-====Crear un caso====
-Para crear un caso usted debe de ingresar al tipo de caso que desea,
+====Crear una Definición====
+Para crear una definición usted deberá ingresar al tipo de asiento que desea,
 
-  * Crear caso para Caja y Bancos – Cobros
-  * Crear caso para Caja y Bancos – Pagos
-  * Crear caso para Documento por Contabilizar
-  * Crear caso para Documento por Registrar
-  * Crear caso para Comprobante por Contabilizar
-  * Crear caso para Comprobante por Registrar
-  * Crear caso para Stock por Contabilizar
-  * Crear caso general
+  * Crear Definición para Caja y Bancos – Cobros
+  * Crear Definición para Caja y Bancos – Pagos
+  * Crear Definición para Documento por Contabilizar
+  * Crear Definición para Documento por Registrar
+  * Crear Definición para Comprobante por Contabilizar
+  * Crear Definición para Comprobante por Registrar
+  * Crear Definición para Stock por Contabilizar
+  * Crear Definición de Asiento general
+  * Crear Definición de Asiento para Planillas
 
 Inmediatamente le aparecerá una ventana en donde ingresará la información correspondiente:
 
@@ -192,8 +193,16 @@ Inmediatamente le aparecerá una ventana en donde ingresará la información cor
 ====Borrar====
 Seleccionar una o mas cuentas haciendo un check en sus casillas, dirigirse a la opción acción y elegir borrar.
 
-====Show caso====
-[./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_casos acceso a caso]
+====Show definción====
+[./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asientos Acceso a definiciones de asientos]
+
+A. *Elementos relacionados*
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Definiciones de asientos]
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#6._Acciones Acceso a Acciones]
+  * [./org.efaps.wiki.accounting.Accounting.wiki#5._Acciones Crear Acciones]
+  * [./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asiento Acceso a definiciones de asiento]
+  * Es para que pueda crear una planilla con asientos contables ([./org.efaps.wiki.payroll.Payroll.wiki#3.1_Crear Crear])
+
 
 ===1.11 Centros de costos===
 Veremos los siguientes puntos en este menú,
@@ -580,7 +589,7 @@ Para seleccionar los documentos debe hacer un check en su casillero correspondie
 Mostraremos los siguientes puntos:
 
   * 6.1 Editar
-  * 6.2 Casos
+  * 6.2 Definiciones de asientos
 
 ===6.1 Editar===
 Usted podrá editar los siguientes campos:
@@ -589,18 +598,27 @@ Usted podrá editar los siguientes campos:
   * Descripción
   * Activo
 
-===6.2 Casos===
+===6.2 Definiciones de asientos===
 Verá los siguientes puntos:
 
   * 6.2.1 Agregar existente
   * 6.2.2 Desconectar
 
 ====6.2.1 Agregar existente====
-Para agregar usted debe dirigirse a acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana *búsqueda de casos* en donde encontrará los siguientes campos:
+Para agregar cuentas, usted deberá dirigirse a la opción acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana *búsqueda de definiciones de asientos* en donde encontrará los siguientes campos:
 
   * Nombre: coloque parte de la información o la información completa con {{{*}}} al final.
   * Descripción: coloque parte de la información o la información completa con {{{*}}} al final.
   * Activo: si usted coloca TRUE podrá buscar todos los casos que se encuentren activos y si coloca FALSE podrá buscar todos los casos que se encuentren desactivados.
+
+Importante: para crear definiciones de asientos ingrese aquí [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Crear una definición].
+
+A. *Elementos relacionados*
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Definiciones de asientos]
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#6._Acciones Acceso a Acciones]
+  * [./org.efaps.wiki.accounting.Accounting.wiki#5._Acciones Crear Acciones]
+  * [./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asiento Acceso a definiciones de asiento]
+  * Es para que pueda crear una planilla con asientos contables ([./org.efaps.wiki.payroll.Payroll.wiki#3.1_Crear Crear])
 
 ====6.2.2 Desconectar====
 Para desconectar debe de seleccionar los casos haciendo un check en sus respectivos casilleros, dirigirse a la opción acción y desconectar, inmediatamente le aparecerá una ventana de confirmación para que acepte o cancele la acción.

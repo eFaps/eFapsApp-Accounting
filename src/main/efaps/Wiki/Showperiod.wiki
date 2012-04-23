@@ -18,7 +18,7 @@ Contamos con los siguientes puntos:
   * 2.2 Acceso a cuentas
   * 2.3 Acceso a árbol de cuentas
   * 2.4 Acceso a asientos
-  * 2.5 Acceso a casos
+  * 2.5 Acceso a definiciones de asientos
   * 2.6 Acceso a Centro de costos
   * 2.7 Acceso a Documentos p. r.
   * 2.8 Acceso a Documentos p. c.
@@ -422,11 +422,18 @@ Una vez ingresada la información hace click en el botón buscar, inmediatamente
 ====c. Borrar seleccionados====
 Seleccionar una o mas posiciones, dirigirse a la opción acción y elegir borrar seleccionados.
 
-==2.5 Acceso a casos==
-Cuando ingrese a este caso verá el menú cuentas, ahora ingrese al menú cuentas y luego diríjase a la opción acción en donde encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresará la información correspondiente en el campo número, puede ser el número de la cuenta o solo *(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
+==2.5 Acceso a definiciones de asientos==
+Cuando ingrese a esta definición verá el menú cuentas y dentro de cuentas vera la opción acción en donde encontrará Añadir Existente como crédito, Añadir Existente como crédito (Clasificación), Añadir Existente como débito y Añadir Existente como débito (Clasificación), ingrese a cualquiera de ellas, inmediatamente le aparecerá la ventana buscar cuentas en donde ingresará la información correspondiente en el campo número, puede ser el número de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas) o puede ingresar en el campo descripción el nombre de la cuenta o solo {{{*}}}(visualizará la lista completa de cuentas), en donde seleccionará la cuenta que desea haciendo un check en su casilla e interconectando.
 Una vez que interconecta, ingresa a estas cuentas por medio de su numerador el cual le ayudará a visualizar la información de la cuenta y además editarla.
 Para que una cuenta salga de forma predetermida en las ventanas de Documentos p.r., Documentos p.c., Comprobante p.r., Comprobante p.c.
 deberá de dirigirse a la opción acción y seleccionar editar, luego cambiar el default por TRUE.
+
+A. *Elementos relacionados*
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Definiciones de asientos]
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#6._Acciones Acceso a Acciones]
+  * [./org.efaps.wiki.accounting.Accounting.wiki#5._Acciones Crear Acciones]
+  * [./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asiento Acceso a definiciones de asiento]
+  * Es para que pueda crear una planilla con asientos contables ([./org.efaps.wiki.payroll.Payroll.wiki#3.1_Crear Crear])
 
 ==2.6 Acceso a Centro de costos==
 Cuando ingrese a la opción centro costos podrá visualizar las siguientes opciones:
@@ -562,7 +569,7 @@ Verá las siguientes opciones:
 Se dirige a la opción acción y selecciona crear, inmediatamente le aparecerá la ventana *Crear clasificación* en seleccionará un tipo de producto, para poder relacionarlo con la cuenta.
 
 || *Tipo* || *Cuenta* || *Clasificación de productos* ||
-|| Clasificación de producto para cuenta || *291* || GyGK_Products_ClassEquipmentVibrator ||
+|| Clasificación de producto para cuenta || *291* || prod ||
 
 ====b. Desconectar====
 Seleccionar uno o mas clasificaciones de productos haciendo un check en su casilla correspondiente, dirigirse a la opción acción y seleccionar desconectar.
