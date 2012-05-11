@@ -90,7 +90,6 @@
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>
         </field>
-        <!--  field uses the same name because only one of them is shown-->
         <field name="contact">
             <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -112,8 +111,7 @@
                 name="Accounting_TransactionCreate4ExternalForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
-        <!--  field uses the same name because only one of them is shown-->
-        <field name="contact" character="Picker">
+        <field name="contactPicker" character="Picker">
             <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
