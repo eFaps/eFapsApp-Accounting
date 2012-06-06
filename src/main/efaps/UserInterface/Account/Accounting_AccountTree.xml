@@ -41,6 +41,9 @@
             <evaluate program="org.efaps.esjp.accounting.StructurBrowser">
                 <property name="Types">Accounting_AccountAbstract</property>
                 <property name="ExpandChildTypes">true</property>
+                <property name="Child_Types">Accounting_AccountAbstract</property>
+                <property name="Child_LinkFroms">ParentLink</property>
+                <property name="Child_ExpandChildTypes">true</property>
             </evaluate>
         </target>
         <!-- type tree for -->
