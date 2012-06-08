@@ -226,16 +226,16 @@ public abstract class Create_Base
                 Insert insert = null;
                 long statusId = 0;
                 if (CIAccounting.PaymentCheck.getType().equals(payInst.getType())) {
-                    insert = new Insert(CIAccounting.PaymentCheck2Document);
-                    statusId = Status.find(CIAccounting.PaymentCheckStatus.uuid, "Closed").getId();
+                    insert = new Insert(CIAccounting.Document2PaymentDocument);
+                    statusId = Status.find(CIAccounting.PaymentDocumentStatus.uuid, "Closed").getId();
                 }
-                insert.add(CIAccounting.PaymentAbstract2Document.FromAbstractLink, payInst.getId());
-                insert.add(CIAccounting.PaymentAbstract2Document.ToAbstractLink, docInst.getId());
+                insert.add(CIAccounting.Document2PaymentDocument.FromLink, docInst.getId());
+                insert.add(CIAccounting.Document2PaymentDocument.ToLink, payInst.getId());
                 insert.executeWithoutAccessCheck();
 
                 if (setPayStatus) {
                     final Update update = new Update(payInst);
-                    update.add(CIAccounting.PaymentAbstract.StatusAbstract, statusId);
+                    update.add(CIAccounting.PaymentDocumentAbstract.StatusAbstract, statusId);
                     update.executeWithoutTrigger();
                 }
             }

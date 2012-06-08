@@ -31,8 +31,13 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PaymentCheckForm</name>
+        <name>Accounting_PaymentDocumentAbstractForm</name>
         <!-- fields -->
+        <field name="name">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">Type</property>
+        </field>
         <field name="nameGroup" character="Group">
             <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
@@ -44,14 +49,14 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">Name</property>
-            <property name="Label">Accounting_PaymentCheckForm.namePrefix.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.namePrefix.Label</property>
         </field>
         <field name="fromNumber">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <property name="Label">Accounting_PaymentCheckForm.fromNumber.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.fromNumber.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
         </field>
         <field name="nameSuffix">
@@ -59,13 +64,13 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">Name</property>
-            <property name="Label">Accounting_PaymentCheckForm.nameSuffix.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.nameSuffix.Label</property>
         </field>
          <field name="toNumber">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Accounting_PaymentCheckForm.toNumber.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.toNumber.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
         </field>
         <field name="name">
@@ -78,7 +83,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="Label">Accounting_PaymentCheckForm.periode.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.periode.Label</property>
             <trigger program="org.efaps.esjp.accounting.Payment"
                 method="periodeUIFieldValue"
                 name="Accounting_PaymentCheckForm.periode.UI_FIELD_VALUE"
@@ -92,7 +97,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="Label">Accounting_PaymentCheckForm.account.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.account.Label</property>
             <trigger program="org.efaps.esjp.accounting.Account"
                 method="autoComplete4Account"
                 name="Accounting_PaymentCheckForm.account.UI_FIELD_AUTOCOMPLETE"
@@ -108,16 +113,16 @@
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
             <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
         </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Status</property>
         </field>
         <field name="createGroup" character="Group">

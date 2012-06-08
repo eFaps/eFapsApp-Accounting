@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -17,27 +15,24 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5313 $
+ Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (lun, 16 ago 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
--->
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a07e6259-9aa5-431f-8393-0e742b992d86</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
+    <uuid>56cd1287-922e-487c-84a2-07350d757473</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PaymentTree_Document</name>
+        <name>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing</name>
         <target>
-            <menu>Accounting_PaymentTree_Document_Menu</menu>
-            <table>Accounting_Payment2DocumentTable</table>
+            <menu>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing_Menu</menu>
+            <table>Accounting_Document2PaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">ERP_Document2PaymentDocumentAbstract</property>
-                <property name="LinkFroms">ToAbstractLink</property>
+                <property name="Types">Accounting_Document2PaymentDocument</property>
+                <property name="LinkFroms">FromAbstractLink</property>
             </evaluate>
         </target>
         <!-- properties -->

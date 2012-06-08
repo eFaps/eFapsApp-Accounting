@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 5317 $
+  Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
+  Last Changed By: $Author: miguel.a.aranya $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>41543958-dd15-4255-8326-2bf3d4a3433e</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev: 5317 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_Document2PaymentForm</name>
+        <!-- fields -->
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="currency">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="documentLink">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_Document2PaymentDocument.documentLink.Label</property>
+        </field>
+        <field name="paymentLink">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
+            <property name="Select">linkto[ToAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_Document2PaymentDocument.paymentLink.Label</property>
+        </field>
+        <field name="paymentType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Accounting_Document2PaymentForm.paymentType.Label</property>
+            <trigger program="org.efaps.esjp.accounting.Payment"
+                method="getTypesFieldValue"
+                name="Accounting_Document2PaymentForm.paymentType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Types">Accounting_PaymentDocumentAbstract</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.Payment"
+                    method="updateField4PaymentDocuments"
+                    name="Accounting_Document2PaymentForm.paymentType.UI_FIELD_UPDATE"
+                    event="UI_FIELD_UPDATE">
+                <property name="columnCount">5</property>
+            </trigger>
+        </field>
+        <field name="paymentDoc">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Accounting_Document2PaymentForm.paymentDoc.Label</property>
+        </field>
+        <field name="paymentStatus">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Accounting_Document2PaymentForm.paymentStatus.Label</property>
+        </field>
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field character="Group" name="modifyGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.accounting.Payment"
+                    method="getJavaScripUIValue"
+                    name="Accounting_Document2PaymentForm.amount.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE"/>
+        </field>
+    </definition>
+</ui-form>

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -17,37 +15,31 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5867 $
+ Last Changed:    $Date: 2010-11-26 14:08:18 -0500 (vie, 26 nov 2010) $
+ Last Changed By: $Author: jan@moxter.net $
 
--->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f144830e-3464-49f7-a093-6f18fa533d54</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>d0ddcecf-0224-44e0-b50a-8e0d47bef4f5</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 5867 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PaymentCheck2Document</name>
-        <parent>Accounting_PaymentAbstract2Document</parent>
+        <name>Accounting_Document2PaymentDocument</name>
+        <parent>ERP_Document2PaymentDocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Accounting_PaymentCheck</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <typelink>ERP_DocumentAbstract</typelink>
+            <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_DocumentSumAbstract</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <typelink>Accounting_PaymentCheck</typelink>
+            <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
-        <trigger program="org.efaps.esjp.accounting.Payment" method="updateAmount2Payment"
-            name="Accounting_PaymentCheck2Document.INSERT_POST" event="INSERT_POST" />
     </definition>
 </datamodel-type>

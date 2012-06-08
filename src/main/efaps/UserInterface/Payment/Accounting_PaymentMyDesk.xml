@@ -41,7 +41,7 @@
             <menu>Accounting_PaymentMyDesk_Menu</menu>
             <table>Accounting_PaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_PaymentAbstract</property>
+                <property name="Types">ERP_PaymentDocumentAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

@@ -23,26 +23,18 @@
 
 -->
 
-<datamodel-statusgroup  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f88eb038-263c-49df-9310-dc391e0b3a14</uuid>
+<ui-menu xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1e31f45a-a4ce-4446-83b6-d1ed62e383b5</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PaymentCheckStatus</name>
-        <parent>Admin_DataModel_StatusAbstract</parent>
-        <status key="Open">
-            <description>Check is unused.</description>
-        </status>
-        <status key="Closed">
-            <description>Check was emited.</description>
-        </status>
-        <status key="Canceled">
-            <description>Check was canceled.</description>
-        </status>
+        <name>Accounting_PaymentDocumentAbstractTree_Menu_Action</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_PaymentDocumentAbstractTree_Menu_Action_Edit</child>
+        </childs>
     </definition>
-</datamodel-statusgroup>
-
+</ui-menu>

@@ -31,14 +31,14 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PaymentCheckTree</name>
+        <name>Accounting_PaymentDocumentAbstractTree</name>
         <!-- targets -->
         <target>
-            <menu>Accounting_PaymentCheckTree_Menu</menu>
-            <form>Accounting_PaymentCheckForm</form>
+            <menu>Accounting_PaymentDocumentAbstractTree_Menu</menu>
+            <form>Accounting_PaymentDocumentAbstractForm</form>
         </target>
         <!-- type tree for -->
-        <type>Accounting_PaymentCheck</type>
+        <type>Accounting_PaymentDocumentAbstract</type>
         <!-- childs -->
         <childs>
             <child>Accounting_PaymentTree_Account</child>

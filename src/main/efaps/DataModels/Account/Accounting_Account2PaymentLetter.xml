@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -17,35 +15,32 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5867 $
+ Last Changed:    $Date: 2010-11-26 14:08:18 -0500 (vie, 26 nov 2010) $
+ Last Changed By: $Author: jan@moxter.net $
 
--->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>c88c9240-e2d0-4936-8baf-126e50b35155</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>75f93dd8-3cc0-41fb-a7bd-3a9be2c1cdf7</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 5867 $</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PaymentAbstract2Document</name>
-        <parent>ERP_Object2ObjectAbstract</parent>
-        <purpose abstract="true"/>
+        <name>Accounting_Account2PaymentLetter</name>
+        <parent>Accounting_Account2PaymentAbstract</parent>
+
         <attribute>
-            <name>FromAbstractLink</name>
+            <name>FromLink</name>
             <type>Link</type>
-            <typelink>Accounting_PaymentAbstract</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <typelink>Accounting_AccountAbstract</typelink>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>ToAbstractLink</name>
+            <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_DocumentSumAbstract</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <typelink>ERP_PaymentDocumentAbstract</typelink>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>
