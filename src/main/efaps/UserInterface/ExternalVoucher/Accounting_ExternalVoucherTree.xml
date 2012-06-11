@@ -43,6 +43,7 @@
         <type>Accounting_ExternalVoucher</type>
         <childs>
             <child>Accounting_ExternalVoucherTree_Transaction</child>
+            <child>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
