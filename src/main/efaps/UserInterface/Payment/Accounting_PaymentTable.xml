@@ -36,6 +36,7 @@
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_PaymentDocumentAbstract/Type.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
@@ -44,10 +45,15 @@
         </field>
         <field name="date">
             <property name="Attribute">Date</property>
+            <property name="FilterType">FREETEXT</property>
+          <property name="FilterRequired">TRUE</property>
+          <property name="FilterBase">DATABASE</property>
+          <property name="FilterDefault">MONTH</property>
             <property name="Label">Accounting_PaymentDocumentAbstract/Date.Label</property>
         </field>
         <field name="status">
             <property name="Attribute">StatusAbstract</property>
+            <property name="FilterType">PICKER</property>
             <property name="Label">Accounting_PaymentDocumentAbstract/StatusAbstract.Label</property>
         </field>
         <field name="amount">
