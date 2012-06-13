@@ -46,8 +46,12 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
-            <property name="Select">linkto[ToAbstractLink].attribute[Date]</property>
+            <property name="Select">linkto[FromAbstractLink].attribute[Date]</property>
             <property name="Label">Accounting_Document2PaymentDocument/Date.Label</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="Label">Accounting_Document2PaymentDocument/Amount.Label</property>
         </field>
         <field name="status">
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>

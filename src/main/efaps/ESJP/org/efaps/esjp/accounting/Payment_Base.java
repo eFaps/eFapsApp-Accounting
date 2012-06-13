@@ -47,6 +47,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -762,6 +763,50 @@ public abstract class Payment_Base
             }
         } else {
             ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Disconnect the sales document from the payment document deleting the connection,
+     * and subtract the amount of the connection from the payment document.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @return
+     * @throws EFapsException on error.
+     */
+    public Return disconnectDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instDoc = _parameter.getInstance();
+        final PrintQuery printDoc = new PrintQuery(instDoc);
+        printDoc.addAttribute(CIAccounting.PaymentDocumentAbstract.Amount);
+        printDoc.execute();
+        final BigDecimal amountPayDoc = printDoc.<BigDecimal>getAttribute(CIAccounting.PaymentDocumentAbstract.Amount);
+        BigDecimal newAmountPayDoc = amountPayDoc;
+
+        final String[] allOids = (String[]) _parameter.get(ParameterValues.OTHERS);
+        if (allOids != null && allOids.length != 0) {
+            for (final String oid : allOids) {
+                final Instance instDoc2Pay = Instance.get(oid);
+                final PrintQuery print = new PrintQuery(instDoc2Pay);
+                print.addAttribute(CIAccounting.Document2PaymentDocument.Amount);
+                print.execute();
+                final BigDecimal amount = print.<BigDecimal>getAttribute(CIAccounting.Document2PaymentDocument.Amount);
+                newAmountPayDoc = newAmountPayDoc.subtract(amount);
+
+                final Delete delete = new Delete(instDoc2Pay);
+                delete.execute();
+            }
+
+            if (newAmountPayDoc.compareTo(amountPayDoc) != 0) {
+                final Update update = new Update(instDoc);
+                update.add(CIAccounting.PaymentDocumentAbstract.Amount, newAmountPayDoc);
+                update.add(CIAccounting.PaymentDocumentAbstract.StatusAbstract,
+                                Status.find(CIAccounting.PaymentDocumentStatus.uuid, "Open").getId());
+                update.execute();
+            }
         }
         return ret;
     }

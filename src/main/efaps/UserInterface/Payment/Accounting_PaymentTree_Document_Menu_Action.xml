@@ -35,7 +35,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PaymentTree_Document_Menu_Action_AddExisting</child>
-            <child>Accounting_AccountTree_Account_Menu_Action_Disconnect</child>
+            <child>Accounting_PaymentTree_Document_Menu_Action_Disconnect</child>
         </childs>
     </definition>
 </ui-menu>
