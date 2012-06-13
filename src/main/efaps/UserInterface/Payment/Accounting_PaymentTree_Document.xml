@@ -36,7 +36,7 @@
             <menu>Accounting_PaymentTree_Document_Menu</menu>
             <table>Accounting_Payment2DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">ERP_Document2PaymentDocumentAbstract</property>
+                <property name="Types">Accounting_Document2PaymentDocument</property>
                 <property name="LinkFroms">ToAbstractLink</property>
             </evaluate>
         </target>

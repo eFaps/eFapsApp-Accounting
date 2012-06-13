@@ -35,24 +35,24 @@
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">ERP_Document2PaymentDocumentAbstract/Type.Label</property>
+            <property name="Label">Accounting_Document2PaymentDocument/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="name">
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
-            <property name="Label">ERP_Document2PaymentDocumentAbstract/Name.Label</property>
+            <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
+            <property name="Label">Accounting_PaymentDocumentAbstract/Name.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
             <property name="Select">linkto[ToAbstractLink].attribute[Date]</property>
-            <property name="Label">ERP_Document2PaymentDocumentAbstract/Date.Label</property>
+            <property name="Label">Accounting_Document2PaymentDocument/Date.Label</property>
         </field>
         <field name="status">
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
-            <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
-            <property name="Label">ERP_Document2PaymentDocumentAbstract/StatusAbstract.Label</property>
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
+            <property name="Label">Accounting_PaymentDocumentAbstract/StatusAbstract.Label</property>
         </field>
     </definition>
 </ui-table>
