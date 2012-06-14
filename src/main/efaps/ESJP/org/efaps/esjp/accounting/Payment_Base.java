@@ -456,10 +456,6 @@ public abstract class Payment_Base
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing HTML snipplet
      */
-    /**
-     * @param _parameter
-     * @return
-     */
     public Return getTypesFieldValue(final Parameter _parameter)
     {
         final Return ret = new Return();
@@ -732,39 +728,82 @@ public abstract class Payment_Base
      *
      * @param _parameter as passed from eFaps API.
      * @return Return with true if it's correct.
+     * @throws EFapsException
+     * @throws
      */
-    public Return validate4Pay2Doc(final Parameter _parameter) {
-        final StringBuilder st = new StringBuilder();
+    public Return validate4Pay2Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        StringBuilder st = new StringBuilder();
         final Return ret = new Return();
-        if (_parameter.getParameterValue("paymentType") != null
-                        && !_parameter.getParameterValue("paymentType").equals("*")) {
-            final Long payTypeId = Long.parseLong(_parameter.getParameterValue("paymentType"));
-            if (Type.get(payTypeId).isKindOf(CIAccounting.PaymentDocumentPlanned.getType())) {
-                final String[] payDocs = _parameter.getParameterValues("payDocument");
-                if (payDocs != null) {
-                    if (payDocs.length != 1) {
-                        st.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.OnlyOne"));
-                        ret.put(ReturnValues.SNIPLETT, st.toString());
+        st = validateAmount(_parameter);
+
+        if (st.toString().isEmpty()) {
+            if (_parameter.getParameterValue("paymentType") != null
+                            && !_parameter.getParameterValue("paymentType").equals("*")) {
+                final Long payTypeId = Long.parseLong(_parameter.getParameterValue("paymentType"));
+                if (Type.get(payTypeId).isKindOf(CIAccounting.PaymentDocumentPlanned.getType())) {
+                    final String[] payDocs = _parameter.getParameterValues("payDocument");
+                    if (payDocs != null) {
+                        if (payDocs.length != 1) {
+                            st.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.OnlyOne"));
+                            ret.put(ReturnValues.SNIPLETT, st.toString());
+                        } else {
+                            ret.put(ReturnValues.TRUE, true);
+                        }
                     } else {
-                        ret.put(ReturnValues.TRUE, true);
+                        st.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.AtLeastOne"));
+                        ret.put(ReturnValues.SNIPLETT, st.toString());
                     }
-                } else {
-                    st.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.AtLeastOne"));
-                    ret.put(ReturnValues.SNIPLETT, st.toString());
+                } else if (Type.get(payTypeId).isKindOf(CIAccounting.PaymentDocumentImmediate.getType())) {
+                    final String nameDoc = _parameter.getParameterValue("payDocument");
+                    if (nameDoc != null && !nameDoc.isEmpty()) {
+                        ret.put(ReturnValues.TRUE, true);
+                    } else {
+                        st.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.NotName"));
+                        ret.put(ReturnValues.SNIPLETT, st.toString());
+                    }
                 }
-            } else if (Type.get(payTypeId).isKindOf(CIAccounting.PaymentDocumentImmediate.getType())) {
-                final String nameDoc = _parameter.getParameterValue("payDocument");
-                if (nameDoc != null && !nameDoc.isEmpty()) {
-                    ret.put(ReturnValues.TRUE, true);
-                } else {
-                    st.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.NotName"));
-                    ret.put(ReturnValues.SNIPLETT, st.toString());
-                }
+            } else {
+                ret.put(ReturnValues.TRUE, true);
             }
         } else {
-            ret.put(ReturnValues.TRUE, true);
+            ret.put(ReturnValues.SNIPLETT, st.toString());
         }
         return ret;
+    }
+
+    protected StringBuilder validateAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final BigDecimal amount = new BigDecimal(_parameter.getParameterValue("amount"));
+
+        final Instance instDoc = _parameter.getInstance();
+        final PrintQuery print = new PrintQuery(instDoc);
+        print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+        print.execute();
+        final BigDecimal amountTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+        BigDecimal amountTotalTemp = amountTotal;
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Document2PaymentDocument);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Document2PaymentDocument.FromLink, instDoc.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.Document2PaymentDocument.Amount);
+        multi.execute();
+        while (multi.next()) {
+            final BigDecimal tempAmount = multi.<BigDecimal>getAttribute(CIAccounting.Document2PaymentDocument.Amount);
+            amountTotalTemp = amountTotalTemp.subtract(tempAmount);
+        }
+
+        if (amount.compareTo(BigDecimal.ZERO) > 0) {
+            if (amount.compareTo(amountTotalTemp) > 0) {
+                html.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.ExcesiveAmount"));
+            }
+        } else {
+            html.append(DBProperties.getProperty("org.efaps.esjp.accounting.Payment.NegativeAmount"));
+        }
+        return html;
     }
 
     /**
