@@ -59,7 +59,7 @@
         <attribute>
             <name>DocumentLink</name>
             <type>Link</type>
-            <typelink>Sales_DocumentAbstract</typelink>
+            <typelink>Sales_DocumentSumAbstract</typelink>
             <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
