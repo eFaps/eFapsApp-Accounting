@@ -15,7 +15,7 @@ El menú contabilidad le ayudará a manejar los siguientes puntos:
   # Períodos
   # Reportes
   # Documentos
-  # Cheques
+  # Documentos de pago
   # Acciones
   # Monedas
 
@@ -107,7 +107,7 @@ ingresará la información correspondiente en los siguientes campos:
   * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
 
 ==3. Documentos==
-Le muestra la lista de todos los documentos existentes. A continuación mostraremos los siguientes puntos:
+Usted podrá ver la lista completa de facturas entrantes y comprobantes, creados anteriormente. A continuación mostraremos los siguientes puntos:
 
   * 3.1 Borrar
   * 3.2 Exportar
@@ -118,27 +118,41 @@ Seleccionar uno o varios documentos, dirigirse a la opción acción y elegir bor
 ===3.2 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
 
-==4. Cheques==
-Este menú le brinda la facilidad de tener una lista completa con todos los cheques registrados, a continuación vamos a mostrarle los siguientes puntos,
+==4. Documentos de pago==
+Contiene los siguientes puntos:
 
-  * 4.1 Crear cheque
-  * 4.2 Borrar
-  * 4.3 Exportar
+  * 4.1 Crear Cheque
+  * 4.2 Crear letra
+  * 4.3 Borrar
 
-===4.1 Crear cheque===
-Se dirige a la opción acción y selecciona crear cheque, inmediatamente le aparecerá la ventana *crear nuevo cheque* en donde
-ingresará la información correspondiente en los campos obligatorios y secundarios:
+===4.1 Crear Cheque===
+Se dirige a la opción acción y selecciona crear cheque, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente a cada cada campo obligatorio y secundario:
 
-Obligatorio:
-  * Desde: colocar el numero desde donde va iniciar a contarse los cheques.
+Obligatorio
+  * Desde:  es el primer numero de serie con que empezaría el cheque.
 
-Secundario: nombre prefijo, nombre sufijo, hasta, periodo y cuenta.
+Secundario
+  * Nombre prefijo: colocar un nombre inicial.
+  * Nombre sufijo: colocar un nombre final.
+  * Hasta: es el ultimo numero de serie con que finalizaría el cheque.
+  * Periodo: seleccionar un periodo.
+  * Cuenta: seleccionar una cuenta.
 
-===4.2 Borrar===
-Seleccionar uno o varios cheques, dirigirse a la opción acción y elegir borrar.
+===4.2 Crear letra===
+Se dirige a la opción acción y selecciona crear letra, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente a cada campo obligatorio y secundario:
 
-===4.3 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
+Obligatorio
+  * Desde:  es el primer numero de serie con que empezaría la letra.
+
+Secundario
+  * Nombre prefijo: colocar un nombre inicial.
+  * Nombre sufijo: colocar un nombre final.
+  * Hasta: es el ultimo numero de serie con que finalizaría la letra.
+  * Periodo: seleccionar un periodo.
+  * Cuenta: seleccionar una cuenta.
+
+===4.3 Borrar===
+Seleccionar una o mas letras o cheques, dirigirse a la opción acción y seleccionar borrar.
 
 ==5. Acciones==
 Verá los siguientes puntos:

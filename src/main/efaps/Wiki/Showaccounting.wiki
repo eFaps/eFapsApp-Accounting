@@ -17,8 +17,8 @@ El menú de contabilidad le ayudará a manejar los siguientes puntos:
   # Períodos
   # Acceso a período
   # Reportes
-  # Documentos
-  # Cheques
+  # Acceso a Documentos
+  # Acceso a Documento de pago
   # Acciones
 
 ==1. Período==
@@ -525,65 +525,64 @@ Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias.
   * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
 
 
-==4. Documentos==
-Le muestra la información de cada documento.
+==4.Acceso a Documentos==
+Ingrese a Pagos, para poder crear los pagos respectivos que se van a realizar a la factura entrante, luego deberá seleccionar la opción crear.
+
+===4.1 Crear===
+Se dirige a la opción acción y selecciona crear, inmediatamente le aparecerá la ventana Crear pago en donde ingresará la información correspondiente a cada campo obligatorio y secundario:
+
+Obligatorio
+  * Fecha: colocar de forma manual la fecha o seleccionarla del calendario.
+  * Monto: usted puede editar el monto mostrado.
+  * Moneda: seleccionar el tipo de moneda.
+
+Secundario
+  * Tipo de documento de pago: elegir un tipo de pago de la lista.
+  * Documento: seleccionar un documento, haciendo un check en sus casillas.
+  * Estado: es para colocar en estado cerrado el documento seleccionado, para esto debe seleccionar el estado haciendo un check en su casilla. Si no selecciona el estado entonces los documentos no se cerraran, ejemplo: cheque, letra.
 
 
-==5. Cheques==
-Veremos los siguientes puntos:
+==5. Acceso a Documentos de pago==
+Ingrese por el nombre del pago y vera los siguientes puntos:
 
   * 5.1 Editar
-  * 5.2 Exportar
-  * 5.3 Cuentas
-  * 5.4 Documentos
+  * 5.2 Cuentas
+  * 5.3 Documentos
 
 ===5.1 Editar===
-Cuando usted edita un cheque puede cambiar y colocar nuevos datos, a continuación se le mostrará cuales son los campos para editar y agregar:
+Se dirige a la opción acción y selecciona editar, inmediatamente le aparecerá una ventana en donde podrá editar los siguientes campos:
 
-Editar
-  * Nombre: se modifica el nombre identificativo del cheque.
-  * Fecha: se modifica la fecha con el mismo formato mostrado o seleccionando la fecha del calendario.
-  * Estado: podra elegir cualquier tipo de estado,
-    * Cancelado: cuando ya se cancelo el cheque.
-    * Cerrado: cuando se culmina el uso de este documento.
-    * Pendiente: es el estado predeterminado, cuando se crea un cheque.
-  * Moneda: se elige el tipo de moneda.
+  * Nombre:  puede cambiar el nombre por otro.
+  * Fecha: colocar de forma manual la fecha o seleccionarla del calendario.
 
-Agregar
-  * Monto: colocar el monto correspondiente.
+===5.2 Cuentas===
+Verá los siguientes puntos:
 
-===5.2 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
+  * 5.2.1 Agregar cuenta existente para cheque
+  * 5.2.2 Desconectar
 
-===5.3 Cuentas===
-Mostraremos los siguientes puntos:
+====5.2.1 Agregar cuenta existente para cheque====
+Se dirige a la opción acción y selecciona Agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana Buscar cuentas, en donde podrá ver dos campos:
 
-  * 5.3.1 Agregar Cuenta Existente para Cheque
-  * 5.3.2 Desconectar
+  * Número: puede colocar el numero de la cuenta o solo {{{*}}}, para buscar en todas las cuentas.
+  * Descripción: puede colocar la descripción de la cuenta o solo {{{*}}}, para buscar en todas las cuentas.
 
-====5.3.1 Agregar Cuenta Existente para Cheque====
-Se dirige a la opción acción y selecciona agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana *buscar cuentas* en donde encontrará los campos número y descripción,
+====5.2.2 Desconectar====
+Seleccionar una o mas cuentas haciendo un check en sus casillas, dirigirse a la opción acción y elegir desconectar.
 
-  * Numero: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
-  * Descripción: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
+===5.3 Documentos===
+Verá los siguientes puntos:
 
-====5.3.2 Desconectar====
-  * Para seleccionar las cuentas debe hacer un check en su casillero correspondiente, dirigirse a la opción acción y optar por la opción desconectar.
+  * 5.3.1 Agregar documento existente
+  * 5.3.2 Desconectar documento
 
-===5.4 Documentos===
-Mostraremos los siguientes puntos:
+====5.3.1 Agregar documento existente====
+Se dirige a la opción acción y selecciona Agregar documento existente, inmediatamente le aparecerá la ventana Buscar documentos en donde ingresara la información correspondiente en el siguiente campo:
 
-  * 5.4.1 Agregar Documento Existente
-  * 5.4.2 Desconectar
+  * Nombre: colocar el nombre del documento o solo {{{*}}}, para que aparezcan todos los documentos. Al finalizar este paso hace clic en el botón buscar.
 
-====5.4.1 Agregar Documento Existente====
-Se dirige a la opción acción y selecciona agregar documento existente, inmediatamente le aparecerá la ventana *buscar documentos* en donde encontrará el campo nombre.
-
-Nombre: ingresar la información correspondiente o colocar parte de la información con {{{*}}} al final.
-
-====5.4.2 Desconectar====
-Para seleccionar los documentos debe hacer un check en su casillero correspondiente, dirigirse a la opción acción y optar por la opción desconectar.
-
+====5.3.2 Desconectar documento====
+selecciona uno o mas documentos haciendo un check en sus casillas , dirigirse a la opción acción y elegir desconectar documentos.
 
 ==6. Acciones==
 Mostraremos los siguientes puntos:
