@@ -19,7 +19,7 @@ El menú de contabilidad le ayudará a manejar los siguientes puntos:
   # Reportes
   # Acceso a Documentos
   # Acceso a Documento de pago
-  # Acciones
+  # Acceso a Acciones
 
 ==1. Período==
 Contamos con los siguientes puntos:
@@ -584,7 +584,7 @@ Se dirige a la opción acción y selecciona Agregar documento existente, inmedia
 ====5.3.2 Desconectar documento====
 selecciona uno o mas documentos haciendo un check en sus casillas , dirigirse a la opción acción y elegir desconectar documentos.
 
-==6. Acciones==
+==6. Acceso a acciones==
 Mostraremos los siguientes puntos:
 
   * 6.1 Editar
