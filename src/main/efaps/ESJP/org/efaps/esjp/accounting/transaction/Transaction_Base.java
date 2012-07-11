@@ -114,6 +114,7 @@ public abstract class Transaction_Base
                             instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())
                                             ? CIAccounting.AccountAbstract.PeriodeAbstractLink
                                             : CIAccounting.Transaction.PeriodeLink).oid();
+            print.addSelect(sel);
             print.execute();
             instance = Instance.get(print.<String>getSelect(sel));
         }

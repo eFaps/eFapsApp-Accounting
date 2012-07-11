@@ -96,12 +96,13 @@ public abstract class ExternalVoucher_Base
         docInsert.add(CIAccounting.ExternalVoucher.RateDiscountTotal, BigDecimal.ZERO);
         docInsert.add(CIAccounting.ExternalVoucher.DiscountTotal, BigDecimal.ZERO);
         docInsert.add(CIAccounting.ExternalVoucher.CrossTotal, amounts[1].divide(rate, BigDecimal.ROUND_HALF_UP));
-        docInsert.add(CIAccounting.ExternalVoucher.NetTotal,  amounts[0].divide(rate, BigDecimal.ROUND_HALF_UP));
+        docInsert.add(CIAccounting.ExternalVoucher.NetTotal, amounts[0].divide(rate, BigDecimal.ROUND_HALF_UP));
         docInsert.add(CIAccounting.ExternalVoucher.CurrencyId, curr.getInstance().getId());
         docInsert.add(CIAccounting.ExternalVoucher.RateCurrencyId, rateCurrInst.getId());
         docInsert.add(CIAccounting.ExternalVoucher.Rate, rateObj);
         docInsert.add(CIAccounting.ExternalVoucher.Status,
                         Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId());
+        docInsert.add(CIAccounting.ExternalVoucher.Salesperson, Context.getThreadContext().getPersonId());
         docInsert.execute();
 
         _parameter.put(ParameterValues.INSTANCE, docInsert.getInstance());

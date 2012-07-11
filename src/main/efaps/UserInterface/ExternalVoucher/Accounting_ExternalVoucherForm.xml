@@ -126,12 +126,10 @@
                 name="Sales_IncomingInvoiceForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
-        <field name="note">
-            <property name="Attribute">Note</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="RowSpan">3</property>
-            <property name="Rows">5</property>
-            <property name="Columns">50</property>
+        <field name="typeLink4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Value]&gt; - $&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Description]&gt;</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
         </field>
         <field name="netTotal4Read">
             <property name="ModeEdit">READONLY</property>
