@@ -99,7 +99,7 @@ Le sirve para poder imprimir una o varias hojas con todos los datos que se encue
 Encontrará las cuentas ordenadas por carpetas, si desea puede ver el contenido de la carpeta haciendo clic en el signo +.
 
 ===1.9 Asientos===
-Podrá visualizar todos los documentos p.c. y los comprobantes p.c. que han sido contabilizado, a continuación verá los siguientes puntos en este menú:
+Podrá visualizar todos los documentos y comprobantes que han sido contabilizados, ejemplo: recibos de boleta de pago, a continuación verá los siguientes puntos en este menú:
 
   * 1.9.1 Crear
   * 1.9.2 Cerrar
@@ -174,6 +174,7 @@ Para crear una definición usted deberá ingresar al tipo de asiento que desea,
   * Crear Definición para Stock por Contabilizar
   * Crear Definición de Asiento general
   * Crear Definición de Asiento para Planillas
+  * Crear Definición de Asiento para Caja chica
 
 Inmediatamente le aparecerá una ventana en donde ingresará la información correspondiente:
 
@@ -277,7 +278,7 @@ Obligatorio:
 
 Secundarios:
   * Documento: puede visualizar la información del documento.
-  * Caso: puede seleccionar un caso de la lista o puede [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos crear un caso](Crear caso para comprobante por Registrar).
+  * Definición de asiento: puede seleccionar una definición de la lista o puede [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Crear una definición para comprobante por Registrar].
     * Importante: cuando actualice, van a aparecer los datos del caso en la ventana.
   * Filtro para cuentas: solo van aparecer las cuentas de este caso.
   * Marcar contabilizado: es el ultimo paso de la factura o boleta, presentar como culminado.
@@ -301,11 +302,12 @@ Obligatorio:
   * Descripción: es el nombre del documento.
 
 Secundario:
-  * Caso: puede seleccionar un caso de la lista o puede [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Casos crear un caso](Crear caso para comprobante por registrar).
-    * Importante: cuando actualice, van a aparecer los datos del caso en la ventana.
   * Datos del proveedor: es la información del proveedor seleccionado.
   * Tipo de comprobante: seleccionar cualquier tipo de comprobante de la lista, si desea ingresar mas tipos de comprantes ingresar [./org.efaps.wiki.definitions.Definitions.wiki#1.5_Crear_tipo_de_comprobante aquí].
-  * Filtro para cuenta: solo van aparecer las cuentas del caso seleccionado.
+  * Filtro para cuenta: solo van aparecer las cuentas de la definición.
+  * Definición de asiento: seleccionar un tipo de asiento de la lista y si desea crear mas definiciones ingrese aquí [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Definición de asiento por registrar].
+    * Importante: cuando actualice, van a aparecer las cuentas relacionadas a la definición, con sus montos correspondientes. Para que las cuentas relacionadas a una definición se muestren de manera inmediata al actualizar, usted debe
+    ingresar a las cuentas y colocar un denominador, numerador y estado TRUE.
 
   * Ingreso de débito y crédito:
     * Monto: ingresar la cantidad correspondiente.
@@ -320,7 +322,7 @@ Secundario:
   * Monto restante: mostrará la información correspondiente.
 
 ===1.15 Comprobantes p. c.===
-Mostraremos los siguientes puntos:
+Mostraremos el siguiente punto:
 
   * 1.15.1 Contabilizar documentos
 
