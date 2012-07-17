@@ -1,0 +1,57 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     ecdd5f30-0054-477e-b2a8-56d5088b6324
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a documento de pago
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==5. Acceso a Documentos de pago==
+Ingrese por el nombre del pago y vera los siguientes puntos:
+
+  * 5.1 Editar
+  * 5.2 Cuentas
+  * 5.3 Documentos
+
+===5.1 Editar===
+Se dirige a la opción acción y selecciona editar, inmediatamente le aparecerá una ventana en donde podrá editar los siguientes campos:
+
+  * Nombre:  puede cambiar el nombre por otro.
+  * Fecha: colocar de forma manual la fecha o seleccionarla del calendario.
+
+===5.2 Cuentas===
+Verá los siguientes puntos:
+
+  * 5.2.1 Agregar cuenta existente para cheque
+  * 5.2.2 Desconectar
+
+====5.2.1 Agregar cuenta existente para cheque====
+Se dirige a la opción acción y selecciona Agregar cuenta existente para cheque, inmediatamente le aparecerá la ventana Buscar cuentas, en donde podrá ver dos campos:
+
+  * Número: puede colocar el numero de la cuenta o solo {{{*}}}, para buscar en todas las cuentas.
+  * Descripción: puede colocar la descripción de la cuenta o solo {{{*}}}, para buscar en todas las cuentas.
+
+====5.2.2 Desconectar====
+Seleccionar una o mas cuentas haciendo un check en sus casillas, dirigirse a la opción acción y elegir desconectar.
+
+===5.3 Documentos===
+Verá los siguientes puntos:
+
+  * 5.3.1 Agregar documento existente
+  * 5.3.2 Desconectar documento
+
+====5.3.1 Agregar documento existente====
+Se dirige a la opción acción y selecciona Agregar documento existente, inmediatamente le aparecerá la ventana Buscar documentos en donde ingresara la información correspondiente en el siguiente campo:
+
+  * Nombre: colocar el nombre del documento o solo {{{*}}}, para que aparezcan todos los documentos. Al finalizar este paso hace clic en el botón buscar.
+
+====5.3.2 Desconectar documento====
+selecciona uno o mas documentos haciendo un check en sus casillas , dirigirse a la opción acción y elegir desconectar documentos.
+

@@ -1,0 +1,153 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     a377c264-1f73-48eb-8ddc-0906c5c69b11
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Reportes
+<wiki:toc max_depth="3"/>
+
+----
+
+==3. Reportes==
+Veremos en este menú la información que contiene a continuación:
+  * 3.1 Balance
+  * 3.2 Ganancia/Perdida
+  * 3.3 Reporte de asientos
+  * 3.4 Reporte de cuentas
+  * 3.5 Reporte diario
+
+===3.1 Balance===
+Los puntos a detallar son:
+
+  * 3.1.1 Editar
+  * 3.1.2 Imprimir
+  * 3.1.3 Raíces
+
+====3.1.1 Editar====
+Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar balance* en donde podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====3.1.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el balance, en dos tipos de formato PDF o XLS.
+
+====3.1.3 Raíces====
+Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===3.2 Ganancia/Perdida===
+Los puntos a detallar son:
+
+  * 3.2.1 Editar
+  * 3.2.2 Imprimir
+  * 3.2.3 Raíces
+
+====3.2.1 Editar====
+Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar ganancia/perdida* en donde podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====3.2.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en ganancia/perdida en dos tipos de formato PDF o XLS.
+
+====3.2.3 Raíces====
+Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===3.3 Reporte de asientos===
+Los puntos a detallar son:
+
+  * 3.3.1 Editar
+  * 3.3.2 Imprimir
+  * 3.3.3 Raíces
+
+====3.3.1 Editar====
+Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte de asientos* en donde podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====3.3.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de asientos en dos tipos de formato PDF o XLS.
+
+====3.3.3 Raíces====
+Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===3.4 Reporte de cuentas===
+Los puntos a detallar son:
+
+  * 3.4.1 Editar
+  * 3.4.2 Imprimir
+  * 3.4.3 Raíces
+
+====3.4.1 Editar====
+Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte de cuentas* en donde podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====3.4.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte de cuentas, en dos tipos de formato PDF o XLS.
+
+====3.4.3 Raíces====
+Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+===3.5 Reporte diario===
+Los puntos a detallar son:
+
+  * 3.5.1 Editar
+  * 3.5.2 Imprimir
+  * 3.5.3 Raíces
+
+====3.5.1 Editar====
+Para editar ingresa a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *editar reporte diario* en donde podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Numeración
+
+====3.5.2 Imprimir====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el reporte diario, en dos tipos de formato PDF o XLS.
+
+====3.5.3 Raíces====
+Le permite crear una serie de raíces y a la vez borrarlas si no son necesarias. Para crear usted debe ingresar la información correspondiente en los siguientes campos:
+
+  * Número: colocar el número correspondiente.
+  * Título: ingresar el nombre identificativo de la raíz.
+  * Posición: colocar la posición respectiva.
+  * Demostrar siempre: sirve para que la raíz aparezca en la lista, colocando TRUE aparece y colocando FALSE desaparece.
+  * Demostrar suma: colocar TRUE para que aparezca la suma o FALSE para que no aparezca.
+
+

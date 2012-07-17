@@ -583,3 +583,4 @@ Veremos los siguientes puntos en este menú:
   * Recalcular documento
 
 ===2.12.5 Documentos por cobrar===
+

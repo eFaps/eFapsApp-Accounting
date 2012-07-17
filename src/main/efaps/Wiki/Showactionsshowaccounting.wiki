@@ -1,0 +1,57 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     fc7241e6-297a-4674-862a-9a713f61bc80
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a acciones
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==6. Acceso a acciones==
+Mostraremos los siguientes puntos:
+
+  * 6.1 Editar
+  * 6.2 Definiciones de asientos
+
+===6.1 Editar===
+Usted podrá editar los siguientes campos:
+
+  * Nombre
+  * Descripción
+  * Activo
+
+===6.2 Definiciones de asientos===
+Verá los siguientes puntos:
+
+  * 6.2.1 Agregar existente
+  * 6.2.2 Desconectar
+
+====6.2.1 Agregar existente====
+Para agregar cuentas, usted deberá dirigirse a la opción acción y seleccionar agregar existente, inmediatamente le aparecerá la ventana *búsqueda de definiciones de asientos* en donde encontrará los siguientes campos:
+
+  * Nombre: coloque parte de la información o la información completa con {{{*}}} al final.
+  * Descripción: coloque parte de la información o la información completa con {{{*}}} al final.
+  * Activo: si usted coloca TRUE podrá buscar todos los casos que se encuentren activos y si coloca FALSE podrá buscar todos los casos que se encuentren desactivados.
+
+Importante: para crear definiciones de asientos ingrese aquí [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Crear una definición].
+
+A. *Elementos relacionados*
+  * [./org.efaps.wiki.accounting.Periodshowaccounting.wiki#1.10_Definiciones_de_asientos Definiciones de asientos]
+  *  Acceso a Acciones6
+  * [./org.efaps.wiki.accounting.Accounting.wiki#5._Acciones Crear Acciones]
+  * [./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asiento Acceso a definiciones de asiento]
+  * Es para que pueda crear una planilla con asientos contables ([./org.efaps.wiki.payroll.Payroll.wiki#3.1_Crear Crear])
+
+====6.2.2 Desconectar====
+Para desconectar debe de seleccionar los casos haciendo un check en sus respectivos casilleros, dirigirse a la opción acción y desconectar, inmediatamente le aparecerá una ventana de confirmación para que acepte o cancele la acción.
+
+
+
+
+

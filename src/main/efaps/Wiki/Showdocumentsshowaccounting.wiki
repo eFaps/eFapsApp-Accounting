@@ -1,0 +1,30 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     134e7430-6f35-4dbb-865d-cef5bd39394e
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a documentos
+<wiki:toc max_depth="3"/>
+
+----
+
+==4.Acceso a Documentos==
+Ingrese a Pagos, para poder crear los pagos respectivos que se van a realizar a la factura entrante, luego deberá seleccionar la opción crear.
+
+===4.1 Crear===
+Se dirige a la opción acción y selecciona crear, inmediatamente le aparecerá la ventana Crear pago en donde ingresará la información correspondiente a cada campo obligatorio y secundario:
+
+Obligatorio
+  * Fecha: colocar de forma manual la fecha o seleccionarla del calendario.
+  * Monto: usted puede editar el monto mostrado.
+  * Moneda: seleccionar el tipo de moneda.
+
+Secundario
+  * Tipo de documento de pago: elegir un tipo de pago de la lista.
+  * Documento: seleccionar un documento, haciendo un check en sus casillas.
+  * Estado: es para colocar en estado cerrado el documento seleccionado, para esto debe seleccionar el estado haciendo un check en su casilla. Si no selecciona el estado entonces los documentos no se cerraran, ejemplo: cheque, letra.
+
