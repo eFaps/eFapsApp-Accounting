@@ -45,6 +45,7 @@
         <childs>
             <child>Accounting_PeriodeTree_Account</child>
             <child>Accounting_PeriodeTree_AccountStructurBrowser</child>
+            <child>Accounting_PeriodeTree_View</child>
             <child>Accounting_PeriodeTree_Transaction</child>
             <child>Accounting_PeriodeTree_Case</child>
             <child>Accounting_PeriodeTree_Label</child>
