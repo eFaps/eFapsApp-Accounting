@@ -634,18 +634,18 @@ public abstract class FieldValue_Base
         final boolean script = !"true".equalsIgnoreCase((String) props.get("noScript"));
         _doc.setInvert(_doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
         final StringBuilder ret = new StringBuilder();
-        if (script) {
+        if (script && !_doc.getDebitAccounts().isEmpty() && !_doc.getCreditAccounts().isEmpty()) {
             if (_doc.isSumsDoc()) {
                 getPriceInformation(_parameter, _doc, _rates);
             }
-            ret .append("function setDebit() {");
+            ret .append("function setDebit() {\n");
             int index = 0;
             for (final TargetAccount account : _doc.getDebitAccounts().values()) {
                 account.setLink(getLinkString(account.getOid(), "_Debit"));
                 ret.append(getScriptLine(account, "_Debit", index));
                 index++;
             }
-            ret.append("}")
+            ret.append("}\n")
                 .append("function setCredit(){");
             index = 0;
             for (final TargetAccount account : _doc.getCreditAccounts().values()) {
@@ -653,14 +653,14 @@ public abstract class FieldValue_Base
                 ret.append(getScriptLine(account, "_Credit", index));
                 index++;
             }
-            ret.append("}")
-                .append("function removeRows(elName){")
+            ret.append("}\n")
+                .append("function removeRows(elName){\n")
                 .append("e = document.getElementsByName(elName);")
                 .append("zz = e.length;")
-                .append("for (var i=0; i <zz;i++) {")
+                .append("for (var i=0; i <zz;i++) {\n")
                 .append("x = e[0].parentNode.parentNode;")
                 .append("var p = x.parentNode;p.removeChild(x);")
-                .append("}}")
+                .append("}}\n")
                 .append("Wicket.Event.add(window, \"domready\", function(event) {")
                 .append("removeRows('amount_Debit');")
                 .append("removeRows('amount_Credit');")

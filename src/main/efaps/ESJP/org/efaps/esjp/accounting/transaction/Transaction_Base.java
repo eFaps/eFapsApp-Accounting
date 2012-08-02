@@ -809,14 +809,14 @@ public abstract class Transaction_Base
             }
             final StringBuilder js = new StringBuilder();
             js.append("function removeRows(elName){")
-                .append("e = document.getElementsByName(elName);")
-                .append("zz = e.length;")
+                .append("var e = document.getElementsByName(elName);")
+                .append("var zz = e.length;")
                 .append("for (var i=0; i <zz;i++) {")
-                .append("x = e[0].parentNode.parentNode;")
+                .append("var x = e[0].parentNode.parentNode;")
                 .append("var p = x.parentNode;p.removeChild(x);")
-                .append("}}")
+                .append("}}\n")
                 .append("removeRows('amount_Debit');")
-                .append("removeRows('amount_Credit');");
+                .append("removeRows('amount_Credit');\n");
 
             js.append("function setDebit(){");
             int index = 0;
@@ -824,7 +824,7 @@ public abstract class Transaction_Base
                 js.append(getScriptLine(account, "_Debit", index));
                 index++;
             }
-            js.append("}");
+            js.append("}\n");
 
             js.append("function setCredit(){");
             index = 0;
@@ -832,7 +832,7 @@ public abstract class Transaction_Base
                 js.append(getScriptLine(account, "_Credit", index));
                 index++;
             }
-            js.append("}").append(getScriptValues(doc));
+            js.append("}\n").append(getScriptValues(doc));
             ret.put(ReturnValues.SNIPLETT, js.toString());
         } catch (final ParseException e) {
             throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
