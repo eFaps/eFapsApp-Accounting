@@ -21,13 +21,25 @@
 
 package org.efaps.esjp.accounting;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.util.EFapsException;
@@ -43,6 +55,12 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public abstract class View_Base
 {
+
+    /**
+     * Key used to store the values during a request.
+     */
+    public final static String REQUESTKEY = "org.efaps.esjp.accounting.View.FieldValueRequestKey";
+
     /**
      * Create a new View.
      *
@@ -70,5 +88,64 @@ public abstract class View_Base
             }
         };
         return create.execute(_parameter);
+    }
+
+    /**
+     * Get the FieldValue for the Value field by retrieving the values from
+     * the related Accounts.
+     *
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return Value for the Field
+     * @throws EFapsException
+     */
+    @SuppressWarnings("unchecked")
+    public Return getValueFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        // get the map from the request
+        Map<Instance, BigDecimal> values;
+        if (Context.getThreadContext().containsRequestAttribute(View_Base.REQUESTKEY)) {
+            values = (Map<Instance, BigDecimal>) Context.getThreadContext().getRequestAttribute(View_Base.REQUESTKEY);
+        } else {
+            values = new HashMap<Instance, BigDecimal>();
+            Context.getThreadContext().setRequestAttribute(View_Base.REQUESTKEY, values);
+        }
+
+        final List<Instance> requestInst = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+        final List<Long> queryId = new ArrayList<Long>();
+        for (final Instance instance : requestInst) {
+            if (!values.containsKey(instance)) {
+                queryId.add(instance.getId());
+                values.put(instance, BigDecimal.ZERO);
+            }
+        }
+
+        if (!queryId.isEmpty()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.View2AccountAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.View2AccountAbstract.FromLinkAbstract, queryId.toArray());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selSum = new SelectBuilder().linkto(CIAccounting.View2AccountAbstract.ToLinkAbstract)
+                            .attribute(CIAccounting.AccountAbstract.SumReport);
+            final SelectBuilder selOid = new SelectBuilder().linkto(CIAccounting.View2AccountAbstract.FromLinkAbstract)
+                            .oid();
+            multi.addSelect(selSum, selOid);
+            multi.execute();
+            while (multi.next()) {
+                final BigDecimal tmpVal = multi.<BigDecimal>getSelect(selSum);
+                final String viewOid = multi.getSelect(selOid);
+                final Instance viewInst = Instance.get(viewOid);
+                BigDecimal value;
+                if (values.containsKey(viewInst)) {
+                    value = values.get(viewInst);
+                } else {
+                    value = BigDecimal.ZERO;
+                }
+                value = value.add(tmpVal == null ? BigDecimal.ZERO : tmpVal);
+                values.put(viewInst, value);
+            }
+        }
+        ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+        return ret;
     }
 }
