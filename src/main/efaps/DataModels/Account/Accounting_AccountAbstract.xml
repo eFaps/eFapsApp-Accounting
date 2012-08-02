@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -30,62 +30,11 @@
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00006</specification>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountAbstract</name>
-
-        <attribute>
-            <name>Type</name>
-            <type>Type</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>TYPEID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>OID</name>
-            <type>OID</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>TYPEID,ID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ID</name>
-            <type>Long</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>ID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Company</name>
-            <type>CompanyLink</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>COMPANYID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ParentLink</name>
-            <type>Link</type>
-            <typelink>Accounting_AccountAbstract</typelink>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>PARENT</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>PeriodeAbstractLink</name>
-            <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>PERIODEID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Name</name>
-            <type>String</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>NAME</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Description</name>
-            <type>String</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>DESCR</sqlcolumn>
-        </attribute>
+        <parent>Accounting_AccountBaseAbstract</parent>
+        <purpose abstract="true"/>
         <attribute>
             <name>Active</name>
             <type>Boolean</type>
@@ -111,30 +60,6 @@
             <type>Decimal</type>
             <sqltable>Accounting_AccountSQLTable</sqltable>
             <sqlcolumn>SUMREP</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Creator</name>
-            <type>CreatorLink</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>CREATOR</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Created</name>
-            <type>Created</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>CREATED</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Modifier</name>
-            <type>ModifierLink</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>MODIFIER</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Modified</name>
-            <type>Modified</type>
-            <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

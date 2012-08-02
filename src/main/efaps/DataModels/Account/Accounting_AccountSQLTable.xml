@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -41,11 +41,11 @@
             <column name="TYPEID"       type="INTEGER"      not-null="true" />
             <column name="COMPANYID"    type="INTEGER"      not-null="true" />
             <column name="PERIODEID"    type="INTEGER"      not-null="true" />
-            <column name="PARENT"       type="INTEGER" />
-            <column name="SUMMARY"      type="BOOLEAN"      not-null="true" />
+            <column name="PARENT"       type="INTEGER"/>
+            <column name="SUMMARY"      type="BOOLEAN"/>
             <column name="NAME"         type="STRING_SHORT" not-null="true" length="128" />
             <column name="DESCR"        type="STRING_SHORT" not-null="true" length="255" />
-            <column name="ACTIVE"       type="BOOLEAN"      not-null="true" />
+            <column name="ACTIVE"       type="BOOLEAN"/>
             <column name="SUMBOOK"      type="DECIMAL"                      length="16" scale="2" />
             <column name="SUMREP"       type="DECIMAL"                      length="16" scale="2" />
             <column name="CONTACTID"    type="INTEGER" />
