@@ -563,4 +563,32 @@ public abstract class Account_Base
 
         return new BigDecimal[] { sumBooked, sumReport };
     }
+
+
+    /**
+     * Get the value only if it has the given signum.
+     * Used to be able to display &quot;debit&quot; and &quot;credit&quot; separately.
+     *
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return getValue4Signum(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?,?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final BigDecimal value = (BigDecimal) fieldvalue.getValue();
+        if (value != null) {
+            BigDecimal retValue = null;
+            fieldvalue.setValue(null);
+            if (("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1)
+                            || (!"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1)) {
+                    retValue = value.abs();
+            }
+            ret.put(ReturnValues.VALUES, retValue);
+        }
+        return ret;
+    }
 }
