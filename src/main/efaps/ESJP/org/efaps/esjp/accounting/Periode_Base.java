@@ -52,6 +52,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.admin.common.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -247,24 +248,32 @@ public abstract class Periode_Base
         throws EFapsException
     {
         final Insert insert = new Insert(CIAccounting.Periode);
-        insert.add("Name", _parameter.getParameterValue("name"));
-        insert.add("FromDate", _parameter.getParameterValue("fromDate"));
-        insert.add("ToDate", _parameter.getParameterValue("toDate"));
-        insert.add("CurrencyLink", _parameter.getParameterValue("currencyLink"));
+        insert.add(CIAccounting.Periode.Name,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.name.name));
+        insert.add(CIAccounting.Periode.FromDate,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.fromDate.name));
+        insert.add(CIAccounting.Periode.ToDate,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.toDate.name));
+        insert.add(CIAccounting.Periode.CurrencyLink,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.currencyLink.name));
         insert.execute();
         final Instance periodInst = insert.getInstance();
-        final FileParameter accountTable = Context.getThreadContext().getFileParameters().get("accountTable");
-        final FileParameter reports = Context.getThreadContext().getFileParameters().get("reports");
-        if (accountTable != null) {
-            final HashMap<String, ImportAccount> accounts = createAccountTable(periodInst, accountTable);
-            if (reports != null) {
-                createReports(periodInst, reports, accounts);
-            }
-        }
+
         final SystemConf conf = new SystemConf();
         //Accounting-Configuration
         conf.addObjectAttribute(UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"), periodInst,
                         "Name=" + _parameter.getParameterValue("name"));
+
+        final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
+                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+        final FileParameter reports = Context.getThreadContext().getFileParameters().get(
+                        CIFormAccounting.Accounting_PeriodeForm.reports.name);
+        if (accountTable != null && accountTable.getSize() > 0) {
+            final HashMap<String, ImportAccount> accounts = createAccountTable(periodInst, accountTable);
+            if (reports != null && reports.getSize() > 0) {
+                createReports(periodInst, reports, accounts);
+            }
+        }
         return new Return();
     }
 
