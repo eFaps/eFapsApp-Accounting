@@ -1,0 +1,39 @@
+/*
+ * Copyright 2003 - 2010 The eFaps Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Revision:        $Rev: 3878 $
+ * Last Changed:    $Date: 2010-03-25 08:37:03 -0500 (jue, 25 mar 2010) $
+ * Last Changed By: $Author: miguel.a.aranya $
+ */
+
+package org.efaps.esjp.accounting;
+
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
+/**
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
+ *
+ * @author The eFaps Team
+ * @version $Id: Periode.java 3878 2010-03-25 13:37:03Z miguel.a.aranya $
+ */
+@EFapsUUID("bd671ba4-f891-49f7-a3f1-6827012db1a3")
+@EFapsRevision("$Rev: 3878 $")
+public class Import extends Import_Base
+{
+
+}

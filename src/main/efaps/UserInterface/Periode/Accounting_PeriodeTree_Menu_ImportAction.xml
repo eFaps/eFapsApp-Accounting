@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -17,27 +15,22 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5866 $
+ Last Changed:    $Date: 2010-11-24 18:09:29 -0500 (mié, 24 nov 2010) $
+ Last Changed By: $Author: jan@moxter.net $
 
--->
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>498d8830-5dc9-46cd-a3b0-4727ee7f99f5</uuid>
+    <uuid>09eb330e-8657-475f-84ec-e7015abf2e3e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 5866 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu</name>
+        <name>Accounting_PeriodeTree_Menu_ImportAction</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Menu_Action</child>
-            <child>Accounting_PeriodeTree_Menu_ImportAction</child>
+            <child>Accounting_PeriodeTree_Menu_ImportAction_UpdateAccountTable</child>
         </childs>
     </definition>
 
