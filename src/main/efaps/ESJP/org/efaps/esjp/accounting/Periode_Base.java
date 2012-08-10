@@ -167,6 +167,19 @@ public abstract class Periode_Base
         return new Return();
     }
 
+    public Return updateViewTableAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance periodInst = _parameter.getInstance();
+        final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
+                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+        if (accountTable != null && accountTable.getSize() > 0) {
+            final Import imp = new Import();
+            imp.createViewAccountTable(periodInst, accountTable);
+        }
+        return new Return();
+    }
+
     /**
      * Method is executed on an autocomplete event to present a dropdown with
      * accounts.

@@ -31,6 +31,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PeriodeTree_Menu_ImportAction_UpdateAccountTable</child>
+            <child>Accounting_PeriodeTree_Menu_ImportAction_UpdateViewAccountTable</child>
         </childs>
     </definition>
 

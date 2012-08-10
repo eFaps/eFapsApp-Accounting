@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -82,7 +84,11 @@ public abstract class Import_Base
                 /** */
         SUMMARY("[Account_Summary]"),
                 /** */
-        PARENT("[Account_Parent]");
+        PARENT("[Account_Parent]"),
+        /** */
+        ACC_REL("[Account_Relation]"),
+        /** */
+        ACC_TARGET("[Account_Target]");
 
         /** Key. */
         private final String key;
@@ -172,6 +178,17 @@ public abstract class Import_Base
         Import_Base.TYPE2TYPE.put("Tree", CIAccounting.ReportNodeTree);
         Import_Base.TYPE2TYPE.put("Account", CIAccounting.ReportNodeAccount);
         Import_Base.TYPE2TYPE.put("ReportAccount", CIAccounting.ReportAccount);
+        Import_Base.TYPE2TYPE.put("ViewRoot", CIAccounting.ViewRoot);
+        Import_Base.TYPE2TYPE.put("ViewSum", CIAccounting.ViewSum);
+    }
+
+    protected static final Map<String, CIType> ACC2ACC = new HashMap<String, CIType>();
+    static {
+        Import_Base.ACC2ACC.put("ViewSumAccount", CIAccounting.ViewSum2Account);
+        Import_Base.ACC2ACC.put("AccountCosting", CIAccounting.Account2AccountCosting);
+        Import_Base.ACC2ACC.put("AccountInverseCosting", CIAccounting.Account2AccountCostingInverse);
+        Import_Base.ACC2ACC.put("AccountCredit", CIAccounting.Account2AccountCredit);
+        Import_Base.ACC2ACC.put("AccountDebit", CIAccounting.Account2AccountDebit);
     }
 
     /**
@@ -234,7 +251,7 @@ public abstract class Import_Base
         while (multi.next()) {
             final String parentName = multi.<String>getSelect(sel);
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
-            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name));
+            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, null, null));
         }
 
         return ret;
@@ -256,7 +273,7 @@ public abstract class Import_Base
             final List<String[]> entries = reader.readAll();
             if (!entries.isEmpty()) {
                 final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.ReportColumn.values(),
-                                entries.get(0));
+                                entries.get(0), null);
                 reader.close();
                 Integer i = 0;
                 final String[] headRow = entries.get(0);
@@ -341,12 +358,13 @@ public abstract class Import_Base
             final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
             reader.close();
+            final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
             final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.AcccountColumn.values(),
-                            entries.get(0));
+                            entries.get(0), validateMap);
             entries.remove(0);
 
             for (final String[] row : entries) {
-                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row);
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, null);
                 accounts.put(account.getValue(), account);
             }
             for (final ImportAccount account : accounts.values()) {
@@ -358,7 +376,92 @@ public abstract class Import_Base
                         update.execute();
                     }
                 }
+                if (account.getLstTypeConn() != null && !account.getLstTypeConn().isEmpty() &&
+                                account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
+                    final List<Type> lstTypes = account.getLstTypeConn();
+                    final List<String> lstTarget = account.getLstTargetConn();
+
+                    final int cont = 0;
+                    for (final Type type : lstTypes) {
+                        final String nameAcc = lstTarget.get(cont);
+                        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
+                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                        _periodInst.getId());
+                        final InstanceQuery query = queryBldr.getQuery();
+                        query.execute();
+                        if (query.next()) {
+                            final Insert insert = new Insert(type);
+                            insert.add(CIAccounting.Account2AccountAbstract.FromAccountLink,
+                                            account.getInstance().getId());
+                            insert.add(CIAccounting.Account2AccountAbstract.ToAccountLink,
+                                            query.getCurrentValue().getId());
+                            insert.execute();
+                        }
+                    }
+                }
             }
+        } catch (final IOException e) {
+            throw new EFapsException(Periode.class, "createAccountTable.IOException", e);
+        }
+        return accounts;
+    }
+
+    protected HashMap<String, ImportAccount> createViewAccountTable(final Instance _periodInst,
+                                                                final FileParameter _accountTable)
+        throws EFapsException
+    {
+        final HashMap<String, ImportAccount> accounts = new HashMap<String, ImportAccount>();
+        try {
+            final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
+            final List<String[]> entries = reader.readAll();
+            reader.close();
+            final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.AcccountColumn.values(),
+                            entries.get(0), validateMap);
+            entries.remove(0);
+
+            for (final String[] row : entries) {
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, validateMap);
+                accounts.put(account.getValue(), account);
+            }
+            for (final ImportAccount account : accounts.values()) {
+                if (account.getParent() != null && account.getParent().length() > 0) {
+                    final ImportAccount parent = accounts.get(account.getParent());
+                    if (parent != null) {
+                        final Update update = new Update(account.getInstance());
+                        update.add(CIAccounting.AccountBaseAbstract.ParentLink, parent.getInstance().getId());
+                        update.execute();
+                    }
+                }
+                if (account.getLstTypeConn() != null && !account.getLstTypeConn().isEmpty() &&
+                                account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
+                    final List<Type> lstTypes = account.getLstTypeConn();
+                    final List<String> lstTarget = account.getLstTargetConn();
+
+                    int cont = 0;
+                    for (final Type type : lstTypes) {
+                        final String nameAcc = lstTarget.get(cont);
+                        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
+                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                        _periodInst.getId());
+                        final InstanceQuery query = queryBldr.getQuery();
+                        query.execute();
+                        if (query.next()) {
+                            final Insert insert = new Insert(type);
+                            insert.add(CIAccounting.View2AccountAbstract.FromLinkAbstract,
+                                            account.getInstance().getId());
+                            insert.add(CIAccounting.View2AccountAbstract.ToLinkAbstract,
+                                            query.getCurrentValue().getId());
+                            insert.execute();
+                        }
+                        cont++;
+                    }
+                }
+            }
+
+
         } catch (final IOException e) {
             throw new EFapsException(Periode.class, "createAccountTable.IOException", e);
         }
@@ -376,11 +479,13 @@ public abstract class Import_Base
      * @throws EFapsException if a column from the list of keys is not defined
      */
     protected Map<String, Integer> evaluateCSVFileHeader(final Import_Base.Column[] _columns,
-                                                         final String[] _headerLine)
+                                                         final String[] _headerLine,
+                                                         final Map<String, List<String>> _validateMap)
         throws EFapsException
     {
         // evaluate header
         int idx = 0;
+
         final Map<String, Integer> ret = new HashMap<String, Integer>();
         for (final String column : _headerLine) {
             if (_columns == null) {
@@ -390,6 +495,20 @@ public abstract class Import_Base
                     if (columns.getKey().equals(column)) {
                         ret.put(column, idx);
                         break;
+                    } else {
+                        if (_validateMap != null && column.contains(columns.getKey().replace("]", ""))) {
+                            final String numStr = column.replace(columns.getKey().replace("]", ""), "").replace("]", "");
+                            if (_validateMap.containsKey(numStr)) {
+                                final List<String> lst = _validateMap.get(numStr);
+                                lst.add(column);
+                            } else {
+                                final ArrayList<String> lst = new ArrayList<String>();
+                                lst.add(column);
+                                _validateMap.put(numStr, lst);
+                            }
+                            ret.put(column, idx);
+                            break;
+                        }
                     }
                 }
             }
@@ -400,7 +519,21 @@ public abstract class Import_Base
         if (_columns != null) {
             for (final Column column : _columns) {
                 if (ret.get(column.getKey()) == null) {
-                    throw new EFapsException(Import_Base.class, "ColumnNotDefinded", column.getKey());
+                    if (_validateMap != null) {
+                        for (final Entry<String, List<String>> entry : _validateMap.entrySet()) {
+                            if (ret.get(column.getKey().replace("]", "") + entry.getKey() + "]") == null) {
+                                throw new EFapsException(Import_Base.class, "ColumnNotDefinded", column.getKey());
+                            } else {
+                                if (entry.getValue().size() != 2) {
+                                    throw new EFapsException(Import_Base.class, "ColumnNotDefinded",
+                                                    column.getKey() + entry.getKey());
+                                }
+                            }
+                        }
+                    } else {
+                        throw new EFapsException(Import_Base.class, "ColumnNotDefinded",
+                                        column.getKey() + column.getKey());
+                    }
                 }
             }
         }
@@ -429,6 +562,16 @@ public abstract class Import_Base
         private final Instance instance;
 
         /**
+         * Type for the account connection.
+         */
+        private final List<Type> lstTypeConn;
+
+        /**
+         * Type for the account connection.
+         */
+        private final List<String> lstTargetConn;
+
+        /**
          * @param _periode periode this account belong to
          * @param _colName2Index mapping o ccolumn name to index
          * @param _row actual row
@@ -436,9 +579,13 @@ public abstract class Import_Base
          */
         public ImportAccount(final Instance _periode,
                              final Map<String, Integer> _colName2Index,
-                             final String[] _row)
+                             final String[] _row,
+                             final Map<String, List<String>> _validateMap)
             throws EFapsException
         {
+            this.lstTypeConn = new ArrayList<Type>();
+            this.lstTargetConn = new ArrayList<String>();
+
             this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
                             "");
             final String descName = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim().replaceAll(
@@ -449,24 +596,53 @@ public abstract class Import_Base
                             .getKey())]);
             final String parentTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.PARENT.getKey())];
 
+            if (_validateMap != null) {
+                for (final Entry<String, List<String>> entry : _validateMap.entrySet()) {
+                    final String typeConnTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_REL.getKey()
+                                    .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
+                    final String targetConnTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_TARGET.getKey()
+                                    .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
+                    if (typeConnTmp != null && !typeConnTmp.isEmpty()
+                                    && targetConnTmp != null && !targetConnTmp.isEmpty()) {
+                        this.lstTypeConn.add(Type.get(Import_Base.ACC2ACC.get(typeConnTmp).uuid));
+                        this.lstTargetConn.add(targetConnTmp);
+                    }
+                }
+            }
+
+            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
             Update update = null;
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, this.value);
-            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, _periode.getId());
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            if (query.next()) {
-                update = new Update(query.getCurrentValue());
+            QueryBuilder queryBldr = null;
+            if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+            } else if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.ViewAbstract.getType())) {
+                queryBldr = new QueryBuilder(CIAccounting.ViewAbstract);
+            }
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, this.value);
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selParent = new SelectBuilder().linkto(CIAccounting.AccountBaseAbstract.ParentLink)
+                            .attribute(CIAccounting.AccountBaseAbstract.Name);
+            multi.addSelect(selParent);
+            multi.execute();
+            if (multi.next()) {
+                final String parentName = multi.<String>getSelect(selParent);
+                if (parentName != null && parentName.equals(parentTmp)) {
+                    update = new Update(multi.getCurrentInstance());
+                } else {
+                    update = new Insert(Import_Base.TYPE2TYPE.get(type));
+                }
             } else {
                 update = new Insert(Import_Base.TYPE2TYPE.get(type));
             }
 
-            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
+            if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                update.add("Summary", summary);
+            }
 
-            update.add("PeriodeLink", _periode.getId());
-            update.add("Name", this.value);
-            update.add("Description", descName);
-            update.add("Summary", summary);
+            update.add(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+            update.add(CIAccounting.AccountBaseAbstract.Name, this.value);
+            update.add(CIAccounting.AccountBaseAbstract.Description, descName);
             update.execute();
             this.instance = update.getInstance();
         }
@@ -479,11 +655,15 @@ public abstract class Import_Base
          */
         public ImportAccount(final Instance _accountIns,
                              final String _parentName,
-                             final String _name)
+                             final String _name,
+                             final List<Type> _lstTypeConn,
+                             final List<String> _lstTargetConn)
         {
             this.instance = _accountIns;
             this.parent = _parentName;
             this.value = _name;
+            this.lstTypeConn = _lstTypeConn;
+            this.lstTargetConn = _lstTargetConn;
         }
 
         /**
@@ -515,6 +695,28 @@ public abstract class Import_Base
         {
             return this.instance;
         }
+
+        /**
+         * Getter method for instance variable {@link #lstTypeConn}.
+         *
+         * @return the lstTypeConn
+         */
+        private List<Type> getLstTypeConn()
+        {
+            return lstTypeConn;
+        }
+
+        /**
+         * Getter method for instance variable {@link #lstTargetConn}.
+         *
+         * @return the lstTargetConn
+         */
+        private List<String> getLstTargetConn()
+        {
+            return lstTargetConn;
+        }
+
+
     }
 
     /**
