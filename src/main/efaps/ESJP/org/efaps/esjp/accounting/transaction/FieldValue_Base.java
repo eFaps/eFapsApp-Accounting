@@ -590,19 +590,19 @@ public abstract class FieldValue_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _doc.getInstance().getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder taxOisSel = new SelectBuilder().linkto(CISales.PositionAbstract.Tax).oid();
+        final SelectBuilder taxOisSel = new SelectBuilder().linkto(CISales.PositionSumAbstract.Tax).oid();
         final SelectBuilder prodOidSel = new SelectBuilder().linkto(CISales.PositionAbstract.Product).oid();
         multi.addSelect(taxOisSel, prodOidSel);
-        multi.addAttribute(CISales.PositionAbstract.NetPrice,
-                           CISales.PositionAbstract.CrossPrice,
-                           CISales.PositionAbstract.Rate);
+        multi.addAttribute(CISales.PositionSumAbstract.NetPrice,
+                           CISales.PositionSumAbstract.CrossPrice,
+                           CISales.PositionSumAbstract.Rate);
         multi.execute();
         final Instance periode = (Instance) Context.getThreadContext()
             .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
         while (multi.next()) {
-            final BigDecimal net = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetPrice);
-            final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.CrossPrice);
-            final Object[] ratePos = multi.<Object[]>getAttribute(CISales.PositionAbstract.Rate);
+            final BigDecimal net = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+            final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
+            final Object[] ratePos = multi.<Object[]>getAttribute(CISales.PositionSumAbstract.Rate);
             final BigDecimal newRatepos = ((BigDecimal) ratePos[0]).divide((BigDecimal) ratePos[1], 12,
                         BigDecimal.ROUND_HALF_UP);
             final BigDecimal taxAmount = cross.subtract(net).multiply(newRatepos);

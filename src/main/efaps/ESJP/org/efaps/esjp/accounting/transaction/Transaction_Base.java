@@ -1074,10 +1074,10 @@ public abstract class Transaction_Base
                     final SelectBuilder sel = new SelectBuilder()
                         .linkto(CISales.PositionAbstract.Product).clazz().type();
                     multi.addSelect(sel);
-                    multi.addAttribute(CISales.PositionAbstract.NetPrice);
+                    multi.addAttribute(CISales.PositionSumAbstract.NetPrice);
                     multi.execute();
                     while (multi.next()) {
-                        final BigDecimal posamount = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetPrice);
+                        final BigDecimal posamount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                         final List<Classification> clazzes = multi.getSelect(sel);
                         if (clazzes != null) {
                             for (final Classification clazz : clazzes) {
