@@ -77,14 +77,16 @@ public abstract class Import_Base
     private enum AcccountColumn implements Import_Base.Column {
         /** */
         VALUE("[Account_Value]"),
-                /** */
+        /** */
         NAME("[Account_Name]"),
-                /** */
+        /** */
         TYPE("[Account_Type]"),
-                /** */
+        /** */
         SUMMARY("[Account_Summary]"),
-                /** */
+        /** */
         PARENT("[Account_Parent]"),
+        /** */
+        KEY("[Account_Key]"),
         /** */
         ACC_REL("[Account_Relation]"),
         /** */
@@ -251,7 +253,7 @@ public abstract class Import_Base
         while (multi.next()) {
             final String parentName = multi.<String>getSelect(sel);
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
-            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, null, null));
+            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, null, null, null, null));
         }
 
         return ret;
@@ -364,7 +366,7 @@ public abstract class Import_Base
             entries.remove(0);
 
             for (final String[] row : entries) {
-                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, null);
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, null, null);
                 accounts.put(account.getValue(), account);
             }
             for (final ImportAccount account : accounts.values()) {
@@ -412,6 +414,7 @@ public abstract class Import_Base
         throws EFapsException
     {
         final HashMap<String, ImportAccount> accounts = new HashMap<String, ImportAccount>();
+        final HashMap<String, ImportAccount> accountsVal = new HashMap<String, ImportAccount>();
         try {
             final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
@@ -422,8 +425,21 @@ public abstract class Import_Base
             entries.remove(0);
 
             for (final String[] row : entries) {
-                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, validateMap);
-                accounts.put(account.getValue(), account);
+                final ImportAccount account = new ImportAccount(colName2Index, row);
+                accountsVal.put(account.getOrder(), account);
+            }
+
+            for (final ImportAccount account : accountsVal.values()) {
+                ImportAccount parent = accountsVal.get(account.getParent());
+                while (parent != null) {
+                    account.setPath(account.getPath() + "_" + parent.getValue());
+                    parent = parent.getParent() != null ? accountsVal.get(parent.getParent()) : null;
+                }
+            }
+
+            for (final String[] row : entries) {
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, validateMap, accountsVal);
+                accounts.put(account.getOrder(), account);
             }
             for (final ImportAccount account : accounts.values()) {
                 if (account.getParent() != null && account.getParent().length() > 0) {
@@ -552,9 +568,19 @@ public abstract class Import_Base
         private final String value;
 
         /**
+         * Value for this account.
+         */
+        private final String order;
+
+        /**
          * Parent of this account.
          */
         private final String parent;
+
+        /**
+         * Path of this account.
+         */
+        private String path;
 
         /**
          * Instance of this account.
@@ -573,14 +599,15 @@ public abstract class Import_Base
 
         /**
          * @param _periode periode this account belong to
-         * @param _colName2Index mapping o ccolumn name to index
+         * @param _colName2Index mapping o column name to index
          * @param _row actual row
          * @throws EFapsException on error
          */
         public ImportAccount(final Instance _periode,
                              final Map<String, Integer> _colName2Index,
                              final String[] _row,
-                             final Map<String, List<String>> _validateMap)
+                             final Map<String, List<String>> _validateMap,
+                             final Map<String, ImportAccount> _accountVal)
             throws EFapsException
         {
             this.lstTypeConn = new ArrayList<Type>();
@@ -588,8 +615,8 @@ public abstract class Import_Base
 
             this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
                             "");
-            final String descName = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim().replaceAll(
-                            "\n", "");
+            final String descName = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim()
+                            .replaceAll("\n", "");
             final String type = _row[_colName2Index.get(Import_Base.AcccountColumn.TYPE.getKey())].trim().replaceAll(
                             "\n", "");
             final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.AcccountColumn.SUMMARY
@@ -608,32 +635,49 @@ public abstract class Import_Base
                         this.lstTargetConn.add(targetConnTmp);
                     }
                 }
+                this.order = _row[_colName2Index.get(Import_Base.AcccountColumn.KEY.getKey())]
+                                                                    .trim().replaceAll("\n", "");
+            } else {
+                this.order = null;
+            }
+
+            if (_accountVal != null) {
+                this.path = _accountVal.get(this.order).getPath();
+            } else {
+                this.path = null;
             }
 
             this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
+
             Update update = null;
-            QueryBuilder queryBldr = null;
             if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
-                queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-            } else if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.ViewAbstract.getType())) {
-                queryBldr = new QueryBuilder(CIAccounting.ViewAbstract);
-            }
-            queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, this.value);
-            queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selParent = new SelectBuilder().linkto(CIAccounting.AccountBaseAbstract.ParentLink)
-                            .attribute(CIAccounting.AccountBaseAbstract.Name);
-            multi.addSelect(selParent);
-            multi.execute();
-            if (multi.next()) {
-                final String parentName = multi.<String>getSelect(selParent);
-                if (parentName != null && parentName.equals(parentTmp)) {
-                    update = new Update(multi.getCurrentInstance());
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, this.value);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selParent = new SelectBuilder().linkto(CIAccounting.AccountBaseAbstract.ParentLink)
+                                .attribute(CIAccounting.AccountBaseAbstract.Name);
+                multi.addSelect(selParent);
+                multi.execute();
+                if (multi.next()) {
+                    final String parentName = multi.<String>getSelect(selParent);
+                    if (parentName != null && parentName.equals(parentTmp)) {
+                        update = new Update(multi.getCurrentInstance());
+                    } else {
+                        update = new Insert(Import_Base.TYPE2TYPE.get(type));
+                    }
                 } else {
                     update = new Insert(Import_Base.TYPE2TYPE.get(type));
                 }
-            } else {
-                update = new Insert(Import_Base.TYPE2TYPE.get(type));
+            } else if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.ViewAbstract.getType())) {
+                final String[] parts = this.path.split("_");
+                final Instance updateInst = validateUpdate(this.value, null, _periode, 0, parts);
+
+                if (updateInst != null) {
+                    update = new Update(updateInst);
+                } else {
+                    update = new Insert(Import_Base.TYPE2TYPE.get(type));
+                }
             }
 
             if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
@@ -647,6 +691,74 @@ public abstract class Import_Base
             this.instance = update.getInstance();
         }
 
+        private Instance validateUpdate(final String _name,
+                                       final Long _id,
+                                       final Instance _periode,
+                                       int _cont,
+                                       final String[] _parts) throws EFapsException {
+            Instance ret = null;
+            boolean ver = false;
+            Instance instCur = null;
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ViewAbstract);
+            if (_cont == 0) {
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, _name);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+                ver = true;
+            } else {
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.ID, _id);
+            }
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selParent = new SelectBuilder().linkto(CIAccounting.AccountBaseAbstract.ParentLink)
+                            .attribute(CIAccounting.AccountBaseAbstract.Name);
+            multi.addSelect(selParent);
+            multi.addAttribute(CIAccounting.ViewAbstract.ParentLink, CIAccounting.ViewAbstract.Name);
+            multi.execute();
+            _cont++;
+            while (multi.next()) {
+                instCur = multi.getCurrentInstance();
+                final Long parentId = multi.<Long>getAttribute(CIAccounting.ViewAbstract.ParentLink);
+                final String parentName = multi.<String>getSelect(selParent);
+                if (_cont < (_parts.length)) {
+                    if (parentName.equals(_parts[_cont])) {
+                        ret = validateUpdate(parentName, parentId, _periode, _cont, _parts);
+                        if (ret != null) {
+                            break;
+                        }
+                    }
+                } else if (_cont == _parts.length && parentId == null) {
+                    ret = multi.getCurrentInstance();
+                    break;
+                }
+            }
+            if (ver && ret != null) {
+                ret = instCur;
+            }
+            return ret;
+        }
+
+        /**
+         * new Constructor for import accounts of the period.
+         * @param _accountIns Instance of the account.
+         * @param _parentName name of a parent accounts.
+         * @param _name name of account.
+         */
+        public ImportAccount(final Map<String, Integer> _colName2Index,
+                              final String[] _row)
+        {
+            this.lstTypeConn = new ArrayList<Type>();
+            this.lstTargetConn = new ArrayList<String>();
+
+            this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
+                            "");
+            final String parentTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.PARENT.getKey())];
+
+            this.order = _row[_colName2Index.get(Import_Base.AcccountColumn.KEY.getKey())]
+                            .trim().replaceAll("\n", "");
+            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
+            this.instance = null;
+            this.path = this.value;
+        }
+
         /**
          * new Constructor for import accounts of the period.
          * @param _accountIns Instance of the account.
@@ -656,6 +768,8 @@ public abstract class Import_Base
         public ImportAccount(final Instance _accountIns,
                              final String _parentName,
                              final String _name,
+                             final String _order,
+                             final String _path,
                              final List<Type> _lstTypeConn,
                              final List<String> _lstTargetConn)
         {
@@ -664,6 +778,8 @@ public abstract class Import_Base
             this.value = _name;
             this.lstTypeConn = _lstTypeConn;
             this.lstTargetConn = _lstTargetConn;
+            this.order = _order;
+            this.path = _path;
         }
 
         /**
@@ -684,6 +800,16 @@ public abstract class Import_Base
         public String getParent()
         {
             return this.parent;
+        }
+
+        /**
+         * Getter method for instance variable {@link #order}.
+         *
+         * @return value of instance variable {@link #order}
+         */
+        public String getOrder()
+        {
+            return this.order;
         }
 
         /**
@@ -716,7 +842,21 @@ public abstract class Import_Base
             return lstTargetConn;
         }
 
+        /**
+         * @return the path
+         */
+        private String getPath()
+        {
+            return path;
+        }
 
+        /**
+         * @param path the path to set
+         */
+        private void setPath(final String path)
+        {
+            this.path = path;
+        }
     }
 
     /**
