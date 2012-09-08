@@ -20,7 +20,6 @@
 
 package org.efaps.esjp.accounting.report;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,15 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.fill.JRFillField;
-import net.sf.jasperreports.engine.util.JRProperties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -48,35 +39,17 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.program.jasper.JasperUtil;
-import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.StandartReport;
-import org.efaps.esjp.common.jasperreport.StandartReport_Base;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-
-import ar.com.fdvs.dj.core.FieldMapWrapper;
-import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
-import ar.com.fdvs.dj.domain.CustomExpression;
-import ar.com.fdvs.dj.domain.DynamicReport;
-import ar.com.fdvs.dj.domain.Style;
-import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
-import ar.com.fdvs.dj.domain.builders.ColumnBuilderException;
-import ar.com.fdvs.dj.domain.builders.DynamicReportBuilder;
-import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
-import ar.com.fdvs.dj.domain.constants.Page;
-import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
-import ar.com.fdvs.dj.domain.entities.conditionalStyle.ConditionStyleExpression;
-import ar.com.fdvs.dj.domain.entities.conditionalStyle.ConditionalStyle;
 
 /**
  * TODO comment!
@@ -211,97 +184,97 @@ public abstract class Report_Base
      * @throws EFapsException on error
      * @return Return containg the created file
      */
-    @Override
-    public Return execute(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String mime = _parameter.getParameterValue("mime");
-
-        this.dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-        this.dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
-
-        final ReportTree dataTree = new ReportTree(_parameter.getInstance());
-        dataTree.addChildren();
-        for (final AbstractNode node : dataTree.getRootNodes()) {
-            node.getSum();
-        }
-
-        final List<List<AbstractNode>> table = dataTree.getTable();
-        try {
-
-            final DynamicReportBuilder drb = new DynamicReportBuilder();
-            drb.setTitle(dataTree.getName())
-                            .setSubtitle(dataTree.getDescription())
-                            .setUseFullPageWidth(true)
-                            .setPageSizeAndOrientation(Page.Page_A4_Landscape());
-
-            final Style columnStyle = new Style();
-            columnStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
-            int max = 0;
-            Integer y = 0;
-            for (final List<AbstractNode> nodes : table) {
-                for (final AbstractNode node : nodes) {
-                    if (node.getLevel() > max) {
-                        max = node.getLevel();
-                    }
-                }
-                final ArrayList<ConditionalStyle> conditionalStyles = new ArrayList<ConditionalStyle>();
-                for (int i = 0; i < max; i++) {
-                    final Style style = new Style();
-                    style.setPaddingLeft(5 + 10 * i);
-                    conditionalStyles.add(new ConditionalStyle(new PaddingCondition(i + 1, "column_" + y), style));
-                }
-                final AbstractColumn column = ColumnBuilder.getNew()
-                                .setColumnProperty("column_" + y, String.class.getName())
-                                .addFieldProperty("rootIndex", y.toString())
-                                .addConditionalStyles(conditionalStyles)
-                                .setWidth(10)
-                                .build();
-                drb.addColumn(column);
-                final AbstractColumn column2 = ColumnBuilder.getNew()
-                                .setColumnProperty("sums_" + y, BigDecimal.class.getName())
-                                .addFieldProperty("rootIndex", y.toString())
-                                .setStyle(columnStyle)
-                                .setWidth(5)
-                                .build();
-                drb.addColumn(column2);
-                y++;
-            }
-
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String name = (String) properties.get("JasperReport");
-            JasperDesign jasperdesign = null;
-            if (name != null) {
-                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
-                queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, name);
-                final InstanceQuery query = queryBldr.getQuery();
-                query.execute();
-                Instance instance = null;
-                if (query.next()) {
-                    instance = query.getCurrentValue();
-                } else {
-                    throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
-                }
-                jasperdesign = JasperUtil.getJasperDesign(instance);
-            }
-            final DynamicReport dr = drb.build();
-            final JRDataSource ds = new AccountingDataSource(table);
-            JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, false);
-            setFileName(dataTree.getName());
-            final JasperPrint jp = JasperUtil.generateJasperPrint(dr, new ClassicLayoutManager(), ds, null,
-                            jasperdesign);
-            ret.put(ReturnValues.VALUES, super.getFile(jp, mime));
-            ret.put(ReturnValues.TRUE, true);
-        } catch (final JRException e) {
-            throw new EFapsException(Report.class, "JRException", e);
-        } catch (final IOException e) {
-            throw new EFapsException(Report.class, "IOException", e);
-        } catch (final ColumnBuilderException e) {
-            throw new EFapsException(Report.class, "ColumnBuilderException", e);
-        }
-        return ret;
-    }
+//    @Override
+//    public Return execute(final Parameter _parameter)
+//        throws EFapsException
+//    {
+//        final Return ret = new Return();
+//        final String mime = _parameter.getParameterValue("mime");
+//
+//        this.dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
+//        this.dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+//
+//        final ReportTree dataTree = new ReportTree(_parameter.getInstance());
+//        dataTree.addChildren();
+//        for (final AbstractNode node : dataTree.getRootNodes()) {
+//            node.getSum();
+//        }
+//
+//        final List<List<AbstractNode>> table = dataTree.getTable();
+//        try {
+//
+//            final DynamicReportBuilder drb = new DynamicReportBuilder();
+//            drb.setTitle(dataTree.getName())
+//                            .setSubtitle(dataTree.getDescription())
+//                            .setUseFullPageWidth(true)
+//                            .setPageSizeAndOrientation(Page.Page_A4_Landscape());
+//
+//            final Style columnStyle = new Style();
+//            columnStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
+//            int max = 0;
+//            Integer y = 0;
+//            for (final List<AbstractNode> nodes : table) {
+//                for (final AbstractNode node : nodes) {
+//                    if (node.getLevel() > max) {
+//                        max = node.getLevel();
+//                    }
+//                }
+//                final ArrayList<ConditionalStyle> conditionalStyles = new ArrayList<ConditionalStyle>();
+//                for (int i = 0; i < max; i++) {
+//                    final Style style = new Style();
+//                    style.setPaddingLeft(5 + 10 * i);
+//                    conditionalStyles.add(new ConditionalStyle(new PaddingCondition(i + 1, "column_" + y), style));
+//                }
+//                final AbstractColumn column = ColumnBuilder.getNew()
+//                                .setColumnProperty("column_" + y, String.class.getName())
+//                                .addFieldProperty("rootIndex", y.toString())
+//                                .addConditionalStyles(conditionalStyles)
+//                                .setWidth(10)
+//                                .build();
+//                drb.addColumn(column);
+//                final AbstractColumn column2 = ColumnBuilder.getNew()
+//                                .setColumnProperty("sums_" + y, BigDecimal.class.getName())
+//                                .addFieldProperty("rootIndex", y.toString())
+//                                .setStyle(columnStyle)
+//                                .setWidth(5)
+//                                .build();
+//                drb.addColumn(column2);
+//                y++;
+//            }
+//
+//            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+//            final String name = (String) properties.get("JasperReport");
+//            JasperDesign jasperdesign = null;
+//            if (name != null) {
+//                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
+//                queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, name);
+//                final InstanceQuery query = queryBldr.getQuery();
+//                query.execute();
+//                Instance instance = null;
+//                if (query.next()) {
+//                    instance = query.getCurrentValue();
+//                } else {
+//                    throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
+//                }
+//                jasperdesign = JasperUtil.getJasperDesign(instance);
+//            }
+//            final DynamicReport dr = drb.build();
+//            final JRDataSource ds = new AccountingDataSource(table);
+//            JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, false);
+//            setFileName(dataTree.getName());
+//            final JasperPrint jp = JasperUtil.generateJasperPrint(dr, new ClassicLayoutManager(), ds, null,
+//                            jasperdesign);
+//            ret.put(ReturnValues.VALUES, super.getFile(jp, mime));
+//            ret.put(ReturnValues.TRUE, true);
+//        } catch (final JRException e) {
+//            throw new EFapsException(Report.class, "JRException", e);
+//        } catch (final IOException e) {
+//            throw new EFapsException(Report.class, "IOException", e);
+//        } catch (final ColumnBuilderException e) {
+//            throw new EFapsException(Report.class, "ColumnBuilderException", e);
+//        }
+//        return ret;
+//    }
 
     /**
      * Class to obtain a report.
@@ -915,80 +888,80 @@ public abstract class Report_Base
         }
     }
 
-    /**
-     * Padding conditional for the report.
-     */
-    public class PaddingCondition
-        extends ConditionStyleExpression
-        implements CustomExpression
-    {
-
-        /**
-         * Needed for serialization.
-         */
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Level.
-         */
-        private final int level;
-
-        /**
-         * Key.
-         */
-        private final String key;
-
-        /**
-         * @param _level    level
-         * @param _key      key
-         */
-        public PaddingCondition(final int _level,
-                                final String _key)
-        {
-            this.level = _level;
-            this.key = _key;
-        }
-
-        /**
-         * @see ar.com.fdvs.dj.domain.CustomExpression#evaluate(java.util.Map, java.util.Map, java.util.Map)
-         * @param _fields       fields
-         * @param _variables    variables
-         * @param _parameters   parameters
-         * @return Boolean
-         */
-        public Object evaluate(final Map _fields,
-                               final Map _variables,
-                               final Map _parameters)
-        {
-            Boolean ret = Boolean.FALSE;
-            final Object value = getCurrentValue();
-            if (value != null) {
-                final FieldMapWrapper fields = (FieldMapWrapper) _fields;
-                final Set<?> set = fields.entrySet();
-                for (final Object entryObj : set) {
-                    final Entry<?, ?> entry = (Entry<?, ?>) entryObj;
-                    if (entry.getKey().equals(this.key)) {
-                        final JRFillField field = (JRFillField) entry.getValue();
-                        if (field != null) {
-                            final String levelStr = field.getPropertiesMap().getProperty("level");
-                            if (levelStr != null && Integer.parseInt(levelStr) == this.level) {
-                                ret = Boolean.TRUE;
-                            }
-                        }
-                    }
-                }
-            }
-            return ret;
-        }
-
-        /**
-         * @see ar.com.fdvs.dj.domain.CustomExpression#getClassName()
-         * @return class name
-         */
-        public String getClassName()
-        {
-            return Boolean.class.getName();
-        }
-    }
+//    /**
+//     * Padding conditional for the report.
+//     */
+//    public class PaddingCondition
+//        extends ConditionStyleExpression
+//        implements CustomExpression
+//    {
+//
+//        /**
+//         * Needed for serialization.
+//         */
+//        private static final long serialVersionUID = 1L;
+//
+//        /**
+//         * Level.
+//         */
+//        private final int level;
+//
+//        /**
+//         * Key.
+//         */
+//        private final String key;
+//
+//        /**
+//         * @param _level    level
+//         * @param _key      key
+//         */
+//        public PaddingCondition(final int _level,
+//                                final String _key)
+//        {
+//            this.level = _level;
+//            this.key = _key;
+//        }
+//
+//        /**
+//         * @see ar.com.fdvs.dj.domain.CustomExpression#evaluate(java.util.Map, java.util.Map, java.util.Map)
+//         * @param _fields       fields
+//         * @param _variables    variables
+//         * @param _parameters   parameters
+//         * @return Boolean
+//         */
+//        public Object evaluate(final Map _fields,
+//                               final Map _variables,
+//                               final Map _parameters)
+//        {
+//            Boolean ret = Boolean.FALSE;
+//            final Object value = getCurrentValue();
+//            if (value != null) {
+//                final FieldMapWrapper fields = (FieldMapWrapper) _fields;
+//                final Set<?> set = fields.entrySet();
+//                for (final Object entryObj : set) {
+//                    final Entry<?, ?> entry = (Entry<?, ?>) entryObj;
+//                    if (entry.getKey().equals(this.key)) {
+//                        final JRFillField field = (JRFillField) entry.getValue();
+//                        if (field != null) {
+//                            final String levelStr = field.getPropertiesMap().getProperty("level");
+//                            if (levelStr != null && Integer.parseInt(levelStr) == this.level) {
+//                                ret = Boolean.TRUE;
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            return ret;
+//        }
+//
+//        /**
+//         * @see ar.com.fdvs.dj.domain.CustomExpression#getClassName()
+//         * @return class name
+//         */
+//        public String getClassName()
+//        {
+//            return Boolean.class.getName();
+//        }
+//    }
 
 }
