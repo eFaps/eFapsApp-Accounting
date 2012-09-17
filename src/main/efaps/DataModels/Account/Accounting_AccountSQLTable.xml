@@ -53,7 +53,7 @@
             <column name="CREATED"      type="DATETIME"     not-null="true" />
             <column name="MODIFIER"     type="INTEGER"      not-null="true" />
             <column name="MODIFIED"     type="DATETIME"     not-null="true" />
-            <unique name="T_ACCACCOUNT_UK_PERIODEIDNAME" columns="PERIODEID,NAME" />
+            <!-- <unique name="T_ACCACCOUNT_UK_PERIODEIDNAME" columns="PERIODEID,NAME" /> -->
             <foreign name="T_ACCACCOUNT_FK_PERIODEID"   key="PERIODEID" reference="T_ACCPERIODE(ID)" />
             <foreign name="T_ACCACCOUNT_FK_CRTR"        key="CREATOR"   reference="T_USERPERSON(ID)" />
             <foreign name="T_ACCACCOUNT_FK_MDFR"        key="MODIFIER"  reference="T_USERPERSON(ID)" />
