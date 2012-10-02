@@ -65,7 +65,7 @@
             <name>Number</name>
             <type>String</type>
             <sqltable>Accounting_ReportNodeSQLTable</sqltable>
-            <sqlcolumn>NUMBER</sqlcolumn>
+            <sqlcolumn>NUMB</sqlcolumn>
         </attribute>
         <attribute>
             <name>Label</name>

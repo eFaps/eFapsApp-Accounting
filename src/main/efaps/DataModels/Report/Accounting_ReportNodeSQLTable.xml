@@ -43,7 +43,7 @@
             <column name="ACCOUNTID"    type="INTEGER" />
             <column name="PARENTID"     type="INTEGER" />
             <column name="POSITION"     type="INTEGER" />
-            <column name="NUMBER"       type="STRING_SHORT"                 length="16" />
+            <column name="NUMB"         type="STRING_SHORT"                 length="16" />
             <column name="LABEL"        type="STRING_SHORT"                 length="128" />
             <column name="SHOW"         type="BOOLEAN"      not-null="true" />
             <column name="SUM"          type="BOOLEAN"      not-null="true" />

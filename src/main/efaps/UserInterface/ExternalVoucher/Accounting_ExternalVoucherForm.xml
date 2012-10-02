@@ -115,11 +115,11 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+            <trigger program="org.efaps.esjp.erp.Contacts"
                 method="autoComplete4Contact"
-                name="Sales_IncomingInvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"
+                name="Accounting_ExternalVoucherForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_ContactsSupplier</property>
+                <property name="Classifications">Sales_ContactsSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="updateFields4Contact"

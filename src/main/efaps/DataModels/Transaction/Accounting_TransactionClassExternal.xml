@@ -67,7 +67,7 @@
             <name>Number</name>
             <type>String</type>
             <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
-            <sqlcolumn>NUMBER</sqlcolumn>
+            <sqlcolumn>NUMB</sqlcolumn>
         </attribute>
         <attribute>
             <name>TypeLink</name>
