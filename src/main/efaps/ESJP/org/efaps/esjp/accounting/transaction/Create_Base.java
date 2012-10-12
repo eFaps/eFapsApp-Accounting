@@ -240,8 +240,21 @@ public abstract class Create_Base
                 }
             }
         }
+        add4CreateDoc(_parameter);
 
         return new Return();
+    }
+
+    /**
+     * Method to execute additional events.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @throws EFapsException on error.
+     */
+    protected void add4CreateDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+
     }
 
     /**
