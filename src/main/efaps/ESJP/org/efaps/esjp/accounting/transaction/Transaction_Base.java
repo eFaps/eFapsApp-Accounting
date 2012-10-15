@@ -717,7 +717,6 @@ public abstract class Transaction_Base
             final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
                             Transaction_Base.PERIODE_SESSIONKEY);
 
-            final String caseOid = _parameter.getParameterValue("case");
             final String curr = _parameter.getParameterValue("currencyExternal");
             final String amountStr = _parameter.getParameterValue("amountExternal");
 
@@ -747,97 +746,115 @@ public abstract class Transaction_Base
             final Rate rate = getExchangeRate(periodeInstance, currId, doc.getDate(), null);
             doc.setRate(rate);
 
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
-            queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
-                                Instance.get(caseOid).getId());
-            queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.Default, true);
-            final MultiPrintQuery print = queryBldr.getPrint();
+            buildDoc4ExecuteButton(_parameter, doc, rate);
 
-            final SelectBuilder oidSel = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
-            final SelectBuilder nameSel = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
-                            .attribute(CIAccounting.AccountAbstract.Name);
-            final SelectBuilder descSel = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
-                            .attribute(CIAccounting.AccountAbstract.Description);
-            print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
-                            CIAccounting.Account2CaseAbstract.Denominator,
-                            CIAccounting.Account2CaseAbstract.LinkValue);
-            print.addSelect(oidSel, nameSel, descSel);
-            print.execute();
-
-            while (print.next()) {
-                final String oid = print.<String>getSelect(oidSel);
-                final String name = print.<String>getSelect(nameSel);
-                final String desc = print.<String>getSelect(descSel);
-                final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
-                final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
-                final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
-                final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
-                                BigDecimal.ROUND_HALF_UP);
-                final BigDecimal accAmount;
-                final Type type = print.getCurrentInstance().getType();
-                if (type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
-                                || type.equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
-                    accAmount = mul.multiply(doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
-                } else {
-                    accAmount = mul.multiply(doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
-                }
-
-                final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                                .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP);
-                String postFix;
-                Map<String, TargetAccount> acounts;
-                if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
-                                || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
-                    postFix = "_Credit";
-                    acounts = doc.getCreditAccounts();
-                } else {
-                    postFix = "_Debit";
-                    acounts = doc.getDebitAccounts();
-                }
-                final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
-                account.setAmountRate(accAmountRate);
-                account.setLink(getLinkString(oid, postFix));
-                account.setRate(rate);
-                acounts.put(oid, account);
-            }
             if (doc.getInstance() != null) {
                 doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
                 addAccount4BankCash(_parameter, doc);
             }
-            final StringBuilder js = new StringBuilder();
-            js.append("function removeRows(elName){")
-                .append("var e = document.getElementsByName(elName);")
-                .append("var zz = e.length;")
-                .append("for (var i=0; i <zz;i++) {")
-                .append("var x = e[0].parentNode.parentNode;")
-                .append("var p = x.parentNode;p.removeChild(x);")
-                .append("}}\n")
-                .append("removeRows('amount_Debit');")
-                .append("removeRows('amount_Credit');\n");
 
-            js.append("function setDebit(){");
-            int index = 0;
-            for (final TargetAccount account : doc.getDebitAccounts().values()) {
-                js.append(getScriptLine(account, "_Debit", index));
-                index++;
-            }
-            js.append("}\n");
-
-            js.append("function setCredit(){");
-            index = 0;
-            for (final TargetAccount account : doc.getCreditAccounts().values()) {
-                js.append(getScriptLine(account, "_Credit", index));
-                index++;
-            }
-            js.append("}\n").append(getScriptValues(doc));
+            final StringBuilder js = buildHtml4ExecuteButton(doc);
             ret.put(ReturnValues.SNIPLETT, js.toString());
         } catch (final ParseException e) {
             throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
         }
         return ret;
+    }
+
+    protected void buildDoc4ExecuteButton(final Parameter _parameter,
+                                             final Document _doc,
+                                             final Rate _rate)
+        throws EFapsException
+    {
+        final String caseOid = _parameter.getParameterValue("case");
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
+                        Instance.get(caseOid).getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.Default, true);
+        final MultiPrintQuery print = queryBldr.getPrint();
+
+        final SelectBuilder oidSel = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
+        final SelectBuilder nameSel = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
+                        .attribute(CIAccounting.AccountAbstract.Name);
+        final SelectBuilder descSel = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
+                        .attribute(CIAccounting.AccountAbstract.Description);
+        print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
+                        CIAccounting.Account2CaseAbstract.Denominator,
+                        CIAccounting.Account2CaseAbstract.LinkValue);
+        print.addSelect(oidSel, nameSel, descSel);
+        print.execute();
+        while (print.next()) {
+            final String oid = print.<String>getSelect(oidSel);
+            final String name = print.<String>getSelect(nameSel);
+            final String desc = print.<String>getSelect(descSel);
+            final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
+            final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
+            final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
+            final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
+                            BigDecimal.ROUND_HALF_UP);
+            final BigDecimal accAmount;
+            final Type type = print.getCurrentInstance().getType();
+            if (type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
+                            || type.equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
+                accAmount = mul.multiply(_doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
+            } else {
+                accAmount = mul.multiply(_doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            }
+
+            final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
+                                                            .divide(_rate.getValue(), BigDecimal.ROUND_HALF_UP);
+            String postFix;
+            Map<String, TargetAccount> acounts;
+            if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
+                            || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
+                postFix = "_Credit";
+                acounts = _doc.getCreditAccounts();
+            } else {
+                postFix = "_Debit";
+                acounts = _doc.getDebitAccounts();
+            }
+            final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
+            account.setAmountRate(accAmountRate);
+            account.setLink(getLinkString(oid, postFix));
+            account.setRate(_rate);
+            acounts.put(oid, account);
+        }
+    }
+
+    protected StringBuilder buildHtml4ExecuteButton(final Document _doc)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        js.append("function removeRows(elName){")
+                        .append("var e = document.getElementsByName(elName);")
+                        .append("var zz = e.length;")
+                        .append("for (var i=0; i <zz;i++) {")
+                        .append("var x = e[0].parentNode.parentNode;")
+                        .append("var p = x.parentNode;p.removeChild(x);")
+                        .append("}}\n")
+                        .append("removeRows('amount_Debit');")
+                        .append("removeRows('amount_Credit');\n");
+
+        js.append("function setDebit(){");
+        int index = 0;
+        for (final TargetAccount account : _doc.getDebitAccounts().values()) {
+            js.append(getScriptLine(account, "_Debit", index));
+            index++;
+        }
+        js.append("}\n");
+
+        js.append("function setCredit(){");
+        index = 0;
+        for (final TargetAccount account : _doc.getCreditAccounts().values()) {
+            js.append(getScriptLine(account, "_Credit", index));
+            index++;
+        }
+        js.append("}\n").append(getScriptValues(_doc));
+
+        return js;
     }
 
     /**
