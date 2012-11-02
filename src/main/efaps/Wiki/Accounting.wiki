@@ -10,6 +10,8 @@
 #summary Contabilidad
 <wiki:toc max_depth="3"/>
 
+----
+
 El menú contabilidad le ayudará a manejar los siguientes puntos:
 
   # Períodos
@@ -20,192 +22,21 @@ El menú contabilidad le ayudará a manejar los siguientes puntos:
   # Monedas
 
 ==1. Períodos==
-Mostraremos los siguientes puntos:
-
-  * 1.1 Crear
-  * 1.2 Borrar seleccionado
-  * 1.3 Exportar
-
-===1.1 Crear===
-Se dirige a la opción acción y entra a crear, inmediatamente le aparecerá la ventana *crear nuevo período* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
-
-  * Obligatorio: Nombre/Año, desde, hasta y moneda(elegir el tipo de moneda).
-  * Secundario: tabla de cuentas csv y reportes csv, se puede subir este documento al sistema ingresando a examinar.
-
-===1.2 Borrar seleccionado===
-Seleccionar una o varias guías de remisión(Devolución), dirigirse a la opción acción y elegir borrar seleccionado.
-
-===1.3 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
-
+Ingrese a [./org.efaps.wiki.accounting.Period.wiki Período]
 
 ==2. Reportes==
-Contamos con variados reportes, a continuación se le mencionará los tipos de reporte:
-
-  * 2.1 Crear balance
-  * 2.2 Crear ganancia/perdida
-  * 2.3 Reporte de asientos
-  * 2.4 Importar balance
-  * 2.5 Borrar
-  * 2.6 Crear reporte de cuentas
-  * 2.7 Crear reporte diario
-
-===2.1 Crear balance===
-Se dirige a la opción acción y selecciona crear balance, inmediatamente le aparecerá la ventana *crear nuevo reporte de balance* en donde
-ingresará la información correspondiente en los siguientes campos:
-
-  * Nombre: se coloca un nombre el cual va identificar al  reporte balance.
-  * Descripción: es la información mas detallada del balance.
-  * Numeración: es el numero con el cual se va identificar el balance.
-  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
-
-===2.2 Crear ganancia/perdida===
-Se dirige a la opción acción y selecciona crear ganancia/perdida, inmediatamente le aparecerá la ventana *crear nuevo reporte de ganancia/perdida* en donde
-ingresará la información correspondiente en los siguientes campos:
-
-  * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
-  * Descripción: es la información mas detallada del reporte ganancia/perdida.
-  * Numeración: es el numero con el cual se va identificar el reporte ganancia/perdida.
-  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
-
-===2.3 Reporte de asientos===
-Se dirige a la opción acción y selecciona reporte de asientos, inmediatamente le aparecerá la ventana *crear nuevo reporte de asientos* en donde
-ingresará la información correspondiente en los siguientes campos:
-
-  * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
-  * Descripción: es la información mas detallada del reporte ganancia/perdida.
-  * Numeración: es el numero con el cual se va identificar el reporte ganancia/perdida.
-  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
-
-===2.4 Importar balance===
-Se dirige a la opción acción y selecciona importar balance, inmediatamente le aparecerá la ventana *importar balance* en donde
-ingresará la información correspondiente en los siguientes campos:
-
-  * Período: llamar al período por su nombre o colocando solo {{{*}}} (se le mostrarán todos los períodos).
-  * Reportes csv: vamos a ingresar un balance para ello nos vamos a examinar y seleccionamos nuestro balance.
-  * Cuando los dos campos tienen su debida información le damos crear.
-
-===2.5 Borrar===
-Seleccionar uno o mas reportes, dirigirse a la opción acción y elegir borrar.
-
-===2.6 Crear reporte de cuentas===
-Se dirige a la opción acción y selecciona crear reporte de cuentas, inmediatamente le aparecerá la ventana *crear reporte de cuentas* en donde
-ingresará la información correspondiente en los siguientes campos:
-
-  * Nombre: se coloca un nombre el cual va identificar al reporte de cuentas.
-  * Descripción: es la información mas detallada del reporte de cuentas.
-  * Numeración: es el numero con el cual se va identificar el reporte de cuentas.
-  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
-
-===2.7 Crear reporte diario===
-Se dirige a la opción acción y entra a crear reporte diario, inmediatamente le aparecerá la ventana *crear reporte diario* en donde
-ingresará la información correspondiente en los siguientes campos:
-
-  * Nombre: se coloca un nombre el cual va identificar al reporte diario.
-  * Descripción: es la información mas detallada del reporte diario.
-  * Numeración: es el numero con el cual se va identificar el reporte diario.
-  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
+Ingrese a [./org.efaps.wiki.accounting.Reports.wiki Reportes]
 
 ==3. Documentos==
-Usted podrá ver la lista completa de facturas entrantes y comprobantes, creados anteriormente. A continuación mostraremos los siguientes puntos:
-
-  * 3.1 Borrar
-  * 3.2 Exportar
-
-===3.1 Borrar===
-Seleccionar uno o varios documentos, dirigirse a la opción acción y elegir borrar.
-
-===3.2 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
+Ingrese a [./org.efaps.wiki.accounting.Documents.wiki Documentos]
 
 ==4. Documentos de pago==
-Contiene los siguientes puntos:
-
-  * 4.1 Crear Cheque
-  * 4.2 Crear letra
-  * 4.3 Borrar
-
-===4.1 Crear Cheque===
-Se dirige a la opción acción y selecciona crear cheque, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente a cada cada campo obligatorio y secundario:
-
-Obligatorio
-  * Desde:  es el primer numero de serie con que empezaría el cheque.
-
-Secundario
-  * Nombre prefijo: colocar un nombre inicial.
-  * Nombre sufijo: colocar un nombre final.
-  * Hasta: es el ultimo numero de serie con que finalizaría el cheque.
-  * Periodo: seleccionar un periodo.
-  * Cuenta: seleccionar una cuenta.
-
-===4.2 Crear letra===
-Se dirige a la opción acción y selecciona crear letra, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente a cada campo obligatorio y secundario:
-
-Obligatorio
-  * Desde:  es el primer numero de serie con que empezaría la letra.
-
-Secundario
-  * Nombre prefijo: colocar un nombre inicial.
-  * Nombre sufijo: colocar un nombre final.
-  * Hasta: es el ultimo numero de serie con que finalizaría la letra.
-  * Periodo: seleccionar un periodo.
-  * Cuenta: seleccionar una cuenta.
-
-===4.3 Borrar===
-Seleccionar una o mas letras o cheques, dirigirse a la opción acción y seleccionar borrar.
+Ingrese a [./org.efaps.wiki.accounting.Paymentdocuments.wiki Documentos de pago]
 
 ==5. Acciones==
-Verá los siguientes puntos:
-
-  * 5.1 Crear acción para Caja Chica
-  * 5.2 Crear acción para solicitud de pago
-  * 5.3 Crear acción para planilla
-
-===5.1 Crear acción para Caja Chica===
-Son llamadas a los distintos casos que se presentan en la caja chica. Para crear una acción de caja chica deberá dirigirse a la opción acción y seleccionar crear acción para caja chica, inmediatamente le aparecerá la ventana
-*Crear acción para caja chica* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
-
-Obligatorio:
-  * Nombre: coloca un nombre a esta acción.
-  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
-
-Secundario:
-  * Descripción: describe esta acción.
-
-===5.2 Crear acción para solicitud de pago===
-Se dirige a la opción acción en donde selecciona "Crear accion para solicitud de pago", inmediatamente le aparecerá la ventana *Crear acción para
-solicitud de pago* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
-
-Obligatorio:
-  * Nombre: coloca un nombre a esta acción.
-  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
-
-Secundario:
-  * Descripción: describe esta acción.
-
-===5.3 Crear acción para planilla===
-Se dirige a la opción acción en donde selecciona "Crear accion para planilla", inmediatamente le aparecerá la ventana
-*Crear acción para Planilla* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
-
-Obligatorio:
-  * Nombre: coloca un nombre a esta acción.
-  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
-
-Secundario:
-  * Descripción: describe esta acción.
-
-A. *Elementos relacionados*
-  * [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Definiciones de asientos]
-  * [./org.efaps.wiki.accounting.Showaccounting.wiki#6._Acciones Acceso a Acciones]
-  * [./org.efaps.wiki.accounting.Accounting.wiki#5._Acciones Crear Acciones]
-  * [./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asiento Acceso a definiciones de asiento]
-  * Es para que pueda crear una planilla con asientos contables ([./org.efaps.wiki.payroll.Payroll.wiki#3.1_Crear Crear])
+Ingrese a [./org.efaps.wiki.accounting.Actions.wiki Acciones]
 
 ==6. Monedas==
-Para crear una moneda usted deberá de ingresar la información correspondiente en los siguientes campos:
+Ingrese a [./org.efaps.wiki.accounting.Currency.wiki Monedas]
 
-  * Moneda: ingresar el nombre de la moneda.
-  * Código ISO: es el símbolo representativo de la moneda.
-  * Símbolo: colocar el simbolo correspondiente a la moneda que se desea ingresar.
-  * UUID: es el código único de cada moneda.
-  * Inverso: si coloca TRUE aparecerá la moneda en la lista y si coloca FALSE no aparecerá en la lista.
+

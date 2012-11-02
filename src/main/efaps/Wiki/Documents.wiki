@@ -1,0 +1,25 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     3f9babd2-2a80-411e-bdee-be47c9909695
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Documentos
+<wiki:toc max_depth="3"/>
+
+----
+
+==3. Documentos==
+Usted podrá ver la lista completa de facturas entrantes y comprobantes, creados anteriormente. A continuación mostraremos los siguientes puntos:
+
+  * 3.1 Borrar
+  * 3.2 Exportar
+
+===3.1 Borrar===
+Seleccionar uno o varios documentos, dirigirse a la opción acción y elegir borrar.
+
+===3.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.

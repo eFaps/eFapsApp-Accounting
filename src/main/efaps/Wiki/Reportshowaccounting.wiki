@@ -7,12 +7,12 @@
 
 
 
-#summary Reportes
+#summary Acceso a Reportes
 <wiki:toc max_depth="3"/>
 
 ----
 
-==3. Reportes==
+==3. Acceso a Reportes==
 Veremos en este menú la información que contiene a continuación:
   * 3.1 Balance
   * 3.2 Ganancia/Perdida

@@ -22,24 +22,15 @@
 --><help-menu xmlns="http://www.efaps.org/xsd"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid> 906bd8c4-2e7f-4234-936b-6a1ee74bdf37</uuid>
+    <uuid>a7f9886b-3365-4248-b9c1-b7167851cd3b</uuid>
     <file-application>eFaps-Accounting</file-application>
     <file-revision>$Rev: 6408 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Accounting</name>
+        <name>Currency_Accounting</name>
         <!-- targets -->
         <target>
-            <wiki>org.efaps.wiki.accounting.Accounting.wiki</wiki>
+            <wiki>org.efaps.wiki.accounting.Currency.wiki</wiki>
         </target>
-        <childs>
-            <child>Showaccounting_Accounting</child>
-            <child>Period_Accounting</child>
-            <child>Reports_Accounting</child>
-            <child>Documents_Accounting</child>
-            <child>Paymentdocuments_Accounting</child>
-            <child>Actions_Accounting</child>
-            <child>Currency_Accounting</child>
-        </childs>
     </definition>
 </help-menu>

@@ -1,0 +1,80 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     8bca4269-a9f8-4065-83e2-4c645ab8147d
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Reportes
+<wiki:toc max_depth="3"/>
+
+----
+
+==2. Reportes==
+Contamos con variados reportes, a continuación se le mencionará los tipos de reporte:
+
+  * 2.1 Crear balance
+  * 2.2 Crear ganancia/perdida
+  * 2.3 Reporte de asientos
+  * 2.4 Importar balance
+  * 2.5 Borrar
+  * 2.6 Crear reporte de cuentas
+  * 2.7 Crear reporte diario
+
+===2.1 Crear balance===
+Se dirige a la opción acción y selecciona crear balance, inmediatamente le aparecerá la ventana *crear nuevo reporte de balance* en donde
+ingresará la información correspondiente en los siguientes campos:
+
+  * Nombre: se coloca un nombre el cual va identificar al  reporte balance.
+  * Descripción: es la información mas detallada del balance.
+  * Numeración: es el numero con el cual se va identificar el balance.
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
+
+===2.2 Crear ganancia/perdida===
+Se dirige a la opción acción y selecciona crear ganancia/perdida, inmediatamente le aparecerá la ventana *crear nuevo reporte de ganancia/perdida* en donde
+ingresará la información correspondiente en los siguientes campos:
+
+  * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
+  * Descripción: es la información mas detallada del reporte ganancia/perdida.
+  * Numeración: es el numero con el cual se va identificar el reporte ganancia/perdida.
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
+
+===2.3 Reporte de asientos===
+Se dirige a la opción acción y selecciona reporte de asientos, inmediatamente le aparecerá la ventana *crear nuevo reporte de asientos* en donde
+ingresará la información correspondiente en los siguientes campos:
+
+  * Nombre: se coloca un nombre el cual va identificar al reporte ganancia/perdida.
+  * Descripción: es la información mas detallada del reporte ganancia/perdida.
+  * Numeración: es el numero con el cual se va identificar el reporte ganancia/perdida.
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
+
+===2.4 Importar balance===
+Se dirige a la opción acción y selecciona importar balance, inmediatamente le aparecerá la ventana *importar balance* en donde
+ingresará la información correspondiente en los siguientes campos:
+
+  * Período: llamar al período por su nombre o colocando solo {{{*}}} (se le mostrarán todos los períodos).
+  * Reportes csv: vamos a ingresar un balance para ello nos vamos a examinar y seleccionamos nuestro balance.
+  * Cuando los dos campos tienen su debida información le damos crear.
+
+===2.5 Borrar===
+Seleccionar uno o mas reportes, dirigirse a la opción acción y elegir borrar.
+
+===2.6 Crear reporte de cuentas===
+Se dirige a la opción acción y selecciona crear reporte de cuentas, inmediatamente le aparecerá la ventana *crear reporte de cuentas* en donde
+ingresará la información correspondiente en los siguientes campos:
+
+  * Nombre: se coloca un nombre el cual va identificar al reporte de cuentas.
+  * Descripción: es la información mas detallada del reporte de cuentas.
+  * Numeración: es el numero con el cual se va identificar el reporte de cuentas.
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).
+
+===2.7 Crear reporte diario===
+Se dirige a la opción acción y entra a crear reporte diario, inmediatamente le aparecerá la ventana *crear reporte diario* en donde
+ingresará la información correspondiente en los siguientes campos:
+
+  * Nombre: se coloca un nombre el cual va identificar al reporte diario.
+  * Descripción: es la información mas detallada del reporte diario.
+  * Numeración: es el numero con el cual se va identificar el reporte diario.
+  * Período: llamar al período colocando su nombre o solo {{{*}}} (se le mostrarán todos los períodos).

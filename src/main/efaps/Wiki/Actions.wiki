@@ -1,0 +1,60 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     91bf9a5a-fef4-42c8-9fab-91d67f0a82f3
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acciones
+<wiki:toc max_depth="3"/>
+
+----
+
+==5. Acciones==
+Verá los siguientes puntos:
+
+  * 5.1 Crear acción para Caja Chica
+  * 5.2 Crear acción para solicitud de pago
+  * 5.3 Crear acción para planilla
+
+===5.1 Crear acción para Caja Chica===
+Son llamadas a los distintos casos que se presentan en la caja chica. Para crear una acción de caja chica deberá dirigirse a la opción acción y seleccionar crear acción para caja chica, inmediatamente le aparecerá la ventana
+*Crear acción para caja chica* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Nombre: coloca un nombre a esta acción.
+  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
+
+Secundario:
+  * Descripción: describe esta acción.
+
+===5.2 Crear acción para solicitud de pago===
+Se dirige a la opción acción en donde selecciona "Crear accion para solicitud de pago", inmediatamente le aparecerá la ventana *Crear acción para
+solicitud de pago* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Nombre: coloca un nombre a esta acción.
+  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
+
+Secundario:
+  * Descripción: describe esta acción.
+
+===5.3 Crear acción para planilla===
+Se dirige a la opción acción en donde selecciona "Crear accion para planilla", inmediatamente le aparecerá la ventana
+*Crear acción para Planilla* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Nombre: coloca un nombre a esta acción.
+  * Activo: indica la aparición de la acción, para que aparezca debe colocar true y para que no aparezca debe colocar false.
+
+Secundario:
+  * Descripción: describe esta acción.
+
+A. *Elementos relacionados*
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#1.10_Definiciones_de_asientos Definiciones de asientos]
+  * [./org.efaps.wiki.accounting.Showaccounting.wiki#6._Acciones Acceso a Acciones]
+  * [./org.efaps.wiki.accounting.Accounting.wiki#5._Acciones Crear Acciones]
+  * [./org.efaps.wiki.accounting.Showperiod.wiki#2.5_Acceso_a_definiciones_de_asiento Acceso a definiciones de asiento]
+  * Es para que pueda crear una planilla con asientos contables ([./org.efaps.wiki.payroll.Payroll.wiki#3.1_Crear Crear])

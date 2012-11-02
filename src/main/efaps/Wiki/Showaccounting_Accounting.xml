@@ -34,7 +34,6 @@
         </target>
          <childs>
             <child>Showperiod_Accounting</child>
-            <child>Periodshowaccounting_Accounting</child>
             <child>Reportshowaccounting_Accounting</child>
             <child>Showdocumentsshowaccounting_Accounting</child>
             <child>Showactionsshowaccounting_Accounting</child>

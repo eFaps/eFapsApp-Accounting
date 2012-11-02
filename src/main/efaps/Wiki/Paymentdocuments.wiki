@@ -1,0 +1,49 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     dd48a38b-6014-40c7-a953-492aaa81d274
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Documentos de pago
+<wiki:toc max_depth="3"/>
+
+----
+
+==4. Documentos de pago==
+Contiene los siguientes puntos:
+
+  * 4.1 Crear Cheque
+  * 4.2 Crear letra
+  * 4.3 Borrar
+
+===4.1 Crear Cheque===
+Se dirige a la opción acción y selecciona crear cheque, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente a cada cada campo obligatorio y secundario:
+
+Obligatorio
+  * Desde:  es el primer numero de serie con que empezaría el cheque.
+
+Secundario
+  * Nombre prefijo: colocar un nombre inicial.
+  * Nombre sufijo: colocar un nombre final.
+  * Hasta: es el ultimo numero de serie con que finalizaría el cheque.
+  * Periodo: seleccionar un periodo.
+  * Cuenta: seleccionar una cuenta.
+
+===4.2 Crear letra===
+Se dirige a la opción acción y selecciona crear letra, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente a cada campo obligatorio y secundario:
+
+Obligatorio
+  * Desde:  es el primer numero de serie con que empezaría la letra.
+
+Secundario
+  * Nombre prefijo: colocar un nombre inicial.
+  * Nombre sufijo: colocar un nombre final.
+  * Hasta: es el ultimo numero de serie con que finalizaría la letra.
+  * Periodo: seleccionar un periodo.
+  * Cuenta: seleccionar una cuenta.
+
+===4.3 Borrar===
+Seleccionar una o mas letras o cheques, dirigirse a la opción acción y seleccionar borrar.

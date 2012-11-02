@@ -1,0 +1,22 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.accounting
+@eFapsUUID     44380355-807d-41fc-b982-1bb479c5c1b9
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Monedas
+<wiki:toc max_depth="3"/>
+
+----
+
+==6. Monedas==
+Para crear una moneda usted deberá de ingresar la información correspondiente en los siguientes campos:
+
+  * Moneda: ingresar el nombre de la moneda.
+  * Código ISO: es el símbolo representativo de la moneda.
+  * Símbolo: colocar el simbolo correspondiente a la moneda que se desea ingresar.
+  * UUID: es el código único de cada moneda.
+  * Inverso: si coloca TRUE aparecerá la moneda en la lista y si coloca FALSE no aparecerá en la lista.

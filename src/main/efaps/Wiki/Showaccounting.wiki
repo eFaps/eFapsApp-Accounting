@@ -14,34 +14,31 @@
 
 El menú de contabilidad le ayudará a manejar los siguientes puntos:
 
-  # Períodos
+
   # Acceso a período
-  # Reportes
+  # Acceso a Reportes
   # Acceso a Documentos
   # Acceso a Documento de pago
   # Acceso a Acciones
 
-==1. Período==
-Ingrese a [./org.efaps.wiki.accounting.Periodshowaccounting.wiki Período].
 
-
-==2. Acceso a período==
+==1. Acceso a período==
 Ingrese a [./org.efaps.wiki.accounting.Showperiod.wiki Acceso a período].
 
 
-==3. Reportes==
+==2. Acceso a Reportes==
 Ingrese a [./org.efaps.wiki.accounting.Reportshowaccounting.wiki Reportes].
 
 
-==4.Acceso a Documentos==
+==3.Acceso a Documentos==
 Ingrese a [./org.efaps.wiki.accounting.Showdocumentsshowaccounting.wiki Acceso a documentos].
 
 
-==5. Acceso a Documentos de pago==
+==4. Acceso a Documentos de pago==
 Ingrese a [./org.efaps.wiki.accounting.Showpaymentdocumentsshowaccounting.wiki Acceso a solicitud de pago].
 
 
-==6. Acceso a acciones==
+==5. Acceso a acciones==
 Ingrese a [./org.efaps.wiki.accounting.Showactionsshowaccounting.wiki Acceso a acciones].
 
 
