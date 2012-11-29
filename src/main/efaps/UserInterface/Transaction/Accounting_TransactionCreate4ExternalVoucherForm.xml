@@ -104,7 +104,7 @@
                 method="autoComplete4Contact"
                 name="Accounting_TransactionCreate4ExternalForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Classifications">Sales_ContactsSupplier</property>
+                <property name="Classifications">Sales_Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.erp.Contacts"
                 method="updateFields4Contact"
