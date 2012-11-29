@@ -74,7 +74,6 @@ public abstract class ExternalVoucher_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-
         final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
 
         final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
@@ -216,6 +215,7 @@ public abstract class ExternalVoucher_Base
      * granted to the field or not.
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing true if access is granted
+     * @throws EFapsException on error
      */
     public Return accessCheck4FieldPicker(final Parameter _parameter)
         throws EFapsException
