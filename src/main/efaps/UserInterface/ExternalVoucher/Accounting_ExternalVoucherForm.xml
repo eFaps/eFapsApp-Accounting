@@ -39,30 +39,19 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="date">
-            <property name="Columns">40</property>
+            <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
-        <field name="salesperson">
-            <property name="Attribute">Salesperson</property>
+        <field name="dueDate">
+            <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-        </field>
-        <field name="salespersonLink">
-            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
-            <property name="Attribute">Salesperson</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-            <property name="ShowTypeIcon">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -92,6 +81,7 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -125,6 +115,11 @@
                 method="updateFields4Contact"
                 name="Sales_IncomingInvoiceForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="headingType" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Accounting_ExternalVoucherForm.headingType.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="typeLink4Read">
             <property name="ModeEdit">READONLY</property>
