@@ -74,7 +74,10 @@ public abstract class ExternalVoucher_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        if (!contactInst.isValid()) {
+            contactInst = Instance.get(_parameter.getParameterValue("contactPicker"));
+        }
 
         final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         Transaction_Base.PERIODE_SESSIONKEY);
