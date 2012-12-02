@@ -42,6 +42,7 @@
             <child>Accounting_ReportMyDesk_Menu_Action_ImportBalance</child>
             <child>Accounting_ReportMyDesk_Menu_Action_CreateAccount</child>
             <child>Accounting_ReportMyDesk_Menu_Action_CreateJournal</child>
+            <child>Accounting_ReportMyDesk_Menu_Action_CreateSubJournal</child>
             <child>Accounting_ReportMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
