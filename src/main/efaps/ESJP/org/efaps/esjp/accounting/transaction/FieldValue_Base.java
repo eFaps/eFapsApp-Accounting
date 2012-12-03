@@ -681,7 +681,7 @@ public abstract class FieldValue_Base
                 .append("Wicket.Event.add(window, \"domready\", function(event) {")
                 .append("removeRows('amount_Debit');")
                 .append("removeRows('amount_Credit');")
-                .append(getScriptValues(_doc))
+                .append(getScriptValues(_parameter, _doc))
                 .append(" });");
         }
         return ret;

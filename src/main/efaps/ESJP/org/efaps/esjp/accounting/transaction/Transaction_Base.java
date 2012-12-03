@@ -753,7 +753,7 @@ public abstract class Transaction_Base
                 addAccount4BankCash(_parameter, doc);
             }
 
-            final StringBuilder js = buildHtml4ExecuteButton(doc);
+            final StringBuilder js = buildHtml4ExecuteButton(_parameter, doc);
             ret.put(ReturnValues.SNIPLETT, js.toString());
         } catch (final ParseException e) {
             throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
@@ -762,8 +762,8 @@ public abstract class Transaction_Base
     }
 
     protected void buildDoc4ExecuteButton(final Parameter _parameter,
-                                             final Document _doc,
-                                             final Rate _rate)
+                                          final Document _doc,
+                                          final Rate _rate)
         throws EFapsException
     {
         final String caseOid = _parameter.getParameterValue("case");
@@ -824,19 +824,20 @@ public abstract class Transaction_Base
         }
     }
 
-    protected StringBuilder buildHtml4ExecuteButton(final Document _doc)
+    protected StringBuilder buildHtml4ExecuteButton(final Parameter _parameter,
+                                                    final Document _doc)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
         js.append("function removeRows(elName){")
-                        .append("var e = document.getElementsByName(elName);")
-                        .append("var zz = e.length;")
-                        .append("for (var i=0; i <zz;i++) {")
-                        .append("var x = e[0].parentNode.parentNode;")
-                        .append("var p = x.parentNode;p.removeChild(x);")
-                        .append("}}\n")
-                        .append("removeRows('amount_Debit');")
-                        .append("removeRows('amount_Credit');\n");
+            .append("var e = document.getElementsByName(elName);")
+            .append("var zz = e.length;")
+            .append("for (var i=0; i <zz;i++) {")
+            .append("var x = e[0].parentNode.parentNode;")
+            .append("var p = x.parentNode;p.removeChild(x);")
+            .append("}}\n")
+            .append("removeRows('amount_Debit');")
+            .append("removeRows('amount_Credit');\n");
 
         js.append("function setDebit(){");
         int index = 0;
@@ -852,10 +853,45 @@ public abstract class Transaction_Base
             js.append(getScriptLine(account, "_Credit", index));
             index++;
         }
-        js.append("}\n").append(getScriptValues(_doc));
+        js.append("}\n").append(getScriptValues(_parameter, _doc));
+
+        js.append(getSetSubJournalScript(_parameter, _doc));
+
 
         return js;
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _doc  Document
+     * @return StringBuilder
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getSetSubJournalScript(final Parameter _parameter,
+                                                   final Document _doc)
+        throws EFapsException
+    {
+        // check if the fiel is existing
+        final StringBuilder ret = new StringBuilder();
+        if (_parameter.getParameterValue("subJournal") != null) {
+
+            final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+            if (caseInst.isValid()) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Report2Case);
+                queryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst.getId());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.Report2Case.FromLink).oid();
+                multi.addSelect(sel);
+                multi.execute();
+                if (multi.next()) {
+                    ret.append("document.getElementsByName('subJournal')[0].value='")
+                    .append(multi.getSelect(sel)).append("';");
+                }
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * method for add account bank cash in case existing document instance.
@@ -898,7 +934,8 @@ public abstract class Transaction_Base
      * @param _doc  Document
      * @return StringBuilder
      */
-    protected StringBuilder getScriptValues(final Document _doc)
+    protected StringBuilder getScriptValues(final Parameter _parameter,
+                                            final Document _doc)
     {
         final StringBuilder ret = new StringBuilder();
         ret.append(" addNewRows_transactionPositionDebitTable(").append(_doc.getDebitAccounts().size())
