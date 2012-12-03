@@ -26,10 +26,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Report2TransactionSQLTable</name>
+        <name>Accounting_Report2ObjectSQLTable</name>
         <typeid-column>TYPEID</typeid-column>
         <database>
-            <table-name>T_ACCREPORT2TRANSACTION</table-name>
+            <table-name>T_ACCREPORT2OBJECT</table-name>
             <!-- columns -->
             <column name="TYPEID"   not-null="true"     type="INTEGER"/>
             <column name="FROMID"   not-null="true"     type="INTEGER"/>
@@ -38,10 +38,9 @@
             <column name="CREATED"  not-null="true"     type="DATETIME"/>
             <column name="MODIFIER" not-null="true"     type="INTEGER"/>
             <column name="MODIFIED" not-null="true"     type="DATETIME"/>
-            <foreign key="FROMID"   name="T_ACCREPORT2TRANSACTION_FK_FROMID"    reference="T_ACCREPORT(ID)"/>
-            <foreign key="TOID"     name="T_ACCREPORT2TRANSACTION_FK_TOID"      reference="T_ACCTRANSACTION(ID)"/>
-            <foreign key="CREATOR"  name="T_ACCREPORT2TRANSACTION_FK_CRTR"      reference="T_USERPERSON(ID)"/>
-            <foreign key="MODIFIER" name="T_ACCREPORT2TRANSACTION_FK_MDFR"      reference="T_USERPERSON(ID)"/>
+            <foreign key="FROMID"   name="T_ACCREPORT2OBJECT_FK_FROMID"    reference="T_ACCREPORT(ID)"/>
+            <foreign key="CREATOR"  name="T_ACCREPORT2OBJECT_FK_CRTR"      reference="T_USERPERSON(ID)"/>
+            <foreign key="MODIFIER" name="T_ACCREPORT2OBJECT_FK_MDFR"      reference="T_USERPERSON(ID)"/>
         </database>
     </definition>
 </datamodel-sqltable>

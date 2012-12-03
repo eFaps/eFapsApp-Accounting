@@ -66,6 +66,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.util.EFapsException;
@@ -85,7 +86,23 @@ import org.joda.time.format.DateTimeFormatter;
 public abstract class FieldValue_Base
     extends Transaction
 {
+    public Return getSubJournalFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field() {
 
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance periodInst = (Instance) Context.getThreadContext()
+                                .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                _queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodeLink, periodInst.getId());
+            }
+        };
+        return field.dropDownFieldValue(_parameter);
+    }
     /**
      * Called from field for the case.
      *

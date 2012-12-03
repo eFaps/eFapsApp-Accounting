@@ -32,14 +32,14 @@
             <name>FromLink</name>
             <type>Link</type>
             <typelink>Accounting_ReportSubJournal</typelink>
-            <sqltable>Accounting_Report2TransactionSQLTable</sqltable>
+            <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
             <typelink>Accounting_Transaction</typelink>
-            <sqltable>Accounting_Report2TransactionSQLTable</sqltable>
+            <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>

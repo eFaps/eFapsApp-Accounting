@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,22 +19,26 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6d4704c4-5b95-4b5c-8a8e-b212f7779e82</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>a609ee27-b005-4810-9537-536b4a7ec9f6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Report2Transaction</name>
-        <parent>Accounting_Report2ObjectAbstract</parent>
-        <purpose abstract="true"/>
-        <attribute>
-            <name>ToLinkAbstract</name>
-            <type>Link</type>
-            <typelink>Accounting_Transaction</typelink>
-            <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Accounting_ReportSearch</name>
+        <!-- target definitions -->
+        <target>
+            <form>Accounting_ReportForm</form>
+            <table>Accounting_ReportTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Types">Accounting_ReportSubJournal</property>
+                <property name="ExpandChildTypes">false</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="TargetMode">search</property>
     </definition>
-</datamodel-type>
+
+</ui-command>

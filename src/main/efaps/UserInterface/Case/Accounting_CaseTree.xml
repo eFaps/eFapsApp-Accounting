@@ -44,6 +44,7 @@
 
         <childs>
             <child>Accounting_CaseTree_Account</child>
+            <child>Accounting_CaseTree_Report</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>

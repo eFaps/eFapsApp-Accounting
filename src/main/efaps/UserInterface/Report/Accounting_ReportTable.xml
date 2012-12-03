@@ -35,16 +35,19 @@
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_ReportAbstract/Name.Label</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <!-- fields -->
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Accounting_ReportAbstract/Name.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Label">Accounting_ReportAbstract/Description.Label</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="numbering">
             <property name="Attribute">Numbering</property>
@@ -55,6 +58,7 @@
             <property name="Select">linkto[PeriodeLink].attribute[Name]</property>
             <property name="Label">Accounting_PeriodeTable.periode.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
     </definition>
 </ui-table>

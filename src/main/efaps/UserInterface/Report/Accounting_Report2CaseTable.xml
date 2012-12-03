@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>eccb3c95-59c2-4b73-abb2-a76d3a65f7f8</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_Report2CaseTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Accounting_Report2Case/Type.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="caseName">
+            <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
+            <property name="Select">linkto[ToLink].attribute[Name]</property>
+            <property name="Label">Accounting_Report2Case.caseName.Label</property>
+            <property name="HRef">LINK</property>
+        </field>
+        <field name="reportName">
+            <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[FromLink].oid</property>
+            <property name="Select">linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Accounting_Report2Case.reportName.Label</property>
+            <property name="HRef">LINK</property>
+        </field>
+    </definition>
+</ui-table>

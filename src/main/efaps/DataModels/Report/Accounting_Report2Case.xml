@@ -20,19 +20,25 @@
  Last Changed By: $Author$
 
 --><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6d4704c4-5b95-4b5c-8a8e-b212f7779e82</uuid>
+    <uuid>47dcb4c9-ed85-40b9-bda9-ec1490d16672</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Report2Transaction</name>
+        <name>Accounting_Report2Case</name>
         <parent>Accounting_Report2ObjectAbstract</parent>
-        <purpose abstract="true"/>
-        <attribute>
-            <name>ToLinkAbstract</name>
+         <attribute>
+            <name>FromLink</name>
             <type>Link</type>
-            <typelink>Accounting_Transaction</typelink>
+            <typelink>Accounting_ReportSubJournal</typelink>
+            <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Accounting_CaseAbstract</typelink>
             <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

@@ -19,22 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6d4704c4-5b95-4b5c-8a8e-b212f7779e82</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>e2c4bcc7-fd43-4f12-b42e-f4aa45049c33</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Report2Transaction</name>
-        <parent>Accounting_Report2ObjectAbstract</parent>
-        <purpose abstract="true"/>
-        <attribute>
-            <name>ToLinkAbstract</name>
-            <type>Link</type>
-            <typelink>Accounting_Transaction</typelink>
-            <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Accounting_CaseTree_Report_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_CaseTree_Report_Menu_Action</child>
+        </childs>
     </definition>
-</datamodel-type>
+
+</ui-menu>
