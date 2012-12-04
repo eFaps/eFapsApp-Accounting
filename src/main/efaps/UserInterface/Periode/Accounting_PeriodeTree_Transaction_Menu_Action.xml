@@ -37,7 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PeriodeTree_Transaction_Menu_Action_Create</child>
-            <child>Accounting_PeriodeTree_Transaction_Menu_Action_Close</child>
+            <child>Accounting_PeriodeTree_Transaction_Menu_Action_SetStatusClosed</child>
             <child>Accounting_PeriodeTree_Transaction_Menu_Action_Delete</child>
         </childs>
     </definition>

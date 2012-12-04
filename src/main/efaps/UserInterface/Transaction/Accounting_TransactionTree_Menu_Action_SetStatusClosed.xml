@@ -27,14 +27,14 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_TransactionTree_Menu_Action_SetStatusBooked</name>
+        <name>Accounting_TransactionTree_Menu_Action_SetStatusClosed</name>
         <target>
             <execute program="org.efaps.esjp.admin.datamodel.StatusValue" method="setStatus">
-                <property name="Status">Booked</property>
+                <property name="Status">Closed</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_TransactionTree_Menu_Action_SetStatusBooked.UI_ACCESSCHECK"
+                name="Accounting_TransactionTree_Menu_Action_SetStatusClosed.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Stati">Open</property>
             </trigger>

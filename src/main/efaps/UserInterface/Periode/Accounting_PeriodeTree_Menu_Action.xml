@@ -42,6 +42,8 @@
             <child>Accounting_PeriodeTree_Menu_Action_OpeningBalance</child>
             <child>Accounting_PeriodeTree_Menu_Action_Recalculate</child>
             <child>Accounting_PeriodeTree_Menu_Action_ExternalVoucherJournal</child>
+            <child>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</child>
+            <child>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</child>
         </childs>
     </definition>
 

@@ -36,6 +36,9 @@
         <status key="Open">
             <description>Closed.</description>
         </status>
+        <status key="Closed">
+            <description>Closed.</description>
+        </status>
         <status key="Booked">
             <description>Booked.</description>
         </status>

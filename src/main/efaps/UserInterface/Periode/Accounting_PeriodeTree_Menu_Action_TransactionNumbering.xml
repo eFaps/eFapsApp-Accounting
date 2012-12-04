@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2010 The eFaps Team
 
@@ -21,23 +19,19 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>610c90bc-9bd4-4d7c-8c55-65e7ebdfd858</uuid>
+    <uuid>4899e0b3-f4ac-49f1-8854-03c4a5483092</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action_Recalculate</name>
+        <name>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</name>
         <access>
             <role>Accounting_Admin</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.accounting.Account" method="reCalculateAccounts"/>
+            <execute method="renumber" program="org.efaps.esjp.accounting.transaction.Transaction"/>
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2010 The eFaps Team
 
@@ -21,23 +19,23 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4a0e4307-4383-47e2-843e-cbc6548012e4</uuid>
+    <uuid>0817accc-c752-4939-bb1b-1066241c5b0b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Transaction_Menu_Action_Close</name>
+        <name>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
-            <execute program="org.efaps.esjp.accounting.transaction.Transaction"
-                method="close" />
+            <execute method="asignNumber" program="org.efaps.esjp.accounting.transaction.Transaction"/>
         </target>
-        <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
+        <property name="SuccessDialog">true</property>
     </definition>
 </ui-command>

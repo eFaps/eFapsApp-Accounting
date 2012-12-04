@@ -27,16 +27,13 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -99,7 +96,100 @@ public abstract class Transaction_Base
     public static final String CASE_SESSIONKEY = "eFaps_Selected_Accounting_Case";
 
 
-    public Return transactionMultiPrint(final Parameter _parameter) throws EFapsException
+    public Return renumber(final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.StatusAbstract,
+                        Status.find(CIAccounting.TransactionStatus.uuid, "Booked").getId());
+        queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
+        queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.TransactionAbstract.Name);
+        multi.setEnforceSorted(true);
+        multi.execute();
+        String currentValue = "0";
+        while (multi.next()) {
+            currentValue = setName(_parameter, multi.getCurrentInstance(),
+                            multi.<String>getAttribute(CIAccounting.TransactionAbstract.Name),
+                            currentValue, false);
+        }
+        return new Return();
+    }
+
+    /**
+     * Numbering of the transaction.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return asignNumber(final Parameter _parameter)
+        throws EFapsException
+    {
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.StatusAbstract,
+                        Status.find(CIAccounting.TransactionStatus.uuid, "Closed").getId());
+        queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
+        queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.TransactionAbstract.Name);
+        multi.setEnforceSorted(true);
+        multi.execute();
+        String currentValue = getStartValue(_parameter);
+        while (multi.next()) {
+            currentValue = setName(_parameter, multi.getCurrentInstance(),
+                            multi.<String>getAttribute(CIAccounting.TransactionAbstract.Name),
+                            currentValue, true);
+        }
+        return new Return();
+    }
+
+    protected String getStartValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String ret;
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.StatusAbstract,
+                        Status.find(CIAccounting.TransactionStatus.uuid, "Booked").getId());
+        queryBldr.addOrderByAttributeDesc(CIAccounting.TransactionAbstract.Name);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.TransactionAbstract.Name);
+        multi.setEnforceSorted(true);
+        multi.execute();
+        if (multi.next()) {
+            ret = multi.<String>getAttribute(CIAccounting.TransactionAbstract.Name);
+        } else {
+            ret = "0";
+        }
+        return ret;
+    }
+
+    protected String setName(final Parameter _parameter,
+                             final Instance _transInst,
+                             final String _instName,
+                             final String _previousName,
+                             final boolean _setStatus)
+        throws EFapsException
+    {
+        final Long previous = Long.parseLong(_previousName);
+        final Long current = (_instName != null && !_instName.isEmpty()) ? Long.parseLong(_instName) : -1;
+        final String ret = String.valueOf(previous + 1);
+        if (previous + 1 != current || _setStatus) {
+            final Update update = new Update(_transInst);
+            update.add(CIAccounting.TransactionAbstract.Name, ret);
+            if (_setStatus) {
+                update.add(CIAccounting.TransactionAbstract.StatusAbstract,
+                                Status.find(CIAccounting.TransactionStatus.uuid, "Booked").getId());
+            }
+            update.execute();
+        }
+        return ret;
+    }
+
+    public Return transactionMultiPrint(final Parameter _parameter)
+        throws EFapsException
     {
         final MultiPrint multiprint = new MultiPrint() {
 
@@ -405,79 +495,6 @@ public abstract class Transaction_Base
             throw new EFapsException(Transaction_Base.class, "getSum.ParseException", e);
         }
         return ret;
-    }
-
-    /**
-     * Method is used to close a range of transactions. (Meaning that they
-     * cannot be altered afterwards.)
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new Return
-     * @throws EFapsException on error TODO select for update!!!!!!
-     */
-    public Return close(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String[] selectedOids = (String[]) _parameter.get(ParameterValues.OTHERS);
-
-        final Set<Instance> transInstances = new HashSet<Instance>();
-        final Map<Instance, BigDecimal> acc2Sum = new HashMap<Instance, BigDecimal>();
-        final long openId = Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId();
-        for (final String oid : selectedOids) {
-            final Instance instance = Instance.get(oid);
-            final PrintQuery print = new PrintQuery(instance);
-            print.addAttribute("Status");
-            print.execute();
-
-            if (print.<Long>getAttribute("Status").equals(openId)) {
-                transInstances.add(instance);
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-                queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.TransactionLink,
-                                instance.getId());
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
-                final SelectBuilder sel = new SelectBuilder()
-                                .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).oid();
-                multi.addSelect(sel);
-                multi.execute();
-
-                while (multi.next()) {
-                    final Instance accInst = Instance.get(multi.<String>getSelect(sel));
-                    BigDecimal amount;
-                    if (acc2Sum.containsKey(accInst)) {
-                        amount = acc2Sum.get(accInst);
-                    } else {
-                        amount = BigDecimal.ZERO;
-                    }
-                    amount = amount.add(multi.
-                                    <BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
-                    acc2Sum.put(accInst, amount);
-                }
-            }
-        }
-        for (final Entry<Instance, BigDecimal> entry : acc2Sum.entrySet()) {
-            final PrintQuery print = new PrintQuery(entry.getKey());
-            print.addAttribute(CIAccounting.AccountAbstract.SumBooked);
-            print.execute();
-
-            BigDecimal booked = print.getAttribute(CIAccounting.AccountAbstract.SumBooked);
-            if (booked == null) {
-                booked = BigDecimal.ZERO;
-            }
-
-            final Update update = new Update(entry.getKey());
-            update.add(CIAccounting.AccountAbstract.SumBooked, booked.add(entry.getValue()));
-            update.execute();
-        }
-
-        for (final Instance instance : transInstances) {
-            final Update update = new Update(instance);
-            update.add("Status", Status.find(CIAccounting.TransactionStatus.uuid, "Booked").getId());
-            update.add("Name", // Accounting_TransactionSequence
-                            NumberGenerator.get(UUID.fromString("be5684bc-14b9-44e1-b6cd-7b1011af4b0b")).getNextVal());
-            update.execute();
-        }
-        return new Return();
     }
 
     /**
