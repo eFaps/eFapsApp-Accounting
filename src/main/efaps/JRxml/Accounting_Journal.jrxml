@@ -85,19 +85,19 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="662" y="0" width="71" height="14">
+				<reportElement key="" x="662" y="0" width="70" height="14">
 					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Lima,]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement isPrintRepeatedValues="false" x="733" y="0" width="69" height="14"/>
+				<reportElement isPrintRepeatedValues="false" x="732" y="0" width="70" height="14"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="662" y="17" width="71" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="662" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -139,7 +139,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="733" y="17" width="70" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="732" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
