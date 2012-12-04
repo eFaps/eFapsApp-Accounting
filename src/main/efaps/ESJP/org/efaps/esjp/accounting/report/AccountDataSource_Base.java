@@ -30,13 +30,16 @@ import net.sf.jasperreports.engine.JasperReport;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -68,6 +71,13 @@ public abstract class AccountDataSource_Base
         Instance instance = null;
         if (_parameter.getInstance() != null) {
             instance = _parameter.getInstance();
+            final PrintQuery printRep = new PrintQuery(instance);
+            printRep.addAttribute(CIAccounting.AccountAbstract.Name);
+            printRep.execute();
+            final String name = printRep.<String>getAttribute(CIAccounting.ReportAbstract.Name).replaceAll(" ", "_");
+            _jrParameters.put("FileName", name);
+
+
         } else {
             final QueryBuilder query = new QueryBuilder(CIAccounting.AccountAbstract);
             query.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, "101");
@@ -79,8 +89,19 @@ public abstract class AccountDataSource_Base
                 instance = Instance.get(multi.<String>getAttribute(CIAccounting.AccountAbstract.OID));
             }
         }
+
+        final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
+        final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+        attrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
+        attrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
+
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID);
+
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, instance.getId());
+        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances  = query.execute();
 
