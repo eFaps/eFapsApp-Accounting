@@ -102,6 +102,9 @@ public abstract class Create_Base
         final Instance instance = insert.getInstance();
         insertPositions(_parameter, instance, "Credit", null);
         insertPositions(_parameter, instance, "Debit", null);
+
+        insertReportRelation(_parameter, instance);
+
         return instance;
     }
 
