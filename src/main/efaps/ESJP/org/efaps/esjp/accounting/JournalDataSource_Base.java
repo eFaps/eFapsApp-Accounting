@@ -23,7 +23,9 @@ package org.efaps.esjp.accounting;
 
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.JasperReport;
 
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
@@ -33,8 +35,10 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.util.EFapsException;
@@ -63,10 +67,19 @@ public abstract class JournalDataSource_Base
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CIAccounting.Periode.FromDate);
+        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.ReportSubJournal.PeriodeLink)
+                        .attribute(CIAccounting.Periode.FromDate);
+        if (_parameter.getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
+            print.addSelect(sel);
+        } else {
+            print.addAttribute(CIAccounting.Periode.FromDate);
+        }
+
         DateTime date;
         if (print.execute()) {
-            date = print.getAttribute(CIAccounting.Periode.FromDate);
+            date = print.getAttribute(CIAccounting.Periode.FromDate) == null
+                            ? print.<DateTime>getSelect(sel)
+                                            : print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
         } else {
             date = new DateTime();
         }
@@ -75,6 +88,24 @@ public abstract class JournalDataSource_Base
         ret.put(ReturnValues.VALUES, date);
         return ret;
     }
+
+    @Override
+    public void init(final JasperReport _jasperReport,
+                     final Parameter _parameter,
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
+        throws EFapsException
+    {
+        if (_parameter.getInstance().isValid()
+                        && _parameter.getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CIAccounting.ReportSubJournal.Name);
+            print.execute();
+            _jrParameters.put("Name", print.getAttribute(CIAccounting.ReportSubJournal.Name));
+        }
+        super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
+    }
+
 
     /* (non-Javadoc)
      * @see org.efaps.esjp.common.jasperreport.EFapsDataSource_Base#analyze()
@@ -95,6 +126,16 @@ public abstract class JournalDataSource_Base
             queryBuilder.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
             queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
             queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
+
+            if (getParameter().getInstance().isValid()
+                            && getParameter().getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Report2Transaction);
+                attrQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Transaction.FromLinkAbstract, getParameter()
+                                .getInstance().getId());
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIAccounting.Report2Transaction.ToLinkAbstract);
+                queryBuilder.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery);
+            }
 
             if (props.containsKey("Classifications")) {
                 final String classStr = (String) props.get("Classifications");

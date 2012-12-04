@@ -30,7 +30,7 @@
         <name>Accounting_ReportSubJournalTree</name>
         <!-- targets -->
         <target>
-            <menu>Accounting_ReportTree_Menu</menu>
+            <menu>Accounting_ReportSubJournalTree_Menu</menu>
             <form>Accounting_ReportForm</form>
         </target>
         <!-- type tree for -->

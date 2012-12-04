@@ -281,7 +281,27 @@ public abstract class Create_Base
         insertPositions(_parameter, instance, "Debit", null);
         // create classifications
         insertClassification(_parameter, instance);
+
+        insertReportRelation(_parameter, instance);
         return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instance instance of the Tranaction
+     * @throws
+     */
+    protected void insertReportRelation(final Parameter _parameter,
+                                        final Instance _transactionInstance)
+        throws EFapsException
+    {
+        final Instance repInst = Instance.get(_parameter.getParameterValue("subJournal"));
+        if (repInst.isValid()) {
+            final Insert insert = new Insert(CIAccounting.ReportSubJournal2Transaction);
+            insert.add(CIAccounting.ReportSubJournal2Transaction.FromLink, repInst.getId());
+            insert.add(CIAccounting.ReportSubJournal2Transaction.ToLink, _transactionInstance.getId());
+            insert.execute();
+        }
     }
 
     /**
