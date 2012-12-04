@@ -38,6 +38,7 @@
         <childs>
             <child>Accounting_TransactionTree_Menu_Action_Edit</child>
             <child>Accounting_TransactionTree_Menu_Action_Print</child>
+            <child>Accounting_TransactionTree_Menu_Action_SetStatusBooked</child>
         </childs>
     </definition>
 
