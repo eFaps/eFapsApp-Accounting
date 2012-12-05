@@ -45,6 +45,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -58,6 +60,8 @@ import au.com.bytecode.opencsv.CSVReader;
 @EFapsRevision("$Rev: 7855 $")
 public abstract class Import_Base
 {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Import_Base.class);
 
     /**
      * Definitions for Columns.
@@ -996,16 +1000,23 @@ public abstract class Import_Base
                 insert.add(CIAccounting.ReportNodeRoot.Label, value);
                 insert.add(CIAccounting.ReportNodeRoot.ReportLink, _parentInst.getId());
                 insert.add(CIAccounting.ReportNodeRoot.Position, _position);
+                insert.execute();
             } else if (CIAccounting.ReportNodeTree.equals(Import_Base.TYPE2TYPE.get(type))) {
                 insert.add(CIAccounting.ReportNodeTree.Number, number);
                 insert.add(CIAccounting.ReportNodeTree.Label, value);
                 insert.add(CIAccounting.ReportNodeTree.ParentLink, _parentInst.getId());
                 insert.add(CIAccounting.ReportNodeTree.Position, _position);
+                insert.execute();
             } else if (CIAccounting.ReportNodeAccount.equals(Import_Base.TYPE2TYPE.get(type))) {
                 insert.add(CIAccounting.ReportNodeAccount.ParentLink, _parentInst.getId());
-                insert.add(CIAccounting.ReportNodeAccount.AccountLink, _accounts.get(value).getInstance().getId());
+                if (_accounts.get(value) == null) {
+                    Import_Base.LOG.error("Account Instance not exist: " + value);
+                } else {
+                    insert.add(CIAccounting.ReportNodeAccount.AccountLink, _accounts.get(value).getInstance().getId());
+                    insert.execute();
+                }
             }
-            insert.execute();
+
             this.instance = insert.getInstance();
         }
 
