@@ -246,7 +246,7 @@ public abstract class Import_Base
         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.ParentLink)
-                                        .attributeset(CIAccounting.AccountAbstract.Name);
+                                        .attribute(CIAccounting.AccountAbstract.Name);
         multi.addSelect(sel);
         multi.addAttribute(CIAccounting.AccountAbstract.Name);
         multi.execute();
