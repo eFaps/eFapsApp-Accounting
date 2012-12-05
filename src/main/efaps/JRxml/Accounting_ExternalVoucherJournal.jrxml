@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 4.6.0-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ExternalVoucherJournal" language="groovy" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1150" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
@@ -52,7 +53,7 @@
 	<pageHeader>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" mode="Opaque" x="1" y="0" width="801" height="17" backcolor="#FFFFFF"/>
+				<reportElement style="TableHeading" mode="Transparent" x="1" y="0" width="662" height="17" backcolor="#FFFFFF"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="2" rightPadding="2">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -63,21 +64,21 @@
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.heading}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.heading}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="260" y="17" width="50" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="260" y="17" width="60" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="46" y="17" width="53" height="16" backcolor="#CCCCCC">
@@ -89,29 +90,30 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="703" y="0" width="30" height="14">
+				<reportElement key="" x="813" y="0" width="150" height="14">
 					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
 				</reportElement>
-				<textElement/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
 				<text><![CDATA[Lima,]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement isPrintRepeatedValues="false" x="733" y="0" width="69" height="14"/>
+				<reportElement isPrintRepeatedValues="false" x="963" y="0" width="148" height="14"/>
 				<textElement/>
-				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="513" y="17" width="70" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="523" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="99" y="17" width="161" height="16" backcolor="#CCCCCC"/>
@@ -121,7 +123,7 @@
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
@@ -133,67 +135,67 @@
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="310" y="17" width="203" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="320" y="17" width="203" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="653" y="17" width="100" height="16" backcolor="#CCCCCC"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="663" y="17" width="100" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="753" y="17" width="50" height="16" backcolor="#CCCCCC"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="763" y="17" width="50" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="802" y="17" width="150" height="16" backcolor="#CCCCCC"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="813" y="17" width="150" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherContactName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherContactName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="952" y="17" width="148" height="16" backcolor="#CCCCCC"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="963" y="17" width="148" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherContactTaxNumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherContactTaxNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="582" y="17" width="70" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="593" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
@@ -209,7 +211,7 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
@@ -221,7 +223,7 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToBandHeight" x="99" y="0" width="161" height="14"/>
@@ -233,20 +235,20 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="260" y="0" width="392" height="14"/>
+				<reportElement x="260" y="0" width="403" height="14"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_JournalPositions")]]></dataSourceExpression>
 				<returnValue subreportVariable="debitSum" toVariable="debitTransactionSum" calculation="Sum"/>
 				<returnValue subreportVariable="creditSum" toVariable="creditTransactionSum" calculation="Sum"/>
 				<returnValue subreportVariable="debitSum" toVariable="debitTransactionTotal" calculation="Sum"/>
 				<returnValue subreportVariable="creditSum" toVariable="creditTransactionTotal" calculation="Sum"/>
-				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
+				<subreportExpression><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
 			</subreport>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="653" y="0" width="100" height="14"/>
+				<reportElement stretchType="RelativeToBandHeight" x="663" y="0" width="100" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -255,10 +257,10 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{externalVoucherName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{externalVoucherName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="753" y="0" width="49" height="14"/>
+				<reportElement stretchType="RelativeToBandHeight" x="763" y="0" width="50" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -267,10 +269,10 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[$F{externalVoucherDate}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{externalVoucherDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="802" y="0" width="150" height="14"/>
+				<reportElement stretchType="RelativeToBandHeight" x="813" y="0" width="150" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -279,10 +281,10 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{externalVoucherContactName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{externalVoucherContactName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="952" y="0" width="148" height="14"/>
+				<reportElement stretchType="RelativeToBandHeight" x="963" y="0" width="148" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -291,7 +293,7 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{externalVoucherContactTaxNumber}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{externalVoucherContactTaxNumber}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -300,12 +302,12 @@
 			<textField>
 				<reportElement x="315" y="5" width="80" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="395" y="5" width="40" height="16"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
