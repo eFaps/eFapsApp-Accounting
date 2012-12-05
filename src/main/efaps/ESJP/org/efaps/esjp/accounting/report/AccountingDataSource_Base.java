@@ -27,6 +27,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
+import org.apache.commons.lang.StringUtils;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.accounting.report.Report_Base.AbstractNode;
@@ -75,8 +76,8 @@ public abstract class AccountingDataSource_Base
     public Object getFieldValue(final JRField _field)
         throws JRException
     {
-        final int rootIndex = Integer.parseInt(_field.getPropertiesMap().getProperty("rootIndex"));
-        _field.getPropertiesMap().removeProperty("level");
+        final int rootIndex = Integer.parseInt(_field.getName().split("_")[_field.getName().split("_").length-1]);
+
         Object ret = null;
         final List<AbstractNode> nodes = this.values.get(rootIndex);
         if (this.current < nodes.size()) {
@@ -84,9 +85,8 @@ public abstract class AccountingDataSource_Base
             if (_field.getValueClass().equals(BigDecimal.class)) {
                 ret = node.getSum();
             } else {
-                ret = node.getLabel();
+                ret = StringUtils.repeat(" ", node.getLevel() * 2) + node.getLabel();
             }
-            _field.getPropertiesMap().setProperty("level", "" + node.getLevel());
         }
         return ret;
     }

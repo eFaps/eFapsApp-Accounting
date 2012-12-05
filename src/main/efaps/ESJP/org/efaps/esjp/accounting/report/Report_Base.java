@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.accounting.report;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,6 +29,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
+import net.sf.dynamicreports.report.builder.style.Styles;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.PageOrientation;
+import net.sf.dynamicreports.report.constant.PageType;
+import net.sf.dynamicreports.report.constant.VerticalAlignment;
+import net.sf.dynamicreports.report.exception.DRException;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -39,15 +53,19 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.jasper.JasperUtil;
+import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -184,97 +202,94 @@ public abstract class Report_Base
      * @throws EFapsException on error
      * @return Return containg the created file
      */
-//    @Override
-//    public Return execute(final Parameter _parameter)
-//        throws EFapsException
-//    {
-//        final Return ret = new Return();
-//        final String mime = _parameter.getParameterValue("mime");
-//
-//        this.dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-//        this.dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
-//
-//        final ReportTree dataTree = new ReportTree(_parameter.getInstance());
-//        dataTree.addChildren();
-//        for (final AbstractNode node : dataTree.getRootNodes()) {
-//            node.getSum();
-//        }
-//
-//        final List<List<AbstractNode>> table = dataTree.getTable();
-//        try {
-//
-//            final DynamicReportBuilder drb = new DynamicReportBuilder();
-//            drb.setTitle(dataTree.getName())
-//                            .setSubtitle(dataTree.getDescription())
-//                            .setUseFullPageWidth(true)
-//                            .setPageSizeAndOrientation(Page.Page_A4_Landscape());
-//
-//            final Style columnStyle = new Style();
-//            columnStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
-//            int max = 0;
-//            Integer y = 0;
-//            for (final List<AbstractNode> nodes : table) {
-//                for (final AbstractNode node : nodes) {
-//                    if (node.getLevel() > max) {
-//                        max = node.getLevel();
-//                    }
-//                }
-//                final ArrayList<ConditionalStyle> conditionalStyles = new ArrayList<ConditionalStyle>();
-//                for (int i = 0; i < max; i++) {
-//                    final Style style = new Style();
-//                    style.setPaddingLeft(5 + 10 * i);
-//                    conditionalStyles.add(new ConditionalStyle(new PaddingCondition(i + 1, "column_" + y), style));
-//                }
-//                final AbstractColumn column = ColumnBuilder.getNew()
-//                                .setColumnProperty("column_" + y, String.class.getName())
-//                                .addFieldProperty("rootIndex", y.toString())
-//                                .addConditionalStyles(conditionalStyles)
-//                                .setWidth(10)
-//                                .build();
-//                drb.addColumn(column);
-//                final AbstractColumn column2 = ColumnBuilder.getNew()
-//                                .setColumnProperty("sums_" + y, BigDecimal.class.getName())
-//                                .addFieldProperty("rootIndex", y.toString())
-//                                .setStyle(columnStyle)
-//                                .setWidth(5)
-//                                .build();
-//                drb.addColumn(column2);
-//                y++;
-//            }
-//
-//            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-//            final String name = (String) properties.get("JasperReport");
-//            JasperDesign jasperdesign = null;
-//            if (name != null) {
-//                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
-//                queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, name);
-//                final InstanceQuery query = queryBldr.getQuery();
-//                query.execute();
-//                Instance instance = null;
-//                if (query.next()) {
-//                    instance = query.getCurrentValue();
-//                } else {
-//                    throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
-//                }
-//                jasperdesign = JasperUtil.getJasperDesign(instance);
-//            }
-//            final DynamicReport dr = drb.build();
-//            final JRDataSource ds = new AccountingDataSource(table);
-//            JRProperties.setProperty(JRProperties.COMPILER_XML_VALIDATION, false);
-//            setFileName(dataTree.getName());
-//            final JasperPrint jp = JasperUtil.generateJasperPrint(dr, new ClassicLayoutManager(), ds, null,
-//                            jasperdesign);
-//            ret.put(ReturnValues.VALUES, super.getFile(jp, mime));
-//            ret.put(ReturnValues.TRUE, true);
-//        } catch (final JRException e) {
-//            throw new EFapsException(Report.class, "JRException", e);
-//        } catch (final IOException e) {
-//            throw new EFapsException(Report.class, "IOException", e);
-//        } catch (final ColumnBuilderException e) {
-//            throw new EFapsException(Report.class, "ColumnBuilderException", e);
-//        }
-//        return ret;
-//    }
+    @Override
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String mime = _parameter.getParameterValue("mime");
+        final boolean print = "pdf".equalsIgnoreCase(mime);
+        this.dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
+        this.dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+
+        final ReportTree dataTree = new ReportTree(_parameter.getInstance());
+        dataTree.addChildren();
+        for (final AbstractNode node : dataTree.getRootNodes()) {
+            node.getSum();
+        }
+
+        final List<List<AbstractNode>> table = dataTree.getTable();
+        try {
+
+            final JasperReportBuilder jrb = DynamicReports.report()
+                            .addTitle(DynamicReports.cmp.verticalList(
+                                            DynamicReports.cmp.text(dataTree.getName()),
+                                            DynamicReports.cmp.text(dataTree.getDescription())));
+
+            if (print) {
+                jrb.setPageMargin(DynamicReports.margin(20))
+                .setPageFormat(PageType.A4, PageOrientation.LANDSCAPE)
+                .highlightDetailEvenRows()
+                .pageFooter(DynamicReports.cmp.pageXofY().setStyle(DynamicReports.stl.style()
+                                .setHorizontalAlignment(HorizontalAlignment.CENTER)));
+            } else {
+                jrb.setIgnorePagination(true)
+                                .setPageMargin(DynamicReports.margin(0));
+            }
+
+            final StyleBuilder numberStyle = DynamicReports.stl.style()
+                            .setFont(Styles.font().setFontSize(12))
+                            .setAlignment(HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE)
+                            .setPadding(DynamicReports.stl.padding().setRight(5));
+
+            final StyleBuilder textStyle = DynamicReports.stl.style()
+                            .setFont(Styles.font().setFontSize(12))
+                            .setAlignment(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+
+            for (Integer y = 0; y < table.size(); y++) {
+
+                final TextColumnBuilder<String> textColumn = DynamicReports.col.column("column_" + y,
+                                DynamicReports.type.stringType());
+                textColumn.setStyle(textStyle);
+                jrb.addColumn(textColumn);
+
+                final TextColumnBuilder<BigDecimal> numberColumn = DynamicReports.col.column("sums_" + y,
+                                DynamicReports.type.bigDecimalType());
+                numberColumn.setStyle(numberStyle);
+                jrb.addColumn(numberColumn);
+            }
+
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String name = (String) properties.get("JasperReport");
+            if (name != null) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
+                queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, name);
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                Instance instance = null;
+                if (query.next()) {
+                    instance = query.getCurrentValue();
+                } else {
+                    throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
+                }
+                JasperUtil.getJasperDesign(instance);
+            }
+
+            final JRDataSource ds = new AccountingDataSource(table);
+            setFileName(dataTree.getName());
+            jrb.setDataSource(ds);
+
+            ret.put(ReturnValues.VALUES, super.getFile(jrb.toJasperPrint(), mime));
+            ret.put(ReturnValues.TRUE, true);
+        } catch (final JRException e) {
+            throw new EFapsException(Report.class, "JRException", e);
+        } catch (final IOException e) {
+            throw new EFapsException(Report.class, "IOException", e);
+        } catch (final DRException e) {
+            throw new EFapsException(Report.class, "DRException", e);
+        }
+        return ret;
+    }
 
     /**
      * Class to obtain a report.
@@ -752,7 +767,8 @@ public abstract class Report_Base
                         final boolean _showSum,
                         final Long _position,
                         final int _level)
-        {//CHECKSTYLE:ON
+        {
+        //CHECKSTYLE:ON
             super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, _level);
         }
 
@@ -849,7 +865,8 @@ public abstract class Report_Base
                            final Long _position,
                            final int _level,
                            final long _accountId)
-        {//CHECKSTYLE:ON
+        {
+        //CHECKSTYLE:ON
             super(_parent, _oid, _number, _label, _showAllways, _showSum, _position, _level);
             this.accountId = _accountId;
         }
