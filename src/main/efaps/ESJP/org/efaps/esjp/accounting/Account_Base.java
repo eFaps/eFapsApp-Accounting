@@ -43,6 +43,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -580,7 +581,7 @@ public abstract class Account_Base
         final Map<?,?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final BigDecimal value = (BigDecimal) fieldvalue.getValue();
-        if (value != null) {
+        if (value != null && !Display.NONE.equals(fieldvalue.getDisplay())) {
             BigDecimal retValue = null;
             fieldvalue.setValue(null);
             if (("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1)
