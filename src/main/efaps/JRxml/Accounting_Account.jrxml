@@ -47,6 +47,7 @@
 		<property name="Select" value="linkto[AccountLink].attribute[Description]"/>
 	</field>
 	<sortField name="transdate"/>
+	<sortField name="name"/>
 	<variable name="sum" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
@@ -94,7 +95,7 @@
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement style="TableHeading" mode="Opaque" x="180" y="33" width="382" height="19" backcolor="#CCCCCC">
+				<reportElement style="TableHeading" mode="Opaque" x="150" y="33" width="412" height="19" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
@@ -111,7 +112,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Account.jrxml.credit}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement style="TableHeading" mode="Opaque" x="83" y="33" width="97" height="19" backcolor="#CCCCCC">
+				<reportElement style="TableHeading" mode="Opaque" x="83" y="33" width="67" height="19" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
@@ -150,7 +151,7 @@
 		<band height="16" splitType="Stretch">
 			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
 				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="1" y="0" width="82" height="16"/>
-				<textElement/>
+				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{transdate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
@@ -174,7 +175,7 @@
 				<textFieldExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="180" y="0" width="382" height="16"/>
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="150" y="0" width="412" height="16"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{transaction}]]></textFieldExpression>
 			</textField>
@@ -187,8 +188,9 @@
 				<textFieldExpression><![CDATA[$V{sum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="83" y="0" width="97" height="16"/>
-				<textElement/>
+				<reportElement style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="83" y="0" width="67" height="16"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -230,7 +232,7 @@
 			<textField>
 				<reportElement x="435" y="0" width="80" height="20"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+" /"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
 				<reportElement x="515" y="0" width="40" height="20"/>

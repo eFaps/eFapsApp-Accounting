@@ -35,6 +35,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionTable_MONTH</name>
         <!-- fields -->
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Label">Accounting_Transaction/Name.Label</property>
+        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Label">Accounting_Transaction/Description.Label</property>

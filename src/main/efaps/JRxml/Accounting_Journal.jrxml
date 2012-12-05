@@ -54,7 +54,7 @@
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement>
-					<font isUnderline="true"/>
+					<font isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.heading} + " " + $P{Name}]]></textFieldExpression>
 			</textField>
@@ -63,11 +63,11 @@
 	<columnHeader>
 		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="409" y="17" width="50" height="16"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="399" y="17" width="60" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
@@ -79,7 +79,7 @@
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
@@ -101,29 +101,29 @@
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="113" y="17" width="296" height="16" backcolor="#CCCCCC"/>
+				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="113" y="17" width="286" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="">
 				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.name}]]></textFieldExpression>
@@ -133,7 +133,7 @@
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
@@ -143,7 +143,7 @@
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
@@ -159,25 +159,25 @@
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Top">
+				<textElement textAlignment="Center" verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
-				<box topPadding="2" leftPadding="2">
+				<box topPadding="2" leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement verticalAlignment="Top">
+				<textElement textAlignment="Right" verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="113" y="0" width="296" height="14"/>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement stretchType="RelativeToBandHeight" x="113" y="0" width="286" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -189,7 +189,7 @@
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="409" y="0" width="393" height="14"/>
+				<reportElement x="399" y="0" width="403" height="14"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_JournalPositions")]]></dataSourceExpression>
 				<returnValue subreportVariable="debitSum" toVariable="debitTransactionSum" calculation="Sum"/>
