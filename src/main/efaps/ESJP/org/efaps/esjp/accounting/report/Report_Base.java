@@ -31,12 +31,15 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.style.Styles;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.VerticalAlignment;
+import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -234,11 +237,9 @@ public abstract class Report_Base
                 jrb.setIgnorePagination(true);
             }
 
-            final StyleBuilder numberStyle = getNumberStyle();
-
-            final StyleBuilder textStyle = getTextStyle();
-
             for (Integer y = 0; y < table.size(); y++) {
+                final StyleBuilder numberStyle = getNumberStyle(_parameter, y);
+                final StyleBuilder textStyle = getTextStyle(_parameter, y);
 
                 final TextColumnBuilder<String> textColumn = DynamicReports.col.column("column_" + y,
                                 DynamicReports.type.stringType());
@@ -249,6 +250,8 @@ public abstract class Report_Base
                                 DynamicReports.type.bigDecimalType());
                 numberColumn.setStyle(numberStyle).setWidth(20);
                 jrb.addColumn(numberColumn);
+
+                jrb.addField("node_" + y, AbstractNode.class);
             }
 
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -310,21 +313,55 @@ public abstract class Report_Base
                         DynamicReports.cmp.text(_dataTree.getDescription())));
     }
 
-    protected StyleBuilder getNumberStyle()
+    protected StyleBuilder getNumberStyle(final Parameter _parameter,
+                                          final Integer _y)
     {
+        final ConditionalStyleBuilder condition1 = DynamicReports.stl.conditionalStyle(
+                        new BoldCondition(_parameter, _y)).setBold(true);
+
         return DynamicReports.stl.style()
                         .setFont(Styles.font().setFontSize(9))
                         .setAlignment(HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE)
-                        .setPadding(DynamicReports.stl.padding().setRight(5));
+                        .setPadding(DynamicReports.stl.padding().setRight(5)).addConditionalStyle(condition1);
     }
 
-    protected StyleBuilder getTextStyle()
+    protected StyleBuilder getTextStyle(final Parameter _parameter,
+                                        final Integer _y)
     {
+        final ConditionalStyleBuilder condition1 = DynamicReports.stl.conditionalStyle(
+                        new BoldCondition(_parameter, _y)).setBold(true);
+
         return DynamicReports.stl.style()
                         .setFont(Styles.font().setFontSize(9))
-                        .setAlignment(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+                        .setAlignment(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE)
+                        .addConditionalStyle(condition1);
     }
 
+    private class BoldCondition
+        extends AbstractSimpleExpression<Boolean>
+    {
+
+        private static final long serialVersionUID = 1L;
+        private final Integer idx;
+
+        /**
+         * @param _parameter
+         * @param _y
+         */
+        public BoldCondition(final Parameter _parameter,
+                             final Integer _idx)
+        {
+            this.idx = _idx;
+        }
+
+        @Override
+        public Boolean evaluate(final ReportParameters _reportParameters)
+        {
+            final AbstractNode node = _reportParameters.getFieldValue("node_" + this.idx);
+            return (Report_Base.this.indent && (node.getLevel() == 0 || node instanceof TotalNode))
+                            || (!Report_Base.this.indent && node instanceof RootNode);
+        }
+    }
 
     protected String getTotalLabel(final AbstractNode _parent)
     {
@@ -335,6 +372,7 @@ public abstract class Report_Base
     {
         return !_parameter.getInstance().getType().isKindOf(CIAccounting.ReportProfitLoss.getType());
     }
+
 
 
     /**
