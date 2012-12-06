@@ -90,6 +90,9 @@ public abstract class Report_Base
      */
     private DateTime dateTo;
 
+
+    private boolean indent;
+
     /**
      * Method renders a drop down field containing the mime types.
      *
@@ -210,6 +213,7 @@ public abstract class Report_Base
         final boolean print = "pdf".equalsIgnoreCase(mime);
         this.dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
         this.dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+        this.indent = isIndent(_parameter);
 
         final ReportTree dataTree = new ReportTree(_parameter.getInstance());
         dataTree.addChildren();
@@ -326,6 +330,12 @@ public abstract class Report_Base
     {
         return "TOTAL " +  _parent.getLabel();
     }
+
+    protected boolean isIndent(final Parameter _parameter)
+    {
+        return !_parameter.getInstance().getType().isKindOf(CIAccounting.ReportProfitLoss.getType());
+    }
+
 
     /**
      * Class to obtain a report.
@@ -444,8 +454,9 @@ public abstract class Report_Base
         {
             final List<AbstractNode> ret = new ArrayList<AbstractNode>();
             boolean added = false;
-            if (_parent.isShowAllways()
-                            || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0)) {
+            if ((_parent.isShowAllways()
+                            || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0))
+                            && Report_Base.this.indent) {
                 ret.add(_parent);
                 added = true;
             }
@@ -455,6 +466,11 @@ public abstract class Report_Base
             if (added && !_parent.getChildren().isEmpty()) {
                 ret.add(new TotalNode(getTotalLabel(_parent), _parent.getSum(), _parent.getLevel()));
                 _parent.setTextOnly(true);
+            } else if ((_parent.isShowAllways()
+                            || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0))
+                            && !Report_Base.this.indent) {
+                _parent.setLevel(0);
+                ret.add(_parent);
             }
             return ret;
         }
@@ -548,7 +564,8 @@ public abstract class Report_Base
         /**
          * Level of this node.
          */
-        private final int level;
+        private int level;
+
 
         private boolean textOnly = false;
 
@@ -614,6 +631,18 @@ public abstract class Report_Base
         {
             return this.level;
         }
+
+        /**
+         * Setter method for instance variable {@link #level}.
+         *
+         * @param _level value for instance variable {@link #level}
+         */
+
+        public void setLevel(final int _level)
+        {
+            this.level = _level;
+        }
+
 
         /**
          * Getter method for instance variable {@link #position}.
