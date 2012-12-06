@@ -252,12 +252,14 @@ public abstract class Import_Base
         final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.ParentLink)
                                         .attribute(CIAccounting.AccountAbstract.Name);
         multi.addSelect(sel);
-        multi.addAttribute(CIAccounting.AccountAbstract.Name);
+        multi.addAttribute(CIAccounting.AccountAbstract.Name,
+                            CIAccounting.AccountAbstract.Description);
         multi.execute();
         while (multi.next()) {
             final String parentName = multi.<String>getSelect(sel);
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
-            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, null, null, null, null));
+            final String desc = multi.<String>getAttribute(CIAccounting.AccountAbstract.Description);
+            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, desc, null, null, null, null));
         }
 
         return ret;
@@ -572,6 +574,11 @@ public abstract class Import_Base
         private final String value;
 
         /**
+         * Description for this account.
+         */
+        private final String description;
+
+        /**
          * Value for this account.
          */
         private final String order;
@@ -619,7 +626,7 @@ public abstract class Import_Base
 
             this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
                             "");
-            final String descName = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim()
+            this.description = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim()
                             .replaceAll("\n", "");
             final String type = _row[_colName2Index.get(Import_Base.AcccountColumn.TYPE.getKey())].trim().replaceAll(
                             "\n", "");
@@ -690,7 +697,7 @@ public abstract class Import_Base
 
             update.add(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
             update.add(CIAccounting.AccountBaseAbstract.Name, this.value);
-            update.add(CIAccounting.AccountBaseAbstract.Description, descName);
+            update.add(CIAccounting.AccountBaseAbstract.Description, this.description);
             update.execute();
             this.instance = update.getInstance();
         }
@@ -754,6 +761,8 @@ public abstract class Import_Base
 
             this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
                             "");
+            this.description = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim().replaceAll("\n",
+                            "");
             final String parentTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.PARENT.getKey())];
 
             this.order = _row[_colName2Index.get(Import_Base.AcccountColumn.KEY.getKey())]
@@ -772,6 +781,7 @@ public abstract class Import_Base
         public ImportAccount(final Instance _accountIns,
                              final String _parentName,
                              final String _name,
+                             final String _description,
                              final String _order,
                              final String _path,
                              final List<Type> _lstTypeConn,
@@ -780,6 +790,7 @@ public abstract class Import_Base
             this.instance = _accountIns;
             this.parent = _parentName;
             this.value = _name;
+            this.description = _description;
             this.lstTypeConn = _lstTypeConn;
             this.lstTargetConn = _lstTargetConn;
             this.order = _order;
@@ -794,6 +805,16 @@ public abstract class Import_Base
         public String getValue()
         {
             return this.value;
+        }
+
+        /**
+         * Getter method for instance variable {@link #description}.
+         *
+         * @return description of instance variable {@link #description}
+         */
+        public String getDescription()
+        {
+            return this.description;
         }
 
         /**
@@ -1013,6 +1034,8 @@ public abstract class Import_Base
                     Import_Base.LOG.error("Account Instance not exist: " + value);
                 } else {
                     insert.add(CIAccounting.ReportNodeAccount.AccountLink, _accounts.get(value).getInstance().getId());
+                    insert.add(CIAccounting.ReportNodeAccount.Label,
+                                    value + " - " + _accounts.get(value).getDescription());
                     insert.execute();
                 }
             }

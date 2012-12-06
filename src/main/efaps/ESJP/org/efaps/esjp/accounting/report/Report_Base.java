@@ -464,6 +464,7 @@ public abstract class Report_Base
             }
             Collections.sort(this.rootNodes, new Comparator<AbstractNode>() {
 
+                @Override
                 public int compare(final AbstractNode _node1,
                                    final AbstractNode _node2)
                 {
@@ -711,6 +712,7 @@ public abstract class Report_Base
         {
             Collections.sort(this.children, new Comparator<Report.AbstractNode>() {
 
+                @Override
                 public int compare(final AbstractNode _node1,
                                    final AbstractNode _node2)
                 {
