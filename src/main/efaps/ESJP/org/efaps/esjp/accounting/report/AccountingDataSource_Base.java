@@ -83,7 +83,9 @@ public abstract class AccountingDataSource_Base
         if (this.current < nodes.size()) {
             final AbstractNode node = nodes.get(this.current);
             if (_field.getValueClass().equals(BigDecimal.class)) {
-                ret = node.getSum();
+                if (!node.isTextOnly()) {
+                    ret = node.getSum();
+                }
             } else {
                 ret = StringUtils.repeat(" ", node.getLevel() * 2) + node.getLabel();
             }

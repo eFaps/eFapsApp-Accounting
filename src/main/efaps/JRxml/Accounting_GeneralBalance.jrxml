@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_GeneralBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version 4.6.0-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_GeneralBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
     <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="UUID" value="633e8ec0-8d6e-404f-a103-90b2cbb73e42"/>
-    </parameter>
-    <background>
-        <band splitType="Stretch"/>
-    </background>
-    <pageHeader>
-        <band height="20" splitType="Stretch">
-            <staticText>
-                <reportElement x="0" y="0" width="100" height="15"/>
-                <textElement/>
-                <text><![CDATA[Balance General]]></text>
-            </staticText>
-            <textField pattern="dd/MM/yyyy">
-                <reportElement x="702" y="0" width="100" height="15"/>
-                <textElement/>
-                <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageHeader>
-    <columnHeader>
-        <band height="17" splitType="Stretch"/>
-    </columnHeader>
-    <detail>
-        <band height="14" splitType="Stretch">
-        </band>
-    </detail>
-    <pageFooter>
-        <band height="35" splitType="Stretch">
-            <textField>
-                <reportElement x="318" y="15" width="80" height="20"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
-            </textField>
-            <textField evaluationTime="Report">
-                <reportElement x="398" y="15" width="40" height="20"/>
-                <textElement/>
-                <textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageFooter>
+		<property name="UUID" value="633e8ec0-8d6e-404f-a103-90b2cbb73e42"/>
+	</parameter>
+	<title>
+		<band height="12">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="12"/>
+				<textElement/>
+				<text><![CDATA[Balance General]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="702" y="0" width="100" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="12" splitType="Stretch">
+			<textField>
+				<reportElement x="318" y="0" width="80" height="12"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="398" y="0" width="40" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
 </jasperReport>

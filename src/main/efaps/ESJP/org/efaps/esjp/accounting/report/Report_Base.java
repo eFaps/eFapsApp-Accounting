@@ -36,12 +36,11 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.style.Styles;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.constant.PageOrientation;
-import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -221,41 +220,30 @@ public abstract class Report_Base
         final List<List<AbstractNode>> table = dataTree.getTable();
         try {
 
-            final JasperReportBuilder jrb = DynamicReports.report()
-                            .addTitle(DynamicReports.cmp.verticalList(
-                                            DynamicReports.cmp.text(dataTree.getName()),
-                                            DynamicReports.cmp.text(dataTree.getDescription())));
-
+            final JasperReportBuilder jrb = DynamicReports.report();
+            addTitle(_parameter, jrb, dataTree);
+            addPageHeader(_parameter, jrb, dataTree);
+            addFooter(_parameter, jrb, dataTree);
             if (print) {
-                jrb.setPageMargin(DynamicReports.margin(20))
-                .setPageFormat(PageType.A4, PageOrientation.LANDSCAPE)
-                .highlightDetailEvenRows()
-                .pageFooter(DynamicReports.cmp.pageXofY().setStyle(DynamicReports.stl.style()
-                                .setHorizontalAlignment(HorizontalAlignment.CENTER)));
+                jrb.highlightDetailEvenRows();
             } else {
-                jrb.setIgnorePagination(true)
-                                .setPageMargin(DynamicReports.margin(0));
+                jrb.setIgnorePagination(true);
             }
 
-            final StyleBuilder numberStyle = DynamicReports.stl.style()
-                            .setFont(Styles.font().setFontSize(12))
-                            .setAlignment(HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE)
-                            .setPadding(DynamicReports.stl.padding().setRight(5));
+            final StyleBuilder numberStyle = getNumberStyle();
 
-            final StyleBuilder textStyle = DynamicReports.stl.style()
-                            .setFont(Styles.font().setFontSize(12))
-                            .setAlignment(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+            final StyleBuilder textStyle = getTextStyle();
 
             for (Integer y = 0; y < table.size(); y++) {
 
                 final TextColumnBuilder<String> textColumn = DynamicReports.col.column("column_" + y,
                                 DynamicReports.type.stringType());
-                textColumn.setStyle(textStyle);
+                textColumn.setStyle(textStyle).setWidth(80);
                 jrb.addColumn(textColumn);
 
                 final TextColumnBuilder<BigDecimal> numberColumn = DynamicReports.col.column("sums_" + y,
                                 DynamicReports.type.bigDecimalType());
-                numberColumn.setStyle(numberStyle);
+                numberColumn.setStyle(numberStyle).setWidth(20);
                 jrb.addColumn(numberColumn);
             }
 
@@ -272,7 +260,8 @@ public abstract class Report_Base
                 } else {
                     throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
                 }
-                JasperUtil.getJasperDesign(instance);
+                final JasperDesign design = JasperUtil.getJasperDesign(instance);
+                jrb.setTemplateDesign(design);
             }
 
             final JRDataSource ds = new AccountingDataSource(table);
@@ -289,6 +278,53 @@ public abstract class Report_Base
             throw new EFapsException(Report.class, "DRException", e);
         }
         return ret;
+    }
+
+
+
+    protected void addFooter(final Parameter _parameter,
+                           final JasperReportBuilder _jrb,
+                           final ReportTree _dataTree)
+    {
+        // for implementation purpose
+    }
+
+    protected void addTitle(final Parameter _parameter,
+                            final JasperReportBuilder _jrb,
+                            final ReportTree _dataTree)
+    {
+        // for implementation purpose
+    }
+
+
+    protected void addPageHeader(final Parameter _parameter,
+                                 final JasperReportBuilder _jrb,
+                                 final ReportTree _dataTree)
+    {
+        _jrb.addPageHeader(DynamicReports.cmp.verticalList(
+                        DynamicReports.cmp.text(_dataTree.getName()),
+                        DynamicReports.cmp.text(_dataTree.getDescription())));
+    }
+
+    protected StyleBuilder getNumberStyle()
+    {
+        return DynamicReports.stl.style()
+                        .setFont(Styles.font().setFontSize(9))
+                        .setAlignment(HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE)
+                        .setPadding(DynamicReports.stl.padding().setRight(5));
+    }
+
+    protected StyleBuilder getTextStyle()
+    {
+        return DynamicReports.stl.style()
+                        .setFont(Styles.font().setFontSize(9))
+                        .setAlignment(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE);
+    }
+
+
+    protected String getTotalLabel(final AbstractNode _parent)
+    {
+        return "TOTAL " +  _parent.getLabel();
     }
 
     /**
@@ -407,12 +443,18 @@ public abstract class Report_Base
         private List<AbstractNode> flatten(final AbstractNode _parent)
         {
             final List<AbstractNode> ret = new ArrayList<AbstractNode>();
+            boolean added = false;
             if (_parent.isShowAllways()
                             || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0)) {
                 ret.add(_parent);
+                added = true;
             }
             for (final AbstractNode child : _parent.getChildren()) {
                 ret.addAll(flatten(child));
+            }
+            if (added && !_parent.getChildren().isEmpty()) {
+                ret.add(new TotalNode(getTotalLabel(_parent), _parent.getSum(), _parent.getLevel()));
+                _parent.setTextOnly(true);
             }
             return ret;
         }
@@ -461,7 +503,7 @@ public abstract class Report_Base
     /**
      * Base class for all types of nodes.
      */
-    public abstract class AbstractNode
+    public static abstract class AbstractNode
     {
         /**
          * List of children for this node.
@@ -507,6 +549,31 @@ public abstract class Report_Base
          * Level of this node.
          */
         private final int level;
+
+        private boolean textOnly = false;
+
+
+        /**
+         * Getter method for the instance variable {@link #textOnly}.
+         *
+         * @return value of instance variable {@link #textOnly}
+         */
+        public boolean isTextOnly()
+        {
+            return this.textOnly;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #total}.
+         *
+         * @param _total value for instance variable {@link #total}
+         */
+
+        public void setTextOnly(final boolean _textOnly)
+        {
+            this.textOnly = _textOnly;
+        }
 
         /**
          * @param _parent  paent of this node
@@ -905,80 +972,35 @@ public abstract class Report_Base
         }
     }
 
-//    /**
-//     * Padding conditional for the report.
-//     */
-//    public class PaddingCondition
-//        extends ConditionStyleExpression
-//        implements CustomExpression
-//    {
-//
-//        /**
-//         * Needed for serialization.
-//         */
-//        private static final long serialVersionUID = 1L;
-//
-//        /**
-//         * Level.
-//         */
-//        private final int level;
-//
-//        /**
-//         * Key.
-//         */
-//        private final String key;
-//
-//        /**
-//         * @param _level    level
-//         * @param _key      key
-//         */
-//        public PaddingCondition(final int _level,
-//                                final String _key)
-//        {
-//            this.level = _level;
-//            this.key = _key;
-//        }
-//
-//        /**
-//         * @see ar.com.fdvs.dj.domain.CustomExpression#evaluate(java.util.Map, java.util.Map, java.util.Map)
-//         * @param _fields       fields
-//         * @param _variables    variables
-//         * @param _parameters   parameters
-//         * @return Boolean
-//         */
-//        public Object evaluate(final Map _fields,
-//                               final Map _variables,
-//                               final Map _parameters)
-//        {
-//            Boolean ret = Boolean.FALSE;
-//            final Object value = getCurrentValue();
-//            if (value != null) {
-//                final FieldMapWrapper fields = (FieldMapWrapper) _fields;
-//                final Set<?> set = fields.entrySet();
-//                for (final Object entryObj : set) {
-//                    final Entry<?, ?> entry = (Entry<?, ?>) entryObj;
-//                    if (entry.getKey().equals(this.key)) {
-//                        final JRFillField field = (JRFillField) entry.getValue();
-//                        if (field != null) {
-//                            final String levelStr = field.getPropertiesMap().getProperty("level");
-//                            if (levelStr != null && Integer.parseInt(levelStr) == this.level) {
-//                                ret = Boolean.TRUE;
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//            return ret;
-//        }
-//
-//        /**
-//         * @see ar.com.fdvs.dj.domain.CustomExpression#getClassName()
-//         * @return class name
-//         */
-//        public String getClassName()
-//        {
-//            return Boolean.class.getName();
-//        }
-//    }
+    public static class TotalNode
+        extends AbstractNode
+    {
 
+        private final BigDecimal sum;
+
+        /**
+         * @param _label    the label
+         * @param _sum      the sum
+         */
+        public TotalNode(final String _label,
+                         final BigDecimal _sum,
+                         final int _level)
+        {
+            super(null, null, null, _label, false, false, null, _level);
+            this.sum = _sum;
+        }
+
+        @Override
+        protected void addChildren(final int _level)
+            throws EFapsException
+        {
+            // Nothing must be done
+        }
+
+        @Override
+        protected BigDecimal getSum()
+        {
+            return this.sum;
+        }
+    }
 }
