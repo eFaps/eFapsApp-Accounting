@@ -21,26 +21,22 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>850791fd-a8dc-4ca8-8421-28e8bc3520f2</uuid>
+    <uuid>b502d3f3-7a83-4350-8e14-29f94ff4cd4a</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordMyDesk_Menu_Action_Delete</name>
-
-        <access>
-            <role>Accounting_Admin</role>
-        </access>
-
-        <!-- target definitions -->
+        <name>Accounting_PurchaseRecordTree_Document</name>
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
+            <menu>Accounting_PurchaseRecordTree_Document_Menu</menu>
+            <table>Accounting_PurchaseRecord2DocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Accounting_PurchaseRecord2Document</property>
+                <property name="LinkFroms">FromLink</property>
+            </evaluate>
         </target>
-
         <!-- properties -->
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-
 </ui-command>

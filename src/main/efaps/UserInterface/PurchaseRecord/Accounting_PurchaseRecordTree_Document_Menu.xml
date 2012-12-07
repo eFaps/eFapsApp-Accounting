@@ -19,27 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7ddbed15-1d2e-4430-85e7-57be0fb9dd14</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>54aad5d5-ce0a-4c70-8b53-7ca70cd272bf</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordMyDesk</name>
-        <access>
-            <role>Accounting_Admin</role>
-            <role>Accounting_Modifier</role>
-            <role>Accounting_Reader</role>
-        </access>
-        <target>
-            <menu>Accounting_SalesRecordMyDesk_Menu</menu>
-            <table>ERP_DocumentAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_SalesRecord</property>
-            </evaluate>
-        </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Accounting_PurchaseRecordTree_Document_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_PurchaseRecordTree_Document_Menu_Action</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

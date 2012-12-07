@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,21 +21,30 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>931f5aad-9ee6-439e-9f44-3b1060c3baec</uuid>
+    <uuid>ec90f0c9-5172-4d58-aea3-64b3f5fe6583</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordTree_Document_Menu_Action_Disconnect</name>
+        <name>Accounting_PurchaseRecordMyDesk_Menu_Action_Create</name>
+
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
+            <form>Accounting_PurchaseRecordForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
+                <property name="StatusGroup">Accounting_PurchaseRecordStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
 
         <!-- properties -->
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Accounting_PurchaseRecord</property>
+        <property name="TargetMode">create</property>
     </definition>
-
 </ui-command>

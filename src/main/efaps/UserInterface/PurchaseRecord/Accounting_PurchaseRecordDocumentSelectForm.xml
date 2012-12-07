@@ -19,29 +19,25 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>8d3bc962-7758-4133-befd-adffd3825514</uuid>
+    <uuid>eeaa18ba-10f4-40f6-8c73-ed375bdf780e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordTree</name>
-        <!-- targets -->
-        <target>
-            <menu>Accounting_SalesRecordTree_Menu</menu>
-            <form>Accounting_SalesRecordForm</form>
-        </target>
-        <!-- type tree for -->
-        <type>Accounting_SalesRecord</type>
-
-        <childs>
-            <child>Accounting_SalesRecordTree_Document</child>
-        </childs>
-
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Accounting_PurchaseRecordDocumentSelectForm</name>
+        <!-- fields -->
+        <field name="documents" character="Target">
+            <property name="HideLabel">true</property>
+            <property name="TargetShowCheckBoxes">true</property>
+            <property name="ModeEdit">READONLY</property>
+            <table>Accounting_PurchaseRecordDocumentSelectTable</table>
+            <evaluate program="org.efaps.esjp.accounting.PurchaseRecord"
+                method="documentMultiPrint">
+                <property name="Types">Sales_IncomingInvoice;Accounting_ExternalVoucher</property>
+             </evaluate>
+        </field>
     </definition>
-</ui-menu>
+</ui-form>

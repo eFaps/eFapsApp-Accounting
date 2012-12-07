@@ -25,7 +25,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordDocumentSelectTable</name>
+        <name>Accounting_PurchaseRecordDocumentSelectTable</name>
         <field name="type">
             <property name="Select">type.label</property>
             <property name="Label">ERP_DocumentAbstract/Type.Label</property>

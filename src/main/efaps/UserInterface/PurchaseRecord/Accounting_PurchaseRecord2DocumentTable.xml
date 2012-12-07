@@ -27,23 +27,23 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecord2DocumentTable</name>
+        <name>Accounting_PurchaseRecord2DocumentTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">Accounting_SalesRecord2Document/Type.Label</property>
+            <property name="Label">Accounting_PurchaseRecord2Document/Type.Label</property>
         </field>
         <field name="toLink">
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToLink].type.label&gt; -  $&lt;linkto[ToLink].attribute[Name]&gt;</property>
-            <property name="Label">Accounting_SalesRecord2DocumentTable.toLink.Label</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentTable.toLink.Label</property>
             <property name="HRef">TREEMENU</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="fromLink">
             <property name="SelectAlternateOID">linkto[FromLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromLink].type.label&gt; -  $&lt;linkto[FromLink].attribute[Name]&gt;</property>
-            <property name="Label">Accounting_SalesRecord2DocumentTable.toLink.Label</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentTable.toLink.Label</property>
             <property name="HRef">TREEMENU</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>

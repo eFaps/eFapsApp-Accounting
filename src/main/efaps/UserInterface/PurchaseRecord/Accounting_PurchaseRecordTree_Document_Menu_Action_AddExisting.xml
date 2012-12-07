@@ -21,30 +21,26 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>ec90f0c9-5172-4d58-aea3-64b3f5fe6583</uuid>
+    <uuid>0d4dea23-f410-478f-965b-a6611fb2dae8</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordMyDesk_Menu_Action_Create</name>
-
-        <access>
-            <role>Accounting_Admin</role>
-        </access>
-
-        <!-- target definitions -->
+        <name>Accounting_PurchaseRecordTree_Document_Menu_Action_AddExisting</name>
+        <!-- target definition -->
         <target>
-            <form>Accounting_SalesRecordForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create">
-                <property name="StatusGroup">Accounting_SalesRecordStatus</property>
-                <property name="Status">Open</property>
+            <form>Accounting_PurchaseRecordDocumentSelectForm</form>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectType">Accounting_PurchaseRecord2Document</property>
             </execute>
         </target>
 
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_SalesRecord</property>
-        <property name="TargetMode">create</property>
+        <property name="TargetMode">edit</property>
     </definition>
+
 </ui-command>

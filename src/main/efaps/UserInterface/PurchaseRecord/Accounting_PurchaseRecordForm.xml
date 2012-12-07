@@ -27,7 +27,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordForm</name>
+        <name>Accounting_PurchaseRecordForm</name>
         <!-- fields -->
         <field name="name">
             <property name="ModeCreate">EDITABLE</property>

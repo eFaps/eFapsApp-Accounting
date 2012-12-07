@@ -19,28 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>0d4dea23-f410-478f-965b-a6611fb2dae8</uuid>
+    <uuid>223672ba-1bec-43a9-abec-6c899b913c94</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordTree_Document_Menu_Action_AddExisting</name>
-        <!-- target definition -->
-        <target>
-            <form>Accounting_SalesRecordDocumentSelectForm</form>
-            <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Accounting_SalesRecord2Document</property>
-            </execute>
-        </target>
-
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
+        <name>Accounting_PurchaseRecordTree_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_PurchaseRecordTree_Menu_Action</child>
+        </childs>
     </definition>
 
-</ui-command>
+</ui-menu>
