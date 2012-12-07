@@ -136,19 +136,48 @@ public abstract class Report_Base
     public Return getDateFromFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.ReportAbstract.PeriodeLink)
-            .attribute(CIAccounting.Periode.FromDate);
-        print.addSelect(sel);
-        DateTime date;
-        if (print.execute()) {
-            date = print.getSelect(sel);
-        } else {
-            date = new DateTime();
-        }
-
         final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, date);
+        ret.put(ReturnValues.VALUES, getDate(_parameter, true));
+        return ret;
+    }
+
+
+    protected DateTime getDate(final Parameter _parameter,
+                               final boolean _from)
+        throws EFapsException
+    {
+        DateTime ret;
+        final SelectBuilder sel = new SelectBuilder();
+        Instance inst = null;
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            inst = _parameter.getInstance();
+            if (_parameter.getInstance().getType().isKindOf(CIAccounting.Periode.getType())) {
+                sel.attribute(_from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+            } else {
+                sel.linkto(CIAccounting.ReportAbstract.PeriodeLink).attribute(
+                                _from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+            }
+        } else {
+            final String[] oids = _parameter.getParameterValues("selectedRow");
+            if (oids != null && oids.length > 0) {
+                inst = Instance.get(oids[0]);
+                if (inst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                    sel.linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
+                                    .attribute(_from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+                }
+            }
+        }
+        if (inst != null) {
+            final PrintQuery print = new PrintQuery(inst);
+            print.addSelect(sel);
+            if (print.execute()) {
+                ret = print.getSelect(sel);
+            } else {
+                ret = new DateTime();
+            }
+        } else {
+            ret = new DateTime();
+        }
         return ret;
     }
 
@@ -161,19 +190,8 @@ public abstract class Report_Base
     public Return getDateToFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.ReportAbstract.PeriodeLink)
-            .attribute(CIAccounting.Periode.ToDate);
-        print.addSelect(sel);
-        DateTime date;
-        if (print.execute()) {
-            date = print.getSelect(sel);
-        } else {
-            date = new DateTime();
-        }
-
         final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, date);
+        ret.put(ReturnValues.VALUES, getDate(_parameter, false));
         return ret;
     }
 

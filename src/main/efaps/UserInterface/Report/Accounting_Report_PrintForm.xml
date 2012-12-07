@@ -35,6 +35,13 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Report_PrintForm</name>
         <!-- fields -->
+        <field name="selectedOIDs">
+            <property name="ModeCreate">HIDDEN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getStoreOIDsFieldValue"
+                name="Accounting_Journal_CreateForm.selectedOIDs.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
         <field name="mime">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_Report_PrintForm.mime.Label</property>

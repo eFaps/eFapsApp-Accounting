@@ -35,6 +35,7 @@
 
         <!-- target definitions -->
         <target>
+            <menu>Accounting_PeriodeTree_AccountStructurBrowser_Menu</menu>
             <table>Accounting_AccountTable</table>
             <evaluate program="org.efaps.esjp.accounting.StructurBrowser">
                 <property name="Types">Accounting_AccountAbstract</property>
