@@ -30,6 +30,7 @@
         <name>Accounting_SalesRecordMyDesk_Menu_Action</name>
         <!-- childs -->
         <childs>
+            <child>Accounting_SalesRecordMyDesk_Menu_Action_Create</child>
             <child>Accounting_SalesRecordMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
