@@ -37,7 +37,7 @@
             <child>Accounting_ReportMyDesk</child>
             <child>Accounting_DocumentMyDesk</child>
             <child>Accounting_PaymentMyDesk</child>
-            <child>Accounting_SalesRecordMyDesk</child>
+            <child>Accounting_PurchaseRecordMyDesk</child>
             <child>Accounting_ActionDefinitionMyDesk</child>
         </childs>
     </definition>
