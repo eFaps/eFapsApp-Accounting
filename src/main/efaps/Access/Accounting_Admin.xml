@@ -46,7 +46,7 @@
         <access-type>delete</access-type>
 
         <type>Accounting_ExternalVoucher</type>
-        <type>Accounting_SalesRecord</type>
+        <type>Accounting_PurchaseRecord</type>
 
         <status group="Accounting_ExternalVoucherStatus">
             <key>Open</key>
@@ -55,7 +55,7 @@
             <key>Replaced</key>
         </status>
 
-        <status group="Accounting_SalesRecordStatus">
+        <status group="Accounting_PurchaseRecordStatus">
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
