@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_PurchaseRecordDocuments" language="groovy" pageWidth="1072" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1032" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="836d12a5-2cc0-4772-adcd-9c7bf29e0dde">
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="438721cc-19ad-4688-aa1a-2d1fb83e1049"/>
+		<property name="Types" value="Accounting_PurchaseRecord2Document"/>
+		<property name="LinkFroms" value="FromLink"/>
+		<property name="useInstanceFromParent" value="true"/>
+	</parameter>
+	<field name="docDate" class="org.joda.time.DateTime">
+		<property name="Select" value="linkto[ToLink].attribute[Date]"/>
+		<fieldDescription><![CDATA[The Date of the Document]]></fieldDescription>
+	</field>
+	<field name="docDueDate" class="org.joda.time.DateTime">
+		<property name="Select" value="linkto[ToLink].attribute[DueDate]"/>
+		<fieldDescription><![CDATA[The DueDate of the Document]]></fieldDescription>
+	</field>
+	<field name="docName" class="java.lang.String">
+		<property name="Select" value="linkto[ToLink].attribute[Name]"/>
+		<fieldDescription><![CDATA[The Name of the Document]]></fieldDescription>
+	</field>
+	<field name="docRevision" class="java.lang.String">
+		<property name="Select" value="linkto[ToLink].attribute[Revision]"/>
+		<fieldDescription><![CDATA[The Revision of the Document]]></fieldDescription>
+	</field>
+	<field name="docNetTotal" class="java.math.BigDecimal">
+		<property name="Select" value="linkto[ToLink].attribute[NetTotal]"/>
+		<fieldDescription><![CDATA[The NetTotal of the Document]]></fieldDescription>
+	</field>
+	<field name="docCrossTotal" class="java.math.BigDecimal">
+		<property name="Select" value="linkto[ToLink].attribute[CrossTotal]"/>
+		<fieldDescription><![CDATA[The CrossTotal of the Document]]></fieldDescription>
+	</field>
+	<field name="contactTaxNumber" class="java.lang.String">
+		<property name="Select" value="linkto[ToLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+		<fieldDescription><![CDATA[The Taxnumber of the Document]]></fieldDescription>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Select" value="linkto[ToLink].linkto[Contact].attribute[Name]"/>
+		<fieldDescription><![CDATA[The Name of the Contact]]></fieldDescription>
+	</field>
+	<variable name="withoutTax" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Boolean(!(BigDecimal.ZERO.compareTo($F{docCrossTotal}.subtract($F{docNetTotal})) < 0))]]></variableExpression>
+	</variable>
+	<variable name="negative" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Boolean("false")]]></variableExpression>
+	</variable>
+	<variable name="contactDocType" class="java.lang.String">
+		<variableExpression><![CDATA[($F{contactTaxNumber}.length() == 11 ) ? "R.U.C":"D.N.I"]]></variableExpression>
+	</variable>
+	<variable name="crossValue" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{negative}
+? $F{docCrossTotal}.negate()
+: $F{docCrossTotal}]]></variableExpression>
+	</variable>
+	<variable name="netValue" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{negative}
+? $F{docNetTotal}.negate()
+: $F{docNetTotal}]]></variableExpression>
+	</variable>
+	<variable name="netTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{withoutTax}
+? BigDecimal.ZERO
+: $V{netValue}]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<variable name="crossTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{crossValue}]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<variable name="withoutTaxTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{withoutTax} ? $V{crossValue} : BigDecimal.ZERO]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<variable name="vat" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$V{negative}
+? $F{docCrossTotal}.subtract($F{docNetTotal}).negate()
+: $F{docCrossTotal}.subtract($F{docNetTotal})]]></variableExpression>
+	</variable>
+	<variable name="vatTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$V{vat}]]></variableExpression>
+		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
+	</variable>
+	<detail>
+		<band height="30">
+			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
+				<reportElement uuid="c2e1960b-3206-4576-b756-c8e94f778e0f" x="130" y="0" width="131" height="17"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{docDate}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="1eeec2a4-d6ea-4bf3-b019-07e4aff6c1f5" x="30" y="0" width="100" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{docName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
+				<reportElement uuid="1e2cea6d-5dda-4e77-a252-19daca452285" x="260" y="0" width="130" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{docDueDate}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="a59786dd-0041-40f3-8383-e0fe382724af" x="430" y="0" width="127" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="4c28e3cb-ca3c-49a4-9e65-3a36540302a4" x="560" y="0" width="170" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="ff78fcce-0add-44e2-96f7-4ef51a024d01" x="390" y="0" width="40" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{contactDocType}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="740" y="0" width="60" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{withoutTax}
+? null
+: $V{netValue}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="820" y="0" width="60" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{withoutTax}
+? null
+: $V{vat}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="900" y="0" width="60" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{withoutTax}
+?  $V{netValue}
+: null]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="a93c9cef-39a6-42dd-bb4d-dbf91e6a725e" x="1000" y="0" width="60" height="12"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{crossValue}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c73c9a10-3e05-42ce-912c-d3c19d395986" x="0" y="0" width="30" height="16"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{docRevision}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
