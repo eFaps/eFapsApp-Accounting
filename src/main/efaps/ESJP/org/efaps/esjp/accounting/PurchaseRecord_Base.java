@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("2198d008-b65f-4d3c-b84d-48250c047708")
 @EFapsRevision("$Rev$")
-public abstract class SalesRecord_Base
+public abstract class PurchaseRecord_Base
 {
 
     public Return documentMultiPrint(final Parameter _parameter)
@@ -51,9 +51,9 @@ public abstract class SalesRecord_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.SalesRecord2Document);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                                CIAccounting.SalesRecord2Document.ToLink);
+                                CIAccounting.PurchaseRecord2Document.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
             }
         };

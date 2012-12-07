@@ -35,8 +35,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("0334ece9-d46e-4e7b-9f10-2a12a99ee031")
 @EFapsRevision("$Rev$")
-public class SalesRecord
-    extends SalesRecord_Base
+public class PurchaseRecord
+    extends PurchaseRecord_Base
 {
 
 }
