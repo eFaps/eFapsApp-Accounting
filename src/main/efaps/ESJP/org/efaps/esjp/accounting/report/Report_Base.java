@@ -269,7 +269,7 @@ public abstract class Report_Base
                 numberColumn.setStyle(numberStyle).setWidth(20);
                 jrb.addColumn(numberColumn);
 
-                jrb.addField("node_" + y, AbstractNode.class);
+                jrb.addField("node_" + y, Object.class);
             }
 
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -375,7 +375,7 @@ public abstract class Report_Base
         @Override
         public Boolean evaluate(final ReportParameters _reportParameters)
         {
-            final AbstractNode node = _reportParameters.getFieldValue("node_" + this.idx);
+            final AbstractNode node = (AbstractNode) _reportParameters.getFieldValue("node_" + this.idx);
             return (Report_Base.this.indent && (node.getLevel() == 0 || node instanceof TotalNode))
                             || (!Report_Base.this.indent && node instanceof RootNode);
         }
@@ -576,7 +576,7 @@ public abstract class Report_Base
     /**
      * Base class for all types of nodes.
      */
-    public static abstract class AbstractNode
+    public abstract class AbstractNode
     {
         /**
          * List of children for this node.
@@ -1059,7 +1059,7 @@ public abstract class Report_Base
         }
     }
 
-    public static class TotalNode
+    public class TotalNode
         extends AbstractNode
     {
 

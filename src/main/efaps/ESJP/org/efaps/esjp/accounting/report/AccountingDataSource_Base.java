@@ -86,7 +86,7 @@ public abstract class AccountingDataSource_Base
                 if (!node.isTextOnly()) {
                     ret = node.getSum();
                 }
-            } else if (_field.getValueClass().equals(AbstractNode.class)) {
+            } else if (_field.getValueClass().equals(Object.class)) {
                 ret = node;
             } else {
                 ret = StringUtils.repeat(" ", node.getLevel() * 2) + node.getLabel();
