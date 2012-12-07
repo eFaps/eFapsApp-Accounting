@@ -19,19 +19,25 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>df8604be-e478-4350-b2db-865fb7698b0c</uuid>
+    <uuid>589fa2f9-ec3a-464b-a8c3-8bb706488c26</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SalesRecordTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Accounting_SalesRecordTree_Menu_Action_Edit</child>
-        </childs>
+        <name>Accounting_PurchaseRecordTree_Menu_Action_Print</name>
+
+        <!-- target definitions -->
+        <target>
+            <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
+                <property name="JasperReport">Accounting_PurchaseRecord</property>
+                <property name="Mime">pdf</property>
+            </execute>
+        </target>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 
-</ui-menu>
+</ui-command>
