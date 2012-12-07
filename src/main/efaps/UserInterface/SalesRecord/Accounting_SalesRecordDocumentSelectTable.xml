@@ -26,13 +26,11 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SalesRecordDocumentSelectTable</name>
-        <!-- fields
         <field name="type">
-            <property name="Attribute">Type</property>
+            <property name="Select">type.label</property>
             <property name="Label">ERP_DocumentAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
-            <property name="ModeEdit">READONLY</property>
-        </field> -->
+        </field>
         <field name="name">
             <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Name</property>
@@ -42,6 +40,11 @@
             <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Date</property>
             <property name="Label">ERP_DocumentAbstract/Date.Label</property>
+        </field>
+        <field name="dueDate">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">DueDate</property>
+            <property name="Label">ERP_DocumentAbstract/DueDate.Label</property>
         </field>
         <field name="status">
             <property name="ModeEdit">READONLY</property>
