@@ -29,10 +29,10 @@
         <name>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing</name>
         <target>
             <menu>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing_Menu</menu>
-            <table>Accounting_Document2PaymentTable</table>
+            <table>Sales_PaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_Document2PaymentDocument</property>
-                <property name="LinkFroms">FromAbstractLink</property>
+                <property name="Types">Sales_Payment</property>
+                <property name="LinkFroms">CreateDocument</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -31,19 +31,16 @@
         <!-- target definitions -->
         <target>
             <form>Accounting_Document2PaymentForm</form>
-            <execute program="org.efaps.esjp.accounting.Payment"
-                    method="createPaymentDefinition" />
-            <validate program="org.efaps.esjp.accounting.Payment"
-                    method="validate4Pay2Doc"/>
-            <trigger program="org.efaps.esjp.accounting.Payment"
-                    method="accessCheck4Payment"
-                    name="Accounting_Document2PaymentDocumentTree_Menu_Action_Pay.UI_ACCESSCHECK"
-                    event="UI_ACCESSCHECK"/>
+            <execute program="org.efaps.esjp.accounting.Payment" method="createPaymentOut">
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_Document2PaymentDocument</property>
+        <property name="TargetCreateType">Sales_Payment</property>
+        <property name="TargetConnectAttribute">Sales_Payment/CreateDocument</property>
         <property name="WindowHeight">600</property>
         <property name="WindowWidth">1000</property>
     </definition>
