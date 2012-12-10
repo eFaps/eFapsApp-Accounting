@@ -45,7 +45,9 @@ public abstract class PurchaseRecord_Base
     public Return documentMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
-        final MultiPrint multi = new MultiPrint() {
+        final MultiPrint multi = new MultiPrint()
+        {
+
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
                                          final QueryBuilder _queryBldr)

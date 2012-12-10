@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
@@ -105,10 +106,22 @@ public abstract class ExternalVoucher_Base
         docInsert.add(CIAccounting.ExternalVoucher.Status,
                         Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId());
         docInsert.add(CIAccounting.ExternalVoucher.Salesperson, Context.getThreadContext().getPersonId());
+        //Sales_IncomingInvoiceSequence
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
+        if (numgen != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.Revision, numgen.getNextVal());
+        }
+
         docInsert.execute();
 
         _parameter.put(ParameterValues.INSTANCE, docInsert.getInstance());
-
+        final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
+        if (purchaseRecInst.isValid()) {
+            final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
+            purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst.getId());
+            purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInsert.getInstance().getId());
+            purInsert.execute();
+        }
         new Create().create4External(_parameter);
         return new Return();
     }
