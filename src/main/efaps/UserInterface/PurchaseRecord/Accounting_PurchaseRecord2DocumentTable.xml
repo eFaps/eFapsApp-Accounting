@@ -32,6 +32,7 @@
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_PurchaseRecord2Document/Type.Label</property>
+            <property name="HRef">TREEMENU</property>
         </field>
         <field name="toLink">
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
