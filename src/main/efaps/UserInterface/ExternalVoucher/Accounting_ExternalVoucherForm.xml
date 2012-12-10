@@ -86,6 +86,11 @@
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field name="nameGroup" character="Group">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="GroupCount">2</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
@@ -93,6 +98,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Accounting_ExternalVoucherForm.headingClient.Label</property>

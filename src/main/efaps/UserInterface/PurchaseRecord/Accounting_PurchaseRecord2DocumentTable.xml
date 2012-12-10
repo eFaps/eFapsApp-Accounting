@@ -40,12 +40,13 @@
             <property name="HRef">TREEMENU</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="fromLink">
-            <property name="SelectAlternateOID">linkto[FromLink].oid</property>
-            <property name="Phrase">$&lt;linkto[FromLink].type.label&gt; -  $&lt;linkto[FromLink].attribute[Name]&gt;</property>
-            <property name="Label">Accounting_PurchaseRecord2DocumentTable.toLink.Label</property>
-            <property name="HRef">TREEMENU</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        <field name="date">
+            <property name="Select">linkto[ToLink].attribute[Date]</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentTable.date.Label</property>
+        </field>
+        <field name="revision">
+            <property name="Select">linkto[ToLink].attribute[Revision]</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
         </field>
     </definition>
 </ui-table>
