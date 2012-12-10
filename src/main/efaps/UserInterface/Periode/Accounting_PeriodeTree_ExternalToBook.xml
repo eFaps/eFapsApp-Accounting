@@ -35,7 +35,7 @@
         <name>Accounting_PeriodeTree_ExternalToBook</name>
         <target>
             <menu>Accounting_PeriodeTree_ExternalToBook_Menu</menu>
-            <table>Accounting_PeriodeDocumentSumTable</table>
+            <table>Sales_IncomingInvoiceTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode"
                 method="getExternalsToBook" >
                     <property name="Types">ERP_DocumentAbstract</property>

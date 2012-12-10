@@ -39,7 +39,7 @@
         </access>
         <target>
             <menu>Accounting_DocumentMyDesk_Menu</menu>
-            <table>Sales_DocumentSumTable</table>
+            <table>Sales_IncomingInvoiceTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_IncomingInvoice;Accounting_ExternalVoucher</property>
                 <property name="ExpandChildTypes">true</property>
