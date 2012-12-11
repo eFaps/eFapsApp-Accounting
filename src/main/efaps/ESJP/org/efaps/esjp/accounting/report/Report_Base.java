@@ -58,6 +58,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.jasper.JasperUtil;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -217,6 +218,49 @@ public abstract class Report_Base
         insert.execute();
         return new Return();
     }
+
+    /**
+     * Executed to delete the report from the UserInterface.
+     *
+     * @param _parameter Parameter as passed from the eFasp API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return deleteReportTrigger(final Parameter _parameter)
+            throws EFapsException
+        {
+         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeRoot);
+         queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeRoot.ReportLink, _parameter.getInstance().getId());
+         final InstanceQuery query = queryBldr.getQuery();
+         query.execute();
+         while (query.next()) {
+             final Delete del = new Delete(query.getCurrentValue());
+             del.execute();
+         }
+            return new Return();
+        }
+
+    /**
+     * Executed to delete nodes of a report.
+     *
+     * @param _parameter Parameter as passed from the eFasp API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return  deleteNodeTrigger(final Parameter _parameter)
+            throws EFapsException
+        {
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeChildAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeChildAbstract.ParentLinkAbstract,
+                _parameter.getInstance().getId());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            final Delete del = new Delete(query.getCurrentValue());
+            del.execute();
+        }
+            return new Return();
+        }
 
     /**
      * Execute the actual creation of the report.
