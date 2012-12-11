@@ -227,18 +227,18 @@ public abstract class Report_Base
      * @throws EFapsException on error
      */
     public Return deleteReportTrigger(final Parameter _parameter)
-            throws EFapsException
-        {
-         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeRoot);
-         queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeRoot.ReportLink, _parameter.getInstance().getId());
-         final InstanceQuery query = queryBldr.getQuery();
-         query.execute();
-         while (query.next()) {
-             final Delete del = new Delete(query.getCurrentValue());
-             del.execute();
-         }
-            return new Return();
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeRoot);
+        queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeRoot.ReportLink, _parameter.getInstance().getId());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            final Delete del = new Delete(query.getCurrentValue());
+            del.execute();
         }
+        return new Return();
+    }
 
     /**
      * Executed to delete nodes of a report.
@@ -247,20 +247,20 @@ public abstract class Report_Base
      * @return new Return
      * @throws EFapsException on error
      */
-    public Return  deleteNodeTrigger(final Parameter _parameter)
-            throws EFapsException
-        {
+    public Return deleteNodeTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeChildAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeChildAbstract.ParentLinkAbstract,
-                _parameter.getInstance().getId());
+                        _parameter.getInstance().getId());
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         while (query.next()) {
             final Delete del = new Delete(query.getCurrentValue());
             del.execute();
         }
-            return new Return();
-        }
+        return new Return();
+    }
 
     /**
      * Execute the actual creation of the report.
@@ -352,8 +352,8 @@ public abstract class Report_Base
 
 
     protected void addFooter(final Parameter _parameter,
-                           final JasperReportBuilder _jrb,
-                           final ReportTree _dataTree)
+                             final JasperReportBuilder _jrb,
+                             final ReportTree _dataTree)
     {
         // for implementation purpose
     }
