@@ -34,6 +34,7 @@
             <parent-table>T_ERPDOC2DOC</parent-table>
             <column name="DETRNO"      type="STRING_SHORT"  length="128" />
             <column name="DETRAMOUNT"  type="DECIMAL"       length="12" scale="4"/>
+            <column name="EXTYPEID"    type="INTEGER"/>
         </database>
     </definition>
 </datamodel-sqltable>

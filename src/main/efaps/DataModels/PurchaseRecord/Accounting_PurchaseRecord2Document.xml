@@ -43,6 +43,18 @@
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>TypeLink</name>
+            <type>LinkWithRanges</type>
+            <typelink>Accounting_ExternalTypeAttr</typelink>
+            <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
+            <sqlcolumn>EXTYPEID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Accounting_PurchaseRecord2Document.TypeLink.RANGE_VALUE" event="RANGE_VALUE">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Accounting_ExternalTypeAttr</property>
+            </trigger>
+        </attribute>
+        <attribute>
             <name>DetractionName</name>
             <type>String</type>
             <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
