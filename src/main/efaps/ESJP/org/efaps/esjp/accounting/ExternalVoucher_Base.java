@@ -50,6 +50,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.document.AbstractDocument;
+import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.util.EFapsException;
 
 
@@ -109,7 +110,9 @@ public abstract class ExternalVoucher_Base
         //Sales_IncomingInvoiceSequence
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
         if (numgen != null) {
-            docInsert.add(CIAccounting.ExternalVoucher.Revision, numgen.getNextVal());
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
+            docInsert.add(CIAccounting.ExternalVoucher.Revision, revision);
         }
 
         docInsert.execute();
