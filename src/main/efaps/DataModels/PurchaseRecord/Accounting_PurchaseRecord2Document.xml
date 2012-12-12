@@ -42,5 +42,17 @@
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>DetractionName</name>
+            <type>String</type>
+            <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
+            <sqlcolumn>DETRNO</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DetractionAmount</name>
+            <type>Decimal</type>
+            <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
+            <sqlcolumn>DETRNO</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
