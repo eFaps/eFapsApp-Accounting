@@ -59,6 +59,10 @@
 		<property name="Select" value="linkto[TypeLink].attribute[Value]"/>
 		<fieldDescription><![CDATA[The Type of the Document as defined by the TypeLink]]></fieldDescription>
 	</field>
+	<field name="detractionDate" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[DetractionDate]"/>
+		<fieldDescription><![CDATA[The Amount of the Detraction]]></fieldDescription>
+	</field>
 	<variable name="withoutTax" class="java.lang.Boolean">
 		<variableExpression><![CDATA[new Boolean(!(BigDecimal.ZERO.compareTo($F{docCrossTotal}.subtract($F{docNetTotal})) < 0))]]></variableExpression>
 	</variable>
@@ -102,7 +106,7 @@
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<detail>
-		<band height="16">
+		<band height="21">
 			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
 				<reportElement uuid="c2e1960b-3206-4576-b756-c8e94f778e0f" x="157" y="0" width="62" height="16"/>
 				<textElement/>
@@ -134,28 +138,28 @@
 				<textFieldExpression><![CDATA[$V{contactDocType}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="545" y="0" width="60" height="16"/>
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="545" y="0" width="70" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{withoutTax}
 ? null
 : $V{netValue}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="605" y="0" width="70" height="16"/>
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="615" y="0" width="70" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{withoutTax}
 ? null
 : $V{vat}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="675" y="0" width="70" height="16"/>
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="685" y="0" width="70" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{withoutTax}
 ?  $V{netValue}
 : null]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement uuid="a93c9cef-39a6-42dd-bb4d-dbf91e6a725e" x="815" y="0" width="70" height="16"/>
+				<reportElement uuid="a93c9cef-39a6-42dd-bb4d-dbf91e6a725e" x="825" y="0" width="70" height="16"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{crossValue}]]></textFieldExpression>
 			</textField>
@@ -170,10 +174,12 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{detractionName}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00#" isBlankWhenNull="true">
-				<reportElement uuid="a4733915-1a46-41a3-b14c-d02fc5f38702" x="1030" y="0" width="70" height="16"/>
+			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
+				<reportElement uuid="a4733915-1a46-41a3-b14c-d02fc5f38702" x="1030" y="0" width="62" height="16">
+					<printWhenExpression><![CDATA[new Boolean($F{detractionName} != null && !$F{detractionName}.isEmpty())]]></printWhenExpression>
+				</reportElement>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{detractionAmount}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{detractionDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="96eff85c-86f9-4751-adf3-57a7842e8ab4" x="50" y="0" width="25" height="16"/>
@@ -181,7 +187,7 @@
 				<textFieldExpression><![CDATA[$F{docType}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.000#">
-				<reportElement uuid="f4566242-7e8a-4b99-be3b-cc318c510e17" x="1100" y="0" width="45" height="16">
+				<reportElement uuid="f4566242-7e8a-4b99-be3b-cc318c510e17" key="" x="1092" y="0" width="45" height="16">
 					<printWhenExpression><![CDATA[new Boolean($F{docRate}.compareTo( java.math.BigDecimal.ONE ) != 0)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>

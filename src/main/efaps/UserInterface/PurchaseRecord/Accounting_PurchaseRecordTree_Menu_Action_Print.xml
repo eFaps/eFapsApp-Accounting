@@ -33,7 +33,7 @@
         <target>
             <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
                 <property name="JasperReport">Accounting_PurchaseRecord</property>
-                <property name="Mime">pdf</property>
+                <property name="Mime">xls</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
