@@ -1,15 +1,21 @@
 package org.efaps.esjp.accounting;
 
+import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
+import org.jfree.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Copyright 2003 - 2012 The eFaps Team
@@ -41,7 +47,8 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public abstract class PurchaseRecord_Base
 {
-
+    private static final Logger LOG = LoggerFactory.getLogger(PurchaseRecord_Base.class);
+    
     public Return documentMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
@@ -60,5 +67,13 @@ public abstract class PurchaseRecord_Base
             }
         };
         return multi.execute(_parameter);
+    }
+
+    public Return updateLinkTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        Instance instance = _parameter.getInstance(); // hasta aqui tiene Accounting_PurchaseRecord2Document
+        
+        return new Return();
     }
 }
