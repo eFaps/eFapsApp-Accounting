@@ -61,6 +61,21 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Accounting_PurchaseRecord2Document/DetractionDate.Label</property>
         </field>
+        <field name="typeLink">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;linkto[TypeLink].attribute[Value]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="typeLink4Edit">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">TypeLink</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
+        </field>
         <field name="revision">
             <property name="Select">linkto[ToLink].attribute[Revision]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
