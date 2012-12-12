@@ -66,5 +66,11 @@
             <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
             <sqlcolumn>DETRAMOUNT</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>DetractionDate</name>
+            <type>Date</type>
+            <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
+            <sqlcolumn>DETRDATE</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

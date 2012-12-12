@@ -45,6 +45,22 @@
             <property name="Select">linkto[ToLink].attribute[Date]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.date.Label</property>
         </field>
+        <field name="detractionName">
+            <property name="Attribute">DetractionName</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_PurchaseRecord2Document/DetractionName.Label</property>
+        </field>
+        <field name="detractionAmount">
+            <property name="Attribute">DetractionAmount</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_PurchaseRecord2Document/DetractionAmount.Label</property>
+        </field>
+        <field name="detractionDate">
+            <property name="Attribute">DetractionDate</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_PurchaseRecord2Document/DetractionDate.Label</property>
+        </field>
         <field name="revision">
             <property name="Select">linkto[ToLink].attribute[Revision]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
