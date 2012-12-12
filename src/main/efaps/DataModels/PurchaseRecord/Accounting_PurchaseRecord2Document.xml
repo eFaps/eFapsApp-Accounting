@@ -64,7 +64,7 @@
             <name>DetractionAmount</name>
             <type>Decimal</type>
             <sqltable>Accounting_PurchaseRecord2DocumentSQLTable</sqltable>
-            <sqlcolumn>DETRNO</sqlcolumn>
+            <sqlcolumn>DETRAMOUNT</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>
