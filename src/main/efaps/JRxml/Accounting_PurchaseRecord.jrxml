@@ -79,7 +79,7 @@
 	<columnHeader>
 		<band height="82" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="2d796c05-8cc9-4331-856a-c8623163c302" x="25" y="20" width="25" height="54"/>
+				<reportElement uuid="2d796c05-8cc9-4331-856a-c8623163c302" x="50" y="20" width="25" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -93,7 +93,7 @@
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="6aae9b18-a4f7-4f78-bf08-2e2ca48790d3" x="50" y="20" width="73" height="54"/>
+				<reportElement uuid="6aae9b18-a4f7-4f78-bf08-2e2ca48790d3" x="75" y="20" width="82" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -107,7 +107,7 @@
 				<text><![CDATA[SERIE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="712095e5-a1b6-4d4e-832a-62363dac6add" x="250" y="41" width="28" height="33"/>
+				<reportElement uuid="712095e5-a1b6-4d4e-832a-62363dac6add" x="281" y="41" width="28" height="33"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -121,7 +121,7 @@
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="08a1c922-d746-4d61-985d-6010177829dd" x="350" y="20" width="155" height="54"/>
+				<reportElement uuid="08a1c922-d746-4d61-985d-6010177829dd" x="390" y="20" width="155" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -135,7 +135,7 @@
 				<text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACI?N O RAZON SOCIAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="4e703c71-c777-43ad-8efe-90492d3ad7a6" x="810" y="0" width="59" height="74"/>
+				<reportElement uuid="4e703c71-c777-43ad-8efe-90492d3ad7a6" x="825" y="0" width="70" height="74"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -150,7 +150,7 @@
 TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="55a42f2b-7728-4ec6-9eab-4a789e74b72c" x="123" y="20" width="62" height="54"/>
+				<reportElement uuid="55a42f2b-7728-4ec6-9eab-4a789e74b72c" x="157" y="20" width="62" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -161,10 +161,10 @@ TOTAL]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[FECHA DE EMISI?N ]]></text>
+				<text><![CDATA[FECHA DE EMISIÓN ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="991a6237-ec38-47c3-b0ee-904e1740f444" x="506" y="20" width="96" height="54"/>
+				<reportElement uuid="991a6237-ec38-47c3-b0ee-904e1740f444" x="545" y="20" width="70" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -178,7 +178,7 @@ TOTAL]]></text>
 				<text><![CDATA[BASE IMPONIBLE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d590fee4-dc98-479d-a3c8-ff0a5327940f" x="602" y="20" width="83" height="54"/>
+				<reportElement uuid="d590fee4-dc98-479d-a3c8-ff0a5327940f" x="615" y="20" width="70" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -192,7 +192,7 @@ TOTAL]]></text>
 				<text><![CDATA[I.G.V.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="73016121-4c08-492a-b834-06bb602c6314" x="685" y="0" width="64" height="74"/>
+				<reportElement uuid="73016121-4c08-492a-b834-06bb602c6314" x="685" y="0" width="70" height="74"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -210,7 +210,7 @@ NO
 GRAVADAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c6f4f044-6eb1-49d4-942b-5a9045eec19b" x="25" y="0" width="220" height="20"/>
+				<reportElement uuid="c6f4f044-6eb1-49d4-942b-5a9045eec19b" x="50" y="0" width="231" height="20"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -224,7 +224,7 @@ GRAVADAS]]></text>
 				<text><![CDATA[COMPROBANTE DE PAGO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e7caf5a2-2938-413c-ae5f-2e20a6d75742" x="250" y="0" width="255" height="20"/>
+				<reportElement uuid="e7caf5a2-2938-413c-ae5f-2e20a6d75742" x="281" y="0" width="264" height="20"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -239,7 +239,7 @@ GRAVADAS]]></text>
 PROVEEDOR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afe7398b-6701-44ba-827d-913c8c6f4b45" x="250" y="20" width="100" height="21"/>
+				<reportElement uuid="afe7398b-6701-44ba-827d-913c8c6f4b45" x="281" y="20" width="109" height="21"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -253,7 +253,7 @@ PROVEEDOR]]></text>
 				<text><![CDATA[DOCUMENTO DE IDENTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="afa19003-1538-4852-a961-788a7191e379" x="278" y="41" width="73" height="33"/>
+				<reportElement uuid="afa19003-1538-4852-a961-788a7191e379" x="309" y="41" width="81" height="33"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -267,7 +267,7 @@ PROVEEDOR]]></text>
 				<text><![CDATA[N?MERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="0beda7f1-e7d7-42bf-ab1e-6f3c8b1a4ea2" x="1056" y="0" width="47" height="72"/>
+				<reportElement uuid="0beda7f1-e7d7-42bf-ab1e-6f3c8b1a4ea2" x="1092" y="0" width="45" height="74"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -282,7 +282,7 @@ PROVEEDOR]]></text>
 CAMBIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="eabea87b-a58d-4a84-9523-c078f38d6b0c" x="506" y="0" width="179" height="20"/>
+				<reportElement uuid="eabea87b-a58d-4a84-9523-c078f38d6b0c" x="545" y="0" width="140" height="20"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -296,7 +296,7 @@ CAMBIO]]></text>
 				<text><![CDATA[ADQUISICIONES GRAVADAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c601faf1-89b0-4073-ac4f-63f06b1b6504" x="749" y="0" width="61" height="74"/>
+				<reportElement uuid="c601faf1-89b0-4073-ac4f-63f06b1b6504" x="755" y="0" width="70" height="74"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -312,7 +312,7 @@ TRIBUTOS Y
 CARGOS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="54869b98-eae5-40c1-b36b-9c4b672625a6" x="869" y="0" width="71" height="74"/>
+				<reportElement uuid="54869b98-eae5-40c1-b36b-9c4b672625a6" x="895" y="0" width="70" height="74"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -331,7 +331,7 @@ SUJETO NO
 DOMICILIADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c17b5769-084b-4e02-bc77-91a2f260bbce" x="0" y="0" width="25" height="74"/>
+				<reportElement uuid="c17b5769-084b-4e02-bc77-91a2f260bbce" x="0" y="0" width="50" height="74"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -339,13 +339,13 @@ DOMICILIADO]]></text>
 					<bottomPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="Left">
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
 					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[N?MERO]]></text>
+				<text><![CDATA[NÚMERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="058a22e2-0c63-44cf-9c13-c2f6dacc55e4" x="185" y="20" width="62" height="54"/>
+				<reportElement uuid="058a22e2-0c63-44cf-9c13-c2f6dacc55e4" x="219" y="20" width="62" height="54"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -356,11 +356,10 @@ DOMICILIADO]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[FECHA DE VENCIMIENTO O PAGO
- ]]></text>
+				<text><![CDATA[FECHA DE VENCIMIENTO ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a0f6968d-8bb6-447b-bd12-40f5172536ec" x="942" y="0" width="110" height="30"/>
+				<reportElement uuid="a0f6968d-8bb6-447b-bd12-40f5172536ec" x="965" y="0" width="127" height="30"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -374,7 +373,7 @@ DOMICILIADO]]></text>
 				<text><![CDATA[CONTANCIA DE DEPOSITO DE DETRACCION]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="41bdb46a-b0ae-4adf-bb8a-6c812e75719b" x="940" y="41" width="52" height="32"/>
+				<reportElement uuid="41bdb46a-b0ae-4adf-bb8a-6c812e75719b" x="965" y="30" width="65" height="44"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -389,7 +388,7 @@ DOMICILIADO]]></text>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="211cbcc6-46eb-4a9e-a910-c419fb7b9651" x="992" y="30" width="64" height="44"/>
+				<reportElement uuid="211cbcc6-46eb-4a9e-a910-c419fb7b9651" x="1030" y="30" width="62" height="44"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -405,9 +404,9 @@ DOMICILIADO]]></text>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="37" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<subreport>
-				<reportElement uuid="f612c37a-0670-413e-a23b-75e32b8ec231" x="0" y="0" width="1231" height="25" isPrintWhenDetailOverflows="true"/>
+				<reportElement uuid="f612c37a-0670-413e-a23b-75e32b8ec231" x="0" y="0" width="1231" height="16" isPrintWhenDetailOverflows="true"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_PurchaseRecordDocuments")]]></dataSourceExpression>
 				<returnValue subreportVariable="netTotal" toVariable="netTotal" calculation="Sum"/>
@@ -434,24 +433,24 @@ DOMICILIADO]]></text>
 	</pageFooter>
 	<summary>
 		<band height="50">
-			<textField>
-				<reportElement uuid="45c091a8-1e73-4b9a-a613-5d070376f858" x="530" y="0" width="59" height="30"/>
-				<textElement/>
+			<textField pattern="#,##0.00#">
+				<reportElement uuid="45c091a8-1e73-4b9a-a613-5d070376f858" x="545" y="0" width="70" height="16"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{netTotal}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="980d5846-a737-49a9-b54f-b2ba4b3d0d5d" x="610" y="0" width="70" height="30"/>
-				<textElement/>
+			<textField pattern="#,##0.00#">
+				<reportElement uuid="980d5846-a737-49a9-b54f-b2ba4b3d0d5d" x="615" y="0" width="70" height="16"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{vatTotal}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="d33e93fc-0452-4392-a77b-1e41326a6e8d" x="685" y="0" width="85" height="30"/>
-				<textElement/>
+			<textField pattern="#,##0.00#">
+				<reportElement uuid="d33e93fc-0452-4392-a77b-1e41326a6e8d" x="685" y="0" width="70" height="16"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{withoutTaxTotal}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="8a42b49d-7763-4c10-9f08-309e1e4bc6e1" x="810" y="0" width="70" height="30"/>
-				<textElement/>
+			<textField pattern="#,##0.00#">
+				<reportElement uuid="8a42b49d-7763-4c10-9f08-309e1e4bc6e1" x="825" y="0" width="70" height="16"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{crossTotal}]]></textFieldExpression>
 			</textField>
 		</band>
