@@ -47,7 +47,6 @@
         </field>
         <field name="detractionName">
             <property name="Attribute">DetractionName</property>
-            <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Accounting_PurchaseRecord2Document/DetractionName.Label</property>
         </field>

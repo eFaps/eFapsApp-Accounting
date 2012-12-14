@@ -73,7 +73,7 @@
             <sqlcolumn>DETRDATE</sqlcolumn>
         </attribute>
         <trigger program="org.efaps.esjp.accounting.PurchaseRecord"
-            method="updateLinkTrigger"
+            method="insertPostTrigger"
             name="Accounting_PurchaseRecord2Document.INSERT_POST"
             event="INSERT_POST"/>
     </definition>
