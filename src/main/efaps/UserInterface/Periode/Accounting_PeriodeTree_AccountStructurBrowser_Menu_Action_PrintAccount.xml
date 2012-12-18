@@ -38,5 +38,6 @@
         <property name="TargetShowFile">true</property>
         <property name="Submit">true</property>
         <property name="SubmitSelectedRows">0</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
 </ui-command>
