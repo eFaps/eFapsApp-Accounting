@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2010 The eFaps Team
 
@@ -21,19 +19,15 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>b6400f6c-d58d-48bc-aa5d-2cd382719e24</uuid>
+    <uuid>048204e7-a97e-4bc5-913e-e75152a390aa</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action_Journal</name>
+        <name>Accounting_PeriodeTree_Menu_ActionReport_DocTransactions</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -43,12 +37,13 @@
         <target>
             <form>Accounting_Journal_CreateForm</form>
             <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
-                <property name="JasperReport">Accounting_Journal</property>
-                <property name="DataSourceClass">org.efaps.esjp.accounting.JournalDataSource </property>
+                <property name="JasperReport">Accounting_DocTransactions</property>
+                <property name="DataSourceClass">org.efaps.esjp.accounting.report.DocTransactionsSource </property>
             </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetShowFile">true</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
 </ui-command>

@@ -37,15 +37,10 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PeriodeTree_Menu_Action_Edit</child>
-            <child>Accounting_PeriodeTree_Menu_Action_Journal</child>
-            <child>Accounting_PeriodeTree_Menu_Action_ExpenseReport</child>
             <child>Accounting_PeriodeTree_Menu_Action_OpeningBalance</child>
             <child>Accounting_PeriodeTree_Menu_Action_Recalculate</child>
-            <child>Accounting_PeriodeTree_Menu_Action_ExternalVoucherJournal</child>
             <child>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</child>
             <child>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</child>
-            <child>Accounting_PeriodeTree_Menu_Action_DocTransactions</child>
         </childs>
     </definition>
-
 </ui-menu>

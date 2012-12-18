@@ -27,7 +27,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_ImportAction_UpdateAccountTable</name>
+        <name>Accounting_PeriodeTree_Menu_ActionImport_UpdateAccountTable</name>
 
         <access>
             <role>Accounting_Admin</role>

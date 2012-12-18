@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action_ExternalVoucherJournal</name>
+        <name>Accounting_PeriodeTree_Menu_ActionReport_ExternalVoucherJournal</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -51,5 +51,6 @@
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetShowFile">true</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
 </ui-command>
