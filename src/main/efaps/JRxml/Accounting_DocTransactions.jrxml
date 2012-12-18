@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_DocTransactions" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="8fedd781-ed62-4261-8288-b05d66276d6c">
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="e0cd8918-2a65-4ecd-aef4-d655ae10da2c"/>
+	</parameter>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Key" value="date"/>
+	</field>
+	<field name="docName" class="java.lang.String">
+		<property name="Key" value="docName"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Key" value="contactName"/>
+	</field>
+	<field name="taxNumber" class="java.lang.String">
+		<property name="Key" value="taxNumber"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="Key" value="amount"/>
+	</field>
+	<field name="accName" class="java.lang.String">
+		<property name="Key" value="accName"/>
+	</field>
+	<field name="accDescr" class="java.lang.String">
+		<property name="Key" value="accDescr"/>
+	</field>
+	<variable name="docName1" class="java.lang.String" resetType="Group" resetGroup="Group2">
+		<variableExpression><![CDATA[$F{docName}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{taxNumber}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement uuid="ac32cac6-ac75-435c-8659-b36ca7194ec6" x="0" y="0" width="120" height="20" isPrintWhenDetailOverflows="true"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement uuid="f4f1cb2f-eddc-444d-8ba8-933d5b7f4573" x="134" y="0" width="170" height="20" isPrintWhenDetailOverflows="true"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="23"/>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[$F{docName}]]></groupExpression>
+		<groupHeader>
+			<band height="26">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Group1" pattern="">
+					<reportElement uuid="34b733a8-a3fe-4750-8790-0fb2d692eeb2" x="-1" y="0" width="154" height="21" isPrintWhenDetailOverflows="true"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{docName1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="23"/>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="23">
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="7968b17d-547d-433f-8f1a-712f2cbda3bd" x="120" y="0" width="121" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="d782f1b1-65a7-4891-be1d-21074a54b5ed" x="250" y="1" width="280" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{accDescr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="a1ed4262-889b-4f05-aac5-f5a1ba640bf5" key="" x="540" y="0" width="70" height="20" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO)>0)]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="a39075d0-583e-4a3d-9664-b0a647e306e6" key="" x="620" y="0" width="70" height="20" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO )<0)]]></printWhenExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement uuid="bc80aa80-70aa-4adc-8b6d-d4be73b6fc4b" x="0" y="0" width="110" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

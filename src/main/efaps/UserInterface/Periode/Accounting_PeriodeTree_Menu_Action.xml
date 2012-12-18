@@ -44,6 +44,7 @@
             <child>Accounting_PeriodeTree_Menu_Action_ExternalVoucherJournal</child>
             <child>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</child>
             <child>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</child>
+            <child>Accounting_PeriodeTree_Menu_Action_DocTransactions</child>
         </childs>
     </definition>
 
