@@ -118,14 +118,23 @@ public abstract class Create_Base
     public Return create4External(final Parameter _parameter)
         throws EFapsException
     {
-        final String descr = _parameter.getParameterValue("number") + " - "
-                            + _parameter.getParameterValue("description");
-        final Instance instance = createBaseTrans(_parameter, descr);
-
         Instance docInst = Instance.get(_parameter.getParameterValue("document"));
+        String descr = "";
         if (!docInst.isValid()) {
             docInst = _parameter.getInstance();
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CIAccounting.ExternalVoucher.Revision);
+            print.execute();
+            final String revision = print.<String>getAttribute(CIAccounting.ExternalVoucher.Revision);
+            if (revision != null) {
+                descr = revision + " - ";
+            }
+
         }
+        descr = descr  + _parameter.getParameterValue("description");
+
+        final Instance instance = createBaseTrans(_parameter, descr);
+
 
         if (docInst != null && docInst.isValid()) {
             // create classifications
