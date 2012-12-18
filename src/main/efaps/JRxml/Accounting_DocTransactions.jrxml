@@ -55,7 +55,7 @@
 		<groupExpression><![CDATA[$F{docName}]]></groupExpression>
 		<groupHeader>
 			<band height="26">
-				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Group1" pattern="">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Group2" pattern="">
 					<reportElement uuid="34b733a8-a3fe-4750-8790-0fb2d692eeb2" x="-1" y="0" width="154" height="21" isPrintWhenDetailOverflows="true"/>
 					<textElement/>
 					<textFieldExpression><![CDATA[$V{docName1}]]></textFieldExpression>
