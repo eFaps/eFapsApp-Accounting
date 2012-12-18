@@ -127,6 +127,7 @@ public abstract class JournalDataSource_Base
             queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
             queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
             queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
+            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Description);
 
             if (getParameter().getInstance().isValid()
                             && getParameter().getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
