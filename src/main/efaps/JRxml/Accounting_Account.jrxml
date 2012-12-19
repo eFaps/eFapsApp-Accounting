@@ -73,7 +73,8 @@
 	<sortField name="account"/>
 	<sortField name="transdate"/>
 	<sortField name="name"/>
-	<variable name="sum" class="java.math.BigDecimal" calculation="Sum">
+	<sortField name="transaction"/>
+	<variable name="sum" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
@@ -83,11 +84,11 @@
 	<variable name="credit" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[($F{amount}.signum()==-1) ? $F{amount}.abs() : java.math.BigDecimal.ZERO]]></variableExpression>
 	</variable>
-	<variable name="sumDebit" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="sumDebit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
-	<variable name="sumCredit" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="sumCredit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
@@ -113,19 +114,19 @@
 ? $F{rateAmount}.multiply( $V{rate}) 
  : java.math.BigDecimal.ZERO]]></variableExpression>
 	</variable>
-	<variable name="sumRateDebit" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="sumRateDebit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}.signum()==1
 ? ($V{isApplyRate} ? $V{rateDebit} : $F{rateAmount}.abs())
 : null]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
-	<variable name="sumRateCredit" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="sumRateCredit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[$F{amount}.signum()==-1
 ? ($V{isApplyRate} ? $V{rateCredit} : $F{rateAmount}.abs())
 : null]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
-	<variable name="sumRate" class="java.math.BigDecimal" calculation="Sum">
+	<variable name="sumRate" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
 		<variableExpression><![CDATA[$V{isApplyRate}
 ? $V{rateDebit}.add( $V{rateCredit} )
 : $F{rateAmount}]]></variableExpression>
@@ -262,7 +263,7 @@
 		<groupFooter>
 			<band height="27">
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement uuid="c58de131-8ab6-4f85-b08c-1404e190cf47" style="TableRow" stretchType="RelativeToBandHeight" x="494" y="0" width="56" height="20"/>
+					<reportElement uuid="c58de131-8ab6-4f85-b08c-1404e190cf47" style="TableRow" stretchType="RelativeToBandHeight" x="494" y="0" width="56" height="20" isPrintWhenDetailOverflows="true"/>
 					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 						<leftPen lineWidth="1.0"/>
 						<bottomPen lineWidth="1.0"/>
@@ -274,7 +275,7 @@
 					<textFieldExpression><![CDATA[$V{sum}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement uuid="188efb4a-86fb-4ded-896a-deabc7832c27" style="TableRow" stretchType="RelativeToBandHeight" x="438" y="0" width="56" height="20"/>
+					<reportElement uuid="188efb4a-86fb-4ded-896a-deabc7832c27" style="TableRow" stretchType="RelativeToBandHeight" x="438" y="0" width="56" height="20" isPrintWhenDetailOverflows="true"/>
 					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
@@ -282,7 +283,7 @@
 					<textFieldExpression><![CDATA[$V{sumCredit}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement uuid="6fce4b89-ebdf-4adc-8093-49d1dd7a7922" style="TableRow" stretchType="RelativeToBandHeight" x="382" y="0" width="56" height="20"/>
+					<reportElement uuid="6fce4b89-ebdf-4adc-8093-49d1dd7a7922" style="TableRow" stretchType="RelativeToBandHeight" x="382" y="0" width="56" height="20" isPrintWhenDetailOverflows="true"/>
 					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
@@ -363,14 +364,14 @@
 	<detail>
 		<band height="16" splitType="Stretch">
 			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
-				<reportElement uuid="e837e4fe-2633-4f4d-8093-6082cf78e2b9" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="60" height="16"/>
+				<reportElement uuid="e837e4fe-2633-4f4d-8093-6082cf78e2b9" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="60" height="16" isPrintWhenDetailOverflows="true"/>
 				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transdate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="c89d825a-464c-4057-9269-b08771399945" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="438" y="0" width="56" height="16"/>
+				<reportElement uuid="c89d825a-464c-4057-9269-b08771399945" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="438" y="0" width="56" height="16" isPrintWhenDetailOverflows="true"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="0.0"/>
 				</box>
@@ -390,14 +391,14 @@
 				<textFieldExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="7a6d0ee3-0fc5-4978-9f01-190235abcb0b" style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="110" y="0" width="272" height="16"/>
+				<reportElement uuid="7a6d0ee3-0fc5-4978-9f01-190235abcb0b" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="110" y="0" width="272" height="16" isPrintWhenDetailOverflows="true"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{transaction}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="6a5f7c80-c938-4c63-bff6-108e43959cc1" style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="494" y="0" width="56" height="16"/>
+				<reportElement uuid="6a5f7c80-c938-4c63-bff6-108e43959cc1" style="TableRow" stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" mode="Transparent" x="494" y="0" width="56" height="16" isPrintWhenDetailOverflows="true"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -407,7 +408,7 @@
 				<textFieldExpression><![CDATA[$V{sum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement uuid="289bf637-1b53-4d67-b0e2-ec571db3370e" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="60" y="0" width="50" height="16"/>
+				<reportElement uuid="289bf637-1b53-4d67-b0e2-ec571db3370e" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="60" y="0" width="50" height="16" isPrintWhenDetailOverflows="true"/>
 				<box rightPadding="2"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
@@ -415,7 +416,7 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="c226f8e7-d813-4560-8e8a-25900c51587f" stretchType="RelativeToBandHeight" x="550" y="0" width="56" height="16" isPrintWhenDetailOverflows="true">
+				<reportElement uuid="c226f8e7-d813-4560-8e8a-25900c51587f" key="" stretchType="RelativeToBandHeight" x="550" y="0" width="56" height="16" isPrintWhenDetailOverflows="true">
 					<printWhenExpression><![CDATA[new Boolean($P{TargetCurrencyId}!=null)]]></printWhenExpression>
 				</reportElement>
 				<box rightPadding="2">

@@ -23,8 +23,10 @@ package org.efaps.esjp.accounting.report;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
@@ -88,12 +90,14 @@ public abstract class AccountDataSource_Base
             _jrParameters.put("FileName", name);
         } else {
             final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("selectedOIDs");
+            final Set<Instance>instSet = new LinkedHashSet<Instance>();
             for (final String oid : oids) {
                 final Instance instancetmp = Instance.get(oid);
                 if (instancetmp.isValid()) {
-                    instances.addAll(getAccountInstances(_parameter, instancetmp));
+                    instSet.addAll(getAccountInstances(_parameter, instancetmp));
                 }
             }
+            instances.addAll(instSet);
         }
         final List<Instance> posInstances = new ArrayList<Instance>();
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
@@ -141,11 +145,11 @@ public abstract class AccountDataSource_Base
         }
     }
 
-    protected List<Instance> getAccountInstances(final Parameter _parameter,
+    protected Set<Instance> getAccountInstances(final Parameter _parameter,
                                                  final Instance _instance)
         throws EFapsException
     {
-        final List<Instance> ret = new ArrayList<Instance>();
+        final Set<Instance> ret = new LinkedHashSet<Instance>();
         final PrintQuery print = new PrintQuery(_instance);
         print.addAttribute(CIAccounting.AccountAbstract.Summary);
         print.execute();
