@@ -20,7 +20,9 @@
 
 package org.efaps.esjp.accounting.report;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -38,8 +41,12 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.Rate;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -86,15 +93,27 @@ public abstract class AccountDataSource_Base
                 if (instancetmp.isValid()) {
                     instances.addAll(getAccountInstances(_parameter, instancetmp));
                 }
-
             }
         }
         final List<Instance> posInstances = new ArrayList<Instance>();
-            for (final Instance accInst : instances) {
-
-            final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-            final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
-
+        final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
+        final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+        final Map<DateTime, BigDecimal> rates = new HashMap<DateTime, BigDecimal>();
+        _jrParameters.put("Rates", rates);
+        if ("true".equalsIgnoreCase(_parameter.getParameterValue("filterActive"))) {
+            final Instance curr = Instance.get(CIERP.Currency.getType(),
+                            Long.valueOf(_parameter.getParameterValue("currency")));
+            if (curr.isValid()) {
+                final CurrencyInst curInst = new CurrencyInst(curr);
+                _jrParameters.put("TargetCurrencyId", curr.getId());
+                _jrParameters.put("TargetCurrencyLabel", curInst.getName());
+                final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+                rates.putAll(getRates4DateRange(curInst.getInstance(), dateFrom, dateTo, rateCurType));
+            }
+        } else {
+            _jrParameters.put("TargetCurrencyId", null);
+        }
+        for (final Instance accInst : instances) {
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
             attrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
             attrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
@@ -143,4 +162,42 @@ public abstract class AccountDataSource_Base
         }
         return ret;
     }
+
+    protected Map<DateTime, BigDecimal> getRates4DateRange(final Instance _curInst,
+                                                           final DateTime _from,
+                                                           final DateTime _to,
+                                                           final Long _rateCurType)
+        throws EFapsException
+    {
+        final Map<DateTime, BigDecimal> map = new HashMap<DateTime, BigDecimal>();
+        DateTime fromAux = _from;
+        Rate rate;
+        while (fromAux.isBefore(_to)) {
+            final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
+            queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
+            queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, fromAux.minusMinutes(1));
+            queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, fromAux.plusMinutes(1));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder valSel = new SelectBuilder()
+                            .attribute(CIERP.CurrencyRateAbstract.Rate).value();
+            final SelectBuilder labSel = new SelectBuilder()
+                            .attribute(CIERP.CurrencyRateAbstract.Rate).label();
+            final SelectBuilder curSel = new SelectBuilder()
+                            .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
+            multi.addSelect(valSel, labSel, curSel);
+            multi.execute();
+            if (multi.next()) {
+                rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
+                                multi.<BigDecimal>getSelect(valSel),
+                                multi.<BigDecimal>getSelect(labSel));
+            } else {
+                rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
+                                _curInst.getId())), BigDecimal.ONE);
+            }
+            map.put(fromAux, rate.getValue());
+            fromAux = fromAux.plusDays(1);
+        }
+        return map;
+    }
+
 }

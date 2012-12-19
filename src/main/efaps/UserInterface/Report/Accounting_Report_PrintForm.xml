@@ -68,5 +68,41 @@
                 name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"></trigger>
         </field>
+        <field name="filterHeading" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_Document_ReportForm.filterHeading.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="filterActive">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Document_ReportForm.filterActive.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Accounting_Report_PrintForm.filterActive.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="checked">false</property>
+            </trigger>
+        </field>
+        <field name="currency">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Document_ReportForm.currency.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="rateCurrencyFieldValueUI"
+                name="Accounting_Report_PrintForm.currency.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="rateCurrencyType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Document_ReportForm.currencyType.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getTypeDropDownFieldValue"
+                name="Accounting_Report_PrintForm.forTypeId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Types">ERP_CurrencyRateAbstract</property>
+                <property name="IncludeAbstract">false</property>
+            </trigger>
+        </field>
+
+
     </definition>
 </ui-form>
