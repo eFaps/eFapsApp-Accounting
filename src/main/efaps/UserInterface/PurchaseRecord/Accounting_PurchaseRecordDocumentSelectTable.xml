@@ -36,6 +36,16 @@
             <property name="Attribute">Name</property>
             <property name="Label">ERP_DocumentAbstract/Name.Label</property>
         </field>
+        <field name="revision">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">Revision</property>
+            <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
+        </field>
+        <field name="contact">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">ERP_DocumentAbstract/Contact.Label</property>
+        </field>
         <field name="date">
             <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Date</property>
