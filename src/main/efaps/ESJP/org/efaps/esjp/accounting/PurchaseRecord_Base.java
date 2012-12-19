@@ -1,5 +1,6 @@
 package org.efaps.esjp.accounting;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
@@ -9,6 +10,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -18,6 +20,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /*
  * Copyright 2003 - 2012 The eFaps Team
@@ -107,6 +110,27 @@ public abstract class PurchaseRecord_Base
                     update.add(CIAccounting.PurchaseRecord2Document.TypeLink, typeLinkId);
                     update.executeWithoutTrigger();
                 }
+            }
+
+            final QueryBuilder docAttrBldr = new QueryBuilder(CISales.Payment);
+            docAttrBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInst.getId());
+            final AttributeQuery attrQuery = docAttrBldr.getAttributeQuery(CISales.Payment.TargetDocument);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
+            queryBldr.addWhereAttrInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.PaymentDetractionOut.Date, CISales.PaymentDetractionOut.Name,
+                            CISales.PaymentDetractionOut.Amount);
+            multi.executeWithoutAccessCheck();
+            if (multi.next()) {
+                final DateTime date = multi.<DateTime>getAttribute(CISales.PaymentDetractionOut.Date);
+                final String name = multi.<String>getAttribute(CISales.PaymentDetractionOut.Name);
+                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.PaymentDetractionOut.Amount);
+                final Update update = new Update(instance);
+                update.add(CIAccounting.PurchaseRecord2Document.DetractionName, name);
+                update.add(CIAccounting.PurchaseRecord2Document.DetractionDate, date);
+                update.add(CIAccounting.PurchaseRecord2Document.DetractionAmount, amount);
+                update.executeWithoutTrigger();
             }
         }
         return new Return();
