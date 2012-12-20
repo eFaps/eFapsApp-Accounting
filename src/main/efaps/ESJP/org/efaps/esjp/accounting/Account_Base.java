@@ -55,6 +55,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -237,9 +238,9 @@ public abstract class Account_Base
                 final String oid = print.<String>getSelect(oidStr);
                 final String choice = name + " - " + description;
                 final Map<String, String> map = new HashMap<String, String>();
-                map.put("eFapsAutoCompleteKEY", oid);
-                map.put("eFapsAutoCompleteVALUE", name);
-                map.put("eFapsAutoCompleteCHOICE", choice);
+                map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey() , oid);
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
                 map.put("description" + (postfix.equals("") ? "" : "_" + postfix), description);
                 orderMap.put(choice, map);
             }

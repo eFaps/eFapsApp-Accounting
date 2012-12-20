@@ -37,6 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_Account2CaseTree_Menu_Action_Edit</child>
+            <child>Accounting_Account2CaseTree_Menu_Action_EditAccount</child>
         </childs>
     </definition>
 

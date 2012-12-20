@@ -38,16 +38,15 @@
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_Account2CaseAbstract/Type.Label</property>
+             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="numerator">
             <property name="Attribute">Numerator</property>
             <property name="Label">Accounting_Account2CaseAbstract/Numerator.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="denominator">
             <property name="Attribute">Denominator</property>
             <property name="Label">Accounting_Account2CaseAbstract/Denominator.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="default">
             <property name="Attribute">Default</property>

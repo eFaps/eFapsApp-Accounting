@@ -22,6 +22,7 @@
 package org.efaps.esjp.accounting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,8 +41,13 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 
 /**
@@ -189,5 +195,61 @@ public abstract class Case_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    /**
+     * AutoComplete for Accounts.
+     * @param _parameter Paremeter as passed from the eFaPS API
+     * @return return
+     * @throws EFapsException on error
+     */
+    public Return autoComplete4Account(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        if (input.length() > 0) {
+            final QueryBuilder queryBldrPer = new QueryBuilder(CIAccounting.Periode);
+            queryBldrPer.addWhereAttrGreaterValue(CIAccounting.Periode.ToDate, new DateTime());
+            queryBldrPer.addWhereAttrLessValue(CIAccounting.Periode.FromDate, new DateTime());
+            final InstanceQuery query = queryBldrPer.getQuery();
+            query.execute();
+            if (query.next()) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                query.getCurrentValue().getId());
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Summary, false);
+                final boolean nameSearch = Character.isDigit(input.charAt(0));
+                if (nameSearch) {
+                    queryBldr.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Name, input + "*")
+                                    .setIgnoreCase(true);
+                } else {
+                    queryBldr.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Description, input + "*")
+                                    .setIgnoreCase(true);
+                }
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
+                multi.addAttribute(key);
+                multi.execute();
+                while (multi.next()) {
+                    final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
+                    final String descr = multi.<String>getAttribute(CIAccounting.AccountAbstract.Description);
+                    final String keyVal = multi.getAttribute(key).toString();
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), keyVal);
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + " - " + descr);
+                    tmpMap.put(name, map);
+                }
+            }
+        }
+        final Return retVal = new Return();
+        list.addAll(tmpMap.values());
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
     }
 }
