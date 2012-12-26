@@ -210,7 +210,7 @@ public abstract class FieldUpdate_Base
             final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
                             Transaction_Base.PERIODE_SESSIONKEY);
 
-            final Rate rate = getExchangeRate(periodeInstance, Long.parseLong(currIds[pos]), date, null);
+            final Rate rate = getExchangeRate(_parameter, periodeInstance, Long.parseLong(currIds[pos]), date, null);
             final BigDecimal sum = getSum(_parameter, postfix, pos, null, rate.getValue());
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
             final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
@@ -478,7 +478,7 @@ public abstract class FieldUpdate_Base
         if (currIds != null) {
             for (int i = 0; i < currIds.length; i++) {
                 final Long id = Long.parseLong(currIds[i]);
-                final Rate rate = getExchangeRate(periodeInstance, id, date, curr2Rate);
+                final Rate rate = getExchangeRate(_parameter, periodeInstance, id, date, curr2Rate);
                 ret.append("document.getElementsByName('").append(_targetFieldName).append("')[").append(i)
                     .append("].value='").append(rate.getLabel()).append("';")
                     .append("document.getElementsByName('").append(_targetFieldName).append(RateUI.INVERTEDSUFFIX)

@@ -317,7 +317,8 @@ public abstract class Transaction_Base
      * @return rate
      * @throws EFapsException on error
      */
-    protected Rate getExchangeRate(final Instance _periodeInst,
+    protected Rate getExchangeRate(final Parameter _parameter,
+                                   final Instance _periodeInst,
                                    final long _currId,
                                    final DateTime _date,
                                    final Map<Long, Rate> _curr2Rate)
@@ -331,7 +332,7 @@ public abstract class Transaction_Base
             if (curInstance.getInstance().getId() == _currId) {
                 ret = new Rate(curInstance, BigDecimal.ONE);
             } else {
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ERP_CurrencyRateAccounting);
+                final QueryBuilder queryBldr = new QueryBuilder(getType4RateCurrency(_parameter));
                 queryBldr.addWhereAttrEqValue(CIAccounting.ERP_CurrencyRateAccounting.CurrencyLink, _currId);
                 queryBldr.addWhereAttrLessValue(CIAccounting.ERP_CurrencyRateAccounting.ValidFrom,
                                 _date.plusMinutes(1));
@@ -359,6 +360,16 @@ public abstract class Transaction_Base
             }
         }
         return ret;
+    }
+
+    protected Type getType4RateCurrency(final Parameter _parameter)
+    {
+        Type type = CIAccounting.ERP_CurrencyRateAccounting.getType();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        if (properties.containsKey("RateCurType")) {
+            type = Type.get((String) properties.get("RateCurType"));
+        }
+        return type;
     }
 
     /**
@@ -811,13 +822,14 @@ public abstract class Transaction_Base
             final String dateStr = _parameter.getParameterValue("date_eFapsDate");
             doc.setDate(DateUtil.getDateFromParameter(dateStr));
 
-            final Rate rate = getExchangeRate(periodeInstance, currId, doc.getDate(), null);
+            final Rate rate = getExchangeRate(_parameter, periodeInstance, currId, doc.getDate(), null);
             doc.setRate(rate);
 
             buildDoc4ExecuteButton(_parameter, doc, rate);
 
             if (doc.getInstance() != null) {
-                doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
+                doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType())
+                                ||doc.getInstance().getType().isKindOf(CISales.CreditNote.getType()));
                 addAccount4BankCash(_parameter, doc);
             }
 

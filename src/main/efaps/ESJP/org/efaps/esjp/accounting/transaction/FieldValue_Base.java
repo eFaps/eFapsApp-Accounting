@@ -481,7 +481,7 @@ public abstract class FieldValue_Base
             final CurrencyInst periodeCurr = new Periode().getCurrency(periode);
             _doc.setRateCurrOID(periodeCurr.getInstance().getOid());
             _doc.setCurrSymbol(periodeCurr.getSymbol());
-            _doc.setRate(getExchangeRate(periode, periodeCurr.getInstance().getId(),
+            _doc.setRate(getExchangeRate(_parameter, periode, periodeCurr.getInstance().getId(),
                             _date == null ? new DateTime() : _date, _rates));
 
             html.append("<table>");
@@ -554,7 +554,7 @@ public abstract class FieldValue_Base
                                         .divide(new BigDecimal(uom.getDenominator())).multiply(price);
                     html.append("<td>").append(getFormater(2, 2).format(price)).append("</td>")
                          .append("<td>").append(currInst.getSymbol()).append("</td>");
-                    final Rate rate = getExchangeRate(periode, currInst.getInstance().getId(),
+                    final Rate rate = getExchangeRate(_parameter, periode, currInst.getInstance().getId(),
                                     _date == null ? new DateTime() : _date, _rates);
                     if (script) {
                         analyzeProduct(_doc, _doc.getCreditAccounts(), prodInst.getOid(), cost, rate,
@@ -625,7 +625,7 @@ public abstract class FieldValue_Base
             final BigDecimal taxAmount = cross.subtract(net).multiply(newRatepos);
             final BigDecimal prodAmount = net.multiply(newRatepos);
             analyzeTax(_doc.getCreditAccounts(), multi.<String>getSelect(taxOisSel), taxAmount);
-            final Rate rate = getExchangeRate(periode, _doc.getRateCurrInst().getId(), _doc.getDate(), _rates);
+            final Rate rate = getExchangeRate(_parameter, periode, _doc.getRateCurrInst().getId(), _doc.getDate(), _rates);
             analyzeProduct(_doc, _doc.getCreditAccounts(), multi.<String>getSelect(prodOidSel), prodAmount, rate,
                            CIAccounting.AccountIncomeStatementRevenue2ProductClass,
                            CIAccounting.AccountIncomeStatementRevenue);
