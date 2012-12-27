@@ -41,6 +41,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -75,9 +76,36 @@ public abstract class DocTransactionsSource_Base
     {
         final Instance instance = _parameter.getInstance();
 
+        final DateTime dateFrom = new DateTime(
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_DocTransactionsForm.dateFrom.name));
+        final DateTime dateTo = new DateTime(
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_DocTransactionsForm.dateTo.name));
+        _jrParameters.put("FromDate", dateFrom.toDate());
+        _jrParameters.put("ToDate", dateTo.toDate());
+        _jrParameters.put("Mime", _parameter.getParameterValue("mime"));
+
+        final boolean filter = "true".equalsIgnoreCase(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_DocTransactionsForm.filterActive.name));
+
+        final Instance contactInst = Instance.get(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_DocTransactionsForm.contact.name));
+
+        // filter the documents by the given dates
+        final QueryBuilder docAttrQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+        docAttrQueryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
+        docAttrQueryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusSeconds(1));
+        if (filter && contactInst.isValid()) {
+            docAttrQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInst.getId());
+        }
+
+        final AttributeQuery docAttrQuery = docAttrQueryBldr.getAttributeQuery(CIERP.DocumentAbstract.ID);
+
+        // filter the transaction by the classification
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+        attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassDocument.DocumentLink, docAttrQuery);
         final AttributeQuery attrQuery =
                         attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+
         final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Transaction);
         queryBuilder.addWhereAttrInQuery(CIAccounting.Transaction.ID, attrQuery);
         queryBuilder.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
@@ -86,31 +114,40 @@ public abstract class DocTransactionsSource_Base
         final SelectBuilder selDoc = new SelectBuilder().clazz(CIAccounting.TransactionClassDocument)
                         .linkto(CIAccounting.TransactionClassDocument.DocumentLink);
         final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
+        final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
+        final SelectBuilder selDocType = new SelectBuilder(selDoc).type().label();
         final SelectBuilder selDocContactName = new SelectBuilder(selDoc).linkto(CIERP.DocumentAbstract.Contact)
                         .attribute(CIContacts.Contact.Name);
         final SelectBuilder selDocContactTaxNumber = new SelectBuilder(selDoc).linkto(CIERP.DocumentAbstract.Contact)
                         .clazz(CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
-        multi.addSelect(selDocName, selDocContactName, selDocContactTaxNumber);
+        multi.addSelect(selDocName, selDocContactName, selDocContactTaxNumber, selDocType, selDocDate);
         multi.addAttribute(CIAccounting.Transaction.Date);
         multi.execute();
         while (multi.next()) {
+            final String docType = multi.<String>getSelect(selDocType);
             final String docName = multi.<String>getSelect(selDocName);
+            final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
             final String contactName = multi.<String>getSelect(selDocContactName);
             final String taxNumber = multi.<String>getSelect(selDocContactTaxNumber);
             final DateTime date = multi.<DateTime>getAttribute(CIAccounting.Transaction.Date);
 
             final QueryBuilder posQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-            posQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.TransactionLink, multi.getCurrentInstance().getId());
+            posQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.TransactionLink, multi
+                            .getCurrentInstance().getId());
             final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-            final SelectBuilder selAcc = new SelectBuilder().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
+            final SelectBuilder selAcc = new SelectBuilder()
+                            .linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
             final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
-            final SelectBuilder selAccDesc = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Description);
+            final SelectBuilder selAccDesc = new SelectBuilder(selAcc)
+                            .attribute(CIAccounting.AccountAbstract.Description);
             posMulti.addSelect(selAccName, selAccDesc);
             posMulti.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
             posMulti.execute();
             while (posMulti.next()) {
                 final Map<String, Object> row = new HashMap<String, Object>();
                 row.put("docName", docName);
+                row.put("docType", docType);
+                row.put("docDate", docDate);
                 row.put("contactName", contactName);
                 row.put("taxNumber", taxNumber);
                 row.put("date", date);
@@ -137,8 +174,6 @@ public abstract class DocTransactionsSource_Base
             {
                 return String.valueOf(_arg0.get("docName")).compareTo(String.valueOf(_arg1.get("docName")));
             }});
-
-        System.out.println(getValues());
         Collections.sort(getValues(), chain);
     }
 }
