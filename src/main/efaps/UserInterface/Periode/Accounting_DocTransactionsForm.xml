@@ -67,14 +67,26 @@
                 <property name="checked">false</property>
             </trigger>
        </field>
-        <field name="contact">
+       <field name="contact">
             <property name="Label">Accounting_DocTransactionsForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.erp.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_DocTransactionsForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" />
         </field>
-
+        <field name="debitAccount" character="Set">
+            <property name="Label">Accounting_DocTransactionsForm.debitAccount.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="HideLabel">true</property>
+        </field>
+        <field name="creditAccount" character="Set">
+            <property name="Label">Accounting_DocTransactionsForm.creditAccount.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="HideLabel">true</property>
+        </field>
     </definition>
 </ui-form>

@@ -90,11 +90,16 @@ public abstract class DocTransactionsSource_Base
         final Instance contactInst = Instance.get(_parameter
                         .getParameterValue(CIFormAccounting.Accounting_DocTransactionsForm.contact.name));
 
+        final String[] creditAccount = _parameter
+                        .getParameterValues(CIFormAccounting.Accounting_DocTransactionsForm.creditAccount.name);
+        final String[] debitAccount = _parameter
+                          .getParameterValues(CIFormAccounting.Accounting_DocTransactionsForm.debitAccount.name);
+
         // filter the documents by the given dates
         final QueryBuilder docAttrQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
         docAttrQueryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, dateTo.plusDays(1));
         docAttrQueryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, dateFrom.minusSeconds(1));
-        if (filter && contactInst.isValid()) {
+        if (filter && contactInst.isValid() && contactInst.getType().isKindOf(CIContacts.Contact.getType())) {
             docAttrQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInst.getId());
         }
 
@@ -144,17 +149,23 @@ public abstract class DocTransactionsSource_Base
             posMulti.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
             posMulti.execute();
             while (posMulti.next()) {
-                final Map<String, Object> row = new HashMap<String, Object>();
-                row.put("docName", docName);
-                row.put("docType", docType);
-                row.put("docDate", docDate);
-                row.put("contactName", contactName);
-                row.put("taxNumber", taxNumber);
-                row.put("date", date);
-                row.put("amount", posMulti.getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
-                row.put("accName", posMulti.getSelect(selAccName));
-                row.put("accDescr", posMulti.getSelect(selAccDesc));
-                getValues().add(row);
+                final String accName = posMulti.<String>getSelect(selAccName);
+                if (!filter || (filter && add(accName,posMulti.getCurrentInstance().getType()
+                                                                .isKindOf(CIAccounting.TransactionPositionCredit.getType())
+                                                                    ? creditAccount
+                                                                    : debitAccount))) {
+                    final Map<String, Object> row = new HashMap<String, Object>();
+                    row.put("docName", docName);
+                    row.put("docType", docType);
+                    row.put("docDate", docDate);
+                    row.put("contactName", contactName);
+                    row.put("taxNumber", taxNumber);
+                    row.put("date", date);
+                    row.put("amount", posMulti.getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
+                    row.put("accName", accName);
+                    row.put("accDescr", posMulti.getSelect(selAccDesc));
+                    getValues().add(row);
+                }
             }
         }
         final ComparatorChain chain = new ComparatorChain();
@@ -175,5 +186,20 @@ public abstract class DocTransactionsSource_Base
                 return String.valueOf(_arg0.get("docName")).compareTo(String.valueOf(_arg1.get("docName")));
             }});
         Collections.sort(getValues(), chain);
+    }
+
+
+    protected boolean add(final String _accName,
+                          final String[] _filters) {
+        boolean ret = _filters == null || _filters.length == 0 ? true : false;
+        if (!ret) {
+            for (final String filter : _filters) {
+                ret = _accName.matches(filter.replace("*", ".*"));
+                if (ret) {
+                    break;
+                }
+            }
+        }
+        return ret;
     }
 }
