@@ -185,6 +185,14 @@ public abstract class DocTransactionsSource_Base
             {
                 return String.valueOf(_arg0.get("docName")).compareTo(String.valueOf(_arg1.get("docName")));
             }});
+        chain.addComparator(new Comparator<Map<String, Object>>(){
+
+            @Override
+            public int compare(final Map<String, Object> _arg0,
+                               final Map<String, Object> _arg1)
+            {
+                return String.valueOf(_arg0.get("accName")).compareTo(String.valueOf(_arg1.get("accName")));
+            }});
         Collections.sort(getValues(), chain);
     }
 

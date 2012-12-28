@@ -1,154 +1,176 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_DocTransactions" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="8fedd781-ed62-4261-8288-b05d66276d6c">
-    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
-    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
-    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="UUID" value="e0cd8918-2a65-4ecd-aef4-d655ae10da2c"/>
-    </parameter>
-    <field name="date" class="org.joda.time.DateTime">
-        <property name="Key" value="date"/>
-    </field>
-    <field name="docName" class="java.lang.String">
-        <property name="Key" value="docName"/>
-    </field>
-    <field name="contactName" class="java.lang.String">
-        <property name="Key" value="contactName"/>
-    </field>
-    <field name="taxNumber" class="java.lang.String">
-        <property name="Key" value="taxNumber"/>
-    </field>
-    <field name="amount" class="java.math.BigDecimal">
-        <property name="Key" value="amount"/>
-    </field>
-    <field name="accName" class="java.lang.String">
-        <property name="Key" value="accName"/>
-    </field>
-    <field name="accDescr" class="java.lang.String">
-        <property name="Key" value="accDescr"/>
-    </field>
-    <variable name="docName1" class="java.lang.String" resetType="Group" resetGroup="Group2">
-        <variableExpression><![CDATA[$F{docName}]]></variableExpression>
-    </variable>
-    <variable name="amountDebit2" class="java.math.BigDecimal" resetType="Group" resetGroup="Group2" calculation="Sum">
-        <variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) < 0
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="e0cd8918-2a65-4ecd-aef4-d655ae10da2c"/>
+	</parameter>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Key" value="date"/>
+	</field>
+	<field name="docType" class="java.lang.String">
+		<property name="Key" value="docType"/>
+	</field>
+	<field name="docName" class="java.lang.String">
+		<property name="Key" value="docName"/>
+	</field>
+	<field name="docDate" class="org.joda.time.DateTime">
+		<property name="Key" value="docDate"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Key" value="contactName"/>
+	</field>
+	<field name="taxNumber" class="java.lang.String">
+		<property name="Key" value="taxNumber"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="Key" value="amount"/>
+	</field>
+	<field name="accName" class="java.lang.String">
+		<property name="Key" value="accName"/>
+	</field>
+	<field name="accDescr" class="java.lang.String">
+		<property name="Key" value="accDescr"/>
+	</field>
+	<variable name="docType1" class="java.lang.String" resetType="Group" resetGroup="Group2">
+		<variableExpression><![CDATA[$F{docType}]]></variableExpression>
+	</variable>
+	<variable name="docName1" class="java.lang.String" resetType="Group" resetGroup="Group2">
+		<variableExpression><![CDATA[$F{docName}]]></variableExpression>
+	</variable>
+	<variable name="docDate1" class="org.joda.time.DateTime" resetType="Group" resetGroup="Group2">
+		<variableExpression><![CDATA[$F{docDate}]]></variableExpression>
+	</variable>
+	<variable name="amountDebit2" class="java.math.BigDecimal" resetType="Group" resetGroup="Group2" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) < 0
 ? $F{amount}.abs()
 : java.math.BigDecimal.ZERO]]></variableExpression>
-    </variable>
-    <variable name="amountDebit1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
-        <variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) < 0
+	</variable>
+	<variable name="amountDebit1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) < 0
 ? $F{amount}.abs()
 : java.math.BigDecimal.ZERO]]></variableExpression>
-    </variable>
-    <variable name="amountCredit2" class="java.math.BigDecimal" resetType="Group" resetGroup="Group2" calculation="Sum">
-        <variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) > 0
+	</variable>
+	<variable name="amountCredit2" class="java.math.BigDecimal" resetType="Group" resetGroup="Group2" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) > 0
 ? $F{amount}.abs()
 : java.math.BigDecimal.ZERO]]></variableExpression>
-    </variable>
-    <variable name="amountCredit1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
-        <variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) > 0
+	</variable>
+	<variable name="amountCredit1" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}.compareTo( java.math.BigDecimal.ZERO) > 0
 ? $F{amount}.abs()
 : java.math.BigDecimal.ZERO]]></variableExpression>
-    </variable>
-    <group name="Group1">
-        <groupExpression><![CDATA[$F{taxNumber}]]></groupExpression>
-        <groupHeader>
-            <band height="24">
-                <textField isStretchWithOverflow="true" pattern="">
-                    <reportElement uuid="ac32cac6-ac75-435c-8659-b36ca7194ec6" x="0" y="0" width="120" height="20" isPrintWhenDetailOverflows="true"/>
-                    <textElement/>
-                    <textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
-                </textField>
-                <textField isStretchWithOverflow="true" pattern="">
-                    <reportElement uuid="f4f1cb2f-eddc-444d-8ba8-933d5b7f4573" x="134" y="0" width="170" height="20" isPrintWhenDetailOverflows="true"/>
-                    <textElement/>
-                    <textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
-                </textField>
-            </band>
-        </groupHeader>
-        <groupFooter>
-            <band height="25">
-                <textField pattern="0.00">
-                    <reportElement uuid="75bd77f1-09e0-416e-8afa-9a4444632ed0" x="700" y="0" width="70" height="20"/>
-                    <textElement textAlignment="Right"/>
-                    <textFieldExpression><![CDATA[$V{amountCredit1}]]></textFieldExpression>
-                </textField>
-                <textField pattern="0.00">
-                    <reportElement uuid="009b9caf-485a-4657-be94-3a474cb17d4e" x="620" y="0" width="70" height="20"/>
-                    <textElement textAlignment="Right"/>
-                    <textFieldExpression><![CDATA[$V{amountDebit1}]]></textFieldExpression>
-                </textField>
-                <staticText>
-                    <reportElement uuid="11e5c848-b589-4f54-b5b4-de58c4d5bed6" x="0" y="2" width="220" height="20"/>
-                    <textElement/>
-                    <text><![CDATA[Saldo Cliente/Proveedor]]></text>
-                </staticText>
-            </band>
-        </groupFooter>
-    </group>
-    <group name="Group2">
-        <groupExpression><![CDATA[$F{docName}]]></groupExpression>
-        <groupHeader>
-            <band height="26">
-                <textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Group2" pattern="">
-                    <reportElement uuid="34b733a8-a3fe-4750-8790-0fb2d692eeb2" x="-1" y="0" width="154" height="21" isPrintWhenDetailOverflows="true"/>
-                    <textElement/>
-                    <textFieldExpression><![CDATA[$V{docName1}]]></textFieldExpression>
-                </textField>
-            </band>
-        </groupHeader>
-        <groupFooter>
-            <band height="30">
-                <textField pattern="0.00">
-                    <reportElement uuid="fbcdf98c-ac5f-401d-b8a1-fd37f86c1f85" x="620" y="0" width="70" height="20"/>
-                    <textElement textAlignment="Right"/>
-                    <textFieldExpression><![CDATA[$V{amountDebit2}]]></textFieldExpression>
-                </textField>
-                <textField pattern="0.00">
-                    <reportElement uuid="f9d32f3a-18db-450e-86b8-a4999fc12a0b" x="700" y="0" width="70" height="20"/>
-                    <textElement textAlignment="Right"/>
-                    <textFieldExpression><![CDATA[$V{amountCredit2}]]></textFieldExpression>
-                </textField>
-                <staticText>
-                    <reportElement uuid="11e5c848-b589-4f54-b5b4-de58c4d5bed6" x="0" y="0" width="220" height="20"/>
-                    <textElement/>
-                    <text><![CDATA[Saldo Documento]]></text>
-                </staticText>
-            </band>
-        </groupFooter>
-    </group>
-    <detail>
-        <band height="23">
-            <textField isStretchWithOverflow="true" pattern="">
-                <reportElement uuid="7968b17d-547d-433f-8f1a-712f2cbda3bd" x="120" y="0" width="121" height="20" isPrintWhenDetailOverflows="true"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="">
-                <reportElement uuid="d782f1b1-65a7-4891-be1d-21074a54b5ed" x="250" y="1" width="280" height="20" isPrintWhenDetailOverflows="true"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{accDescr}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="0.00">
-                <reportElement uuid="a1ed4262-889b-4f05-aac5-f5a1ba640bf5" key="" x="700" y="0" width="70" height="20" isPrintWhenDetailOverflows="true">
-                    <printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO)>0)]]></printWhenExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[$F{amount}.abs()]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="0.00">
-                <reportElement uuid="a39075d0-583e-4a3d-9664-b0a647e306e6" key="" x="620" y="0" width="70" height="20" isPrintWhenDetailOverflows="true">
-                    <printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO )<0)]]></printWhenExpression>
-                </reportElement>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA[$F{amount}.abs()]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
-                <reportElement uuid="bc80aa80-70aa-4adc-8b6d-d4be73b6fc4b" x="0" y="0" width="110" height="20" isPrintWhenDetailOverflows="true"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{taxNumber}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement uuid="ac32cac6-ac75-435c-8659-b36ca7194ec6" x="100" y="0" width="120" height="20" isPrintWhenDetailOverflows="true"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="">
+					<reportElement uuid="f4f1cb2f-eddc-444d-8ba8-933d5b7f4573" x="260" y="0" width="170" height="20" isPrintWhenDetailOverflows="true"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25">
+				<textField pattern="0.00">
+					<reportElement uuid="75bd77f1-09e0-416e-8afa-9a4444632ed0" x="700" y="0" width="70" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{amountCredit1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="0.00">
+					<reportElement uuid="009b9caf-485a-4657-be94-3a474cb17d4e" x="620" y="0" width="70" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{amountDebit1}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="11e5c848-b589-4f54-b5b4-de58c4d5bed6" x="0" y="2" width="220" height="20"/>
+					<textElement/>
+					<text><![CDATA[Saldo Cliente/Proveedor]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupExpression><![CDATA[$F{docName}]]></groupExpression>
+		<groupHeader>
+			<band height="26">
+				<textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Group2" pattern="">
+					<reportElement uuid="34b733a8-a3fe-4750-8790-0fb2d692eeb2" x="134" y="0" width="154" height="21" isPrintWhenDetailOverflows="true"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{docName1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Group2" pattern="">
+					<reportElement uuid="2b5e5416-f404-4049-9d9f-0bf1e7ae62a1" x="0" y="0" width="120" height="21"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{docType1}]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Group" evaluationGroup="Group2" pattern="dd/MM/yyyy">
+					<reportElement uuid="238bb728-4f79-45c1-88cb-07cae5ff0288" x="320" y="0" width="120" height="21"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$V{docDate1}.toDate()]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="30">
+				<textField pattern="0.00">
+					<reportElement uuid="fbcdf98c-ac5f-401d-b8a1-fd37f86c1f85" x="620" y="0" width="70" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{amountDebit2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="0.00">
+					<reportElement uuid="f9d32f3a-18db-450e-86b8-a4999fc12a0b" x="700" y="0" width="70" height="20"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{amountCredit2}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="11e5c848-b589-4f54-b5b4-de58c4d5bed6" x="0" y="0" width="220" height="20"/>
+					<textElement/>
+					<text><![CDATA[Saldo Documento]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="23">
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="7968b17d-547d-433f-8f1a-712f2cbda3bd" x="120" y="0" width="121" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement uuid="d782f1b1-65a7-4891-be1d-21074a54b5ed" x="250" y="1" width="280" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{accDescr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="0.00">
+				<reportElement uuid="a1ed4262-889b-4f05-aac5-f5a1ba640bf5" key="" x="700" y="0" width="70" height="20" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO)>0)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{amount}.abs()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="0.00">
+				<reportElement uuid="a39075d0-583e-4a3d-9664-b0a647e306e6" key="" x="620" y="0" width="70" height="20" isPrintWhenDetailOverflows="true">
+					<printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO )<0)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{amount}.abs()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement uuid="bc80aa80-70aa-4adc-8b6d-d4be73b6fc4b" x="0" y="0" width="110" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 </jasperReport>
