@@ -47,5 +47,12 @@
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>SalesAccountLink</name>
+            <type>Link</type>
+            <typelink>Sales_AccountAbstract</typelink>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>LINKID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

@@ -37,6 +37,14 @@
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_Periode2Account/Type.Label</property>
             <property name="ModeSearch">READONLY</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="salesAccountLink">
+            <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[SalesAccountLink].oid</property>
+            <property name="Select">linkto[SalesAccountLink].attribute[Name]</property>
+            <property name="Label">Accounting_Periode2Account/SalesAccountLink.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="name">
             <property name="ModeSearch">READONLY</property>
