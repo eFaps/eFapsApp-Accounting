@@ -116,10 +116,13 @@ public abstract class Create_Base
                                     .<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
                     final DateTime d2payDate = multi
                                     .<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+
+                    final boolean incoming = payDocInst.getType().isKindOf(CISales.PaymentDocumentAbstract.getType());
+
                     final Instance salesAccInst = getSalesAcccountInst4Payment(_parameter, multi.getCurrentInstance());
                     final Instance targetAccInst = getTargetAcccountInst4Payment(_parameter, salesAccInst);
 
-                    final Instance sourceAccInst = getSourceAcccountInst4Payment(_parameter, docInst);
+                    final Instance sourceAccInst = getSourceAcccountInst4Payment(_parameter, docInst, incoming);
                     final DateTime dateTmp = useDateForm ? date : d2payDate;
 
                     final Insert insert = new Insert(CIAccounting.Transaction);
@@ -131,9 +134,12 @@ public abstract class Create_Base
                                     .find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                     insert.execute();
 
-                    createDocClass(insert.getInstance(), docInst);
-
-                    createPaymentClass(insert.getInstance(), payDocInst);
+                    if (incoming) {
+                        createDocClass(_parameter, insert.getInstance(), docInst);
+                    } else {
+                        createExternalClass(_parameter, insert.getInstance(), docInst);
+                    }
+                    createPaymentClass(_parameter, insert.getInstance(), payDocInst);
 
                     final Rate rate = new Transaction().getExchangeRate(_parameter, periodeInst, rateCurInst.getId(),
                                     dateTmp, curr2Rate);
@@ -143,7 +149,8 @@ public abstract class Create_Base
 
                     final Insert posInsert = new Insert(CIAccounting.TransactionPositionDebit);
                     posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, insert.getId());
-                    posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, targetAccInst.getId());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink,
+                                    incoming ? targetAccInst.getId() : sourceAccInst.getId());
                     posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance()
                                     .getId());
                     posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getId());
@@ -154,7 +161,8 @@ public abstract class Create_Base
 
                     final Insert posInsert2 = new Insert(CIAccounting.TransactionPositionCredit);
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.TransactionLink, insert.getId());
-                    posInsert2.add(CIAccounting.TransactionPositionAbstract.AccountLink, sourceAccInst.getId());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.AccountLink,
+                                    incoming ? sourceAccInst.getId() : targetAccInst.getId());
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance()
                                     .getId());
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getId());
@@ -283,29 +291,37 @@ public abstract class Create_Base
     /**
      * Get the Source account for a Transaction with PaymentDocument.
      * @param _parameter        Parameter as passe by the eFaps API
-     * @param _docInst          Instance of the PaymentDocument
+     * @param _docInst          Instance of the Document (Invoice etc.)
+     * @param _incoming         is it an incoming or outgoing payment
      * @return Instance of the target account
      * @throws EFapsException on error
      */
     protected Instance getSourceAcccountInst4Payment(final Parameter _parameter,
-                                                     final Instance _docInst)
+                                                     final Instance _docInst,
+                                                     final boolean _incoming)
         throws EFapsException
     {
-
         Instance ret = Instance.get("");
         if (_docInst.isValid()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-            attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
-            final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
-
-            final QueryBuilder posQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionDebit);
-            posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionDebit.TransactionLink, attrQuery);
+            final AttributeQuery attrQuery;
+            if (_incoming) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
+                attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+            } else {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
+                attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassExternal.DocumentLink, _docInst.getId());
+                attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassExternal.TransactionLink);
+            }
+            final QueryBuilder posQueryBldr = new QueryBuilder(_incoming ? CIAccounting.TransactionPositionDebit
+                            : CIAccounting.TransactionPositionCredit);
+            posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
             final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-            final SelectBuilder accSel = new SelectBuilder().linkto(CIAccounting.TransactionPositionDebit.AccountLink)
+            final SelectBuilder accSel = new SelectBuilder().linkto(
+                            CIAccounting.TransactionPositionAbstract.AccountLink)
                             .oid();
             final SelectBuilder dateSel = new SelectBuilder().linkto(
-                            CIAccounting.TransactionPositionDebit.TransactionLink)
+                            CIAccounting.TransactionPositionAbstract.TransactionLink)
                             .attribute(CIAccounting.Transaction.Date);
             posMulti.addSelect(accSel, dateSel);
             posMulti.execute();
@@ -424,14 +440,50 @@ public abstract class Create_Base
         return new Return();
     }
 
-
     /**
      * Create the classifcation.
+     * @param _parameter Parameter as passed from the eFaps API
      * @param _transInst    Transaction Instance
      * @param _docInst      Document instance
      * @throws EFapsException on error
      */
-    protected void createPaymentClass(final Instance _transInst,
+    protected void createExternalClass(final Parameter _parameter,
+                                       final Instance _transInst,
+                                       final Instance _exdocInst)
+        throws EFapsException
+    {
+     // create classifications
+        final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
+        final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
+        relInsert1.add(classification1.getRelLinkAttributeName(), _transInst.getId());
+        relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
+        relInsert1.execute();
+
+        final Insert classInsert1 = new Insert(classification1);
+        classInsert1.add(classification1.getLinkAttributeName(), _transInst.getId());
+        classInsert1.execute();
+
+        final Classification classification = (Classification) CIAccounting.TransactionClassExternal.getType();
+        final Insert relInsert = new Insert(classification.getClassifyRelationType());
+        relInsert.add(classification.getRelLinkAttributeName(), _transInst.getId());
+        relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
+        relInsert.execute();
+
+        final Insert classInsert = new Insert(CIAccounting.TransactionClassExternal);
+        classInsert.add(classification.getLinkAttributeName(), _transInst.getId());
+        classInsert.add(CIAccounting.TransactionClassExternal.DocumentLink, _exdocInst.getId());
+        classInsert.execute();
+    }
+
+    /**
+     * Create the classifcation.
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _transInst    Transaction Instance
+     * @param _docInst      Document instance
+     * @throws EFapsException on error
+     */
+    protected void createPaymentClass(final Parameter _parameter,
+                                      final Instance _transInst,
                                       final Instance _payDocInst)
         throws EFapsException
     {
@@ -462,11 +514,13 @@ public abstract class Create_Base
 
     /**
      * Create the classifcation.
+     * @param _parameter Parameter as passed from the eFaps API
      * @param _transInst    Transaction Instance
      * @param _docInst      Document instance
      * @throws EFapsException on error
      */
-    protected void createDocClass(final Instance _transInst,
+    protected void createDocClass(final Parameter _parameter,
+                                  final Instance _transInst,
                                   final Instance _docInst)
         throws EFapsException
     {
@@ -506,7 +560,7 @@ public abstract class Create_Base
 
         final Instance instance = createBaseTrans(_parameter, _parameter.getParameterValue("description"));
         final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-        createDocClass(instance, docInst);
+        createDocClass(_parameter, instance, docInst);
 
         final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
 
@@ -968,7 +1022,7 @@ public abstract class Create_Base
                 for (final TargetAccount account : doc.getDebitAccounts().values()) {
                     insertPosition4Massiv(doc, transInst, CIAccounting.TransactionPositionDebit, account);
                 }
-                createDocClass(transInst, docInst);
+                createDocClass(_parameter, transInst, docInst);
             }
         }
         return new Return();
