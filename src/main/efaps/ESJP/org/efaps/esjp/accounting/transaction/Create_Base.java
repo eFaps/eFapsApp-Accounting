@@ -125,8 +125,8 @@ public abstract class Create_Base
                     final Insert insert = new Insert(CIAccounting.Transaction);
                     insert.add(CIAccounting.Transaction.PeriodeLink, periodeInst.getId());
                     insert.add(CIAccounting.Transaction.Date, dateTmp);
-                    insert.add(CIAccounting.Transaction.Description, dateTmp);
-                    insert.add(CIAccounting.Transaction.Description, "Tes");
+                    insert.add(CIAccounting.Transaction.Description,
+                                    getDescription4Payment(_parameter, multi.getCurrentInstance()));
                     insert.add(CIAccounting.Transaction.Status, Status
                                     .find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                     insert.execute();
@@ -168,6 +168,43 @@ public abstract class Create_Base
         }
         return new Return();
     }
+
+    /**
+     * Get the description for the Payment Transaction.
+     *
+     * @param _parameter        Parameter as passe by the eFaps API
+     * @param _doc2payDocInst   Instance
+     * @return label
+     * @throws EFapsException on erro
+     */
+    protected String getDescription4Payment(final Parameter _parameter,
+                                            final Instance _doc2payDocInst)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_doc2payDocInst);
+        final SelectBuilder selPayDocType = new SelectBuilder()
+                        .linkto(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
+                        .type().label();
+        final SelectBuilder selPayDocName = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.ToAbstractLink)
+                        .attribute(CIERP.PaymentDocumentAbstract.Name);
+        final SelectBuilder selDocType = new SelectBuilder()
+                        .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
+                        .type().label();
+        final SelectBuilder selDocName = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
+                        .attribute(CIERP.PaymentDocumentAbstract.Name);
+        print.addSelect(selPayDocType, selPayDocName, selDocType, selDocName);
+        print.execute();
+
+        final String payDocType = print.<String>getSelect(selPayDocType);
+        final String payDocName = print.<String>getSelect(selPayDocName);
+        final String docType = print.<String>getSelect(selDocType);
+        final String docName = print.<String>getSelect(selDocName);
+
+        return payDocType + " " + payDocName + " - " + docType + " " + docName;
+    }
+
 
     /**
      * Set the Status to booked for a PaymentDocument
