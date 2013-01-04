@@ -22,12 +22,16 @@ package org.efaps.esjp.accounting;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -516,22 +520,39 @@ public abstract class Periode_Base
 
     protected Object[] getStati4Payment(final Parameter _parameter)
     {
-        final List<Long> stati = new ArrayList<Long>();
-        final Status status = Status.find(CISales.PaymentCashOutStatus.uuid, "Open");
-        if (status != null) {
-            stati.add(status.getId());
+        final List<Long> statuses = new ArrayList<Long>();
+        final Set<Type> types = getTypeList(_parameter, CISales.PaymentDocumentIOAbstract.getType());
+        for (final Type type : types) {
+            if (!type.isAbstract()) {
+                final StatusGroup statusGroup = Status.get(type.getStatusAttribute().getLink().getName());
+                for (final Entry <String, Status> entry: statusGroup.entrySet()) {
+                    if (!"Booked".equals(entry.getKey()) && !"Canceled".equals(entry.getKey())) {
+                        statuses.add(entry.getValue().getId());
+                    }
+                }
+            }
         }
-        final Status status2 = Status.find(CISales.PaymentDepositStatus.uuid, "Open");
-        if (status2 != null) {
-            stati.add(status2.getId());
-        }
-        final Status status3 = Status.find(CISales.PaymentDepositStatus.uuid, "Closed");
-        if (status3 != null) {
-            stati.add(status3.getId());
-        }
-        return stati.toArray();
+        return statuses.toArray();
     }
 
+
+    /**
+     * Recursive method to get a Type with his children and children children
+     * as a simple set.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _type         Type type
+     * @return set of types
+     */
+    protected Set<Type> getTypeList(final Parameter _parameter,
+                                    final Type _type)
+    {
+        final Set<Type> ret = new HashSet<Type>();
+        ret.add(_type);
+        for (final Type child : _type.getChildTypes()) {
+            ret.addAll(getTypeList(_parameter, child));
+        }
+        return ret;
+    }
 
 
     /**
