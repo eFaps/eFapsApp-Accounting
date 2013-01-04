@@ -38,6 +38,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -51,6 +52,7 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.TargetAccount;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -69,6 +71,169 @@ import org.joda.time.DateTime;
 public abstract class Create_Base
     extends Create
 {
+
+
+
+    public Return create4Payment(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance periodeInst = _parameter.getCallInstance();
+        final DateTime date = new DateTime(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.date.name));
+        final boolean useDateForm = Boolean.parseBoolean(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.useDate.name));
+        final String[] oidsPay = (String[]) Context.getThreadContext()
+                        .getSessionAttribute(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.document.name);
+        final Map<Long, Rate> curr2Rate = new HashMap<Long, Rate>();
+        final CurrencyInst curInstance = new Periode().getCurrency(periodeInst);
+        for (final String oid : oidsPay) {
+            final Instance payDocInst = Instance.get(oid);
+            if (payDocInst.isValid()) {
+
+                final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
+                queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, payDocInst.getId());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder sel = new SelectBuilder().linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
+                                .oid();
+                final SelectBuilder selCur = new SelectBuilder().linkto(CIERP.Document2PaymentDocumentAbstract.CurrencyLink)
+                                .oid();
+                multi.addSelect(sel, selCur);
+                multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Amount, CIERP.Document2PaymentDocumentAbstract.Date);
+                multi.execute();
+                while (multi.next()) {
+                    final Instance docInst = Instance.get(multi.<String>getSelect(sel));
+                    final Instance rateCurInst = Instance.get(multi.<String>getSelect(selCur));
+                    final BigDecimal amount = multi.<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+                    final DateTime d2payDate = multi.<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+                    final Instance salesAccInst = getSalesAcccountInst4Payment(_parameter , multi.getCurrentInstance());
+                    final Instance targetAccInst = getTargetAcccountInst4Payment(_parameter, salesAccInst);
+
+                    final Instance sourceAccInst = getSourceAcccountInst4Payment(_parameter, docInst);
+                    final DateTime dateTmp = useDateForm ? date : d2payDate;
+
+                    final Insert insert = new Insert(CIAccounting.Transaction);
+                    insert.add(CIAccounting.Transaction.PeriodeLink, periodeInst.getId());
+                    insert.add(CIAccounting.Transaction.Date, dateTmp);
+                    insert.add(CIAccounting.Transaction.Description, dateTmp);
+                    insert.add(CIAccounting.Transaction.Description, "Tes");
+                    insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                    insert.execute();
+
+                    createDocClass(insert.getInstance(), docInst);
+
+                    final Rate rate = new Transaction().getExchangeRate(_parameter, periodeInst, rateCurInst.getId(), dateTmp, curr2Rate);
+                    final Object[] rates = new Object[] { BigDecimal.ONE, rate.getLabel()};
+                    final BigDecimal rateAmount = amount.setScale(12, BigDecimal.ROUND_HALF_UP)
+                                    .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
+
+                    final Insert posInsert = new Insert(CIAccounting.TransactionPositionDebit);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, insert.getId());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, targetAccInst.getId());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance()
+                                    .getId());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getId());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, rates);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, amount.negate());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, rateAmount.negate());
+                    posInsert.execute();
+
+                    final Insert posInsert2 = new Insert(CIAccounting.TransactionPositionCredit);
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.TransactionLink, insert.getId());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.AccountLink, sourceAccInst.getId());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance()
+                                    .getId());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getId());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.Rate, rates);
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.RateAmount, amount);
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.Amount, rateAmount);
+                    posInsert2.execute();
+
+                }
+            }
+        }
+        return new Return();
+    }
+
+    protected void insertPosition4Payment(final Parameter _parameter,
+                                          final Instance _transInst) throws EFapsException
+    {
+
+
+    }
+
+
+    /**
+     * @param _parameter
+     * @param _salesAccInst
+     * @return
+     */
+    protected Instance getTargetAcccountInst4Payment(final Parameter _parameter,
+                                                     final Instance _salesAccInst)
+        throws EFapsException
+    {
+        Instance ret = Instance.get("");
+        if (_salesAccInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode2Account);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.SalesAccountLink, _salesAccInst.getId());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder accSel = new SelectBuilder().linkto(CIAccounting.Periode2Account.ToLink)
+                            .oid();
+            multi.addSelect(accSel);
+            multi.execute();
+            while (multi.next()) {
+                ret = Instance.get(multi.<String>getSelect(accSel));
+            }
+        }
+        return ret;
+    }
+
+    protected Instance getSalesAcccountInst4Payment(final Parameter _parameter,
+                                                    final Instance _doc2payDocInst)
+        throws EFapsException
+    {
+        Instance ret = Instance.get("");
+        if (_doc2payDocInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, _doc2payDocInst.getId());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder accSel = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
+                            .oid();
+            multi.addSelect(accSel);
+            multi.execute();
+
+            while (multi.next()) {
+                ret = Instance.get(multi.<String>getSelect(accSel));
+            }
+        }
+        return ret;
+    }
+
+    protected Instance getSourceAcccountInst4Payment(final Parameter _parameter,
+                                                     final Instance _docInst)
+        throws EFapsException
+    {
+
+        Instance ret = Instance.get("");
+        if (_docInst.isValid()) {
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+
+            final QueryBuilder posQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionDebit);
+            posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionDebit.TransactionLink, attrQuery);
+            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+            final SelectBuilder accSel = new SelectBuilder().linkto(CIAccounting.TransactionPositionDebit.AccountLink)
+                            .oid();
+            posMulti.addSelect(accSel);
+            posMulti.execute();
+            while (posMulti.next()) {
+                ret = Instance.get(posMulti.<String>getSelect(accSel));
+            }
+        }
+        return ret;
+    }
 
     /**
      * Create the base transaction.

@@ -487,6 +487,53 @@ public abstract class Periode_Base
         return instances;
     }
 
+
+    /**
+     * Called from a tree menu command to present the documents related with
+     * stock movement that are not connected with the period and therefor
+     * must be worked on still.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getPaymentToBook(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                _queryBldr.addWhereAttrEqValue(CISales.PaymentDocumentIOAbstract.StatusAbstract,
+                                getStati4Payment(_parameter));
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+    protected Object[] getStati4Payment(final Parameter _parameter)
+    {
+        final List<Long> stati = new ArrayList<Long>();
+        final Status status = Status.find(CISales.PaymentCashOutStatus.uuid, "Open");
+        if (status != null) {
+            stati.add(status.getId());
+        }
+        final Status status2 = Status.find(CISales.PaymentDepositStatus.uuid, "Open");
+        if (status2 != null) {
+            stati.add(status2.getId());
+        }
+        final Status status3 = Status.find(CISales.PaymentDepositStatus.uuid, "Closed");
+        if (status3 != null) {
+            stati.add(status3.getId());
+        }
+        return stati.toArray();
+    }
+
+
+
     /**
      * MultiPrint for the Documents.
      */
