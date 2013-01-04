@@ -72,8 +72,14 @@ public abstract class Create_Base
     extends Create
 {
 
-
-
+    /**
+     * Create a Transaction for a PaymentDocument.
+     * Connects the PaymentDocument and the related Document with the transaction.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return create4Payment(final Parameter _parameter)
         throws EFapsException
     {
@@ -93,19 +99,24 @@ public abstract class Create_Base
                 final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
                 queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, payDocInst.getId());
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder sel = new SelectBuilder().linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
+                final SelectBuilder sel = new SelectBuilder().linkto(
+                                CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
                                 .oid();
-                final SelectBuilder selCur = new SelectBuilder().linkto(CIERP.Document2PaymentDocumentAbstract.CurrencyLink)
+                final SelectBuilder selCur = new SelectBuilder().linkto(
+                                CIERP.Document2PaymentDocumentAbstract.CurrencyLink)
                                 .oid();
                 multi.addSelect(sel, selCur);
-                multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Amount, CIERP.Document2PaymentDocumentAbstract.Date);
+                multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Amount,
+                                CIERP.Document2PaymentDocumentAbstract.Date);
                 multi.execute();
                 while (multi.next()) {
                     final Instance docInst = Instance.get(multi.<String>getSelect(sel));
                     final Instance rateCurInst = Instance.get(multi.<String>getSelect(selCur));
-                    final BigDecimal amount = multi.<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
-                    final DateTime d2payDate = multi.<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
-                    final Instance salesAccInst = getSalesAcccountInst4Payment(_parameter , multi.getCurrentInstance());
+                    final BigDecimal amount = multi
+                                    .<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+                    final DateTime d2payDate = multi
+                                    .<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+                    final Instance salesAccInst = getSalesAcccountInst4Payment(_parameter, multi.getCurrentInstance());
                     final Instance targetAccInst = getTargetAcccountInst4Payment(_parameter, salesAccInst);
 
                     final Instance sourceAccInst = getSourceAcccountInst4Payment(_parameter, docInst);
@@ -116,13 +127,17 @@ public abstract class Create_Base
                     insert.add(CIAccounting.Transaction.Date, dateTmp);
                     insert.add(CIAccounting.Transaction.Description, dateTmp);
                     insert.add(CIAccounting.Transaction.Description, "Tes");
-                    insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                    insert.add(CIAccounting.Transaction.Status, Status
+                                    .find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                     insert.execute();
 
                     createDocClass(insert.getInstance(), docInst);
 
-                    final Rate rate = new Transaction().getExchangeRate(_parameter, periodeInst, rateCurInst.getId(), dateTmp, curr2Rate);
-                    final Object[] rates = new Object[] { BigDecimal.ONE, rate.getLabel()};
+                    createPaymentClass(insert.getInstance(), payDocInst);
+
+                    final Rate rate = new Transaction().getExchangeRate(_parameter, periodeInst, rateCurInst.getId(),
+                                    dateTmp, curr2Rate);
+                    final Object[] rates = new Object[] { BigDecimal.ONE, rate.getLabel() };
                     final BigDecimal rateAmount = amount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                     .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
 
@@ -147,25 +162,38 @@ public abstract class Create_Base
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.RateAmount, amount);
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.Amount, rateAmount);
                     posInsert2.execute();
-
                 }
+                setStatus4Payment(_parameter, payDocInst);
             }
         }
         return new Return();
     }
 
-    protected void insertPosition4Payment(final Parameter _parameter,
-                                          final Instance _transInst) throws EFapsException
+    /**
+     * Set the Status to booked for a PaymentDocument
+     * @param _parameter    Parameter as passe by the eFaps API
+     * @param _payDocInst   Instance of the PaymentDocument the Status willl be set
+     * @throws EFapsException on error
+     */
+    protected void setStatus4Payment(final Parameter _parameter,
+                                     final Instance _payDocInst)
+        throws EFapsException
     {
-
-
+        // update the status
+        final Status status = Status.find(_payDocInst.getType().getStatusAttribute().getLink().getUUID(), "Booked");
+        if (status != null) {
+            final Update update = new Update(_payDocInst);
+            update.add(CIERP.PaymentDocumentAbstract.StatusAbstract, status.getId());
+            update.execute();
+        }
     }
 
-
     /**
-     * @param _parameter
-     * @param _salesAccInst
-     * @return
+     * Get the Target account for a Transaction with PaymentDocument.
+     * @param _parameter        Parameter as passe by the eFaps API
+     * @param _salesAccInst     Instance of the Account from sales the account is searched for
+     * @return Instance of the target account
+     * @throws EFapsException on error
      */
     protected Instance getTargetAcccountInst4Payment(final Parameter _parameter,
                                                      final Instance _salesAccInst)
@@ -187,6 +215,13 @@ public abstract class Create_Base
         return ret;
     }
 
+    /**
+     * Get the Sales account for a Transaction with PaymentDocument.
+     * @param _parameter        Parameter as passe by the eFaps API
+     * @param _doc2payDocInst   Instance of the PaymentDocument
+     * @return Instance of the target account
+     * @throws EFapsException on error
+     */
     protected Instance getSalesAcccountInst4Payment(final Parameter _parameter,
                                                     final Instance _doc2payDocInst)
         throws EFapsException
@@ -208,6 +243,13 @@ public abstract class Create_Base
         return ret;
     }
 
+    /**
+     * Get the Source account for a Transaction with PaymentDocument.
+     * @param _parameter        Parameter as passe by the eFaps API
+     * @param _docInst          Instance of the PaymentDocument
+     * @return Instance of the target account
+     * @throws EFapsException on error
+     */
     protected Instance getSourceAcccountInst4Payment(final Parameter _parameter,
                                                      final Instance _docInst)
         throws EFapsException
@@ -215,7 +257,6 @@ public abstract class Create_Base
 
         Instance ret = Instance.get("");
         if (_docInst.isValid()) {
-
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
             attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
             final AttributeQuery attrQuery = attrQueryBldr
@@ -226,10 +267,18 @@ public abstract class Create_Base
             final MultiPrintQuery posMulti = posQueryBldr.getPrint();
             final SelectBuilder accSel = new SelectBuilder().linkto(CIAccounting.TransactionPositionDebit.AccountLink)
                             .oid();
-            posMulti.addSelect(accSel);
+            final SelectBuilder dateSel = new SelectBuilder().linkto(
+                            CIAccounting.TransactionPositionDebit.TransactionLink)
+                            .attribute(CIAccounting.Transaction.Date);
+            posMulti.addSelect(accSel, dateSel);
             posMulti.execute();
+            DateTime dateTmp = new DateTime().plusYears(100);
             while (posMulti.next()) {
-                ret = Instance.get(posMulti.<String>getSelect(accSel));
+                final DateTime date = posMulti.<DateTime>getSelect(dateSel);
+                if (date != null && date.isBefore(dateTmp)) {
+                    dateTmp = date;
+                    ret = Instance.get(posMulti.<String>getSelect(accSel));
+                }
             }
         }
         return ret;
@@ -337,6 +386,42 @@ public abstract class Create_Base
         }
         return new Return();
     }
+
+
+    /**
+     * Create the classifcation.
+     * @param _transInst    Transaction Instance
+     * @param _docInst      Document instance
+     * @throws EFapsException on error
+     */
+    protected void createPaymentClass(final Instance _transInst,
+                                      final Instance _payDocInst)
+        throws EFapsException
+    {
+        // create classifications
+        final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
+        final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
+        relInsert1.add(classification1.getRelLinkAttributeName(), _transInst.getId());
+        relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
+        relInsert1.execute();
+
+        final Insert classInsert1 = new Insert(classification1);
+        classInsert1.add(classification1.getLinkAttributeName(), _transInst.getId());
+        classInsert1.execute();
+
+        final Classification classification = (Classification) CIAccounting.TransactionClassPayDoc.getType();
+        final Insert relInsert = new Insert(classification.getClassifyRelationType());
+        relInsert.add(classification.getRelLinkAttributeName(), _transInst.getId());
+        relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
+        relInsert.execute();
+
+        final Insert classInsert = new Insert(CIAccounting.TransactionClassPayDoc);
+        classInsert.add(classification.getLinkAttributeName(), _transInst.getId());
+        classInsert.add(CIAccounting.TransactionClassPayDoc.PayDocLink, _payDocInst.getId());
+        classInsert.execute();
+    }
+
+
 
     /**
      * Create the classifcation.
