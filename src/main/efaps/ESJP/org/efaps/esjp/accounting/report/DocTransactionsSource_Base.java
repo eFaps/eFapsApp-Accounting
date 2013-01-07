@@ -126,7 +126,8 @@ public abstract class DocTransactionsSource_Base
         final SelectBuilder selDocContactTaxNumber = new SelectBuilder(selDoc).linkto(CIERP.DocumentAbstract.Contact)
                         .clazz(CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
         multi.addSelect(selDocName, selDocContactName, selDocContactTaxNumber, selDocType, selDocDate);
-        multi.addAttribute(CIAccounting.Transaction.Date);
+        multi.addAttribute(CIAccounting.Transaction.Date, CIAccounting.Transaction.Description,
+                           CIAccounting.Transaction.Name);
         multi.execute();
         while (multi.next()) {
             final String docType = multi.<String>getSelect(selDocType);
@@ -134,7 +135,10 @@ public abstract class DocTransactionsSource_Base
             final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
             final String contactName = multi.<String>getSelect(selDocContactName);
             final String taxNumber = multi.<String>getSelect(selDocContactTaxNumber);
-            final DateTime date = multi.<DateTime>getAttribute(CIAccounting.Transaction.Date);
+            final DateTime transDate = multi.<DateTime>getAttribute(CIAccounting.Transaction.Date);
+            final String transDescr = multi.<String>getAttribute(CIAccounting.Transaction.Description);
+            final String transOID = multi.getCurrentInstance().getOid();
+            final String transName = multi.<String>getAttribute(CIAccounting.Transaction.Name);
 
             final QueryBuilder posQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
             posQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.TransactionLink, multi
@@ -160,7 +164,10 @@ public abstract class DocTransactionsSource_Base
                     row.put("docDate", docDate);
                     row.put("contactName", contactName);
                     row.put("taxNumber", taxNumber);
-                    row.put("date", date);
+                    row.put("transOID", transOID);
+                    row.put("transDate", transDate);
+                    row.put("transName", transName);
+                    row.put("transDescr", transDescr);
                     row.put("amount", posMulti.getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
                     row.put("accName", accName);
                     row.put("accDescr", posMulti.getSelect(selAccDesc));
@@ -184,6 +191,22 @@ public abstract class DocTransactionsSource_Base
                                final Map<String, Object> _arg1)
             {
                 return String.valueOf(_arg0.get("docName")).compareTo(String.valueOf(_arg1.get("docName")));
+            }});
+        chain.addComparator(new Comparator<Map<String, Object>>(){
+
+            @Override
+            public int compare(final Map<String, Object> _arg0,
+                               final Map<String, Object> _arg1)
+            {
+                return  ((DateTime) _arg0.get("transDate")).compareTo((DateTime) _arg1.get("transDate"));
+            }});
+        chain.addComparator(new Comparator<Map<String, Object>>(){
+
+            @Override
+            public int compare(final Map<String, Object> _arg0,
+                               final Map<String, Object> _arg1)
+            {
+                return String.valueOf(_arg0.get("transOID")).compareTo(String.valueOf(_arg1.get("transOID")));
             }});
         chain.addComparator(new Comparator<Map<String, Object>>(){
 
