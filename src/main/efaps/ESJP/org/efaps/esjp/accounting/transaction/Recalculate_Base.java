@@ -40,19 +40,22 @@ import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.PriceUtil;
@@ -414,4 +417,175 @@ public abstract class Recalculate_Base
         map.put("accountOids", accOids);
         return map;
     }
+
+    public Return createGainLoss4SimpleAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery printPer = new PrintQuery(_parameter.getInstance());
+        printPer.addAttribute(CIAccounting.Periode.FromDate);
+        printPer.execute();
+        final DateTime dateFrom = printPer.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+
+        final String[] oidsDoc = (String[]) Context.getThreadContext()
+                        .getSessionAttribute(CIFormAccounting.Accounting_SimpleAccountForm.document.name);
+        final DateTime dateTo = new DateTime(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_SimpleAccountForm.date.name));
+        Insert insert = null;
+        BigDecimal totalSum = BigDecimal.ZERO;
+        CurrencyInst curr = null;
+        for (final String oid : oidsDoc) {
+            final Instance instDoc = Instance.get(oid);
+            final PrintQuery print = new PrintQuery(instDoc);
+            final SelectBuilder selAccount = new SelectBuilder()
+                            .linkto(CIAccounting.AccountConfigSimple2Periode.FromLink).oid();
+            print.addSelect(selAccount);
+            if (print.execute()) {
+                final Instance instAcc = Instance.get(print.<String>getSelect(selAccount));
+
+                final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.Transaction);
+                // filter classification Pay
+                attrQuerBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                attrQuerBldr.addWhereAttrGreaterValue(CIAccounting.Transaction.Date, dateFrom.minusMinutes(1));
+                attrQuerBldr.addWhereAttrLessValue(CIAccounting.Transaction.Date, dateTo.plusDays(1));
+                final AttributeQuery attrQuery = attrQuerBldr.getAttributeQuery(CIAccounting.Transaction.ID);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+                queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, instAcc.getId());
+                queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
+                                CIAccounting.TransactionPositionAbstract.RateAmount,
+                                CIAccounting.TransactionPositionAbstract.CurrencyLink,
+                                CIAccounting.TransactionPositionAbstract.RateCurrencyLink);
+                BigDecimal gainlossSum = BigDecimal.ZERO;
+                multi.execute();
+                while (multi.next()) {
+                    final BigDecimal oldRateAmount = multi
+                                    .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount);
+                    final BigDecimal oldAmount = multi
+                                    .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+                    final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
+                                multi.<Long>getAttribute(CIAccounting.TransactionPositionAbstract.RateCurrencyLink));
+                    final Instance currentInst = Instance.get(CIERP.Currency.getType(),
+                                multi.<Long>getAttribute(CIAccounting.TransactionPositionAbstract.CurrencyLink));
+                    curr = new CurrencyInst(currentInst);
+                    final PriceUtil priceUtil = new PriceUtil();
+                    final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
+                    final BigDecimal rate = rates[2];
+                    final BigDecimal newAmount = oldRateAmount.divide(rate, BigDecimal.ROUND_HALF_UP);
+
+                    BigDecimal gainloss = BigDecimal.ZERO;
+                    if (!currentInst.equals(targetCurrInst)) {
+                        gainloss = newAmount.subtract(oldAmount);
+                    } else {
+                        gainloss = newAmount;
+                    }
+                    gainlossSum = gainlossSum.add(gainloss);
+
+                }
+                totalSum = totalSum.add(gainlossSum);
+
+                final Map<String, String[]> map = validateInfo(_parameter, gainlossSum);
+                final String[] accs = map.get("accs");
+                final String[] check = map.get("check");
+
+                if (checkAccounts(accs, 0, check).length() > 0) {
+                    if (gainlossSum.compareTo(BigDecimal.ZERO) != 0) {
+                            final String[] accOids = map.get("accountOids");
+                            if (insert == null) {
+                                final DateTimeFormatter formater = DateTimeFormat.mediumDate();
+                                final String dateStr = dateTo.withChronology(
+                                                Context.getThreadContext().getChronology()).toString(
+                                                formater.withLocale(Context.getThreadContext().getLocale()));
+                                final StringBuilder description = new StringBuilder();
+                                description.append(DBProperties
+                                                .getProperty("Accounting_SimpleAccountForm.TxnRecalculate.Label"))
+                                                .append(" ").append(dateStr);
+                                insert = new Insert(CIAccounting.Transaction);
+                                insert.add(CIAccounting.Transaction.Description, description.toString());
+                                insert.add(CIAccounting.Transaction.Date, dateTo);
+                                insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                                insert.add(CIAccounting.Transaction.Status,
+                                                Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                                insert.execute();
+                            }
+
+                            Insert insertPos = new Insert(CIAccounting.TransactionPositionCredit);
+                            insertPos.add(CIAccounting.TransactionPositionCredit.TransactionLink, insert.getId());
+                            if (gainlossSum.signum() < 0) {
+                                insertPos.add(CIAccounting.TransactionPositionCredit.AccountLink,
+                                                instAcc.getId());
+                            } else {
+                                insertPos.add(CIAccounting.TransactionPositionCredit.AccountLink,
+                                                Instance.get(accOids[0]).getId());
+                            }
+                            insertPos.add(CIAccounting.TransactionPositionCredit.Amount, gainlossSum.abs());
+                            insertPos.add(CIAccounting.TransactionPositionCredit.RateAmount, gainlossSum.abs());
+                            insertPos.add(CIAccounting.TransactionPositionCredit.CurrencyLink, curr.getInstance()
+                                            .getId());
+                            insertPos.add(CIAccounting.TransactionPositionCredit.RateCurrencyLink, curr
+                                            .getInstance().getId());
+                            insertPos.add(CIAccounting.TransactionPositionCredit.Rate, new Object[] {
+                                            BigDecimal.ONE, BigDecimal.ONE });
+                            insertPos.execute();
+
+                            insertPos = new Insert(CIAccounting.TransactionPositionDebit);
+                            insertPos.add(CIAccounting.TransactionPositionDebit.TransactionLink, insert.getId());
+                            if (gainlossSum.signum() < 0) {
+                                insertPos.add(CIAccounting.TransactionPositionDebit.AccountLink,
+                                                Instance.get(accOids[0]).getId());
+                            } else {
+                                insertPos.add(CIAccounting.TransactionPositionDebit.AccountLink,
+                                                instAcc.getId());
+                            }
+                            insertPos.add(CIAccounting.TransactionPositionDebit.Amount, gainlossSum.abs().negate());
+                            insertPos.add(CIAccounting.TransactionPositionDebit.RateAmount, gainlossSum.abs().negate());
+                            insertPos.add(CIAccounting.TransactionPositionDebit.CurrencyLink, curr.getInstance()
+                                            .getId());
+                            insertPos.add(CIAccounting.TransactionPositionDebit.RateCurrencyLink, curr
+                                            .getInstance().getId());
+                            insertPos.add(CIAccounting.TransactionPositionDebit.Rate, new Object[] {
+                                            BigDecimal.ONE, BigDecimal.ONE });
+                            insertPos.execute();
+
+                    }
+                }
+
+
+            }
+        }
+        if (insert != null) {
+            final Instance instance = insert.getInstance();
+            // create classifications
+            final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
+            final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
+            relInsert1.add(classification1.getRelLinkAttributeName(), instance.getId());
+            relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
+            relInsert1.execute();
+
+            final Insert classInsert1 = new Insert(classification1);
+            classInsert1.add(classification1.getLinkAttributeName(), instance.getId());
+            classInsert1.execute();
+
+            final Classification classification =
+                            (Classification) CIAccounting.TransactionClassGainLoss.getType();
+            final Insert relInsert = new Insert(classification.getClassifyRelationType());
+            relInsert.add(classification.getRelLinkAttributeName(), instance.getId());
+            relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
+            relInsert.execute();
+
+            final Insert classInsert = new Insert(classification);
+            classInsert.add(classification.getLinkAttributeName(), instance.getId());
+            classInsert.add(CIAccounting.TransactionClassGainLoss.Amount, totalSum);
+            classInsert.add(CIAccounting.TransactionClassGainLoss.RateAmount, totalSum);
+            classInsert.add(CIAccounting.TransactionClassGainLoss.CurrencyLink, curr.getInstance().getId());
+            classInsert.add(CIAccounting.TransactionClassGainLoss.RateCurrencyLink,
+                            curr.getInstance().getId());
+            classInsert.add(CIAccounting.TransactionClassGainLoss.Rate,
+                            new Object[] {BigDecimal.ONE, BigDecimal.ONE});
+            classInsert.execute();
+        }
+        return new Return();
+    }
+
 }

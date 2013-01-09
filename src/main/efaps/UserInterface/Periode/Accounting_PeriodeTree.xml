@@ -56,6 +56,7 @@
             <child>Accounting_PeriodeTree_StockToBook</child>
             <child>Accounting_PeriodeTree_Payment</child>
             <child>Accounting_PeriodeTree_BankCash</child>
+            <child>Accounting_PeriodeTree_GainLoss</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
