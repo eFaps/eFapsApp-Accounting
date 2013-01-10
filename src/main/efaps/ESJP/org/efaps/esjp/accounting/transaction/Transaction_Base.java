@@ -1585,6 +1585,11 @@ public abstract class Transaction_Base
         /**
          * Rate.
          */
+        private Instance currInstance;
+
+        /**
+         * Rate.
+         */
         private Rate rate;
 
         /**
@@ -1669,6 +1674,16 @@ public abstract class Transaction_Base
         }
 
         /**
+         * Getter method for instance variable {@link #currInstance}.
+         *
+         * @return value of instance variable {@link #currInstance}
+         */
+        public Instance getCurrInstance()
+        {
+            return this.currInstance;
+        }
+
+        /**
          * @return the amount formated
          * @throws EFapsException on error
          */
@@ -1687,6 +1702,17 @@ public abstract class Transaction_Base
         public void setAmount(final BigDecimal _amount)
         {
             this.amount = _amount;
+        }
+
+        /**
+         * Setter method for instance variable {@link #currInstance}.
+         *
+         * @param _amount value for instance variable {@link #currInstance}
+         */
+
+        public void setCurrInstance(final Instance _currInstance)
+        {
+            this.currInstance = _currInstance;
         }
 
         /**
