@@ -37,7 +37,7 @@
             <column name="RATE"             type="DECIMAL"  not-null="true" length="14" scale="6" />
             <column name="RATEDENOM"        type="DECIMAL"                  length="14" scale="6" />
             <column name="RATEAMOUNT"       type="DECIMAL"                  length="12" scale="2" />
-            <foreign name="T_ACCTRANSACTIONCLASSEX_FK_TRANSID"    key="TRANSID"    reference="T_ACCTRANSACTION(ID)" />
+            <foreign name="T_ACCTRANSACTIONCLASSGALO_FK_TRANSID"    key="TRANSID"    reference="T_ACCTRANSACTION(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>
