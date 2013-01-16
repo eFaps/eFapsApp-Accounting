@@ -31,6 +31,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PeriodeTree_Menu_ActionReport_Journal</child>
+            <child>Accounting_PeriodeTree_Menu_ActionReport_JournalGainLoss</child>
             <child>Accounting_PeriodeTree_Menu_ActionReport_ExpenseReport</child>
             <child>Accounting_PeriodeTree_Menu_ActionReport_ExternalVoucherJournal</child>
             <child>Accounting_PeriodeTree_Menu_ActionReport_DocTransactions</child>
