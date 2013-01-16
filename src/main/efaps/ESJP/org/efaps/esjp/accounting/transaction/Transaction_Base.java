@@ -206,7 +206,7 @@ public abstract class Transaction_Base
                     final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
                     final String from = (String) inner.get("from");
                     final String to = (String) inner.get("to");
-                    if ((from == null || to == null) && _field.getFilterDefault() == null) {
+                    if ((from == null || to == null) && _field.getFilter().getDefaultValue() == null) {
                         ret = false;
                     } else {
 
