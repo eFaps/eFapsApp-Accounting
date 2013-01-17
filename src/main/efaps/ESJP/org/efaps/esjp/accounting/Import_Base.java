@@ -22,12 +22,15 @@ package org.efaps.esjp.accounting;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -73,6 +76,43 @@ public abstract class Import_Base
          */
         String getKey();
     }
+
+    private enum CaseColumn implements Import_Base.Column {
+
+        /** */
+        A2CTYPE("[Account2Case_Type]"),
+        A2CACC("[Account2Case_Account]"),
+        A2CNUM("[Account2Case_Numerator]"),
+        A2CDENUM("[Account2Case_Denominator]"),
+        A2CDEFAULT("[Account2Case_Default]"),
+        CASETYPE("[Case_Type]"),
+        CASENAME("[Case_Name]"),
+        CASEDESC("[Case_Description]");
+        ;
+
+        /** Key. */
+        private final String key;
+
+        /**
+         * @param _key key
+         */
+        private CaseColumn(final String _key)
+        {
+            this.key = _key;
+        }
+
+        /**
+         * Getter method for instance variable {@link #key}.
+         *
+         * @return value of instance variable {@link #key}
+         */
+        @Override
+        public String getKey()
+        {
+            return this.key;
+        }
+    }
+
 
     /**
      * Columns for an account table.
@@ -186,6 +226,16 @@ public abstract class Import_Base
         Import_Base.TYPE2TYPE.put("ReportAccount", CIAccounting.ReportAccount);
         Import_Base.TYPE2TYPE.put("ViewRoot", CIAccounting.ViewRoot);
         Import_Base.TYPE2TYPE.put("ViewSum", CIAccounting.ViewSum);
+        Import_Base.TYPE2TYPE.put("CaseBankCashGain", CIAccounting.CaseBankCashGain);
+        Import_Base.TYPE2TYPE.put("CaseBankCashPay", CIAccounting.CaseBankCashPay);
+        Import_Base.TYPE2TYPE.put("CaseDocBooking", CIAccounting.CaseDocBooking);
+        Import_Base.TYPE2TYPE.put("CaseDocRegister", CIAccounting.CaseDocRegister);
+        Import_Base.TYPE2TYPE.put("CaseExternalBooking", CIAccounting.CaseExternalBooking);
+        Import_Base.TYPE2TYPE.put("CaseExternalRegister", CIAccounting.CaseExternalRegister);
+        Import_Base.TYPE2TYPE.put("CaseGeneral", CIAccounting.CaseGeneral);
+        Import_Base.TYPE2TYPE.put("CasePayroll", CIAccounting.CasePayroll);
+        Import_Base.TYPE2TYPE.put("CasePettyCash", CIAccounting.CasePettyCash);
+        Import_Base.TYPE2TYPE.put("CaseStockBooking", CIAccounting.CaseStockBooking);
     }
 
     protected static final Map<String, CIType> ACC2ACC = new HashMap<String, CIType>();
@@ -195,6 +245,13 @@ public abstract class Import_Base
         Import_Base.ACC2ACC.put("AccountInverseCosting", CIAccounting.Account2AccountCostingInverse);
         Import_Base.ACC2ACC.put("AccountCredit", CIAccounting.Account2AccountCredit);
         Import_Base.ACC2ACC.put("AccountDebit", CIAccounting.Account2AccountDebit);
+    }
+
+
+    protected static final Map<String, CIType> ACC2CASE = new HashMap<String, CIType>();
+    static {
+        Import_Base.ACC2CASE.put("Credit", CIAccounting.Account2CaseCredit);
+        Import_Base.ACC2CASE.put("Debit", CIAccounting.Account2CaseDebit);
     }
 
     /**
@@ -482,12 +539,48 @@ public abstract class Import_Base
                     }
                 }
             }
-
-
         } catch (final IOException e) {
             throw new EFapsException(Periode.class, "createAccountTable.IOException", e);
         }
         return accounts;
+    }
+
+
+    protected void createCaseTable(final Instance _periodInst,
+                                   final FileParameter _accountTable)
+        throws EFapsException
+    {
+        try {
+            final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
+            final List<String[]> entries = reader.readAll();
+            reader.close();
+            final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.CaseColumn.values(),
+                            entries.get(0), validateMap);
+            entries.remove(0);
+            final List<ImportCase> cases = new ArrayList<ImportCase>();
+            int i = 1;
+            boolean valid = true;
+            for (final String[] row : entries) {
+                Import_Base.LOG.info("reading Line {}: {}",i, row);
+                final ImportCase impCase = new ImportCase(_periodInst, colName2Index, row);
+                if (!impCase.validate()) {
+                    valid = false;
+                    Import_Base.LOG.error("Line {} is invalid; {}",i , impCase);
+                }
+                cases.add(impCase);
+                i++;
+            }
+            if (valid) {
+                for (final ImportCase impCase : cases) {
+                    impCase.update();
+                }
+            }
+        } catch (final UnsupportedEncodingException e) {
+            throw new EFapsException("UnsupportedEncodingException", e);
+        } catch (final IOException e) {
+            throw new EFapsException("IOException", e);
+        }
     }
 
     /**
@@ -559,8 +652,122 @@ public abstract class Import_Base
                 }
             }
         }
+        Import_Base.LOG.info("analysed table headers: {}", ret);
         return ret;
     }
+
+    public class ImportCase
+    {
+
+        private String caseName;
+        private String caseDescription;
+        private CIType casetype;
+        private CIType a2cType;
+        private String a2cNum;
+        private String a2cDenum;
+        private boolean a2cDefault;
+        private Instance accInst;
+        private Instance periodeInst;
+
+        /**
+         * @param _colName2Index
+         * @param _row
+         */
+        public ImportCase(final Instance _periodInst,
+                          final Map<String, Integer> _colName2Index,
+                          final String[] _row)
+        {
+            try {
+                this.periodeInst = _periodInst;
+                this.caseName = _row[_colName2Index.get(Import_Base.CaseColumn.CASENAME.getKey())].trim().replaceAll(
+                                "\n",
+                                "");
+                this.caseDescription = _row[_colName2Index.get(Import_Base.CaseColumn.CASEDESC.getKey())].trim()
+                                .replaceAll("\n",
+                                                "");
+                final String type = _row[_colName2Index.get(Import_Base.CaseColumn.CASETYPE.getKey())].trim()
+                                .replaceAll(
+                                                "\n", "");
+                this.casetype = Import_Base.TYPE2TYPE.get(type);
+                final String a2c = _row[_colName2Index.get(Import_Base.CaseColumn.A2CTYPE.getKey())].trim().replaceAll(
+                                "\n", "");
+                this.a2cType = Import_Base.ACC2CASE.get(a2c);
+
+                this.a2cNum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CNUM.getKey())].trim().replaceAll(
+                                "\n", "");
+                this.a2cDenum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CDENUM.getKey())].trim().replaceAll(
+                                "\n", "");
+                this.a2cDefault = "yes".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.CaseColumn.A2CDEFAULT
+                                .getKey())])
+                                || "true".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.CaseColumn.A2CDEFAULT
+                                                .getKey())]);
+
+                final String accName = _row[_colName2Index.get(Import_Base.CaseColumn.A2CACC.getKey())].trim()
+                                .replaceAll(
+                                                "\n", "");
+
+                final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
+                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
+                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, _periodInst.getId());
+                final InstanceQuery query = queryBuilder.getQuery();
+                query.executeWithoutAccessCheck();
+                if (query.next()) {
+                    this.accInst = query.getCurrentValue();
+                }
+            } catch (final Exception e) {
+                Import_Base.LOG.error("Catched error on Import.", e);
+            }
+        }
+
+        /**
+         * @return
+         */
+        public boolean validate()
+        {
+            return this.caseName != null && this.casetype != null && this.a2cDenum != null && this.a2cNum != null
+                            && this.accInst != null
+                            && this.accInst.isValid();
+        }
+
+        /**
+         *
+         */
+        public void update()
+            throws EFapsException
+        {
+            final QueryBuilder queryBuilder = new QueryBuilder(this.casetype);
+            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.Name, this.caseName);
+            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodeAbstractLink, this.periodeInst.getId());
+            final InstanceQuery query = queryBuilder.getQuery();
+            query.executeWithoutAccessCheck();
+            Instance caseInst;
+            if (query.next()) {
+                caseInst = query.getCurrentValue();
+            } else {
+                final Insert insert = new Insert(this.casetype);
+                insert.add(CIAccounting.CaseAbstract.Name, this.caseName);
+                insert.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
+                insert.add(CIAccounting.CaseAbstract.PeriodeAbstractLink, this.periodeInst.getId());
+                insert.execute();
+                caseInst = insert.getInstance();
+            }
+
+            final Insert insert = new Insert(this.a2cType);
+            insert.add(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst.getId());
+            insert.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, this.accInst.getId());
+            insert.add(CIAccounting.Account2CaseAbstract.Denominator, this.a2cDenum);
+            insert.add(CIAccounting.Account2CaseAbstract.Numerator, this.a2cNum);
+            insert.add(CIAccounting.Account2CaseAbstract.Default, this.a2cDefault);
+            insert.execute();
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        }
+    }
+
 
     /**
      * represents one account to be imported.
@@ -854,7 +1061,7 @@ public abstract class Import_Base
          */
         private List<Type> getLstTypeConn()
         {
-            return lstTypeConn;
+            return this.lstTypeConn;
         }
 
         /**
@@ -864,7 +1071,7 @@ public abstract class Import_Base
          */
         private List<String> getLstTargetConn()
         {
-            return lstTargetConn;
+            return this.lstTargetConn;
         }
 
         /**
@@ -872,7 +1079,7 @@ public abstract class Import_Base
          */
         private String getPath()
         {
-            return path;
+            return this.path;
         }
 
         /**
