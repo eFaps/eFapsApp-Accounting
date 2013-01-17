@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -48,6 +49,8 @@ import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
@@ -251,5 +254,49 @@ public abstract class ExternalVoucher_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    /**
+     * Method called from pickerForm to add a supplier contact granted to the
+     * field or not.
+     * 
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return the new Contact_Contacts recently created
+     * @throws EFapsException on error
+     */
+    public Return addSupplier2Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final ContactsPicker contactsPicker = new ContactsPicker()
+        {
+            @Override
+            protected void addClassSupplier(Parameter _parameter,
+                                            Instance _contactInst)
+                throws EFapsException
+            {
+
+                final Classification classification = (Classification) CISales.Contacts_ClassSupplier.getType();
+                final Insert relInsert1 = new Insert(classification.getClassifyRelationType());
+                relInsert1.add(classification.getRelLinkAttributeName(), _contactInst.getId());
+                relInsert1.add(classification.getRelTypeAttributeName(), classification.getId());
+                relInsert1.execute();
+
+                final Insert classInsert1 = new Insert(classification);
+                classInsert1.add(classification.getLinkAttributeName(), _contactInst.getId());
+                addClassInsert(_parameter, classInsert1);
+                classInsert1.execute();
+
+                final Classification classification2 = (Classification) classification.getParentClassification();
+                final Insert relInsert2 = new Insert(classification2.getClassifyRelationType());
+                relInsert2.add(classification.getRelLinkAttributeName(), _contactInst.getId());
+                relInsert2.add(classification.getRelTypeAttributeName(), classification2.getId());
+                relInsert2.execute();
+
+                final Insert classInsert2 = new Insert(classification2);
+                classInsert2.add(classification.getLinkAttributeName(), _contactInst.getId());
+                classInsert2.execute();
+            }
+        };
+        return contactsPicker.picker4NewContact(_parameter);
     }
 }
