@@ -79,17 +79,17 @@
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<variable name="debit" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[($F{amount}.signum()==1) ? $F{amount} : java.math.BigDecimal.ZERO]]></variableExpression>
+		<variableExpression><![CDATA[($F{amount}.signum()==-1) ? $F{amount} : java.math.BigDecimal.ZERO]]></variableExpression>
 	</variable>
 	<variable name="credit" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[($F{amount}.signum()==-1) ? $F{amount}.abs() : java.math.BigDecimal.ZERO]]></variableExpression>
+		<variableExpression><![CDATA[($F{amount}.signum()==1) ? $F{amount}.abs() : java.math.BigDecimal.ZERO]]></variableExpression>
 	</variable>
 	<variable name="sumDebit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
-		<variableExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></variableExpression>
+		<variableExpression><![CDATA[(($F{amount}.signum()==-1) ? $F{amount} : null)]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<variable name="sumCredit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
-		<variableExpression><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></variableExpression>
+		<variableExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount}.abs() : null)]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<variable name="account1" class="java.lang.String" resetType="Column" calculation="Sum">
@@ -105,23 +105,23 @@
 : java.math.BigDecimal.ONE]]></variableExpression>
 	</variable>
 	<variable name="rateDebit" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{amount}.signum()==1
+		<variableExpression><![CDATA[$F{amount}.signum()==-1
 ? $F{rateAmount}.multiply( $V{rate})
  : java.math.BigDecimal.ZERO]]></variableExpression>
 	</variable>
 	<variable name="rateCredit" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$F{amount}.signum()==-1
-? $F{rateAmount}.multiply( $V{rate}) 
+		<variableExpression><![CDATA[$F{amount}.signum()==1
+? $F{rateAmount}.multiply( $V{rate})
  : java.math.BigDecimal.ZERO]]></variableExpression>
 	</variable>
 	<variable name="sumRateDebit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
-		<variableExpression><![CDATA[$F{amount}.signum()==1
+		<variableExpression><![CDATA[$F{amount}.signum()==-1
 ? ($V{isApplyRate} ? $V{rateDebit} : $F{rateAmount}.abs())
 : null]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<variable name="sumRateCredit" class="java.math.BigDecimal" resetType="Group" resetGroup="Group1" calculation="Sum">
-		<variableExpression><![CDATA[$F{amount}.signum()==-1
+		<variableExpression><![CDATA[$F{amount}.signum()==1
 ? ($V{isApplyRate} ? $V{rateCredit} : $F{rateAmount}.abs())
 : null]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
@@ -280,7 +280,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{sumCredit}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumCredit}.abs()]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement uuid="6fce4b89-ebdf-4adc-8093-49d1dd7a7922" style="TableRow" stretchType="RelativeToBandHeight" x="382" y="0" width="56" height="20" isPrintWhenDetailOverflows="true"/>
@@ -288,7 +288,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{sumDebit}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumDebit}.abs()]]></textFieldExpression>
 				</textField>
 				<textField pattern="">
 					<reportElement uuid="5f054fef-07c1-4edc-88fb-23da93aa606a" style="TableHeading" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="382" height="20" isPrintWhenDetailOverflows="true"/>
@@ -312,7 +312,7 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$V{sumRateDebit}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$V{sumRateDebit}.abs()]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 					<reportElement uuid="f09dcd47-6fb1-4d72-b194-c5231cfdfedc" stretchType="RelativeToBandHeight" x="606" y="0" width="56" height="20" isPrintWhenDetailOverflows="true">
@@ -378,7 +378,7 @@
 				<textElement textAlignment="Right" markup="html">
 					<font size="9" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="a362fb50-6e3d-4942-b90f-56549bfc2e37" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="382" y="0" width="56" height="16" isPrintWhenDetailOverflows="true"/>
@@ -388,7 +388,7 @@
 				<textElement textAlignment="Right" markup="html">
 					<font size="9" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(($F{amount}.signum()==1) ? $F{amount} : null)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(($F{amount}.signum()==-1) ? $F{amount}.abs() : null)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement uuid="7a6d0ee3-0fc5-4978-9f01-190235abcb0b" style="TableRow" stretchType="RelativeToBandHeight" mode="Transparent" x="110" y="0" width="272" height="16" isPrintWhenDetailOverflows="true"/>
@@ -427,8 +427,8 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{amount}.signum()==1
-? ($V{isApplyRate} ? $V{rateDebit} : $F{rateAmount}.abs())
+				<textFieldExpression><![CDATA[$F{amount}.signum()==-1
+? ($V{isApplyRate} ? $V{rateDebit}.abs() : $F{rateAmount}.abs())
 : null]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
@@ -443,8 +443,8 @@
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{amount}.signum()==-1 
-? ($V{isApplyRate} ?$V{rateCredit}.abs() :$F{rateAmount}.abs()) : null]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{amount}.signum()==1
+? ($V{isApplyRate} ?$V{rateCredit} :$F{rateAmount}.abs()) : null]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="9303444c-9c1f-4bee-a2b0-41452b7f28f1" stretchType="RelativeToBandHeight" x="662" y="0" width="56" height="16" isPrintWhenDetailOverflows="true">
