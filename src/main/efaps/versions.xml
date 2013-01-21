@@ -73,14 +73,26 @@
             import java.io.File;
             import java.util.UUID;
 
-            EFAPS_LOGGER.info("Check if Data for Attribute Definitions must be imported.");
-
             RunLevel.init("shell");
             RunLevel.execute();
 
-            //Accounting_ExternalTypeAttr
-            QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("57fda82d-e469-4227-9a2d-f449f1d9da37"));
+            EFAPS_LOGGER.info("Check if JAAS Keys must be imported.");
+            //Admin_User_JAASKey
+            QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+            queryBldr.addWhereAttrEqValue("Key", "Accounting_Admin");
             InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                EFAPS_LOGGER.info("Importing JAAS Keys.");
+                URL url1 = new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml");
+                DataImport imp1 = DataImport.readFile(url1);
+                imp1.updateInDB();
+            }
+
+            EFAPS_LOGGER.info("Check if Data for Attribute Definitions must be imported.");
+            //Accounting_ExternalTypeAttr
+            queryBldr = new QueryBuilder(UUID.fromString("57fda82d-e469-4227-9a2d-f449f1d9da37"));
+            query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
                 EFAPS_LOGGER.info("Importing data for Attribute Definitions.");
