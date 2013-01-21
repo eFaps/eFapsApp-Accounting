@@ -64,23 +64,26 @@
 
             import org.efaps.admin.runlevel.RunLevel;
             import org.efaps.db.Context;
-            import org.efaps.db.SearchQuery;
+            import org.efaps.db.QueryBuilder;
+            import org.efaps.db.InstanceQuery;
             import org.efaps.esjp.admin.ui.UIUpdate;
             import org.efaps.importer.DataImport;
 
             import java.net.URL
             import java.io.File;
+            import java.util.UUID;
 
-            EFAPS_LOGGER.info("Importing Data for Attribute Defintions");
+            EFAPS_LOGGER.info("Check if Data for Attribute Definitions must be imported.");
 
-            SearchQuery query = new SearchQuery();
-            query.setQueryTypes("Accounting_ExternalTypeAttr");
-            query.addSelect("OID");
-            query.execute();
+            RunLevel.init("shell");
+            RunLevel.execute();
+
+            //Accounting_ExternalTypeAttr
+            QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("57fda82d-e469-4227-9a2d-f449f1d9da37"));
+            InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
             if (!query.next()) {
-
-                RunLevel.init("shell");
-                RunLevel.execute();
+                EFAPS_LOGGER.info("Importing data for Attribute Definitions.");
                 URL url1 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Data.xml");
                 DataImport imp1 = DataImport.readFile(url1);
                 imp1.updateInDB();
