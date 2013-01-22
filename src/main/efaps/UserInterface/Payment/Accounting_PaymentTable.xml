@@ -53,7 +53,7 @@
         </field>
         <field name="status">
             <property name="Attribute">StatusAbstract</property>
-            <property name="FilterType">PICKER</property>
+            <property name="FilterType">PICKLIST</property>
             <property name="Label">Accounting_PaymentDocumentAbstract/StatusAbstract.Label</property>
         </field>
         <field name="amount">
