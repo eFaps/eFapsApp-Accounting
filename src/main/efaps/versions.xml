@@ -76,6 +76,8 @@
             RunLevel.init("shell");
             RunLevel.execute();
 
+            UIUpdate update = new UIUpdate();
+
             EFAPS_LOGGER.info("Check if JAAS Keys must be imported.");
             //Admin_User_JAASKey
             QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
@@ -100,8 +102,31 @@
                 DataImport imp1 = DataImport.readFile(url1);
                 imp1.updateInDB();
             }
+
+            // check if payroll is installed
+            //Admin_Common_Version
+            queryBldr = new QueryBuilder(UUID.fromString("1bb051f3-b664-43db-b409-c0c4009f5972"));
+            queryBldr.addWhereAttrEqValue("Name", "eFapsApp-Payroll");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (query.next()) {
+                EFAPS_LOGGER.info("Detected Payroll. Check for updates in relation to Payroll");
+
+                <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Payroll_PayslipTree  menu -->
+                update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "89f26b99-0066-4173-aee8-325bd27d70f1", -1);
+
+                <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Payroll_AdvanceTree  menu -->
+                update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "4224d4a4-1d4e-4515-972b-4b5845415af2", -1);
+
+                <!-- connect the Accounting_Payroll_PayslipTree_Menu_Action_CreateTransaction to  Payroll_PayslipTree_Menu_Action -->
+                update.add2Menu("3654c7e3-af29-44e8-bdf3-593f8f538584", "b9114815-0d1b-4e21-b1b3-20398c69d1f9", -1);
+
+                 <!-- Accounting_Payroll_PayslipMyDesk_Menu_Action_CreateTransaction,  Payroll_PayslipMyDesk_Menu_Action-->
+                update.add2Menu("8505bbb2-e9d0-45f6-afff-56d2dd2c45b9", "0c8f7631-6d7c-479c-a01c-0d308c976431", -1);
+
+            }
+
             <!-- Accounting_MyDesk, MainToolBar -->
-            UIUpdate update = new UIUpdate();
             update.add2Menu("250c6cd3-f4c4-4dd2-aa12-6f497260afce", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
 
             <!-- connect the Accounting_ERP_CurrencyTree_Rate_Menu_Action_Create Menu to the ERP_CurrencyTree_Rate_Menu_Action menu -->

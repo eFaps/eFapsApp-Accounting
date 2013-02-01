@@ -56,6 +56,7 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -209,27 +210,32 @@ public abstract class Periode_Base
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "ID";
+
         final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
 
         final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Periode);
-        queryBuilder.addWhereAttrMatchValue("Name", input + "*").setIgnoreCase(true);
-        final MultiPrintQuery print = queryBuilder.getPrint();
-        print.addAttribute("ID", "Name", "FromDate", "ToDate");
-        print.execute();
-        while (print.next()) {
-            final String name = print.<String> getAttribute("Name");
-            final DateTime fromDate = print.<DateTime> getAttribute("FromDate");
-            final DateTime toDate = print.<DateTime> getAttribute("ToDate");
+        queryBuilder.addWhereAttrMatchValue(CIAccounting.Periode.Name, input + "*").setIgnoreCase(true);
+        final MultiPrintQuery multi = queryBuilder.getPrint();
+        multi.addAttribute(key);
+        multi.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate, CIAccounting.Periode.Name);
+        multi.execute();
+        while (multi.next()) {
+            final String keyVal = multi.getAttribute(key).toString();
+            final String name = multi.<String> getAttribute(CIAccounting.Periode.Name);
+            final DateTime fromDate = multi.<DateTime> getAttribute(CIAccounting.Periode.FromDate);
+            final DateTime toDate = multi.<DateTime> getAttribute(CIAccounting.Periode.ToDate);
             final String toDateStr = toDate.toString(DateTimeFormat.forStyle("S-")
                             .withLocale(Context.getThreadContext().getLocale()));
             final String fromDateStr = fromDate.toString(DateTimeFormat.forStyle("S-")
                             .withLocale(Context.getThreadContext().getLocale()));
-            final Long id = print.<Long> getAttribute("ID");
+
             final String choice = name + ": " + fromDateStr + " - " + toDateStr;
             final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", id.toString());
-            map.put("eFapsAutoCompleteVALUE", name);
-            map.put("eFapsAutoCompleteCHOICE", choice);
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), keyVal);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
             orderMap.put(choice, map);
         }
 
