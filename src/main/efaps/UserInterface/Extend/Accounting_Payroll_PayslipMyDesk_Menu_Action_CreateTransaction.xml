@@ -27,8 +27,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Payroll_PayslipMyDesk_Menu_Action_CreateTransaction</name>
         <access>
-            <role>Payroll_Admin</role>
-            <role>Payroll_Modifier</role>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Modifier</role>
         </access>
         <!-- target definitions -->
          <target>
