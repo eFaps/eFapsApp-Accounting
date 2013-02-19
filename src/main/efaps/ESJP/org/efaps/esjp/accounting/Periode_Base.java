@@ -58,6 +58,7 @@ import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -538,13 +539,14 @@ public abstract class Periode_Base
     }
 
     protected Object[] getStati4Payment(final Parameter _parameter)
+        throws CacheReloadException
     {
         final List<Long> statuses = new ArrayList<Long>();
         final Set<Type> types = getTypeList(_parameter, CISales.PaymentDocumentIOAbstract.getType());
         for (final Type type : types) {
             if (!type.isAbstract()) {
                 final StatusGroup statusGroup = Status.get(type.getStatusAttribute().getLink().getName());
-                for (final Entry <String, Status> entry: statusGroup.entrySet()) {
+                for (final Entry<String, Status> entry : statusGroup.entrySet()) {
                     if (!"Booked".equals(entry.getKey()) && !"Canceled".equals(entry.getKey())) {
                         statuses.add(entry.getValue().getId());
                     }
