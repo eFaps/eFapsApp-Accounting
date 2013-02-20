@@ -35,7 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
@@ -228,7 +228,7 @@ public abstract class Recalculate_Base
             map.put("rate", rateStr);
             final StringBuilder js = new StringBuilder();
             js.append("document.getElementsByName('transactions')[0].innerHTML='")
-                .append(StringEscapeUtils.escapeJavaScript(getRecalculateInfo(_parameter, docInst))).append("';");
+                .append(StringEscapeUtils.escapeEcmaScript(getRecalculateInfo(_parameter, docInst))).append("';");
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);

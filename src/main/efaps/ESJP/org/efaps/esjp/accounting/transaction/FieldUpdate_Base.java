@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -277,9 +277,9 @@ public abstract class FieldUpdate_Base
                 final Map<Long, Rate> rates = new HashMap<Long, Rate>();
                 final FieldValue fielValue = new FieldValue();
                 js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
-                    .append(StringEscapeUtils.escapeJavaScript(
+                    .append(StringEscapeUtils.escapeEcmaScript(
                                     fielValue.getDocumentFieldValue(_parameter, doc).toString()))
-                    .append(StringEscapeUtils.escapeJavaScript(
+                    .append(StringEscapeUtils.escapeEcmaScript(
                                     fielValue.getCostInformation(_parameter, date, doc, rates).toString()))
                     .append("'; ")
                     .append(fielValue.getScript(_parameter, doc, rates));

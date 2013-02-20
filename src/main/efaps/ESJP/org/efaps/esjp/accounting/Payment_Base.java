@@ -72,12 +72,13 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -363,7 +364,7 @@ public abstract class Payment_Base
     /**
      * \ Method is used to set the Value for the open amount field on opening
      * the form.
-     * 
+     *
      * @param _parameter Parameter as passed from the efaps API
      * @return Snipplets with value for open amount field
      * @throws EFapsException on error
@@ -399,7 +400,7 @@ public abstract class Payment_Base
     /**
      * Method is called as an update event on changes on one of the amount
      * fields.
-     * 
+     *
      * @param _parameter Parameter as passed from the efaps API
      * @return List of maps of the fields to be updated
      * @throws EFapsException on error
@@ -414,7 +415,7 @@ public abstract class Payment_Base
 
     /**
      * Get the list of maps for the field to be updated.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _updateRate mus the field with the rate also be updated
      * @return List of maps of the fields to be updated
@@ -487,7 +488,7 @@ public abstract class Payment_Base
 
     /**
      * Method is called as an update event on changes in the date fields.
-     * 
+     *
      * @param _parameter Parameter as passed from the efaps API
      * @return List of maps of the fields to be updated
      * @throws EFapsException on error
@@ -502,7 +503,7 @@ public abstract class Payment_Base
 
     /**
      * method for generate a new Payment.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -568,7 +569,7 @@ public abstract class Payment_Base
     /**
      * Called from a field update event to get the html snipplet for a payment
      * field.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
@@ -662,7 +663,7 @@ public abstract class Payment_Base
     /**
      * Called from a field value event to get the html snipplet for a dropdown
      * field.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
@@ -696,7 +697,7 @@ public abstract class Payment_Base
 
     /**
      * Update the rate fields on change of the date value.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return list needed for field update event
      * @throws EFapsException on error
@@ -714,7 +715,7 @@ public abstract class Payment_Base
 
     /**
      * Trigger for connect document to check and recalculate amount.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -768,7 +769,7 @@ public abstract class Payment_Base
     /**
      * Method to create the connection between an sales document and a payment
      * document.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return new Return
      * @throws EFapsException on error.
@@ -795,7 +796,7 @@ public abstract class Payment_Base
     /**
      * Method to edit the connection between a sales document and a payment
      * document.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return new Return
      * @throws EFapsException on error.
@@ -818,7 +819,7 @@ public abstract class Payment_Base
 
     /**
      * Method to create a payment.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @param _amount4Doc2Pay BigDecimal with the amount to pay.
      * @param _currencyId Long with the Id of the currency.
@@ -881,11 +882,12 @@ public abstract class Payment_Base
 
     /**
      * Get a dropdown with the types.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing HTML snipplet
      */
     public Return getTypesFieldValue(final Parameter _parameter)
+        throws CacheReloadException
     {
         final Return ret = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
@@ -916,7 +918,7 @@ public abstract class Payment_Base
 
     /**
      * Recursive method to get all types.
-     * 
+     *
      * @param _parent parent type
      * @return all children
      */
@@ -932,7 +934,7 @@ public abstract class Payment_Base
 
     /**
      * Get all the payment documents related to the type selected.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return
      * @throws EFapsException on error.
@@ -1052,7 +1054,7 @@ public abstract class Payment_Base
 
     /**
      * Get the remaining amount to pay.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return
      * @throws EFapsException on error.
@@ -1097,7 +1099,7 @@ public abstract class Payment_Base
     /**
      * Method to check if the connection payment type has a payment document
      * connected.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return Return true if it hasn't a payment document connected.
      * @throws EFapsException on error.
@@ -1121,7 +1123,7 @@ public abstract class Payment_Base
     /**
      * Method to check the access if the total payment sum amounts is equal with
      * the cross total of the sales document.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return Return with true if the amount is different.
      * @throws EFapsException on error.
@@ -1156,7 +1158,7 @@ public abstract class Payment_Base
     /**
      * Validate if only one or at least one payment document is selected when a
      * planned document child is selected.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return Return with true if it's correct.
      * @throws EFapsException
@@ -1241,7 +1243,7 @@ public abstract class Payment_Base
      * Disconnect the sales document from the payment document deleting the
      * connection, and subtract the amount of the connection from the payment
      * document.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return
      * @throws EFapsException on error.
@@ -1324,7 +1326,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #symbol}.
-         * 
+         *
          * @return value of instance variable {@link #symbol}
          * @throws EFapsException on error
          */
@@ -1336,7 +1338,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #currencyInstance}.
-         * 
+         *
          * @return value of instance variable {@link #currencyInstance}
          */
         public Instance getCurrencyInstance()
@@ -1346,7 +1348,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #crossTotal}.
-         * 
+         *
          * @return value of instance variable {@link #crossTotal}
          */
         public BigDecimal getCrossTotal()
@@ -1356,7 +1358,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #date}.
-         * 
+         *
          * @return value of instance variable {@link #date}
          */
         public DateTime getDate()

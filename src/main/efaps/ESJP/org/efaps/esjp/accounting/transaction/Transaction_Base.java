@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -70,6 +70,7 @@ import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -363,6 +364,7 @@ public abstract class Transaction_Base
     }
 
     protected Type getType4RateCurrency(final Parameter _parameter)
+        throws CacheReloadException
     {
         Type type = CIAccounting.ERP_CurrencyRateAccounting.getType();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -1045,7 +1047,7 @@ public abstract class Transaction_Base
     {
         final StringBuilder ret = new StringBuilder();
         ret.append("document.getElementsByName('amount").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(StringEscapeUtils.escapeJavaScript(_account.getAmountFormated())).append("';")
+            .append("].value = '").append(StringEscapeUtils.escapeEcmaScript(_account.getAmountFormated())).append("';")
             .append("document.getElementsByName('rateCurrencyLink").append(_suffix).append("')[").append(_index)
             .append("].value = '").append(_account.getRate().getCurInstance().getInstance().getId()).append("';")
             .append("document.getElementsByName('rate").append(_suffix).append("')[").append(_index)
@@ -1055,14 +1057,14 @@ public abstract class Transaction_Base
             .append(_account.getRate().getCurInstance().isInvert()).append("';")
             .append("document.getElementsByName('amountRate").append(_suffix)
             .append("')[").append(_index).append("].appendChild(document.createTextNode('")
-            .append(StringEscapeUtils.escapeJavaScript(_account.getAmountRateFormated())).append("'));")
+            .append(StringEscapeUtils.escapeEcmaScript(_account.getAmountRateFormated())).append("'));")
             .append("document.getElementsByName('accountLink").append(_suffix).append("')[").append(_index)
             .append("].value = '").append(_account.getOid()).append("';")
             .append("document.getElementsByName('accountLink").append(_suffix).append("AutoComplete')[").append(_index)
             .append("].value = '").append(_account.getName()).append("';")
             .append("document.getElementsByName('description").append(_suffix).append("')[").append(_index)
             .append("].appendChild(document.createTextNode('")
-            .append(StringEscapeUtils.escapeJavaScript(_account.getDescription())).append("'));");
+            .append(StringEscapeUtils.escapeEcmaScript(_account.getDescription())).append("'));");
 
         if (_account.getLink() != null &&  _account.getLink().length() > 0) {
             ret.append("document.getElementsByName('account2account")

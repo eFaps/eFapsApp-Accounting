@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -900,7 +900,7 @@ public abstract class FieldValue_Base
                 if (oidDoc.contains(entry.getValue())) {
                     value = "> " + value;
                 }
-                html.append(StringEscapeUtils.escapeHtml(value)).append("</option>");
+                html.append(StringEscapeUtils.escapeHtml4(value)).append("</option>");
             }
             html.append("</select>");
         }
