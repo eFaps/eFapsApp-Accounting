@@ -51,7 +51,7 @@
                 method="autoComplete4Contact"
                 name="Accounting_TransactionClassCashForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.erp.Contacts"
+            <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="updateFields4Contact"
                 name="Accounting_TransactionClassCashForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />

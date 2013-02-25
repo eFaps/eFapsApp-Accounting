@@ -195,13 +195,13 @@
                 event="UI_ACCESSCHECK" >
                 <property name="hasFieldPicker">false</property>
             </trigger>
-            <trigger program="org.efaps.esjp.erp.Contacts"
+            <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_TransactionCreate4ExternalForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
                 <property name="Classifications">Sales_Contacts_ClassSupplier</property>
             </trigger>
-            <trigger program="org.efaps.esjp.erp.Contacts"
+            <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="updateFields4Contact"
                 name="Accounting_TransactionCreate4ExternalForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" >
@@ -219,13 +219,13 @@
                 event="UI_ACCESSCHECK" >
                 <property name="hasFieldPicker">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.erp.Contacts"
+            <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_TransactionCreate4ExternalForm.contact4FieldPicker.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
                 <property name="Classifications">Sales_Contacts_ClassSupplier</property>
             </trigger>
-            <trigger program="org.efaps.esjp.erp.Contacts"
+            <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="updateFields4Contact"
                 name="Accounting_TransactionCreate4ExternalForm.contact4FieldPicker.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" >
