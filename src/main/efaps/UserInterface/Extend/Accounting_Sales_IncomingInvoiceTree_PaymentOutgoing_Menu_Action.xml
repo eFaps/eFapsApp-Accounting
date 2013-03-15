@@ -31,6 +31,8 @@
     <!-- childs -->
     <childs>
       <child>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing_Menu_Action_Create</child>
+      <child>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing_Menu_Action_Delete</child>
+      
     </childs>
   </definition>
 
