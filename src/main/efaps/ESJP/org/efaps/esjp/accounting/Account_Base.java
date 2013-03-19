@@ -43,6 +43,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -593,4 +594,27 @@ public abstract class Account_Base
         }
         return ret;
     }
+    
+
+    /**
+     * 
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return updateAccount(final Parameter _parameter) throws EFapsException {
+    	Return ret = new Return();
+    	String param = _parameter.getParameterValue("account");
+    	if(param.length() > 0) {
+	    	final Instance instance = _parameter.getInstance();
+	    	final Update update = new Update(instance);
+	    	update.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, param);
+	    	update.execute();
+	    	ret.put(ReturnValues.TRUE, "true");
+    	} else {
+    		ret.put(ReturnValues.VALUES, "Accounting_Account2Case4EditAccountForm/Account.updateAccount.NoRight");
+    	}
+    	return ret;
+    }
+
 }
