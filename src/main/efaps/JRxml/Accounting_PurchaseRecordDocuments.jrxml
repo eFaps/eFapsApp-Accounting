@@ -56,7 +56,7 @@
 		<fieldDescription><![CDATA[The Amount of the Detraction]]></fieldDescription>
 	</field>
 	<field name="docType" class="java.lang.String">
-		<property name="Select" value="linkto[TypeLink].attribute[Value]"/>
+		<property name="Select" value="linkto[ToLink].linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Value]"/>
 		<fieldDescription><![CDATA[The Type of the Document as defined by the TypeLink]]></fieldDescription>
 	</field>
 	<field name="detractionDate" class="org.joda.time.DateTime">
@@ -67,7 +67,7 @@
 		<variableExpression><![CDATA[new Boolean(!(BigDecimal.ZERO.compareTo($F{docCrossTotal}.subtract($F{docNetTotal})) < 0))]]></variableExpression>
 	</variable>
 	<variable name="negative" class="java.lang.Boolean">
-		<variableExpression><![CDATA[new Boolean("false")]]></variableExpression>
+		<variableExpression><![CDATA[new Boolean("07".equals($F{docType}))]]></variableExpression>
 	</variable>
 	<variable name="contactDocType" class="java.lang.String">
 		<variableExpression><![CDATA[($F{contactTaxNumber}.length() == 11 ) ? "R.U.C":"D.N.I"]]></variableExpression>
@@ -184,7 +184,8 @@
 			<textField>
 				<reportElement uuid="96eff85c-86f9-4751-adf3-57a7842e8ab4" x="50" y="0" width="25" height="16"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{docType}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{docType} != null ? $F{docType} : "01"
+]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.000#">
 				<reportElement uuid="f4566242-7e8a-4b99-be3b-cc318c510e17" key="" x="1092" y="0" width="45" height="16">
