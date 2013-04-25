@@ -31,9 +31,9 @@
     <file-revision>$Rev$</file-revision>
 
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_LabelAbstract</name>
+        <purpose abstract="true"/>
         <attribute>
             <name>Type</name>
             <type>Type</type>

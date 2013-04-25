@@ -35,7 +35,7 @@
 
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportAbstract</name>
-
+        <purpose abstract="true"/>
         <attribute>
             <name>Type</name>
             <type>Type</type>
