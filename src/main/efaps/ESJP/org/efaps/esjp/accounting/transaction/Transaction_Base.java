@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -45,7 +44,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -60,7 +58,6 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.sales.Calculator_Base;
@@ -68,7 +65,6 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -188,54 +184,6 @@ public abstract class Transaction_Base
         }
         return ret;
     }
-
-    public Return transactionMultiPrint(final Parameter _parameter)
-        throws EFapsException
-    {
-        final MultiPrint multiprint = new MultiPrint() {
-
-            @Override
-            protected boolean addFilter(final Entry<?, ?> _entry,
-                                        final QueryBuilder _queryBldr,
-                                        final Type _type,
-                                        final String _attrName,
-                                        final Field _field)
-                throws EFapsException
-            {
-                boolean ret = true;
-                if ("linkto[ToLinkAbstract].attribute[Date]".equalsIgnoreCase(_field.getSelect())) {
-                    final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
-                    final String from = (String) inner.get("from");
-                    final String to = (String) inner.get("to");
-                    if ((from == null || to == null) && _field.getFilter().getDefaultValue() == null) {
-                        ret = false;
-                    } else {
-
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction);
-                        DateTime dateFrom = null;
-                        DateTime dateTo = null;
-                        if (from == null || to == null) {
-                            final DateTime[] dates = getFromTo(_field);
-                            dateFrom = dates[0];
-                            dateTo = dates[1];
-                        } else {
-                            dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
-                            dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
-                        }
-                        attrQueryBldr.addWhereAttrGreaterValue(CIAccounting.Transaction.Date, dateFrom);
-                        attrQueryBldr.addWhereAttrLessValue(CIAccounting.Transaction.Date, dateTo);
-                        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
-                        _queryBldr.addWhereAttrInQuery(CIAccounting.Report2Transaction.ToLinkAbstract, attrQuery);
-                    }
-                } else {
-                    ret = super.addFilter(_entry, _queryBldr, _type, _attrName, _field);
-                }
-                return ret;
-            }
-        };
-        return multiprint.execute(_parameter);
-    }
-
 
     /**
      * Method is only used to store the calling Instance in the session ,so that

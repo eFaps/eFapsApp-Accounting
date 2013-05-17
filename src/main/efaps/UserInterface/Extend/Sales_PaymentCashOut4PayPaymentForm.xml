@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2013 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 9159 $
+  Last Changed:    $Date: 2013-04-05 14:53:56 -0500 (vie, 05 abr 2013) $
+  Last Changed By: $Author: rosa.ordonez@efaps.org $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b27f51e9-4556-4b4b-88e4-b2ced8d1ec28</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 9159 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentCashOut4PayPaymentForm</name>
+        <!-- fields -->
+        <field name="createExistDocument">
+            <property name="Label">Sales_PaymentCashOut4PayPaymentForm.createExistDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger event="UI_FIELD_VALUE" method="dropDown4CreateDocuments" name="Sales_PaymentCashOut4PayPaymentForm.createExistDocument.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
+                <property name="Type">Sales_DocumentSumAbstract</property>
+                <property name="Phrase">$&lt;type.label&gt;, $&lt;attribute[Name]&gt;</property>
+                <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentCheckOut.EmptyValue</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateField4PayableDocuments" name="Sales_PaymentCashOut4PayPaymentForm.createExistDocument.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
+        </field>
+        <field name="createExistRelatedDocument">
+            <property name="Label">Sales_PaymentCashOut4PayPaymentForm.createExistRelatedDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger event="UI_FIELD_VALUE" method="emptyDropDownFieldValue" name="Sales_PaymentCashOut4PayPaymentForm.createExistRelatedDocument.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
+            </trigger>
+        </field>
+        <field name="createDocument">
+            <property name="Label">Sales_PaymentCashOut4PayPaymentForm.createDocumentAutoComplete.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentCashOut4PayPaymentForm.createDocumentAutoComplete.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
+                <property name="Type0">Sales_IncomingInvoice</property>
+                <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
+                <property name="Stati0">Open</property>
+                <property name="Type1">Accounting_ExternalVoucher</property>
+                <property name="StatusGroup1">Accounting_ExternalVoucherStatus</property>
+                <property name="Stati1">Open</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

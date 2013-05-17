@@ -29,9 +29,9 @@
         <name>Accounting_ReportSubJournalTree_Transaction</name>
         <target>
             <table>Accounting_Report2TransactionTable</table>
-            <evaluate program="org.efaps.esjp.accounting.transaction.Transaction" method="transactionMultiPrint">
-                <property name="Types">Accounting_ReportSubJournal2Transaction</property>
-                <property name="LinkFroms">FromLink</property>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">Accounting_ReportSubJournal2Transaction</property>
+                <property name="LinkFrom01">FromLink</property>
             </evaluate>
         </target>
         <!-- properties -->
