@@ -42,6 +42,7 @@
         <!-- type tree for -->
         <type>Accounting_ExternalVoucher</type>
         <childs>
+            <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Accounting_ExternalVoucherTree_Transaction</child>
             <child>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing</child>
         </childs>
