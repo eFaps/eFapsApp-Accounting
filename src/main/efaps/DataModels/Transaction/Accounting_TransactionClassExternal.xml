@@ -71,15 +71,10 @@
         </attribute>
         <attribute>
             <name>TypeLink</name>
-            <type>LinkWithRanges</type>
-            <typelink>Accounting_ExternalTypeAttr</typelink>
+            <type>Link</type>
+            <typelink>ERP_DocumentType</typelink>
             <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
             <sqlcolumn>EXTYPEID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_TransactionClassExternal.TypeLink.RANGE_VALUE" event="RANGE_VALUE">
-                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
-                <property name="Type">Accounting_ExternalTypeAttr</property>
-            </trigger>
         </attribute>
     </definition>
 </datamodel-type>

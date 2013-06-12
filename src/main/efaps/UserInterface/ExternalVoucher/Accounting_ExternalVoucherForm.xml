@@ -102,7 +102,16 @@
             <property name="Attribute">Revision</property>
             <property name="ModeEdit">NONE</property>
         </field>
-
+        <field name="documentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+        </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Accounting_ExternalVoucherForm.headingClient.Label</property>

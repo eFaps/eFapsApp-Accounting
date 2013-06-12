@@ -196,14 +196,15 @@ public abstract class FieldValue_Base
     public Return getTypeLinkFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ExternalTypeAttr);
+        final QueryBuilder queryBldr = new QueryBuilder(CIERP.DocumentType);
         final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute("ID", "Value", "Description");
+        print.addAttribute(CIERP.DocumentType.ID, CIERP.DocumentType.Name, CIERP.DocumentType.Description);
         print.execute();
         final Map<String, Long> values = new TreeMap<String, Long>();
         while (print.next()) {
-            values.put(print.<String>getAttribute("Value") + " - " + print.<String>getAttribute("Description"),
-                       print.<Long>getAttribute("ID"));
+            values.put(print.<String>getAttribute(CIERP.DocumentType.Name)
+                            + " - " + print.<String>getAttribute(CIERP.DocumentType.Description),
+                       print.<Long>getAttribute(CIERP.DocumentType.ID));
         }
 
         final StringBuilder html = new StringBuilder();

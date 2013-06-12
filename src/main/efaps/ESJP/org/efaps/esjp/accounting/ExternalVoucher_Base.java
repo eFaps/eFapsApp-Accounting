@@ -52,6 +52,7 @@ import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -132,7 +133,23 @@ public abstract class ExternalVoucher_Base
             purInsert.execute();
         }
         new Create().create4External(_parameter);
+
+        connect2DocumentType(_parameter, docInsert.getInstance());
         return new Return();
+    }
+
+    protected void connect2DocumentType(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+        final Long docTypeId = Long.parseLong(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_TransactionClassExternalForm.typeLink.name));
+        if (docTypeId != null && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, docTypeId);
+            insert.execute();
+        }
     }
 
 
