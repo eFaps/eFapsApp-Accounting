@@ -63,7 +63,7 @@
         <field name="typeLink">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Phrase">$&lt;linkto[TypeLink].attribute[Value]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
+            <property name="Phrase">$&lt;linkto[TypeLink].attribute[Name]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>

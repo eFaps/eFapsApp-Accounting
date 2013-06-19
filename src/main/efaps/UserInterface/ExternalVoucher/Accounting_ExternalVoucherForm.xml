@@ -142,7 +142,7 @@
         </field>
         <field name="typeLink4Read">
             <property name="ModeEdit">READONLY</property>
-            <property name="Phrase">$&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Value]&gt; - $&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Description]&gt;</property>
+            <property name="Phrase">$&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Name]&gt; - $&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
         </field>
         <field name="netTotal4Read">
