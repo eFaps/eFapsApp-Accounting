@@ -319,32 +319,4 @@ public abstract class ExternalVoucher_Base
         };
         return contactsPicker.picker4NewContact(_parameter);
     }
-
-    public Return getPaymentScheduleDocuments(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typesStr = (String) properties.get("Types");
-        final String[] typesArray = typesStr.split(";");
-        final String statusStr = (String) properties.get("Status");
-        final String[] statusArray = statusStr.split(";");
-
-        final List<Instance> instances = new ArrayList<Instance>();
-        int cont = 0;
-        for (final String typeStr : typesArray) {
-            final Type type = Type.get(typeStr);
-            final QueryBuilder queryBldr = new QueryBuilder(type);
-            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract,
-                            Status.find(type.getStatusAttribute().getLink().getUUID(), statusArray[cont]).getId());
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            instances.addAll(query.getValues());
-            cont++;
-        }
-
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, instances);
-
-        return ret;
-    }
 }

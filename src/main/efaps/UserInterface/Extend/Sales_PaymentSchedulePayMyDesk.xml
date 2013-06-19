@@ -37,9 +37,13 @@
         <target>
             <menu>Sales_PaymentSchedulePayMyDesk_Menu</menu>
             <table>Sales_PaymentSchedulePayTable</table>
-            <evaluate program="org.efaps.esjp.accounting.ExternalVoucher" method="getPaymentScheduleDocuments">
-                <property name="Types">Sales_IncomingInvoice;Accounting_ExternalVoucher</property>
-                <property name="Status">Open;Open</property>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Accounting_ExternalVoucher</property>
+                <property name="StatusGrp02">Accounting_ExternalVoucherStatus</property>
+                <property name="Status02">Open</property>
             </evaluate>
         </target>
         <!-- properties -->
