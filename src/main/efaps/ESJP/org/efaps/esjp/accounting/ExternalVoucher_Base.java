@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -138,6 +139,7 @@ public abstract class ExternalVoucher_Base
         return new Return();
     }
 
+    @Override
     protected void connect2DocumentType(final Parameter _parameter,
                                         final Instance _instance)
         throws EFapsException
