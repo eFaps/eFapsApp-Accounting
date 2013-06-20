@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -54,6 +55,8 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
@@ -753,11 +756,18 @@ public abstract class Transaction_Base
             doc.setFormater(getFormater(2, 2));
             final Long currId;
             if (curr == null && amountStr == null) {
-                final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-                final String attrName = props.containsKey("amountAttribute") ? (String) props.get("amountAttribute")
-                                : CISales.DocumentSumAbstract.RateNetTotal.name;
                 final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
                 doc.setInstance(docInst);
+                Boolean isCross = true;
+                final Properties typesProps = Accounting.getSysConfig()
+                                .getAttributeValueAsProperties(AccountingSettings.DOCUMENT_DOCPERCONF);
+                final Properties periodeProps = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodeInstance);
+                if (typesProps.containsKey(docInst.getType().getUUID().toString())) {
+                    final String typeConf = (String) typesProps.getProperty(docInst.getType().getUUID().toString());
+                    isCross = "true".equals(periodeProps.getProperty(typeConf));
+                }
+                final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
+                                                : CISales.DocumentSumAbstract.RateNetTotal.name;
                 final PrintQuery print = new PrintQuery(docInst);
                 print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
                 print.addAttribute(attrName);
