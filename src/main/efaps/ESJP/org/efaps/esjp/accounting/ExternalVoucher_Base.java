@@ -51,10 +51,13 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.sales.document.AbstractDocument;
+import org.efaps.esjp.sales.document.DocumentSum;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 
@@ -67,7 +70,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("204d6d77-a034-455e-9867-afcada575c09")
 @EFapsRevision("$Rev$")
 public abstract class ExternalVoucher_Base
-    extends AbstractDocument
+    extends DocumentSum
 {
     /**
      * Called from event for creation of a transaction for a External Document.
@@ -315,5 +318,40 @@ public abstract class ExternalVoucher_Base
             }
         };
         return contactsPicker.picker4NewContact(_parameter);
+    }
+
+    @Override
+    public Return dropDown4DocumentType(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Field() {
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values) throws EFapsException
+            {
+                Boolean hasSelect = false;
+                for (final DropDownPosition val : _values) {
+                    if (val.isSelected()) {
+                        hasSelect = true;
+                    }
+                }
+                if (!hasSelect) {
+                    final Properties props = Sales.getSysConfig()
+                                    .getAttributeValueAsProperties(SalesSettings.DEFAULTDOCTYPE4DOC);
+                    if (props != null) {
+                        final Instance defInst = Instance.get(props.getProperty(CIAccounting.ExternalVoucher.getType()
+                                        .getUUID().toString()));
+                        if (defInst.isValid()) {
+                            for (final DropDownPosition val : _values) {
+                                if (val.getValue().toString().equals(defInst.getId())) {
+                                    val.setSelected(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }.dropDownFieldValue(_parameter);
     }
 }
