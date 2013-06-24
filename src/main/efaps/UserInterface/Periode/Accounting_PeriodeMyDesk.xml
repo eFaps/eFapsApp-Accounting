@@ -43,6 +43,10 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Accounting_Periode</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.accounting.Periode"
+                    method="cleanPeriode"
+                    name="Accounting_PeriodeMyDesk.UI_ACCESSCHECK"
+                    event="UI_ACCESSCHECK"/>
         </target>
 
         <!-- properties -->
