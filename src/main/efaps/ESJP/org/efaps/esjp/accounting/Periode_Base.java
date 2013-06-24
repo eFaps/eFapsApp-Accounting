@@ -91,8 +91,7 @@ public abstract class Periode_Base
     {
         Map<Instance, CurrencyInst> inst2curr = (Map<Instance, CurrencyInst>) Context.getThreadContext()
                         .getSessionAttribute(Periode_Base.PERIODECURRENCYKEY);
-        if (inst2curr == null || (inst2curr != null && inst2curr.get(_instance) != null)
-                        || (inst2curr.get(_instance) == null)) {
+        if (inst2curr == null || (inst2curr != null && inst2curr.get(_instance) != null)) {
             inst2curr = new HashMap<Instance, CurrencyInst>();
             Context.getThreadContext().setSessionAttribute(Periode_Base.PERIODECURRENCYKEY, inst2curr);
             final PrintQuery print = new PrintQuery(_instance);
@@ -117,6 +116,15 @@ public abstract class Periode_Base
             }
         }
         return inst2curr.get(_instance);
+    }
+
+    public Return cleanPeriode(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        Context.getThreadContext().setSessionAttribute(Periode_Base.PERIODECURRENCYKEY, null);
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
     }
 
     /**
