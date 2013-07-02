@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.accounting;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -416,6 +417,114 @@ public abstract class Periode_Base
         multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
 
         final InstanceQuery query = queryBldr.getQuery();
+        final List<Instance> instances = query.execute();
+        ret.put(ReturnValues.VALUES, instances);
+        return ret;
+    }
+
+    /**
+     * Called from a tree menu command to present the documents that are with status
+     * booked and therefor must be worked on still.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getPettyCashExternals(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        final Return ret = new Return();
+        final Instance instance = _parameter.getInstance();
+        final PrintQuery print = new PrintQuery(instance);
+        print.addAttribute(CIAccounting.Periode.FromDate);
+        print.addAttribute(CIAccounting.Periode.ToDate);
+        print.execute();
+        final DateTime from = print.<DateTime> getAttribute(CIAccounting.Periode.FromDate);
+        final DateTime to = print.<DateTime> getAttribute(CIAccounting.Periode.ToDate);
+
+        final List<Long> statusArrayBalance = new ArrayList<Long>();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
+        if (properties.containsKey("PettyCashBalanceStatus")) {
+            final String status = (String) properties.get("PettyCashBalanceStatus");
+            if (status != null) {
+                final String[] statusStr = status.split(",");
+                for (String statusId : statusStr) {
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, statusId.trim()).getId());
+                }
+            }
+        } else {
+            statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
+        }
+        if (!statusArrayBalance.isEmpty()) {
+            queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
+        }
+        final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
+
+        final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Payment);
+        queryBldr2.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(CISales.Payment.CreateDocument);
+
+        final List<Long> statusArrayReceipt = new ArrayList<Long>();
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.ExternalVoucher2Document);
+        final AttributeQuery attrQueryDoc
+                = attrQueryBldr.getAttributeQuery(CIAccounting.ExternalVoucher2Document.ToLink);
+
+        final QueryBuilder queryBldr3 = new QueryBuilder(CISales.PettyCashReceipt);
+        if (properties.containsKey("PettyCashReceiptStatus")) {
+            final String status = (String) properties.get("PettyCashReceiptStatus");
+            if (status != null) {
+                final String[] statusStr = status.split(",");
+                for (String statusId : statusStr) {
+                    statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, statusId.trim()).getId());
+                }
+            }
+        } else {
+            statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, "Closed").getId());
+        }
+        if (!statusArrayReceipt.isEmpty()) {
+            queryBldr3.addWhereAttrEqValue(CISales.PettyCashReceipt.Status, statusArrayReceipt.toArray());
+        }
+        queryBldr3.addWhereAttrGreaterValue(CISales.PettyCashReceipt.Date, from.minusMinutes(1));
+        queryBldr3.addWhereAttrLessValue(CISales.PettyCashReceipt.Date, to.plusDays(1));
+        queryBldr3.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery2);
+        queryBldr3.addWhereAttrNotInQuery(CISales.PettyCashReceipt.ID, attrQueryDoc);
+        final MultiPrintQuery multi = queryBldr3.getPrint();
+        multi.addAttribute(CISales.PettyCashReceipt.Name,
+                        CISales.PettyCashReceipt.CrossTotal);
+        multi.execute();
+
+        final Map<String, Instance> map = new HashMap<String, Instance>();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CISales.PettyCashReceipt.Name);
+            if (map.containsKey(name)) {
+                if (multi.getCurrentInstance().getId() > map.get(name).getId()) {
+                    map.put(name, multi.getCurrentInstance());
+                }
+            } else {
+                map.put(name, multi.getCurrentInstance());
+            }
+            final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PettyCashReceipt.CrossTotal);
+            if (cross.compareTo(BigDecimal.ZERO) == 0) {
+                map.remove(name);
+            }
+        }
+
+        final List<Long> listIds = new ArrayList<Long>();
+        for (Entry<String, Instance> entry : map.entrySet()) {
+            listIds.add(entry.getValue().getId());
+        }
+        final QueryBuilder newQuery = new QueryBuilder(CISales.DocumentSumAbstract);
+        newQuery.addWhereAttrEqValue(CISales.DocumentSumAbstract.ID, listIds.toArray());
+
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final DocMulti multiDoc = new DocMulti();
+        multiDoc.analyzeTable(_parameter, filter, newQuery, CISales.DocumentStockAbstract.getType());
+
+        final InstanceQuery query = newQuery.getQuery();
         final List<Instance> instances = query.execute();
         ret.put(ReturnValues.VALUES, instances);
         return ret;

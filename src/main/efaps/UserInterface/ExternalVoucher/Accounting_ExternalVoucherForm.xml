@@ -112,6 +112,15 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
         </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="RowSpan">3</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Accounting_ExternalVoucherForm.headingClient.Label</property>

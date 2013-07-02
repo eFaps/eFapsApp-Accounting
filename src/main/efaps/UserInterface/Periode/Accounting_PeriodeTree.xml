@@ -53,6 +53,7 @@
             <child>Accounting_PeriodeTree_DocsToBook</child>
             <child>Accounting_PeriodeTree_External</child>
             <child>Accounting_PeriodeTree_ExternalToBook</child>
+            <child>Accounting_PeriodeTree_PettyCashReceipt</child>
             <child>Accounting_PeriodeTree_StockToBook</child>
             <child>Accounting_PeriodeTree_Payment</child>
             <child>Accounting_PeriodeTree_BankCash</child>

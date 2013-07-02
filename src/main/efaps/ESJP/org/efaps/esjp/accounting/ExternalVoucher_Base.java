@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.drools.command.runtime.rule.GetAgendaEventListenersCommand;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -44,7 +45,9 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
@@ -55,11 +58,13 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.esjp.sales.document.DocumentSum;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 
 /**
@@ -83,6 +88,27 @@ public abstract class ExternalVoucher_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final CreatedDoc createdDoc = createDoc(_parameter);
+
+        _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
+        final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
+        if (purchaseRecInst.isValid()) {
+            final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
+            purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst.getId());
+            purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, createdDoc.getInstance().getId());
+            purInsert.execute();
+        }
+        new Create().create4External(_parameter);
+
+        connect2DocumentType(_parameter, createdDoc.getInstance());
+        return new Return();
+    }
+
+    @Override
+    protected CreatedDoc createDoc(final Parameter _parameter)
+                    throws EFapsException
+    {
+        final CreatedDoc createdDoc = new CreatedDoc();
         Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
         if (!contactInst.isValid()) {
             contactInst = Instance.get(_parameter.getParameterValue("contactPicker"));
@@ -98,44 +124,149 @@ public abstract class ExternalVoucher_Base
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("currencyExternal"));
         final BigDecimal[] amounts = evalAmounts(_parameter);
+
         final Insert docInsert = new Insert(CIAccounting.ExternalVoucher);
-        docInsert.add(CIAccounting.ExternalVoucher.Contact, contactInst.getId());
-        docInsert.add(CIAccounting.ExternalVoucher.Name, _parameter.getParameterValue("extName"));
-        docInsert.add(CIAccounting.ExternalVoucher.Date, _parameter.getParameterValue("extDate"));
-        docInsert.add(CIAccounting.ExternalVoucher.DueDate, _parameter.getParameterValue("extDueDate"));
-        docInsert.add(CIAccounting.ExternalVoucher.RateCrossTotal, amounts[1]);
-        docInsert.add(CIAccounting.ExternalVoucher.RateNetTotal, amounts[0]);
+        if (contactInst != null && contactInst.isValid()) {
+            docInsert.add(CIAccounting.ExternalVoucher.Contact, contactInst.getId());
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.Contact.name), contactInst.getId());
+        }
+
+        final String extName = _parameter.getParameterValue("extName");
+        if (extName != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.Name, extName);
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.Name.name), extName);
+        }
+
+        final String extDate = _parameter.getParameterValue("extDate");
+        if (extDate != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.Date, extDate);
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.Date.name), extDate);
+        }
+
+        final String extDueDate = _parameter.getParameterValue("extDueDate");
+        if (extDueDate != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.DueDate, extDueDate);
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.DueDate.name), extDueDate);
+        }
+
+        final String note = _parameter.getParameterValue("note");
+        if (note != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.Note, note);
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.Note.name), note);
+        }
+
+        if (amounts != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.RateCrossTotal, amounts[1]);
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.RateCrossTotal.name), amounts[1]);
+
+            docInsert.add(CIAccounting.ExternalVoucher.RateNetTotal, amounts[0]);
+            createdDoc.addValue(getFieldName4Attribute(_parameter,
+                            CIAccounting.ExternalVoucher.RateNetTotal.name), amounts[0]);
+
+            docInsert.add(CIAccounting.ExternalVoucher.CrossTotal, amounts[1].divide(rate, BigDecimal.ROUND_HALF_UP));
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.CrossTotal.name),
+                            amounts[1].divide(rate, BigDecimal.ROUND_HALF_UP));
+
+            docInsert.add(CIAccounting.ExternalVoucher.NetTotal, amounts[0].divide(rate, BigDecimal.ROUND_HALF_UP));
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.NetTotal.name),
+                            amounts[0].divide(rate, BigDecimal.ROUND_HALF_UP));
+        }
         docInsert.add(CIAccounting.ExternalVoucher.RateDiscountTotal, BigDecimal.ZERO);
         docInsert.add(CIAccounting.ExternalVoucher.DiscountTotal, BigDecimal.ZERO);
-        docInsert.add(CIAccounting.ExternalVoucher.CrossTotal, amounts[1].divide(rate, BigDecimal.ROUND_HALF_UP));
-        docInsert.add(CIAccounting.ExternalVoucher.NetTotal, amounts[0].divide(rate, BigDecimal.ROUND_HALF_UP));
-        docInsert.add(CIAccounting.ExternalVoucher.CurrencyId, curr.getInstance().getId());
-        docInsert.add(CIAccounting.ExternalVoucher.RateCurrencyId, rateCurrInst.getId());
-        docInsert.add(CIAccounting.ExternalVoucher.Rate, rateObj);
-        docInsert.add(CIAccounting.ExternalVoucher.Status,
-                        Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId());
+
+        if (curr != null && curr.getInstance().isValid()) {
+            docInsert.add(CIAccounting.ExternalVoucher.CurrencyId, curr.getInstance().getId());
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.CurrencyId.name),
+                            curr.getInstance().getId());
+        }
+
+        if (rateCurrInst != null && rateCurrInst.isValid()) {
+            docInsert.add(CIAccounting.ExternalVoucher.RateCurrencyId, rateCurrInst.getId());
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.CurrencyId.name),
+                            rateCurrInst.getId());
+        }
+
+        if (rateObj != null) {
+            docInsert.add(CIAccounting.ExternalVoucher.Rate, rateObj);
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Rate.name), rateObj);
+        }
+
+        final long statusId = Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId();
+        if (statusId > 0) {
+            docInsert.add(CIAccounting.ExternalVoucher.Status, statusId);
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Status.name), statusId);
+        }
+
         docInsert.add(CIAccounting.ExternalVoucher.Salesperson, Context.getThreadContext().getPersonId());
+        createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Salesperson.name),
+                        Context.getThreadContext().getPersonId());
+
         //Sales_IncomingInvoiceSequence
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
             docInsert.add(CIAccounting.ExternalVoucher.Revision, revision);
+            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Revision.name), revision);
         }
 
         docInsert.execute();
+        createdDoc.setInstance(docInsert.getInstance());
+        return createdDoc;
+    }
 
-        _parameter.put(ParameterValues.INSTANCE, docInsert.getInstance());
-        final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
-        if (purchaseRecInst.isValid()) {
-            final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
-            purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst.getId());
-            purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInsert.getInstance().getId());
-            purInsert.execute();
+    public Return create4PettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
+        if (docInst.isValid()) {
+            final SelectBuilder selContactOid = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact).oid();
+            final SelectBuilder selActDefName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                            .linkto(CIAccounting.PettyCashReceipt_Class.ActionDefinitionLink)
+                            .attribute(CIAccounting.ActionDefinitionPettyCash.Name);
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.PettyCashReceipt.Date,
+                            CISales.PettyCashReceipt.RateCurrencyId,
+                            CISales.PettyCashReceipt.RateCrossTotal);
+            print.addSelect(selContactOid, selActDefName);
+            print.execute();
+            _parameter.getParameters().put("currencyExternal",
+                        new String[] { print.<Long>getAttribute(CISales.PettyCashReceipt.RateCurrencyId).toString() });
+            _parameter.getParameters().put("rate_Credit", new String[] { "1", "1" });
+            _parameter.getParameters().put("rate_Debit", new String[] { "1", "1" });
+            _parameter.getParameters().put("extDate",
+                        new String[] { print.<DateTime>getAttribute(CISales.PettyCashReceipt.Date).toDateMidnight().toString() });
+            _parameter.getParameters().put("extDueDate",
+                        new String[] { print.<DateTime>getAttribute(CISales.PettyCashReceipt.Date).toDateMidnight().toString() });
+            _parameter.getParameters().put("contact", new String[] { print.<String>getSelect(selContactOid) });
+            _parameter.getParameters().put("amountExternal",
+                        new String[] { print.<BigDecimal>getAttribute(CISales.PettyCashReceipt.RateCrossTotal).toString() });
+            _parameter.getParameters().put("note",
+                            new String[] { print.<String>getSelect(selActDefName) });
+
+            final CreatedDoc createdDoc = createDoc(_parameter);
+
+            if (createdDoc.getInstance().isValid()) {
+                final Insert insert = new Insert(CIAccounting.ExternalVoucher2Document);
+                insert.add(CIAccounting.ExternalVoucher2Document.FromLink, createdDoc.getInstance().getId());
+                insert.add(CIAccounting.ExternalVoucher2Document.ToLink, docInst.getId());
+                insert.execute();
+            }
+
+            _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
+            if (createdDoc.getInstance().isValid()) {
+                _parameter.getParameters().remove("document");
+            }
+            new Create().create4External(_parameter);
+            connect2DocumentType(_parameter, createdDoc.getInstance());
         }
-        new Create().create4External(_parameter);
 
-        connect2DocumentType(_parameter, docInsert.getInstance());
         return new Return();
     }
 
@@ -154,6 +285,23 @@ public abstract class ExternalVoucher_Base
         }
     }
 
+    protected BigDecimal[] evalAmounts(final Parameter _parameter)
+                    throws EFapsException
+    {
+        BigDecimal[] getAmounts = new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ZERO };
+        final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        Transaction_Base.PERIODE_SESSIONKEY);
+        //Accounting-Configuration
+        final SystemConfiguration config = SystemConfiguration.get(
+                    UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
+        boolean isCross = false;
+        if (config != null) {
+            final Properties props = config.getObjectAttributeValueAsProperties(periodeInst);
+            isCross = "true".equalsIgnoreCase(props.getProperty("ExternalAmountIsCross"));
+            getAmounts = evalAmounts(_parameter, isCross);
+        }
+        return getAmounts;
+    }
 
     /**
      * Get the Amounts for Net and Cross Total.
@@ -162,7 +310,8 @@ public abstract class ExternalVoucher_Base
      * @return BigDecimal Array { NET, CROSS}
      * @throws EFapsException on error
      */
-    protected BigDecimal[] evalAmounts(final Parameter _parameter)
+    protected BigDecimal[] evalAmounts(final Parameter _parameter,
+                                       final boolean _isCross)
         throws EFapsException
     {
         final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
@@ -180,7 +329,6 @@ public abstract class ExternalVoucher_Base
                             UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
             if (config != null) {
                 final Properties props = config.getObjectAttributeValueAsProperties(periodeInst);
-                final boolean isCross = "true".equalsIgnoreCase(props.getProperty("ExternalAmountIsCross"));
                 final String vatAcc = props.getProperty("ExternalVATAccount");
                 if (vatAcc != null && !vatAcc.isEmpty()) {
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
@@ -194,7 +342,7 @@ public abstract class ExternalVoucher_Base
                         BigDecimal vat = getAmount(_parameter, accInst, "Debit", formater);
                         vat = vat.add(getAmount(_parameter, accInst, "Credit", formater));
                         vat = vat.abs();
-                        if (isCross) {
+                        if (_isCross) {
                             cross = amount;
                             net = cross.subtract(vat);
                         } else {

@@ -294,6 +294,28 @@ public abstract class FieldValue_Base
         return ret;
     }
 
+    public Return getPettyCashReceiptClazzNameFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String selected = Context.getThreadContext().getParameter("selectedRow");
+
+        if (selected != null) {
+            final SelectBuilder selClazzName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                            .attribute(CISales.PettyCashReceipt_Class.Name);
+            final Instance docInst = Instance.get(selected);
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addSelect(selClazzName);
+            print.execute();
+
+            final String name = print.<String>getSelect(selClazzName);
+            final StringBuilder val = new StringBuilder();
+            val.append(name);
+            ret.put(ReturnValues.VALUES, val.toString());
+        }
+        return ret;
+    }
+
     /**
      * Renders a field containing information about the selected document, sets
      * the description of the description field and set the values for the
@@ -341,6 +363,9 @@ public abstract class FieldValue_Base
                                                   final Document _doc)
         throws EFapsException
     {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean showNetTotal = !"true".equalsIgnoreCase((String) props.get("noNetTotal"));
+
         final StringBuilder html = new StringBuilder();
 
         _doc.setFormater(getFormater(2, 2));
@@ -432,15 +457,19 @@ public abstract class FieldValue_Base
 
             html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
                 .append("</td><td>").append(rate).append("</td>")
-                .append("</tr><tr>")
-                .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.NetTotal))
-                .append("</td>").append("<td>")
-                .append(getFormater(2, 2).format(netTotal)).append(" ").append(currSymbol).append("</td>")
-                .append("<td>")
-                .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateNetTotal))
-                .append("</td>").append("<td>")
-                .append(getFormater(2, 2).format(rateNetTotal)).append(" ").append(rateCurrSymbol).append("</td>")
-                .append("</tr><tr>")
+                .append("</tr>");
+            if (showNetTotal) {
+                html.append("<tr>")
+                    .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.NetTotal))
+                    .append("</td>").append("<td>")
+                    .append(getFormater(2, 2).format(netTotal)).append(" ").append(currSymbol).append("</td>")
+                    .append("<td>")
+                    .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateNetTotal))
+                    .append("</td>").append("<td>")
+                    .append(getFormater(2, 2).format(rateNetTotal)).append(" ").append(rateCurrSymbol).append("</td>")
+                    .append("</tr>");
+            }
+            html.append("<tr>")
                 .append("<td>")
                 .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.CrossTotal))
                 .append("</td>").append("<td>")
