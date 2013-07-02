@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.drools.command.runtime.rule.GetAgendaEventListenersCommand;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -58,14 +57,12 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.esjp.sales.document.DocumentSum;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-
 
 /**
  * TODO comment!
