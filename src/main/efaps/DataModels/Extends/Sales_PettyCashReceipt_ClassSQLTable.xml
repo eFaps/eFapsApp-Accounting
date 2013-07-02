@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ae675bcc-9080-4401-9530-a05a66281c64</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PettyCashReceipt_ClassSQLTable</name>
+        <database>
+            <table-name>T_SALESPCRCLASS</table-name>
+            <!-- columns -->
+            <column name="DOCID"         type="INTEGER"      not-null="true" />
+            <column name="ACTIONDEFID"   type="INTEGER"/>
+            <column name="RECEIPTTYPEID" type="INTEGER" />
+            <column name="NAME"          type="STRING_SHORT"                 length="128" />
+            <column name="EMPLOYEENAME"  type="STRING_SHORT"                 length="128" />
+            <foreign name="T_SALESPCRCLASS_FK_DOCID" key="DOCID" reference="T_ERPDOC(ID)" />
+        </database>
+    </definition>
+</datamodel-sqltable>

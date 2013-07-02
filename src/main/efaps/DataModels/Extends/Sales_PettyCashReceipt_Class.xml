@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>bb17d8e9-1dfb-4f06-b7be-5843bafd2e7c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PettyCashReceipt_Class</name>
+        <purpose classification="true" abstract="true">
+            <LinkColumn>DocumentLink</LinkColumn>
+        </purpose>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DocumentLink</name>
+            <type>Link</type>
+            <typelink>ERP_DocumentAbstract</typelink>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ActionDefinitionLink</name>
+            <type>Link</type>
+            <typelink>Accounting_ActionDefinitionPettyCash</typelink>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>ACTIONDEFID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ReceiptTypeLink</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_PettyCashReceiptTypeAttr</typelink>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>RECEIPTTYPEID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                     name="Sales_PettyCashReceipt_Class.ReceiptTypeLink.RANGE_VALUE"
+                     event="RANGE_VALUE">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Sales_PettyCashReceiptTypeAttr</property>
+            </trigger>
+        </attribute>
+        <attribute>
+            <name>Name</name>
+            <type>String</type>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>EmployeeName</name>
+            <type>String</type>
+            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
+            <sqlcolumn>EMPLOYEENAME</sqlcolumn>
+        </attribute>
+        <classifies type="Sales_PettyCashReceipt" relType="ERP_Document2Class"
+                    relLinkAttribute="DocumentLink" relTypeAttribute="ClassTypeId" multipleSelect="true"/>
+    </definition>
+</datamodel-type>
