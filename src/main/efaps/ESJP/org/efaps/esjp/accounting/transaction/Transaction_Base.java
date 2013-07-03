@@ -34,6 +34,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -69,7 +70,6 @@ import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -314,13 +314,21 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * Method to get the rate currency type to use for the document register or booked.
+     *
+     * @param _parameter as passed from eFaps API
+     * @return
+     * @throws EFapsException
+     */
     protected Type getType4RateCurrency(final Parameter _parameter)
-        throws CacheReloadException
+        throws EFapsException
     {
         Type type = CIAccounting.ERP_CurrencyRateAccounting.getType();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        if (properties.containsKey("RateCurType")) {
-            type = Type.get((String) properties.get("RateCurType"));
+        final SystemConfiguration config = Accounting.getSysConfig();
+        final String typeStr = config.getAttributeValue(AccountingSettings.RATECURTYPE4DOCS);
+        if (typeStr != null) {
+            type = Type.get(typeStr);
         }
         return type;
     }

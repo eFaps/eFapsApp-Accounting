@@ -75,8 +75,6 @@
                 method="executeButton"
                 name="Accounting_TransactionCreate4DocForm.case.UI_FIELD_CMD"
                 event="UI_FIELD_CMD">
-                <property name="amountAttribute">RateNetTotal</property>
-                <property name="RateCurType">ERP_CurrencyRateClient</property>
             </trigger>
         </field>
          <field name="dateGroup" character="Group">

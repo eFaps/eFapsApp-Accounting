@@ -57,5 +57,10 @@
 77b5c009-0b45-40d4-8417-a79c30568904=InternalAmountIsCross]]></value>
             <description>Sales_IncomingInvoice, Sales_IncomingReceipt, Accounting_ExternalVoucher, Sales_Invoice, Sales_Receipt, Sales_CreditNote, Sales_Reminder.</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.accounting.RateCurrencyType4Documents</key>
+            <value>Accounting_ERP_CurrencyRateAccounting</value>
+            <description>Rate currency type used for calculate debit and credit positions for a transaction (ERP_CurrencyRateClient, Accounting_ERP_CurrencyRateAccounting).</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

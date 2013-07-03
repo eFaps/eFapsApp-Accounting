@@ -42,4 +42,10 @@ public interface AccountingSettings
      */
     String DOCUMENT_DOCPERCONF = "org.efaps.accounting.Document2DocumentPeriodeConfig";
 
+    /**
+     * Rate currency type used for calculate debit and credit positions for a
+     * transaction (ERP_CurrencyRateClient, Accounting_ERP_CurrencyRateAccounting).
+     */
+    String RATECURTYPE4DOCS = "org.efaps.accounting.RateCurrencyType4Documents";
+
 }
