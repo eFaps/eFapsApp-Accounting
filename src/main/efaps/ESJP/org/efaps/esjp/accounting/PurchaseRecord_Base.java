@@ -101,32 +101,17 @@ public abstract class PurchaseRecord_Base
         final String docOid = print.<String>getSelect(selectDoc);
         final Instance docInst = Instance.get(docOid);
         if (docInst.isValid()) {
-            if (docInst.getType().isKindOf(CISales.IncomingInvoice.getType())) {
-                // Acccounting Configuration
-                final SystemConfiguration config = SystemConfiguration.get(
-                                UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
-                if (config != null) {
-                    final Instance link = config.getLink("PurchaseRecord4IncomingInvoice.TypeLink");
-                    if (link.isValid()) {
-                        final Update update = new Update(instance);
-                        update.add(CIAccounting.PurchaseRecord2Document.TypeLink, link.getId());
-                        update.executeWithoutTrigger();
-                    }
-                }
-            } else if (docInst.getType().isKindOf(CIAccounting.ExternalVoucher.getType())) {
-                final PrintQuery docPrint = new PrintQuery(docInst);
-                final SelectBuilder sel = new SelectBuilder()
-                                .linkfrom(CIAccounting.TransactionClassExternal,
-                                                CIAccounting.TransactionClassExternal.DocumentLink)
-                                                .attribute(CIAccounting.TransactionClassExternal.TypeLink);
-                docPrint.addSelect(sel);
-                docPrint.executeWithoutAccessCheck();
-                final Long typeLinkId = docPrint.<Long>getSelect(sel);
-                if (typeLinkId != null) {
-                    final Update update = new Update(instance);
-                    update.add(CIAccounting.PurchaseRecord2Document.TypeLink, typeLinkId);
-                    update.executeWithoutTrigger();
-                }
+            final PrintQuery printDocQuery = new PrintQuery(docInst);
+            final SelectBuilder selDocTypeIns = new SelectBuilder()
+                        .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
+                        .linkto(CISales.Document2DocumentType.DocumentTypeLink).instance();
+            printDocQuery.addSelect(selDocTypeIns);
+            printDocQuery.executeWithoutAccessCheck();
+            final Instance docTypeIns = printDocQuery.<Instance>getSelect(selDocTypeIns);
+            if (docTypeIns.isValid()) {
+                final Update update = new Update(instance);
+                update.add(CIAccounting.PurchaseRecord2Document.TypeLink, docTypeIns.getId());
+                update.executeWithoutTrigger();
             }
 
             final QueryBuilder docAttrBldr = new QueryBuilder(CISales.Payment);

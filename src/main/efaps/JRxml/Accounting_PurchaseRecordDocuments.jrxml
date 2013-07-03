@@ -56,7 +56,7 @@
 		<fieldDescription><![CDATA[The Amount of the Detraction]]></fieldDescription>
 	</field>
 	<field name="docType" class="java.lang.String">
-		<property name="Select" value="linkto[ToLink].linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Value]"/>
+		<property name="Select" value="linkto[ToLink].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]"/>
 		<fieldDescription><![CDATA[The Type of the Document as defined by the TypeLink]]></fieldDescription>
 	</field>
 	<field name="detractionDate" class="org.joda.time.DateTime">

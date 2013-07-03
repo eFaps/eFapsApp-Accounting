@@ -56,6 +56,15 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">TypeLink</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                    method="dropDown4DocumentType"
+                    name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE">
+                <property name="Type">ERP_DocumentType</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="SetSelected">true</property>
+            </trigger>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
