@@ -32,6 +32,7 @@
         <childs>
             <child>Accounting_PurchaseRecordTree_Menu_Action_Edit</child>
             <child>Accounting_PurchaseRecordTree_Menu_Action_Print</child>
+            <child>Accounting_PurchaseRecordTree_Menu_Action_PrintOfficial</child>
         </childs>
     </definition>
 
