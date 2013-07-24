@@ -365,7 +365,7 @@ public abstract class Account_Base
             Classification clazz = (Classification) type;
             String label = DBProperties.getProperty(type.getName() + ".Label");
             while (clazz.getParentClassification() != null) {
-                clazz = (Classification) clazz.getParentClassification();
+                clazz = clazz.getParentClassification();
                 label = DBProperties.getProperty(clazz.getName() + ".Label") + " - " + label;
             }
             values.put(label, type.getId());
@@ -386,8 +386,10 @@ public abstract class Account_Base
      * Get the list of child classifications.
      * @param _parent parent classification
      * @return list of classifications
+     * @throws CacheReloadException on error
      */
     protected List<Type> getChildClassifications(final Classification _parent)
+        throws CacheReloadException
     {
         final List<Type> ret = new ArrayList<Type>();
         for (final Type child : _parent.getChildClassifications()) {

@@ -47,6 +47,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 
 
@@ -103,7 +104,7 @@ public abstract class Case_Base
                 Classification clazz = (Classification) type;
                 String label = type.getLabel();
                 while (clazz.getParentClassification() != null) {
-                    clazz = (Classification) clazz.getParentClassification();
+                    clazz = clazz.getParentClassification();
                     label = clazz.getLabel() + " - " + label;
                 }
                 html.append(label);
@@ -142,7 +143,7 @@ public abstract class Case_Base
                 Classification clazz = (Classification) type;
                 String label = type.getLabel();
                 while (clazz.getParentClassification() != null) {
-                    clazz = (Classification) clazz.getParentClassification();
+                    clazz = clazz.getParentClassification();
                     label = clazz.getLabel() + " - " + label;
                 }
                 values.put(label, type.getId());
@@ -169,8 +170,10 @@ public abstract class Case_Base
      * Get the list of child classifications.
      * @param _parent parent classification
      * @return list of classifications
+     * @throws CacheReloadException on error
      */
     protected List<Type> getChildClassifications(final Classification _parent)
+        throws CacheReloadException
     {
         final List<Type> ret = new ArrayList<Type>();
         for (final Type child : _parent.getChildClassifications()) {
