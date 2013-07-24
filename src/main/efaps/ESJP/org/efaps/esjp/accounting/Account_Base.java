@@ -43,7 +43,6 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
-import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -58,6 +57,7 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  * TODO comment!
@@ -131,8 +131,10 @@ public abstract class Account_Base
      *
      * @param _parameter Parameter as passed from the eFAPS API
      * @return Return containing the dropdown
+     * @throws EFapsException on error
      */
     public Return getTypeFieldValue(final Parameter _parameter)
+        throws EFapsException
     {
         final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final Return ret = new Return();
@@ -165,8 +167,10 @@ public abstract class Account_Base
      *
      * @param _parent tyep the current children will be retrieved for
      * @return list of all child type for a type
+     * @throws CacheReloadException on error
      */
     protected List<Type> getChildren(final Type _parent)
+        throws CacheReloadException
     {
         final List<Type> ret = new ArrayList<Type>();
         for (final Type child : _parent.getChildTypes()) {
@@ -594,17 +598,17 @@ public abstract class Account_Base
         }
         return ret;
     }
-    
+
 
     /**
-     * 
+     *
      * @param _parameter    Parameter as passed by the eFaps API
      * @return new Return
      * @throws EFapsException on error
      */
     public Return updateAccount(final Parameter _parameter) throws EFapsException {
-    	Return ret = new Return();
-    	String param = _parameter.getParameterValue("account");
+    	final Return ret = new Return();
+    	final String param = _parameter.getParameterValue("account");
     	if(param.length() > 0) {
 	    	final Instance instance = _parameter.getInstance();
 	    	final Update update = new Update(instance);

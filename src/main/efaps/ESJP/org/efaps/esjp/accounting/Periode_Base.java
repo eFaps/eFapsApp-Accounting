@@ -451,7 +451,7 @@ public abstract class Periode_Base
             final String status = (String) properties.get("PettyCashBalanceStatus");
             if (status != null) {
                 final String[] statusStr = status.split(",");
-                for (String statusId : statusStr) {
+                for (final String statusId : statusStr) {
                     statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, statusId.trim()).getId());
                 }
             }
@@ -478,7 +478,7 @@ public abstract class Periode_Base
             final String status = (String) properties.get("PettyCashReceiptStatus");
             if (status != null) {
                 final String[] statusStr = status.split(",");
-                for (String statusId : statusStr) {
+                for (final String statusId : statusStr) {
                     statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, statusId.trim()).getId());
                 }
             }
@@ -514,7 +514,7 @@ public abstract class Periode_Base
         }
 
         final List<Long> listIds = new ArrayList<Long>();
-        for (Entry<String, Instance> entry : map.entrySet()) {
+        for (final Entry<String, Instance> entry : map.entrySet()) {
             listIds.add(entry.getValue().getId());
         }
         final QueryBuilder newQuery = new QueryBuilder(CISales.DocumentSumAbstract);
@@ -680,10 +680,12 @@ public abstract class Periode_Base
      * as a simple set.
      * @param _parameter    Parameter as passed from the eFaps API
      * @param _type         Type type
+     * @throws CacheReloadException on error
      * @return set of types
      */
     protected Set<Type> getTypeList(final Parameter _parameter,
                                     final Type _type)
+        throws CacheReloadException
     {
         final Set<Type> ret = new HashSet<Type>();
         ret.add(_type);

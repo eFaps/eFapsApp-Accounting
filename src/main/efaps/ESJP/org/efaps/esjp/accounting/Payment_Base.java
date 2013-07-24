@@ -921,8 +921,10 @@ public abstract class Payment_Base
      *
      * @param _parent parent type
      * @return all children
+     * @throws CacheReloadException on error
      */
     protected Set<Type> getChildTypes(final Type _parent)
+        throws CacheReloadException
     {
         final Set<Type> ret = new HashSet<Type>();
         ret.add(_parent);
