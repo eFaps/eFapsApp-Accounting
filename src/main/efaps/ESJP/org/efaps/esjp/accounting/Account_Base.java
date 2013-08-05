@@ -209,13 +209,18 @@ public abstract class Account_Base
         final String oidStr;
         final String nameStr;
         final String descStr;
+        String periodStr = "";
         if (caseOid == null) {
             oidStr = "oid";
             nameStr = "attribute[Name]";
             descStr = "attribute[Description]";
+            // if we do not filter for period we must show it
+            if (periode.equals(Transaction_Base.FAKEPERIODINST)) {
+                periodStr = "linkto[PeriodeAbstractLink].attribute[Name]";
+            }
             queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
             queryBuilder.addWhereAttrMatchValue("Name", input + "*").setIgnoreCase(true);
-            if (periode != null) {
+            if (periode != null && !periode.equals(Transaction_Base.FAKEPERIODINST)) {
                 queryBuilder.addWhereAttrEqValue("PeriodeAbstractLink", periode.getId());
             }
             if (!showSumAccount) {
@@ -234,13 +239,18 @@ public abstract class Account_Base
         }
         final MultiPrintQuery print = queryBuilder.getPrint();
         print.addSelect(oidStr, nameStr, descStr);
+        if (!periodStr.isEmpty()) {
+            print.addSelect(periodStr);
+        }
         print.execute();
         while (print.next()) {
             final String name = print.<String>getSelect(nameStr);
-            if (caseOid == null
-                            || ((input.length() < 2) || (input.length() > 1 && name.startsWith(input)))) {
-                final String description = print.<String>getSelect(descStr);
+            if (caseOid == null || ((input.length() < 2) || (input.length() > 1 && name.startsWith(input)))) {
+                String description = print.<String>getSelect(descStr);
                 final String oid = print.<String>getSelect(oidStr);
+                if (!periodStr.isEmpty()) {
+                    description = description + " - " + print.<String>getSelect(periodStr);
+                }
                 final String choice = name + " - " + description;
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey() , oid);

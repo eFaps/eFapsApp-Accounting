@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -17,23 +15,21 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5317 $
- Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (Mon, 16 Aug 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>66c037ee-bd1c-4ba4-8a2b-2d17195286d4</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>20f4e9d1-03c9-45bb-b68c-711dbba3aa88</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev: 5317 $</file-revision>
-    <specification>DM00037</specification>
-
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportJournal</name>
-        <parent>Accounting_ReportSingularAbstract</parent>
+        <name>Accounting_ReportMultipleAbstract</name>
+        <parent>Accounting_ReportAbstract</parent>
+        <purpose abstract="true" />
     </definition>
 </datamodel-type>

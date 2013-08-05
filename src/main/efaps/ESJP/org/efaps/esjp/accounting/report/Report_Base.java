@@ -399,32 +399,6 @@ public abstract class Report_Base
                         .addConditionalStyle(condition1);
     }
 
-    private class BoldCondition
-        extends AbstractSimpleExpression<Boolean>
-    {
-
-        private static final long serialVersionUID = 1L;
-        private final Integer idx;
-
-        /**
-         * @param _parameter
-         * @param _y
-         */
-        public BoldCondition(final Parameter _parameter,
-                             final Integer _idx)
-        {
-            this.idx = _idx;
-        }
-
-        @Override
-        public Boolean evaluate(final ReportParameters _reportParameters)
-        {
-            final AbstractNode node = (AbstractNode) _reportParameters.getFieldValue("node_" + this.idx);
-            return (Report_Base.this.indent && (node.getLevel() == 0 || node instanceof TotalNode))
-                            || (!Report_Base.this.indent && node instanceof RootNode);
-        }
-    }
-
     protected String getTotalLabel(final AbstractNode _parent)
     {
         return "TOTAL " +  _parent.getLabel();
@@ -436,6 +410,32 @@ public abstract class Report_Base
     }
 
 
+
+    private class BoldCondition
+        extends AbstractSimpleExpression<Boolean>
+    {
+    
+        private static final long serialVersionUID = 1L;
+        private final Integer idx;
+    
+        /**
+         * @param _parameter
+         * @param _y
+         */
+        public BoldCondition(final Parameter _parameter,
+                             final Integer _idx)
+        {
+            this.idx = _idx;
+        }
+    
+        @Override
+        public Boolean evaluate(final ReportParameters _reportParameters)
+        {
+            final AbstractNode node = (AbstractNode) _reportParameters.getFieldValue("node_" + this.idx);
+            return (Report_Base.this.indent && (node.getLevel() == 0 || node instanceof TotalNode))
+                            || (!Report_Base.this.indent && node instanceof RootNode);
+        }
+    }
 
     /**
      * Class to obtain a report.

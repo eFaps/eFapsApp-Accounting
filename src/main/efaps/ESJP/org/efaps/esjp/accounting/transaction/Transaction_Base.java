@@ -95,6 +95,10 @@ public abstract class Transaction_Base
      */
     public static final String CASE_SESSIONKEY = "eFaps_Selected_Accounting_Case";
 
+    /**
+     * Fake Period Instance to define an multiple report
+     */
+    public static Instance FAKEPERIODINST = Instance.get("1.1");
 
     public Return renumber(final Parameter _parameter)
         throws EFapsException
@@ -196,6 +200,11 @@ public abstract class Transaction_Base
      * @return new Return
      * @throws EFapsException on error
      */
+    /**
+     * @param _parameter
+     * @return
+     * @throws EFapsException
+     */
     public Return setPeriodeUIFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -221,11 +230,19 @@ public abstract class Transaction_Base
                 instance = Instance.get(print.<String>getSelect(sel));
             }
             final PrintQuery print = new PrintQuery(instance);
-            final SelectBuilder sel = new SelectBuilder()
-                .linkto(CIAccounting.ReportNodeRoot.ReportLink).linkto(CIAccounting.ReportAbstract.PeriodeLink).oid();
-            print.addSelect(sel);
+            final SelectBuilder selPeriod = new SelectBuilder()
+                .linkto(CIAccounting.ReportNodeRoot.ReportLink)
+                .linkto(CIAccounting.ReportAbstract.PeriodeLink).instance();
+            final SelectBuilder selReport = new SelectBuilder()
+            .linkto(CIAccounting.ReportNodeRoot.ReportLink).instance();
+            print.addSelect(selReport, selPeriod);
             print.execute();
-            instance = Instance.get(print.<String>getSelect(sel));
+            instance = print.<Instance>getSelect(selPeriod);
+            final Instance reportInst = print.<Instance>getSelect(selReport);
+            // for a multiple report there is no instance of a period in specific
+            if (reportInst.isValid() && reportInst.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
+                instance = Transaction_Base.FAKEPERIODINST;
+            }
         }
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (!props.containsKey("case")
@@ -771,7 +788,7 @@ public abstract class Transaction_Base
                                 .getAttributeValueAsProperties(AccountingSettings.DOCUMENT_DOCPERCONF);
                 final Properties periodeProps = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodeInstance);
                 if (typesProps.containsKey(docInst.getType().getUUID().toString())) {
-                    final String typeConf = (String) typesProps.getProperty(docInst.getType().getUUID().toString());
+                    final String typeConf = typesProps.getProperty(docInst.getType().getUUID().toString());
                     isCross = "true".equals(periodeProps.getProperty(typeConf));
                 }
                 final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
@@ -1192,7 +1209,7 @@ public abstract class Transaction_Base
                                         currAmount = BigDecimal.ZERO;
                                     }
                                     this.clazz2Amount.put(classTmp.getId(), currAmount.add(posamount));
-                                    classTmp = (Classification) classTmp.getParentClassification();
+                                    classTmp = classTmp.getParentClassification();
                                 }
                             }
                         }

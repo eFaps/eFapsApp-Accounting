@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2010 The eFaps Team
 
@@ -21,26 +19,22 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>d4550c81-57a3-4ba0-8a27-a708cd31703e</uuid>
+    <uuid>c34cbe3b-60c3-4219-bcf0-142ee72de4df</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportTree</name>
+        <name>Accounting_ReportMultipleTree</name>
         <!-- targets -->
         <target>
             <menu>Accounting_ReportTree_Menu</menu>
-            <form>Accounting_ReportForm</form>
+            <form>Accounting_ReportMultipleForm</form>
         </target>
         <!-- type tree for -->
-        <type>Accounting_ReportSingularAbstract</type>
+        <type>Accounting_ReportMultipleAbstract</type>
         <childs>
             <child>Accounting_ReportTree_Node</child>
         </childs>

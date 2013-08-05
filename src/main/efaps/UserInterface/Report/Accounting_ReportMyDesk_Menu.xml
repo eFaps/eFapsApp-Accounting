@@ -39,5 +39,4 @@
             <child>Accounting_ReportMyDesk_Menu_Action</child>
         </childs>
     </definition>
-
 </ui-menu>
