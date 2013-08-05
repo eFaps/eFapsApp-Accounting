@@ -95,11 +95,6 @@ public abstract class Transaction_Base
      */
     public static final String CASE_SESSIONKEY = "eFaps_Selected_Accounting_Case";
 
-    /**
-     * Fake Period Instance to define an multiple report
-     */
-    public static Instance FAKEPERIODINST = Instance.get("1.1");
-
     public Return renumber(final Parameter _parameter)
         throws EFapsException
     {
@@ -241,7 +236,7 @@ public abstract class Transaction_Base
             final Instance reportInst = print.<Instance>getSelect(selReport);
             // for a multiple report there is no instance of a period in specific
             if (reportInst.isValid() && reportInst.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
-                instance = Transaction_Base.FAKEPERIODINST;
+                instance = reportInst;
             }
         }
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);

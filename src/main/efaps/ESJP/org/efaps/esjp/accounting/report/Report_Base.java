@@ -414,10 +414,10 @@ public abstract class Report_Base
     private class BoldCondition
         extends AbstractSimpleExpression<Boolean>
     {
-    
+
         private static final long serialVersionUID = 1L;
         private final Integer idx;
-    
+
         /**
          * @param _parameter
          * @param _y
@@ -427,7 +427,7 @@ public abstract class Report_Base
         {
             this.idx = _idx;
         }
-    
+
         @Override
         public Boolean evaluate(final ReportParameters _reportParameters)
         {
@@ -902,22 +902,31 @@ public abstract class Report_Base
         {
             final Instance rootInst = Instance.get(getOid());
 
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeTree);
-            queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeTree.ParentLink, rootInst.getId());
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeChildAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeChildAbstract.ParentLinkAbstract, rootInst.getId());
             final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute(CIAccounting.ReportNodeTree.OID, CIAccounting.ReportNodeTree.Number,
-                            CIAccounting.ReportNodeTree.Label, CIAccounting.ReportNodeTree.ShowAllways,
-                            CIAccounting.ReportNodeTree.ShowSum, CIAccounting.ReportNodeTree.Position);
+            print.addAttribute(CIAccounting.ReportNodeChildAbstract.OID, CIAccounting.ReportNodeChildAbstract.Number,
+                            CIAccounting.ReportNodeChildAbstract.Label,
+                            CIAccounting.ReportNodeChildAbstract.ShowAllways,
+                            CIAccounting.ReportNodeChildAbstract.ShowSum, CIAccounting.ReportNodeChildAbstract.Position,
+                            CIAccounting.ReportNodeAccount.AccountLink);
             print.execute();
             while (print.next()) {
-                final String oidTmp = print.<String> getAttribute(CIAccounting.ReportNodeTree.OID);
-                final String number = print.<String> getAttribute(CIAccounting.ReportNodeTree.Number);
-                final String label = print.<String> getAttribute(CIAccounting.ReportNodeTree.Label);
-                final Boolean showAllways = print.<Boolean> getAttribute(CIAccounting.ReportNodeTree.ShowAllways);
-                final Boolean showSum = print.<Boolean> getAttribute(CIAccounting.ReportNodeTree.ShowAllways);
-                final Long position = print.<Long> getAttribute(CIAccounting.ReportNodeTree.Position);
-                final AbstractNode child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position,
-                                _level);
+                final String oidTmp = print.<String>getAttribute(CIAccounting.ReportNodeChildAbstract.OID);
+                final String number = print.<String>getAttribute(CIAccounting.ReportNodeChildAbstract.Number);
+                final String label = print.<String>getAttribute(CIAccounting.ReportNodeChildAbstract.Label);
+                final Boolean showAllways = print
+                                .<Boolean>getAttribute(CIAccounting.ReportNodeChildAbstract.ShowAllways);
+                final Boolean showSum = print.<Boolean>getAttribute(CIAccounting.ReportNodeChildAbstract.ShowAllways);
+                final Long position = print.<Long>getAttribute(CIAccounting.ReportNodeChildAbstract.Position);
+                final Long accountLink = print.<Long> getAttribute(CIAccounting.ReportNodeAccount.AccountLink);
+                final AbstractNode child;
+                if (Instance.get(oidTmp).getType().isKindOf(CIAccounting.ReportNodeTree.getType())) {
+                    child = new TreeNode(this, oidTmp, number, label, showAllways, showSum, position, _level);
+                } else {
+                    child = new AccountNode(this, oidTmp, number, label, showAllways, showSum, position, _level,
+                                    accountLink);
+                }
                 getChildren().add(child);
             }
             for (final AbstractNode child : getChildren()) {

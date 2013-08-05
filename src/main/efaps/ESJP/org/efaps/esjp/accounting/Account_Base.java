@@ -44,6 +44,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.admin.user.Company;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -191,7 +192,7 @@ public abstract class Account_Base
     public Return autoComplete4Account(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance periode = (Instance) Context.getThreadContext()
+        final Instance instance = (Instance) Context.getThreadContext()
                                                     .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
 
         final String caseOid = (String) Context.getThreadContext()
@@ -214,14 +215,15 @@ public abstract class Account_Base
             oidStr = "oid";
             nameStr = "attribute[Name]";
             descStr = "attribute[Description]";
-            // if we do not filter for period we must show it
-            if (periode.equals(Transaction_Base.FAKEPERIODINST)) {
-                periodStr = "linkto[PeriodeAbstractLink].attribute[Name]";
-            }
             queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
             queryBuilder.addWhereAttrMatchValue("Name", input + "*").setIgnoreCase(true);
-            if (periode != null && !periode.equals(Transaction_Base.FAKEPERIODINST)) {
-                queryBuilder.addWhereAttrEqValue("PeriodeAbstractLink", periode.getId());
+            // if we do not filter for period we must show it
+            if (instance != null && instance.getType().isKindOf(CIAccounting.Periode.getType())) {
+                queryBuilder.addWhereAttrEqValue("PeriodeAbstractLink", instance.getId());
+            } else {
+                periodStr = "linkto[PeriodeAbstractLink].attribute[Name]";
+                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Company,
+                                Context.getThreadContext().getPerson().getCompanies().toArray());
             }
             if (!showSumAccount) {
                 queryBuilder.addWhereAttrEqValue("Summary", false);
@@ -237,10 +239,15 @@ public abstract class Account_Base
             }
             queryBuilder.addWhereAttrEqValue("ToCaseAbstractLink", Instance.get(caseOid).getId());
         }
-        final MultiPrintQuery print = queryBuilder.getPrint();
+        final InstanceQuery query = queryBuilder.getQuery();
+        if (instance.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
+            query.setCompanyDepended(false);
+        }
+        final MultiPrintQuery print = new MultiPrintQuery(query.execute());
         print.addSelect(oidStr, nameStr, descStr);
         if (!periodStr.isEmpty()) {
             print.addSelect(periodStr);
+            print.addAttribute(CIAccounting.AccountAbstract.Company);
         }
         print.execute();
         while (print.next()) {
@@ -249,7 +256,9 @@ public abstract class Account_Base
                 String description = print.<String>getSelect(descStr);
                 final String oid = print.<String>getSelect(oidStr);
                 if (!periodStr.isEmpty()) {
-                    description = description + " - " + print.<String>getSelect(periodStr);
+                    final Company company = print.<Company>getAttribute(CIAccounting.AccountAbstract.Company);
+                    description = description + " - " + print.<String>getSelect(periodStr)
+                                     + (company == null ? "" : (" - " + company.getName()));
                 }
                 final String choice = name + " - " + description;
                 final Map<String, String> map = new HashMap<String, String>();
