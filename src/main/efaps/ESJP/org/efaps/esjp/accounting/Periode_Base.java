@@ -517,15 +517,18 @@ public abstract class Periode_Base
         for (final Entry<String, Instance> entry : map.entrySet()) {
             listIds.add(entry.getValue().getId());
         }
-        final QueryBuilder newQuery = new QueryBuilder(CISales.DocumentSumAbstract);
-        newQuery.addWhereAttrEqValue(CISales.DocumentSumAbstract.ID, listIds.toArray());
+        List<Instance> instances = new ArrayList<Instance>();
+        if (!listIds.isEmpty()) {
+            final QueryBuilder newQuery = new QueryBuilder(CISales.DocumentSumAbstract);
+            newQuery.addWhereAttrEqValue(CISales.DocumentSumAbstract.ID, listIds.toArray());
 
-        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        final DocMulti multiDoc = new DocMulti();
-        multiDoc.analyzeTable(_parameter, filter, newQuery, CISales.DocumentStockAbstract.getType());
+            final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+            final DocMulti multiDoc = new DocMulti();
+            multiDoc.analyzeTable(_parameter, filter, newQuery, CISales.DocumentStockAbstract.getType());
 
-        final InstanceQuery query = newQuery.getQuery();
-        final List<Instance> instances = query.execute();
+            final InstanceQuery query = newQuery.getQuery();
+            instances = query.execute();
+        }
         ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
