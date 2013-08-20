@@ -561,6 +561,7 @@ public abstract class Periode_Base
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
                                       Status.find(CISales.IncomingInvoiceStatus.uuid, "Open").getId(),
                                       Status.find(CISales.IncomingInvoiceStatus.uuid, "Paid").getId(),
+                                      Status.find(CISales.PaymentOrderStatus.uuid, "Open").getId(),
                                       Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId(),
                                       Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Paid").getId());
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
@@ -619,6 +620,7 @@ public abstract class Periode_Base
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
                                         Status.find(CISales.IncomingInvoiceStatus.uuid, "Open").getId(),
                                         Status.find(CISales.IncomingInvoiceStatus.uuid, "Paid").getId(),
+                                        Status.find(CISales.PaymentOrderStatus.uuid, "Open").getId(),
                                         Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId(),
                                         Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Paid").getId());
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);

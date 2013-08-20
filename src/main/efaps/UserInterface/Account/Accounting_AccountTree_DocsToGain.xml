@@ -35,13 +35,11 @@
         <target>
             <menu>Accounting_AccountTree_DocsToGain_Menu</menu>
             <table>Accounting_PeriodeDocumentSumTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Account"
-                method="getDocumentsToBook" />
-            <trigger program="org.efaps.esjp.accounting.Account"
-                name="Accounting_AccountTree_DocsToGain.UI_ACCESSCHECK"
-                method="accessCheck"
-                event="UI_ACCESSCHECK">
-            </trigger>
+            <evaluate program="org.efaps.esjp.accounting.Account" method="getDocumentsToBook">
+                <property name="Types">ERP_DocumentAbstract</property>
+            </evaluate>
+            <trigger program="org.efaps.esjp.accounting.Account" method="accessCheck"
+                name="Accounting_AccountTree_DocsToGain.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

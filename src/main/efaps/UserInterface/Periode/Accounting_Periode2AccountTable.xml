@@ -48,26 +48,26 @@
         </field>
         <field name="toLink">
             <property name="ModeSearch">READONLY</property>
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
-            <property name="Select">linkto[ToLink].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkto[FromLink].oid</property>
+            <property name="Select">linkto[FromLink].attribute[Name]</property>
             <property name="Label">Accounting_Periode2Account/ToLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="description">
             <property name="ModeSearch">READONLY</property>
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
-            <property name="Select">linkto[ToLink].attribute[Description]</property>
+            <property name="SelectAlternateOID">linkto[FromLink].oid</property>
+            <property name="Select">linkto[FromLink].attribute[Description]</property>
             <property name="Label">Accounting_Periode2Account/Description.Label</property>
             <property name="Width">2</property>
         </field>
         <field name="sumBooked">
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
-            <property name="Select">linkto[ToLink].attribute[SumBooked]</property>
+            <property name="SelectAlternateOID">linkto[FromLink].oid</property>
+            <property name="Select">linkto[FromLink].attribute[SumBooked]</property>
             <property name="Label">Accounting_Periode2Account/SumBooked.Label</property>
         </field>
         <field name="sumReport">
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
-            <property name="Select">linkto[ToLink].attribute[SumReport]</property>
+            <property name="SelectAlternateOID">linkto[FromLink].oid</property>
+            <property name="Select">linkto[FromLink].attribute[SumReport]</property>
             <property name="Label">Accounting_Periode2Account/SumReport.Label</property>
         </field>
     </definition>

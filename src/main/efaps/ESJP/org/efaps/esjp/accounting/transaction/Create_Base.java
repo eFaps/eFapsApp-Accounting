@@ -249,7 +249,7 @@ public abstract class Create_Base
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode2Account);
             queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.SalesAccountLink, _salesAccInst.getId());
             final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder accSel = new SelectBuilder().linkto(CIAccounting.Periode2Account.ToLink)
+            final SelectBuilder accSel = new SelectBuilder().linkto(CIAccounting.Periode2Account.FromLink)
                             .oid();
             multi.addSelect(accSel);
             multi.execute();

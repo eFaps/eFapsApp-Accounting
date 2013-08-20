@@ -36,14 +36,14 @@
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_AccountAbstract</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Accounting_AccountAbstract</typelink>
+            <typelink>Accounting_Periode</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

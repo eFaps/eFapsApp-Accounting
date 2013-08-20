@@ -82,9 +82,9 @@ public abstract class Account_Base
     {
         final Return ret = new Return();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode2Account);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.ToLink, _parameter.getInstance().getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.FromLink, _parameter.getInstance().getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selOid = new SelectBuilder().linkto(CIAccounting.Periode2Account.FromLink).oid();
+        final SelectBuilder selOid = new SelectBuilder().linkto(CIAccounting.Periode2Account.ToLink).oid();
         multi.addSelect(selOid);
         multi.execute();
         final String summary = multi.<String>getSelect(selOid);
