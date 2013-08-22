@@ -32,10 +32,10 @@
             <menu>Accounting_PeriodeTree_View_Menu</menu>
             <table>Accounting_ViewTable</table>
             <evaluate program="org.efaps.esjp.accounting.ViewStructurBrowser">
-                <property name="Types">Accounting_ViewRoot</property>
-                <property name="LinkFroms">PeriodeAbstractLink</property>
-                <property name="Child_Types">Accounting_ViewAbstract</property>
-                <property name="Child_LinkFroms">ParentLink</property>
+                <property name="Type">Accounting_ViewRoot</property>
+                <property name="LinkFrom">PeriodeAbstractLink</property>
+                <property name="Child_Type">Accounting_ViewAbstract</property>
+                <property name="Child_LinkFrom">ParentLink</property>
             </evaluate>
         </target>
         <!-- property definitions -->
