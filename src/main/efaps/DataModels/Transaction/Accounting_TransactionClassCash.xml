@@ -33,9 +33,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionClassCash</name>
-        <parent>Accounting_TransactionClass</parent>
         <purpose classification="true">
             <LinkColumn>TransactionLink</LinkColumn>
+            <parent>Accounting_TransactionClass</parent>
         </purpose>
         <attribute>
             <name>OID</name>
