@@ -26,11 +26,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,7 +126,8 @@ public class ConSis
                 amountMN = amountMN.add(acc.getAmountMN());
                 amountME = amountME.add(acc.getAmountME());
             }
-
+            ConSis.LOG.info("amountMN: {}", amountMN);
+            ConSis.LOG.info("amountME: {}", amountME);
             if (found && amountMN.compareTo(BigDecimal.ZERO) == 0 && amountME.compareTo(BigDecimal.ZERO) == 0) {
                 final Insert insert = new Insert(CIAccounting.TransactionOpeningBalance);
                 insert.add(CIAccounting.TransactionOpeningBalance.Date, new DateTime());
@@ -203,12 +204,12 @@ public class ConSis
         final List<String[]> rows = reader.readAll();
         reader.close();
         final Pattern accPattern = Pattern.compile("^[\\d ]*");
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance();
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
         formater.setParseBigDecimal(true);
-        final DecimalFormatSymbols frmSym = DecimalFormatSymbols.getInstance();
-        frmSym.setDecimalSeparator(",".toCharArray()[0]);
-        frmSym.setPatternSeparator(".".toCharArray()[0]);
-        formater.setDecimalFormatSymbols(frmSym);
+//        final DecimalFormatSymbols frmSym = DecimalFormatSymbols.getInstance();
+//        frmSym.setDecimalSeparator(",".toCharArray()[0]);
+//        frmSym.setPatternSeparator(".".toCharArray()[0]);
+//        formater.setDecimalFormatSymbols(frmSym);
 
         for (final String[] row : rows) {
             final String accStr = row[0];
