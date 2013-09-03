@@ -281,9 +281,9 @@ public abstract class Transaction_Base
      * @return rate
      * @throws EFapsException on error
      */
-    protected Rate getExchangeRate(final Parameter _parameter,
+    public Rate getExchangeRate(final Parameter _parameter,
                                    final Instance _periodeInst,
-                                   final long _currId,
+                                   final Long _currId,
                                    final DateTime _date,
                                    final Map<Long, Rate> _curr2Rate)
         throws EFapsException
@@ -805,7 +805,7 @@ public abstract class Transaction_Base
             final Rate rate = getExchangeRate(_parameter, periodeInstance, currId, doc.getDate(), null);
             doc.setRate(rate);
 
-            buildDoc4ExecuteButton(_parameter, doc, rate);
+            buildDoc4ExecuteButton(_parameter, doc);
 
             if (doc.getInstance() != null) {
                 doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType())
@@ -821,12 +821,12 @@ public abstract class Transaction_Base
         return ret;
     }
 
-    protected void buildDoc4ExecuteButton(final Parameter _parameter,
-                                          final Document _doc,
-                                          final Rate _rate)
+    protected Boolean buildDoc4ExecuteButton(final Parameter _parameter,
+                                          final Document _doc)
         throws EFapsException
     {
         final String caseOid = _parameter.getParameterValue("case");
+        final Rate rate = _doc.getRate();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
                         Instance.get(caseOid).getId());
@@ -865,7 +865,7 @@ public abstract class Transaction_Base
             }
 
             final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                            .divide(_rate.getValue(), BigDecimal.ROUND_HALF_UP);
+                                                            .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP);
             String postFix;
             Map<String, TargetAccount> acounts;
             if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
@@ -879,9 +879,11 @@ public abstract class Transaction_Base
             final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
             account.setAmountRate(accAmountRate);
             account.setLink(getLinkString(oid, postFix));
-            account.setRate(_rate);
+            account.setRate(rate);
             acounts.put(oid, account);
         }
+
+        return true;
     }
 
     protected StringBuilder buildHtml4ExecuteButton(final Parameter _parameter,
