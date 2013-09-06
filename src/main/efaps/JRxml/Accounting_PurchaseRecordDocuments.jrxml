@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_PurchaseRecordDocuments" language="groovy" pageWidth="1231" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1032" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" uuid="836d12a5-2cc0-4772-adcd-9c7bf29e0dde">
+<!-- Created with Jaspersoft Studio version 4.7.0-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_PurchaseRecordDocuments" language="groovy" pageWidth="1231" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1032" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" isFloatColumnFooter="true" isIgnorePagination="true" uuid="836d12a5-2cc0-4772-adcd-9c7bf29e0dde">
+	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
@@ -106,92 +107,123 @@
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<detail>
-		<band height="21">
+		<band height="18" splitType="Prevent">
 			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
-				<reportElement uuid="c2e1960b-3206-4576-b756-c8e94f778e0f" x="157" y="0" width="62" height="16"/>
-				<textElement/>
+				<reportElement uuid="c2e1960b-3206-4576-b756-c8e94f778e0f" x="157" y="0" width="62" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{docDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement uuid="1eeec2a4-d6ea-4bf3-b019-07e4aff6c1f5" x="75" y="0" width="82" height="16"/>
-				<textElement/>
+				<reportElement uuid="1eeec2a4-d6ea-4bf3-b019-07e4aff6c1f5" x="75" y="0" width="82" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{docName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
-				<reportElement uuid="1e2cea6d-5dda-4e77-a252-19daca452285" x="219" y="0" width="62" height="16"/>
-				<textElement/>
+				<reportElement uuid="1e2cea6d-5dda-4e77-a252-19daca452285" x="219" y="0" width="62" height="18" isPrintWhenDetailOverflows="true">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{docDueDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement uuid="a59786dd-0041-40f3-8383-e0fe382724af" x="309" y="0" width="81" height="16"/>
-				<textElement/>
+				<reportElement uuid="a59786dd-0041-40f3-8383-e0fe382724af" x="309" y="0" width="81" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement uuid="4c28e3cb-ca3c-49a4-9e65-3a36540302a4" x="390" y="0" width="155" height="16"/>
-				<textElement/>
+				<reportElement uuid="4c28e3cb-ca3c-49a4-9e65-3a36540302a4" x="390" y="0" width="155" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement uuid="ff78fcce-0add-44e2-96f7-4ef51a024d01" x="281" y="0" width="28" height="16"/>
-				<textElement/>
+				<reportElement uuid="ff78fcce-0add-44e2-96f7-4ef51a024d01" x="281" y="0" width="28" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{contactDocType}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="545" y="0" width="70" height="16"/>
-				<textElement textAlignment="Right"/>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="545" y="0" width="70" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{withoutTax}
 ? null
 : $V{netValue}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="615" y="0" width="70" height="16"/>
-				<textElement textAlignment="Right"/>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="615" y="0" width="70" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{withoutTax}
 ? null
 : $V{vat}]]></textFieldExpression>
 			</textField>
-			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="685" y="0" width="70" height="16"/>
-				<textElement textAlignment="Right"/>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5c7f1dc5-4166-4450-9226-8aec9b02458b" x="685" y="0" width="70" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{withoutTax}
 ?  $V{netValue}
 : null]]></textFieldExpression>
 			</textField>
-			<textField pattern="">
-				<reportElement uuid="a93c9cef-39a6-42dd-bb4d-dbf91e6a725e" x="825" y="0" width="70" height="16"/>
-				<textElement textAlignment="Right"/>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="a93c9cef-39a6-42dd-bb4d-dbf91e6a725e" x="825" y="0" width="70" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{crossValue}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="c73c9a10-3e05-42ce-912c-d3c19d395986" x="0" y="0" width="50" height="16"/>
+				<reportElement uuid="c73c9a10-3e05-42ce-912c-d3c19d395986" x="0" y="0" width="50" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
 				<box rightPadding="2"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{docRevision}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="true">
-				<reportElement uuid="1f2c235a-d355-4acb-9d5e-bf61fc557de1" x="965" y="0" width="65" height="16"/>
-				<textElement/>
+				<reportElement uuid="1f2c235a-d355-4acb-9d5e-bf61fc557de1" x="965" y="0" width="65" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{detractionName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yy" isBlankWhenNull="true">
-				<reportElement uuid="a4733915-1a46-41a3-b14c-d02fc5f38702" x="1030" y="0" width="62" height="16">
+				<reportElement uuid="a4733915-1a46-41a3-b14c-d02fc5f38702" x="1030" y="0" width="62" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[new Boolean($F{detractionName} != null && !$F{detractionName}.isEmpty())]]></printWhenExpression>
 				</reportElement>
-				<textElement/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{detractionDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="96eff85c-86f9-4751-adf3-57a7842e8ab4" x="50" y="0" width="25" height="16"/>
-				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$F{docType} != null ? $F{docType} : "01"
-]]></textFieldExpression>
+				<reportElement uuid="96eff85c-86f9-4751-adf3-57a7842e8ab4" x="50" y="0" width="25" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{docType} != null ? $F{docType} : "01"]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.000#">
-				<reportElement uuid="f4566242-7e8a-4b99-be3b-cc318c510e17" key="" x="1092" y="0" width="45" height="16">
+				<reportElement uuid="f4566242-7e8a-4b99-be3b-cc318c510e17" key="" x="1092" y="0" width="45" height="18" isPrintWhenDetailOverflows="true">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[new Boolean($F{docRate}.compareTo( java.math.BigDecimal.ONE ) != 0)]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{docRate}]]></textFieldExpression>
 			</textField>
 		</band>
