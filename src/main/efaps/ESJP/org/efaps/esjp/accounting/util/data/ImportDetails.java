@@ -25,18 +25,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Formatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.ci.CIType;
-import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
@@ -151,16 +155,22 @@ public class ImportDetails
         reader.close();
         entries.remove(0);
         int i = 1;
+        final Map<String, Document> map = new HashMap<String, Document>();
         for (final String[] row : entries) {
             i++;
             final String docNumber = row[0];
             final String account = row[5];
+            final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
+            formater.setParseBigDecimal(true);
+            final String amountMEStr = row[6];
+            final String amountMNStr = row[7];
+
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, account.trim());
             final InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (query.next()) {
-                ImportDetails.LOG.info("Found account: {}", account);
+                ImportDetails.LOG.info("Found account: '{}' ", account);
                 final String[] docSplit = docNumber.split("-");
                 if (docSplit.length != 2) {
                     ImportDetails.LOG.warn("Document '{}'  - Line: {} has no '-' to distinguish SerialNumber and No.",
@@ -174,46 +184,48 @@ public class ImportDetails
                         final Formatter criteria = new Formatter();
                         criteria.format("%03d-%06d", serial, no);
 
-                        final QueryBuilder queryBldr2 = new QueryBuilder(_type);
-                        queryBldr2.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, criteria.toString());
-                        final InstanceQuery query2 = queryBldr2.getQuery();
-                        query2.executeWithoutAccessCheck();
-                        if (query2.next()) {
-                            final QueryBuilder queryBldrTxn = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-                            queryBldrTxn.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink,
-                                            query.getCurrentValue());
-                            final MultiPrintQuery queryTxn = queryBldrTxn.getPrint();
-                            final SelectBuilder selDocInst = new SelectBuilder()
-                                            .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
-                                            .clazz(CIAccounting.TransactionClassExternal)
-                                            .linkto(CIAccounting.TransactionClassExternal.DocumentLink).instance();
-                            queryTxn.addSelect(selDocInst);
-                            queryTxn.executeWithoutAccessCheck();
-                            boolean valid = false;
-                            while (queryTxn.next()) {
-                                final Instance docInst = queryTxn.<Instance>getSelect(selDocInst);
-                                if (docInst != null && docInst.isValid()
-                                                    && docInst.getOid().equals(query2.getCurrentValue().getOid())) {
-                                    valid = true;
-                                    break;
-                                }
-                            }
-                            if (valid) {
-                                ImportDetails.LOG.info("Found relation for account: {} with document: '{}'", account, docNumber);
-                            } else {
-                                ImportDetails.LOG.error("The Account: '{}', has no relation with Document: '{}' - Line: {} ", account, docNumber, i);
-                            }
-                        } else {
-                            ImportDetails.LOG.error("For Account: '{}', No Document found for Number: '{}' - Line: {} ", account, docNumber, i);
-                        }
+                        final String name = criteria.toString();
 
+                        Document doc;
+                        if (map.containsKey(name)) {
+                            doc = map.get(name);
+                        } else {
+                            doc = new Document(name, account);
+                        }
+                        final BigDecimal amountME = (BigDecimal) formater.parse(amountMEStr);
+                        final BigDecimal amountMN = (BigDecimal) formater.parse(amountMNStr);
+
+                        if (amountME.compareTo(BigDecimal.ZERO) >= 0) {
+                            doc.setAmountMECredit(amountME);
+                            doc.setAmountMNCredit(amountMN);
+                        } else {
+                            doc.setAmountMEDebit(amountME);
+                            doc.setAmountMNDebit(amountMN);
+                        }
+                        map.put(name, doc);
                         criteria.close();
                     } catch (final NumberFormatException e) {
                         ImportDetails.LOG.error("wrong format for document '{}'", docNumber);
+                    } catch (final ParseException e) {
+                        ImportDetails.LOG.error("wrong format for amounts '{}' - '{}'", amountMEStr, amountMNStr);
                     }
                 }
             } else {
                 ImportDetails.LOG.error("Not found account: {}", account);
+            }
+        }
+
+        for (final Document doc : map.values()) {
+            final BigDecimal amountCreditMN = doc.getAmountMNCredit() != null ? doc.getAmountMNCredit() : BigDecimal.ZERO;
+            final BigDecimal amountDebitMN = doc.getAmountMNDebit() != null ? doc.getAmountMNDebit() : BigDecimal.ZERO;
+            final BigDecimal amountMN = amountCreditMN.add(amountDebitMN);
+            final BigDecimal amountCreditME = doc.getAmountMECredit() != null ? doc.getAmountMECredit() : BigDecimal.ZERO;
+            final BigDecimal amountDebitME = doc.getAmountMEDebit() != null ? doc.getAmountMEDebit() : BigDecimal.ZERO;
+            final BigDecimal amountME = amountCreditME.add(amountDebitME);
+            if (BigDecimal.ZERO.compareTo(amountMN) == 0 && BigDecimal.ZERO.compareTo(amountME) == 0) {
+                ImportDetails.LOG.info("For Document: '{}'. Sum of Credit amounts(ME-MN): '{}'-'{}' and Debit amounts(ME-MN): '{}'-'{}' are Zero (0)", doc.getName(), amountCreditME, amountCreditMN, amountDebitME, amountDebitMN);
+            } else {
+                ImportDetails.LOG.error("For Document: '{}'. Sum of Credit with Debit Amount (ME): '{}' + '{}' = '{}' and Credit with Debit Amount (MN): '{}' + '{}' = '{}'", doc.getName(), amountCreditME, amountDebitME, amountME, amountCreditMN, amountDebitMN, amountMN);
             }
         }
         return ret;
@@ -222,6 +234,112 @@ public class ImportDetails
 
     public static class Document
     {
+        private String name;
+        private BigDecimal amountMECredit;
+        private BigDecimal amountMEDebit;
+        private BigDecimal amountMNCredit;
+        private BigDecimal amountMNDebit;
+        private String account;
+
+        public Document(final String _name,
+                        final String _account) {
+            this.name = _name;
+            this.account = _account;
+        }
+
+        /**
+         * @return the name
+         */
+        private String getName()
+        {
+            return name;
+        }
+        /**
+         * @param name the name to set
+         */
+        private void setName(final String name)
+        {
+            this.name = name;
+        }
+        /**
+         * @return the account
+         */
+        private String getAccount()
+        {
+            return account;
+        }
+        /**
+         * @param account the account to set
+         */
+        private void setAccount(final String account)
+        {
+            this.account = account;
+        }
+
+        /**
+         * @return the amountMECredit
+         */
+        private BigDecimal getAmountMECredit()
+        {
+            return amountMECredit;
+        }
+
+        /**
+         * @param amountMECredit the amountMECredit to set
+         */
+        private void setAmountMECredit(final BigDecimal amountMECredit)
+        {
+            this.amountMECredit = amountMECredit;
+        }
+
+        /**
+         * @return the amountMEDebit
+         */
+        private BigDecimal getAmountMEDebit()
+        {
+            return amountMEDebit;
+        }
+
+        /**
+         * @param amountMEDebit the amountMEDebit to set
+         */
+        private void setAmountMEDebit(final BigDecimal amountMEDebit)
+        {
+            this.amountMEDebit = amountMEDebit;
+        }
+
+        /**
+         * @return the amountMNCredit
+         */
+        private BigDecimal getAmountMNCredit()
+        {
+            return amountMNCredit;
+        }
+
+        /**
+         * @param amountMNCredit the amountMNCredit to set
+         */
+        private void setAmountMNCredit(final BigDecimal amountMNCredit)
+        {
+            this.amountMNCredit = amountMNCredit;
+        }
+
+        /**
+         * @return the amountMNDebit
+         */
+        private BigDecimal getAmountMNDebit()
+        {
+            return amountMNDebit;
+        }
+
+        /**
+         * @param amountMNDebit the amountMNDebit to set
+         */
+        private void setAmountMNDebit(final BigDecimal amountMNDebit)
+        {
+            this.amountMNDebit = amountMNDebit;
+        }
+
 
     }
 }
