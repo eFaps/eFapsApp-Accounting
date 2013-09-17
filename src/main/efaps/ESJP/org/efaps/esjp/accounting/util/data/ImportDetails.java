@@ -223,7 +223,7 @@ public class ImportDetails
             final BigDecimal amountDebitME = doc.getAmountMEDebit() != null ? doc.getAmountMEDebit() : BigDecimal.ZERO;
             final BigDecimal amountME = amountCreditME.add(amountDebitME);
             if (BigDecimal.ZERO.compareTo(amountMN) == 0 && BigDecimal.ZERO.compareTo(amountME) == 0) {
-                ImportDetails.LOG.info("For Document: '{}'. Sum of Credit amounts(ME-MN): '{}'-'{}' and Debit amounts(ME-MN): '{}'-'{}' are Zero (0)", doc.getName(), amountCreditME, amountCreditMN, amountDebitME, amountDebitMN);
+                ImportDetails.LOG.info("For Document: '{}'. Sum of Credit with Debit Amount (ME): '{}' + '{}' and Credit with Debit Amount (MN): '{}' + '{}' are Zero (0)", doc.getName(), amountCreditME, amountDebitME, amountCreditMN, amountDebitMN);
             } else {
                 ImportDetails.LOG.error("For Document: '{}'. Sum of Credit with Debit Amount (ME): '{}' + '{}' = '{}' and Credit with Debit Amount (MN): '{}' + '{}' = '{}'", doc.getName(), amountCreditME, amountDebitME, amountME, amountCreditMN, amountDebitMN, amountMN);
             }
