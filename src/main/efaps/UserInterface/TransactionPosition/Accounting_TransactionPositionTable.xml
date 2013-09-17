@@ -74,6 +74,11 @@
             <property name="SelectAlternateOID">linkto[TransactionLink].oid</property>
             <property name="Select">linkto[TransactionLink].attribute[Date]</property>
             <property name="Label">Accounting_TransactionPositionAbstract/Date.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
         </field>
         <field name="rateAmount">
             <property name="Attribute">RateAmount</property>
