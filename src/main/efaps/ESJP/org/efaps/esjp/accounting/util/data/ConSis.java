@@ -131,7 +131,7 @@ public class ConSis
             if (found && amountMN.compareTo(BigDecimal.ZERO) == 0 && amountME.compareTo(BigDecimal.ZERO) == 0) {
                 final Insert insert = new Insert(CIAccounting.TransactionOpeningBalance);
                 insert.add(CIAccounting.TransactionOpeningBalance.Date, new DateTime());
-                insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Abertura");
+                insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Apertura");
                 insert.add(CIAccounting.TransactionOpeningBalance.Status,
                                 Status.find(CIAccounting.TransactionStatus.Open));
                 insert.add(CIAccounting.TransactionOpeningBalance.PeriodeLink, _parameter.getInstance());
