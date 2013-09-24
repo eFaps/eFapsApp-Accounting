@@ -90,7 +90,7 @@
             UIUpdate update = new UIUpdate();
 
             <!-- Accounting_MyDesk, MainToolBar -->
-            update.add2Menu("250c6cd3-f4c4-4dd2-aa12-6f497260afce", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
+            update.add2Menu("250c6cd3-f4c4-4dd2-aa12-6f497260afce", "87001cc3-c45c-44de-b8f1-776df507f268", 2);
 
             <!-- connect the Accounting_ERP_CurrencyTree_Rate_Menu_Action_Create Menu to the ERP_CurrencyTree_Rate_Menu_Action menu -->
             update.add2Menu("d9480319-83fb-45ae-9a0b-877271acc034", "590181bd-a12f-4969-b403-5dc68d5089ef", -1);
