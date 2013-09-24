@@ -63,7 +63,7 @@
                 <property name="Type">ERP_DocumentType</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="SetSelected">true</property>
+                <property name="Regex4DefaultValue">01 - .*</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">
