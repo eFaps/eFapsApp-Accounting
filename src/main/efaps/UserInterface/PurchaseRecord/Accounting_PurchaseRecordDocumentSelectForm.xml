@@ -36,9 +36,10 @@
             <table>Accounting_PurchaseRecordDocumentSelectTable</table>
             <evaluate program="org.efaps.esjp.accounting.PurchaseRecord" method="documentMultiPrint">
                 <property name="Type">Sales_IncomingInvoice</property>
-                <property name="Type01">Sales_IncomingCreditNote</property>
-                <property name="Type02">Sales_IncomingReminder</property>
-                <property name="Type03">Accounting_ExternalVoucher</property>
+                <property name="Type01">Sales_IncomingReceipt</property>
+                <property name="Type02">Sales_IncomingCreditNote</property>
+                <property name="Type03">Sales_IncomingReminder</property>
+                <property name="Type04">Accounting_ExternalVoucher</property>
                 <property name="NoStatus">Replaced</property>
              </evaluate>
         </field>
