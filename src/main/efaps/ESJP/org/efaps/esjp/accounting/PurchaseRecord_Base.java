@@ -4,13 +4,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Map.Entry;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -75,16 +73,17 @@ public abstract class PurchaseRecord_Base
                                 CIAccounting.PurchaseRecord2Document.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
 
-                final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-                final String statusStr = (String) properties.get("NoStatus");
-                final String typesStr = (String) properties.get("Types");
-                final List<Long> idStatus = new ArrayList<Long>();
-                final String[] types = typesStr.split(";");
-                for (final String type : types) {
-                    idStatus.add(Status.find(Type.get(type).getStatusAttribute().getLink().getUUID(), statusStr)
-                                    .getId());
+                final Map<Integer, String> nonStatus = analyseProperty(_parameter, "NoStatus");
+                if (!nonStatus.isEmpty()) {
+                    final List<Long> listStatus = new ArrayList<Long>();
+                    for (Entry<Integer, String> entry : nonStatus.entrySet()) {
+                        final Type statusLink = Type.get(_queryBldr.getTypeUUID()).getStatusAttribute().getLink();
+                        listStatus.add(Status.find(statusLink.getUUID(), entry.getValue()).getId());
+                    }
+                    if (!listStatus.isEmpty()) {
+                        _queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract, listStatus.toArray());
+                    }
                 }
-                _queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract, idStatus.toArray());
             }
         };
         return multi.execute(_parameter);
