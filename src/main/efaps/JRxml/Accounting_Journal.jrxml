@@ -23,6 +23,10 @@
         <property name="hasSubReport" value="true"/>
     </parameter>
     <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+    <parameter name="Active" class="java.lang.Boolean"/>
+    <parameter name="CurrencyBase" class="org.efaps.db.Instance"/>
+    <parameter name="CurrencyUI" class="org.efaps.db.Instance"/>
+    <parameter name="RateCurrencyType" class="java.lang.Long"/>
     <parameter name="Name" class="java.lang.String" isForPrompting="false">
         <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
     </parameter>
@@ -188,6 +192,18 @@
             <subreport>
                 <reportElement uuid="c334422d-791a-45e6-9421-2d3c88684b37" x="399" y="0" width="403" height="14"/>
                 <subreportParameter name="EFAPS_DEFINITION"/>
+                <subreportParameter name="Active">
+                    <subreportParameterExpression><![CDATA[$P{Active}]]></subreportParameterExpression>
+                </subreportParameter>
+                <subreportParameter name="CurrencyBase">
+                    <subreportParameterExpression><![CDATA[$P{CurrencyBase}]]></subreportParameterExpression>
+                </subreportParameter>
+                <subreportParameter name="CurrencyUI">
+                    <subreportParameterExpression><![CDATA[$P{CurrencyUI}]]></subreportParameterExpression>
+                </subreportParameter>
+                <subreportParameter name="RateCurrencyType">
+                    <subreportParameterExpression><![CDATA[$P{RateCurrencyType}]]></subreportParameterExpression>
+                </subreportParameter>
                 <dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_JournalPositions")]]></dataSourceExpression>
                 <returnValue subreportVariable="debitSum" toVariable="debitTransactionSum" calculation="Sum"/>
                 <returnValue subreportVariable="creditSum" toVariable="creditTransactionSum" calculation="Sum"/>

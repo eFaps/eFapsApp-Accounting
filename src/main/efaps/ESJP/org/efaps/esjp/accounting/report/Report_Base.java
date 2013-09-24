@@ -46,6 +46,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.design.JasperDesign;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -67,8 +69,13 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -281,7 +288,7 @@ public abstract class Report_Base
         this.indent = isIndent(_parameter);
 
         final ReportTree dataTree = new ReportTree(_parameter.getInstance());
-        dataTree.addChildren();
+        dataTree.addChildren(_parameter);
         for (final AbstractNode node : dataTree.getRootNodes()) {
             node.getSum();
         }
@@ -501,7 +508,7 @@ public abstract class Report_Base
         /**
          * @throws EFapsException on error.
          */
-        public void addChildren()
+        public void addChildren(final Parameter _parameter)
             throws EFapsException
         {
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportNodeRoot);
@@ -522,7 +529,7 @@ public abstract class Report_Base
                 this.rootNodes.add(child);
             }
             for (final AbstractNode root : this.rootNodes) {
-                root.addChildren(1);
+                root.addChildren(_parameter, 1);
             }
             Collections.sort(this.rootNodes, new Comparator<AbstractNode>() {
 
@@ -789,7 +796,8 @@ public abstract class Report_Base
          * @param _level levle for the child nodes
          * @throws EFapsException on error
          */
-        protected abstract void addChildren(final int _level)
+        protected abstract void addChildren(Parameter _parameter,
+                                            final int _level)
             throws EFapsException;
 
         /**
@@ -897,7 +905,8 @@ public abstract class Report_Base
          * {@inheritDoc}
          */
         @Override
-        protected void addChildren(final int _level)
+        protected void addChildren(final Parameter _parameter,
+                                   final int _level)
             throws EFapsException
         {
             final Instance rootInst = Instance.get(getOid());
@@ -930,7 +939,7 @@ public abstract class Report_Base
                 getChildren().add(child);
             }
             for (final AbstractNode child : getChildren()) {
-                child.addChildren(_level + 1);
+                child.addChildren(_parameter, _level + 1);
             }
         }
 
@@ -983,7 +992,8 @@ public abstract class Report_Base
          * {@inheritDoc}
          */
         @Override
-        protected void addChildren(final int _level)
+        protected void addChildren(final Parameter _parameter,
+                                   final int _level)
             throws EFapsException
         {
             final Instance treeInst = Instance.get(getOid());
@@ -1018,7 +1028,7 @@ public abstract class Report_Base
             }
 
             for (final AbstractNode child : getChildren()) {
-                child.addChildren(_level + 1);
+                child.addChildren(_parameter, _level + 1);
             }
         }
 
@@ -1082,9 +1092,17 @@ public abstract class Report_Base
          * {@inheritDoc}
          */
         @Override
-        protected void addChildren(final int _level)
+        protected void addChildren(final Parameter _parameter,
+                                   final int _level)
             throws EFapsException
         {
+            final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
+            final String currency = _parameter.getParameterValue("currency");
+            final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+            final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
+            final SystemConfiguration system = Sales.getSysConfig();
+            final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+
             final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
             transQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
                             Report_Base.this.dateTo.plusDays(1));
@@ -1096,11 +1114,43 @@ public abstract class Report_Base
             queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, this.accountId);
             queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
             final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+            print.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
+                                CIAccounting.TransactionPositionAbstract.RateAmount);
+            final SelectBuilder selRateCur = new SelectBuilder()
+                                .linkto(CIAccounting.TransactionPositionAbstract.RateCurrencyLink).instance();
+            final SelectBuilder selTxnDate = new SelectBuilder()
+                                .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
+                                .attribute(CIAccounting.TransactionAbstract.Date);
+            print.addSelect(selRateCur, selTxnDate);
             print.execute();
             while (print.next()) {
-                final BigDecimal amount = print.<BigDecimal>getAttribute(
-                                CIAccounting.TransactionPositionAbstract.Amount);
+                final CurrencyInst curInstTxnPos = new CurrencyInst(print.<Instance>getSelect(selRateCur));
+                final DateTime date = print.<DateTime>getSelect(selTxnDate);
+                BigDecimal amount = BigDecimal.ZERO;
+                if (active) {
+                    if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
+                        if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
+                            final Rate rateTmp = getRates4DateRange(curInstTxnPos.getInstance(), date, rateCurType);
+                            final BigDecimal amountTmp = print
+                                        .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
+                                                    .multiply(rateTmp.getLabel());
+
+                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                            amount = amountTmp.multiply(rate.getLabel());
+                        } else {
+                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                            amount = print
+                                        .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
+                                                    .multiply(rate.getValue());
+                        }
+
+                    } else {
+                        amount = print.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount);
+                    }
+                } else {
+                    amount = print.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+                }
+
                 this.sum = this.sum.add(amount);
             }
         }
@@ -1131,7 +1181,8 @@ public abstract class Report_Base
         }
 
         @Override
-        protected void addChildren(final int _level)
+        protected void addChildren(final Parameter _parameter,
+                                   final int _level)
             throws EFapsException
         {
             // Nothing must be done
@@ -1142,5 +1193,36 @@ public abstract class Report_Base
         {
             return this.sum;
         }
+    }
+
+    public Rate getRates4DateRange(final Instance _curInst,
+                                   final DateTime _date,
+                                   final Long _rateCurType)
+        throws EFapsException
+    {
+        Rate rate;
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
+        queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
+        queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, _date.minusMinutes(1));
+        queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, _date.plusMinutes(1));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder valSel = new SelectBuilder()
+                        .attribute(CIERP.CurrencyRateAbstract.Rate).value();
+        final SelectBuilder labSel = new SelectBuilder()
+                        .attribute(CIERP.CurrencyRateAbstract.Rate).label();
+        final SelectBuilder curSel = new SelectBuilder()
+                        .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
+        multi.addSelect(valSel, labSel, curSel);
+        multi.execute();
+        if (multi.next()) {
+            rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
+                            multi.<BigDecimal>getSelect(valSel),
+                            multi.<BigDecimal>getSelect(labSel));
+        } else {
+            rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
+                            _curInst.getId())), BigDecimal.ONE);
+        }
+
+        return rate;
     }
 }

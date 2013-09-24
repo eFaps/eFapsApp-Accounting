@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ReportJournal" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ReportJournal" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3b3588f-db0f-4b41-9485-de3cfda64e4c">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="451"/>
 	<property name="ireport.y" value="0"/>
@@ -24,6 +25,10 @@
 		<property name="hasSubReport" value="true"/>
 	</parameter>
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<parameter name="Active" class="java.lang.Boolean"/>
+	<parameter name="CurrencyBase" class="org.efaps.db.Instance"/>
+	<parameter name="CurrencyUI" class="org.efaps.db.Instance"/>
+	<parameter name="RateCurrencyType" class="java.lang.Long"/>
 	<field name="description" class="java.lang.String">
 		<property name="Select" value="attribute[Description]"/>
 	</field>
@@ -46,7 +51,7 @@
 	<pageHeader>
 		<band height="17" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" mode="Opaque" x="1" y="0" width="801" height="17" backcolor="#FFFFFF"/>
+				<reportElement uuid="eae07de5-3737-497f-8a7c-d3e9664561e6" style="TableHeading" mode="Opaque" x="1" y="0" width="801" height="17" backcolor="#FFFFFF"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="2" rightPadding="2">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -57,24 +62,24 @@
 				<textElement>
 					<font isUnderline="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.heading}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.heading}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="409" y="17" width="50" height="16"/>
+				<reportElement uuid="e473b922-0e44-4854-8d92-0b15db52f6b8" style="TableHeading" positionType="Float" mode="Opaque" x="399" y="17" width="60" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="46" y="17" width="67" height="16" backcolor="#CCCCCC">
+				<reportElement uuid="ac98093f-5660-4b6d-af46-550cae291db4" style="TableHeading" positionType="Float" mode="Opaque" x="46" y="17" width="67" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
@@ -83,42 +88,44 @@
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="662" y="0" width="70" height="14">
+				<reportElement uuid="d77a6de1-9100-4775-8722-8033d69f00f4" x="662" y="0" width="70" height="14">
 					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Lima,]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement isPrintRepeatedValues="false" x="732" y="0" width="70" height="14"/>
+				<reportElement uuid="95c5164a-754e-4c76-be28-354599148d11" isPrintRepeatedValues="false" x="732" y="0" width="70" height="14"/>
 				<textElement/>
-				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="662" y="17" width="70" height="16"/>
+				<reportElement uuid="c0561b69-35c6-4ecd-8cd7-700f09ae7b8a" style="TableHeading" positionType="Float" mode="Opaque" x="662" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="113" y="17" width="296" height="16" backcolor="#CCCCCC"/>
+				<reportElement uuid="319a8825-159d-45bd-b0f9-52a2e210eb93" style="TableHeading" positionType="Float" mode="Opaque" x="113" y="17" width="286" height="16" backcolor="#CCCCCC">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
+				<reportElement uuid="47b1ba65-618a-42c9-baf1-61f9ec1c5589" style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
@@ -127,34 +134,34 @@
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="459" y="17" width="203" height="16"/>
+				<reportElement uuid="ab65b611-8ef9-4d32-a6ea-cacd3aa82d25" style="TableHeading" positionType="Float" mode="Opaque" x="459" y="17" width="203" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="732" y="17" width="70" height="16"/>
+				<reportElement uuid="40c342fa-e43d-4298-a50d-1231aaa79578" style="TableHeading" positionType="Float" mode="Opaque" x="732" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Prevent">
 			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="46" y="0" width="67" height="14"/>
+				<reportElement uuid="66b00824-fb12-4115-a924-47a289ad06e1" stretchType="RelativeToBandHeight" mode="Transparent" x="46" y="0" width="67" height="14"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="0">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -164,10 +171,10 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
+				<reportElement uuid="585e5494-0431-4e95-9289-fc8f221effdb" stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -177,10 +184,13 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="113" y="0" width="296" height="14"/>
+				<reportElement uuid="e3f98fe7-d91c-45be-a865-b22c95eb0979" stretchType="RelativeToBandHeight" x="113" y="0" width="286" height="14">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="2" leftPadding="2">
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -190,27 +200,39 @@
 				<textElement verticalAlignment="Top">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="409" y="0" width="393" height="14"/>
+				<reportElement uuid="ff6f2b40-0217-423a-af0a-49c93778b1e0" x="399" y="0" width="403" height="14"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
+				<subreportParameter name="Active">
+					<subreportParameterExpression><![CDATA[$P{Active}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="CurrencyBase">
+					<subreportParameterExpression><![CDATA[$P{CurrencyBase}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="CurrencyUI">
+					<subreportParameterExpression><![CDATA[$P{CurrencyUI}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="RateCurrencyType">
+					<subreportParameterExpression><![CDATA[$P{RateCurrencyType}]]></subreportParameterExpression>
+				</subreportParameter>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_JournalPositions")]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
+				<subreportExpression><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
 	<pageFooter>
 		<band height="22" splitType="Stretch">
 			<textField>
-				<reportElement x="315" y="5" width="80" height="16"/>
+				<reportElement uuid="b339d16a-4ee4-4ac7-bf64-add042e9b5c8" x="315" y="5" width="80" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="395" y="5" width="40" height="16"/>
+				<reportElement uuid="1ee74bd8-9045-42d7-96bc-aeecadeee46a" x="395" y="5" width="40" height="16"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

@@ -27,6 +27,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -36,7 +37,11 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -66,9 +71,20 @@ public abstract class ReportJournalDataSource_Base
                      final Map<String, Object> _jrParameters)
         throws EFapsException
     {
-
         this.jrParameters = _jrParameters;
         super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
+
+        final Boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
+        final String currency = _parameter.getParameterValue("currency");
+        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+        final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
+        final SystemConfiguration system = Sales.getSysConfig();
+        final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+
+        _jrParameters.put("Active", active);
+        _jrParameters.put("CurrencyBase", curBase);
+        _jrParameters.put("CurrencyUI", curInst.getInstance());
+        _jrParameters.put("RateCurrencyType", rateCurType);
     }
 
     @Override

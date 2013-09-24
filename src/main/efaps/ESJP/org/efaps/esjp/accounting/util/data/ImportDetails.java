@@ -196,11 +196,11 @@ public class ImportDetails
                         final BigDecimal amountMN = (BigDecimal) formater.parse(amountMNStr);
 
                         if (amountME.compareTo(BigDecimal.ZERO) >= 0) {
-                            doc.setAmountMECredit(amountME);
-                            doc.setAmountMNCredit(amountMN);
+                            doc.addAmountMECredit(amountME);
+                            doc.addAmountMNCredit(amountMN);
                         } else {
-                            doc.setAmountMEDebit(amountME);
-                            doc.setAmountMNDebit(amountMN);
+                            doc.addAmountMEDebit(amountME);
+                            doc.addAmountMNDebit(amountMN);
                         }
                         map.put(name, doc);
                         criteria.close();
@@ -245,6 +245,10 @@ public class ImportDetails
                         final String _account) {
             this.name = _name;
             this.account = _account;
+            this.amountMECredit = BigDecimal.ZERO;
+            this.amountMEDebit = BigDecimal.ZERO;
+            this.amountMNCredit = BigDecimal.ZERO;
+            this.amountMNDebit = BigDecimal.ZERO;
         }
 
         /**
@@ -287,9 +291,9 @@ public class ImportDetails
         /**
          * @param amountMECredit the amountMECredit to set
          */
-        private void setAmountMECredit(final BigDecimal amountMECredit)
+        private void addAmountMECredit(final BigDecimal amountMECredit)
         {
-            this.amountMECredit = amountMECredit;
+            this.amountMECredit = this.amountMECredit.add(amountMECredit);
         }
 
         /**
@@ -303,9 +307,9 @@ public class ImportDetails
         /**
          * @param amountMEDebit the amountMEDebit to set
          */
-        private void setAmountMEDebit(final BigDecimal amountMEDebit)
+        private void addAmountMEDebit(final BigDecimal amountMEDebit)
         {
-            this.amountMEDebit = amountMEDebit;
+            this.amountMEDebit = this.amountMEDebit.add(amountMEDebit);
         }
 
         /**
@@ -319,9 +323,9 @@ public class ImportDetails
         /**
          * @param amountMNCredit the amountMNCredit to set
          */
-        private void setAmountMNCredit(final BigDecimal amountMNCredit)
+        private void addAmountMNCredit(final BigDecimal amountMNCredit)
         {
-            this.amountMNCredit = amountMNCredit;
+            this.amountMNCredit = this.amountMNCredit.add(amountMNCredit);
         }
 
         /**
@@ -335,9 +339,9 @@ public class ImportDetails
         /**
          * @param amountMNDebit the amountMNDebit to set
          */
-        private void setAmountMNDebit(final BigDecimal amountMNDebit)
+        private void addAmountMNDebit(final BigDecimal amountMNDebit)
         {
-            this.amountMNDebit = amountMNDebit;
+            this.amountMNDebit = this.amountMNDebit.add(amountMNDebit);
         }
 
 
