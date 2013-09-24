@@ -28,6 +28,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -39,7 +40,12 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -140,7 +146,7 @@ public abstract class ReportAccountDataSource_Base
             while (multi.next()) {
                 final String accOid = multi.<String>getSelect(sel);
                 final Instance accInst = Instance.get(accOid);
-                final BigDecimal[] debitCredit = getDebitCredit(accInst, dateFrom, dateTo);
+                final BigDecimal[] debitCredit = getDebitCredit(_parameter, accInst, dateFrom, dateTo);
                 final PrintQuery print = new PrintQuery(accInst);
                 print.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
                 print.execute();
@@ -172,11 +178,19 @@ public abstract class ReportAccountDataSource_Base
      * @return Array of BigDecimal { Debit Amount, Credit Amount}
      * @throws EFapsException on error
      */
-    protected BigDecimal[] getDebitCredit(final Instance _accInst,
+    protected BigDecimal[] getDebitCredit(final Parameter _parameter,
+                                          final Instance _accInst,
                                           final DateTime _dateFrom,
                                           final DateTime _dateTo)
         throws EFapsException
     {
+        final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
+        final String currency = _parameter.getParameterValue("currency");
+        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+        final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
+        final SystemConfiguration system = Sales.getSysConfig();
+        final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+
         BigDecimal debit = BigDecimal.ZERO;
         BigDecimal credit = BigDecimal.ZERO;
         // get the transactions fot the given account instance
@@ -191,10 +205,45 @@ public abstract class ReportAccountDataSource_Base
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, _accInst.getId());
         queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+        multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
+                            CIAccounting.TransactionPositionAbstract.RateAmount);
+        final SelectBuilder selRateCur = new SelectBuilder()
+                .linkto(CIAccounting.TransactionPositionAbstract.RateCurrencyLink).instance();
+        final SelectBuilder selTxnDate = new SelectBuilder()
+                .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
+                .attribute(CIAccounting.TransactionAbstract.Date);
+        multi.addSelect(selRateCur, selTxnDate);
         multi.execute();
         while (multi.next()) {
-            final BigDecimal amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+            final CurrencyInst curInstTxnPos = new CurrencyInst(multi.<Instance>getSelect(selRateCur));
+            final DateTime date = multi.<DateTime>getSelect(selTxnDate);
+
+            BigDecimal amount = BigDecimal.ZERO;
+            if (active) {
+                if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
+                    if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
+                        final Rate rateTmp = new Report()
+                                    .getRates4DateRange(curInstTxnPos.getInstance(), date, rateCurType);
+                        final BigDecimal amountTmp = multi
+                                    .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
+                                                .multiply(rateTmp.getLabel());
+
+                        final Rate rate = new Report().getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                        amount = amountTmp.multiply(rate.getLabel());
+                    } else {
+                        final Rate rate = new Report().getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                        amount = multi
+                                    .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
+                                                .multiply(rate.getValue());
+                    }
+
+                } else {
+                    amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount);
+                }
+            } else {
+                amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+            }
+
             if (multi.getCurrentInstance().getType().equals(CIAccounting.TransactionPositionCredit.getType())) {
                 credit = credit.add(amount);
             } else {
@@ -207,7 +256,7 @@ public abstract class ReportAccountDataSource_Base
         final InstanceQuery accQuery = accQueryBldr.getQuery();
         accQuery.execute();
         while (accQuery.next()) {
-            final BigDecimal[] amounts = getDebitCredit(accQuery.getCurrentValue(), _dateFrom, _dateTo);
+            final BigDecimal[] amounts = getDebitCredit(_parameter, accQuery.getCurrentValue(), _dateFrom, _dateTo);
             debit = debit.add(amounts[0]);
             credit = credit.add(amounts[1]);
         }
