@@ -338,9 +338,10 @@ public abstract class Transaction_Base
     {
         Type type = CIAccounting.ERP_CurrencyRateAccounting.getType();
         final SystemConfiguration config = Accounting.getSysConfig();
-        final String typeStr = config.getAttributeValue(AccountingSettings.RATECURTYPE4DOCS);
-        if (typeStr != null) {
-            type = Type.get(typeStr);
+        final String uuidStr = config.getAttributeValue(AccountingSettings.RATECURTYPE4DOCS);
+        if (uuidStr != null) {
+            UUID uuid = UUID.fromString(uuidStr);
+            type = Type.get(uuid);
         }
         return type;
     }
