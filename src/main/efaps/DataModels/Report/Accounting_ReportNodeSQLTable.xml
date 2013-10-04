@@ -44,7 +44,7 @@
             <column name="PARENTID"     type="INTEGER" />
             <column name="POSITION"     type="INTEGER" />
             <column name="NUMB"         type="STRING_SHORT"                 length="16" />
-            <column name="LABEL"        type="STRING_SHORT"                 length="128" />
+            <column name="LABEL"        type="STRING_SHORT"                 length="256" />
             <column name="SHOW"         type="BOOLEAN"      not-null="true" />
             <column name="SUM"          type="BOOLEAN"      not-null="true" />
             <column name="CREATOR"      type="INTEGER"      not-null="true" />
