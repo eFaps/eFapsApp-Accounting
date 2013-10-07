@@ -48,4 +48,20 @@ public interface AccountingSettings
      */
     String RATECURTYPE4DOCS = "org.efaps.accounting.RateCurrencyType4Documents";
 
+    /**
+     * Account name for credit to round when the difference between credit and debit is minimum.
+     */
+    String ROUNDINGCREDIT = "RoundingCredit";
+
+    /**
+     * Account name for debit to round when the difference between credit and debit is minimum.
+     */
+    String ROUNDINGDEBIT = "RoundingDebit";
+
+    /**
+     * Account name for credit or debit to complete the total credit or debit amount, when the
+     * difference between credit and debit is bigger than the minimum.
+     */
+    String TRANSFERACCOUNT = "TransferAccount";
+
 }

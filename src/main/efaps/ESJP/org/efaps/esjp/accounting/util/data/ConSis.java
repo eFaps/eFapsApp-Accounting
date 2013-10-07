@@ -262,7 +262,7 @@ public class ConSis
          */
         public BigDecimal getRate()
         {
-            return this.amountME.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : this.amountMN.setScale(8).divide(
+            return this.amountME.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : this.amountMN.setScale(8).divide(
                             this.amountME, BigDecimal.ROUND_HALF_UP);
         }
 

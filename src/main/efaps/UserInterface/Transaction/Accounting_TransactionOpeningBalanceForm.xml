@@ -33,6 +33,11 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionOpeningBalanceForm</name>
         <!-- fields -->
+        <field name="classification" character="Classification">
+            <property name="Classification">Accounting_TransactionClass</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
         <field name="setPeriode">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>

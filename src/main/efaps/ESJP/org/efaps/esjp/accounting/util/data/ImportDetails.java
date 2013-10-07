@@ -29,22 +29,35 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.ci.CIType;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,13 +74,30 @@ public class ImportDetails
 {
     private static Logger LOG = LoggerFactory.getLogger(ImportDetails.class);
 
-    public Return importDetailsInvoice(final Parameter _parameter)
+    public Return importDetailsInvoice(final Parameter _parameter) throws ParseException
     {
-        final String filename = _parameter.getParameterValue("valueField");
+        final String[] params = _parameter.getParameterValues("valueField");
+        final Map<String, String> paramMap = new HashMap<String, String>();
+        int cont = 0;
+        for (final String param : params) {
+            final String key = _parameter.getParameterValues("keyField")[cont];
+            final String valueStr = param;
+            paramMap.put(key, valueStr);
+            cont++;
+        }
+        final String filename = paramMap.get("location");
+        final String dateStr = paramMap.get("date");
+        final String typeStr = paramMap.get("type");
+        final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+        final DateTime date = dateStr != null ? new DateTime(format.parse(dateStr)) : new DateTime();
         final File file = new File(filename);
         try {
-            checkDocs(file, CISales.Invoice);
-            checkAccounts(file, CISales.Invoice);
+            if (typeStr != null) {
+                final Map<String, Instance> map = checkDocs(file, Type.get(typeStr));
+                checkAccounts(file, map, date);
+            } else {
+                checkAccounts(file, null, date);
+            }
 
 //            final List<Account> accs = readAccounts4Concar(file);
 //            for (final Account acc  :accs) {
@@ -91,14 +121,14 @@ public class ImportDetails
     /**
      *
      */
-    protected List<Document> checkDocs(final File _file,
-                                       final CIType _type)
+    protected Map<String, Instance> checkDocs(final File _file,
+                                              final Type _type)
         throws IOException, EFapsException
     {
         final CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(_file), "UTF-8"));
         final List<String[]> entries = reader.readAll();
         reader.close();
-        final List<Document> ret = new ArrayList<Document>();
+        final Map<String, Instance> ret = new HashMap<String, Instance>();
         entries.remove(0);
         String docNumber = "";
         int i = 1;
@@ -127,6 +157,7 @@ public class ImportDetails
                         query.executeWithoutAccessCheck();
                         if (query.next()) {
                             ImportDetails.LOG.info("Found Document: '{}'", query.getCurrentValue());
+                            ret.put(criteria.toString(), query.getCurrentValue());
                             if (query.next()) {
                                 ImportDetails.LOG.error("Found duplicated Document: '{}'", query.getCurrentValue());
                             }
@@ -146,7 +177,8 @@ public class ImportDetails
     }
 
     protected List<Document> checkAccounts(final File _file,
-                                           final CIType _type)
+                                           final Map<String, Instance> _docMap,
+                                           final DateTime _date)
         throws IOException, EFapsException
     {
         final List<Document> ret = new ArrayList<Document>();
@@ -159,50 +191,72 @@ public class ImportDetails
         for (final String[] row : entries) {
             i++;
             final String docNumber = row[0];
-            final String account = row[5];
+            final String accountStr = row[5];
+            final String accountDesc = row[4];
             final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
             formater.setParseBigDecimal(true);
             final String amountMEStr = row[6];
             final String amountMNStr = row[7];
 
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, account.trim());
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accountStr.trim());
             final InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (query.next()) {
-                ImportDetails.LOG.info("Found account: '{}' ", account);
+                ImportDetails.LOG.info("Found account: '{}' ", accountStr);
                 final String[] docSplit = docNumber.split("-");
-                if (docSplit.length != 2) {
+                if (docSplit.length != 2 && _docMap != null) {
                     ImportDetails.LOG.warn("Document '{}'  - Line: {} has no '-' to distinguish SerialNumber and No.",
                                     docNumber, i);
                 } else {
-                    final String serialNo = docSplit[0];
-                    final String docNo = docSplit[1];
                     try {
-                        final int serial = Integer.parseInt(serialNo.trim().replaceAll("\\D", ""));
-                        final int no = Integer.parseInt(docNo.trim().replaceAll("\\D", ""));
                         final Formatter criteria = new Formatter();
-                        criteria.format("%03d-%06d", serial, no);
-
-                        final String name = criteria.toString();
+                        String name = docNumber;
+                        if (_docMap != null) {
+                            final String serialNo = docSplit[0];
+                            final String docNo = docSplit[1];
+                            final int serial = Integer.parseInt(serialNo.trim().replaceAll("\\D", ""));
+                            final int no = Integer.parseInt(docNo.trim().replaceAll("\\D", ""));
+                            criteria.format("%03d-%06d", serial, no);
+                            name = criteria.toString();
+                        }
 
                         Document doc;
                         if (map.containsKey(name)) {
                             doc = map.get(name);
                         } else {
-                            doc = new Document(name, account);
+                            if (_docMap != null && _docMap.containsKey(name)) {
+                                doc = new Document(name, _docMap.get(name));
+                            } else {
+                                doc = new Document(name, null);
+                            }
                         }
+
                         final BigDecimal amountME = (BigDecimal) formater.parse(amountMEStr);
                         final BigDecimal amountMN = (BigDecimal) formater.parse(amountMNStr);
 
-                        if (amountME.compareTo(BigDecimal.ZERO) >= 0) {
+                        if (amountMN.compareTo(BigDecimal.ZERO) >= 0) {
                             doc.addAmountMECredit(amountME);
                             doc.addAmountMNCredit(amountMN);
                         } else {
                             doc.addAmountMEDebit(amountME);
                             doc.addAmountMNDebit(amountMN);
                         }
+
+                        final Map<String, Account> accounts = doc.getAccounts();
+                        Account acc;
+                        if (accounts.containsKey(accountStr)) {
+                            acc = accounts.get(accountStr);
+                        } else {
+                            acc = new Account(accountStr, accountDesc);
+                            accounts.put(accountStr, acc);
+                        }
+                        acc.addAmountME(amountME);
+                        acc.addAmountMN(amountMN);
+                        acc.setInstance(query.getCurrentValue());
+
                         map.put(name, doc);
+
                         criteria.close();
                     } catch (final NumberFormatException e) {
                         ImportDetails.LOG.error("wrong format for document '{}'", docNumber);
@@ -211,10 +265,11 @@ public class ImportDetails
                     }
                 }
             } else {
-                ImportDetails.LOG.error("Not found account: {}", account);
+                ImportDetails.LOG.error("Not found account: {}", accountStr);
             }
         }
 
+        final Instance periodeInst = getPeriodeInstance();
         for (final Document doc : map.values()) {
             final BigDecimal amountCreditMN = doc.getAmountMNCredit() != null ? doc.getAmountMNCredit() : BigDecimal.ZERO;
             final BigDecimal amountDebitMN = doc.getAmountMNDebit() != null ? doc.getAmountMNDebit() : BigDecimal.ZERO;
@@ -227,28 +282,167 @@ public class ImportDetails
             } else {
                 ImportDetails.LOG.error("For Document: '{}'. Sum of Credit with Debit Amount (ME): '{}' + '{}' = '{}' and Credit with Debit Amount (MN): '{}' + '{}' = '{}'", doc.getName(), amountCreditME, amountDebitME, amountME, amountCreditMN, amountDebitMN, amountMN);
             }
+
+            final Insert insert = new Insert(CIAccounting.TransactionOpeningBalance);
+            insert.add(CIAccounting.TransactionOpeningBalance.Date, _date);
+            if (_docMap != null) {
+                insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Apertura");
+            } else {
+                insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Apertura sin Documento");
+            }
+            insert.add(CIAccounting.TransactionOpeningBalance.Status,
+                            Status.find(CIAccounting.TransactionStatus.Open));
+            insert.add(CIAccounting.TransactionOpeningBalance.PeriodeLink, periodeInst);
+            insert.executeWithoutAccessCheck();
+
+            if (_docMap != null) {
+                final Instance instance = insert.getInstance();
+
+                final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
+                final Insert insertClassRel = new Insert(classification1.getClassifyRelationType());
+                insertClassRel.add(classification1.getRelLinkAttributeName(), instance.getId());
+                insertClassRel.add(classification1.getRelTypeAttributeName(), classification1.getId());
+                insertClassRel.execute();
+
+                final Insert insertClass = new Insert(classification1);
+                insertClass.add(classification1.getLinkAttributeName(), instance.getId());
+                insertClass.execute();
+
+                final Classification classification2 = (Classification) CIAccounting.TransactionClassDocument.getType();
+                final Insert insertClassRel2 = new Insert(classification2.getClassifyRelationType());
+                insertClassRel2.add(classification2.getRelLinkAttributeName(), instance.getId());
+                insertClassRel2.add(classification2.getRelTypeAttributeName(), classification2.getId());
+                insertClassRel2.execute();
+
+                final Insert insertClass2 = new Insert(classification2);
+                insertClass2.add(classification2.getLinkAttributeName(), instance.getId());
+                insertClass2.add(CIAccounting.TransactionClassDocument.DocumentLink, doc.getInstance());
+                insertClass2.execute();
+            }
+
+            final Map<String, Account> accounts = doc.getAccounts();
+            final Instance basCur = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            for (final Account acc : accounts.values()) {
+                final Insert insertpos = new Insert(
+                                acc.getAmountMN().compareTo(BigDecimal.ZERO) > 0
+                                ? CIAccounting.TransactionPositionCredit : CIAccounting.TransactionPositionDebit);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.AccountLink, acc.getInstance());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.Amount, acc.getAmountMN());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, basCur);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.Rate, acc.getRateObject());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.RateAmount, acc.getAmountME());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, 1);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.TransactionLink,  insert.getInstance());
+                insertpos.executeWithoutAccessCheck();
+            }
+
+            if (amountCreditMN.compareTo(amountDebitMN.abs()) != 0
+                        && amountCreditMN.subtract(amountDebitMN.abs()).abs().compareTo(new BigDecimal("0.05")) <= 0) {
+                Insert insertpos = null;
+                Account acc = null;
+                if (amountCreditMN.compareTo(amountDebitMN.abs()) > 0) {
+                    acc = getRoundingAccount(AccountingSettings.ROUNDINGDEBIT);
+                    acc.addAmountMN(amountCreditMN.subtract(amountDebitMN.abs()).negate());
+                    acc.addAmountME(amountCreditME.subtract(amountDebitME.abs()).negate());
+                    insertpos = new Insert(CIAccounting.TransactionPositionDebit);
+                } else {
+                    acc = getRoundingAccount(AccountingSettings.ROUNDINGCREDIT);
+                    acc.addAmountMN(amountDebitMN.abs().subtract(amountCreditMN));
+                    acc.addAmountME(amountDebitME.abs().subtract(amountCreditME));
+                    insertpos = new Insert(CIAccounting.TransactionPositionCredit);
+                }
+                insertpos.add(CIAccounting.TransactionPositionAbstract.AccountLink, acc.getInstance());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.Amount, acc.getAmountMN());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, basCur);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.Rate, acc.getRateObject());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.RateAmount, acc.getAmountME());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, 1);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.TransactionLink,  insert.getInstance());
+                insertpos.executeWithoutAccessCheck();
+            } else if (amountCreditMN.compareTo(amountDebitMN.abs()) != 0
+                        && amountCreditMN.subtract(amountDebitMN.abs()).abs().compareTo(new BigDecimal("0.05")) > 0) {
+                Insert insertpos = null;
+                final Account acc = getRoundingAccount(AccountingSettings.TRANSFERACCOUNT);;
+                if (amountCreditMN.compareTo(amountDebitMN.abs()) > 0) {
+                    acc.addAmountMN(amountCreditMN.subtract(amountDebitMN.abs()).negate());
+                    acc.addAmountME(amountCreditME.subtract(amountDebitME.abs()).negate());
+                    insertpos = new Insert(CIAccounting.TransactionPositionDebit);
+                } else {
+                    acc.addAmountMN(amountDebitMN.abs().subtract(amountCreditMN));
+                    acc.addAmountME(amountDebitME.abs().subtract(amountCreditME));
+                    insertpos = new Insert(CIAccounting.TransactionPositionCredit);
+                }
+                insertpos.add(CIAccounting.TransactionPositionAbstract.AccountLink, acc.getInstance());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.Amount, acc.getAmountMN());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, basCur);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.Rate, acc.getRateObject());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.RateAmount, acc.getAmountME());
+                insertpos.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, 1);
+                insertpos.add(CIAccounting.TransactionPositionAbstract.TransactionLink,  insert.getInstance());
+                insertpos.executeWithoutAccessCheck();
+            }
+        }
+
+        return ret;
+    }
+
+    protected Account getRoundingAccount(final String _key)
+        throws EFapsException
+    {
+        final Instance periodInst = getPeriodeInstance();
+        Account ret = null;
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final String name = props.getProperty(_key);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, name);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            ret = new Account(multi.<String>getAttribute(CIAccounting.AccountAbstract.Name),
+                            multi.<String>getAttribute(CIAccounting.AccountAbstract.Description));
+            ret.setInstance(multi.getCurrentInstance());
         }
         return ret;
     }
 
+    protected Instance getPeriodeInstance()
+        throws EFapsException
+    {
+        Instance ret = null;
+        final DateTime date = new DateTime();
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode);
+        queryBldr.addWhereAttrGreaterValue(CIAccounting.Periode.ToDate, date);
+        queryBldr.addWhereAttrLessValue(CIAccounting.Periode.FromDate, date);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        if (query.next()) {
+            ret = query.getCurrentValue();
+        }
+
+        return ret;
+    }
 
     public static class Document
     {
         private String name;
+        private Instance instance;
         private BigDecimal amountMECredit;
         private BigDecimal amountMEDebit;
         private BigDecimal amountMNCredit;
         private BigDecimal amountMNDebit;
-        private String account;
+        private final Map<String, Account> accounts;
 
         public Document(final String _name,
-                        final String _account) {
+                        final Instance _instance) {
             this.name = _name;
-            this.account = _account;
+            this.instance = _instance;
             this.amountMECredit = BigDecimal.ZERO;
             this.amountMEDebit = BigDecimal.ZERO;
             this.amountMNCredit = BigDecimal.ZERO;
             this.amountMNDebit = BigDecimal.ZERO;
+            this.accounts = new HashMap<String, Account>();
         }
 
         /**
@@ -265,19 +459,20 @@ public class ImportDetails
         {
             this.name = name;
         }
+
         /**
-         * @return the account
+         * @return the instance
          */
-        private String getAccount()
+        private Instance getInstance()
         {
-            return account;
+            return instance;
         }
         /**
-         * @param account the account to set
+         * @param name the instance to set
          */
-        private void setAccount(final String account)
+        private void setInstance(final Instance _instance)
         {
-            this.account = account;
+            this.instance = _instance;
         }
 
         /**
@@ -344,6 +539,151 @@ public class ImportDetails
             this.amountMNDebit = this.amountMNDebit.add(amountMNDebit);
         }
 
+        /**
+         * @return the accounts
+         */
+        private Map<String, Account> getAccounts()
+        {
+            return accounts;
+        }
+    }
+
+    public static class Account
+    {
+        private String name;
+        private String description;
+        private BigDecimal amountMN;
+        private BigDecimal amountME;
+        private Instance instance;
+
+        public Account(final String _name,
+                       final String _desc) {
+            this.name = _name;
+            this.description = _desc;
+            this.amountMN = BigDecimal.ZERO;
+            this.amountME = BigDecimal.ZERO;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #name}.
+         *
+         * @return value of instance variable {@link #name}
+         */
+        public String getName()
+        {
+            return this.name;
+        }
+
+        /**
+         * @return
+         */
+        public BigDecimal getRate()
+        {
+            return this.amountME.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ONE : this.amountMN.setScale(8).divide(
+                            this.amountME, BigDecimal.ROUND_HALF_UP);
+        }
+
+        public Object[] getRateObject()
+        {
+            return new Object[] {BigDecimal.ONE, getRate()};
+        }
+
+        /**
+         * @param _currentValue
+         */
+        public void setInstance(final Instance _instance)
+        {
+            this.instance = _instance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #name}.
+         *
+         * @param _name value for instance variable {@link #name}
+         */
+        public void setName(final String _name)
+        {
+            this.name = _name;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #description}.
+         *
+         * @return value of instance variable {@link #description}
+         */
+        public String getDescription()
+        {
+            return this.description;
+        }
+
+        /**
+         * Setter method for instance variable {@link #description}.
+         *
+         * @param _description value for instance variable {@link #description}
+         */
+        public void setDescription(final String _description)
+        {
+            this.description = _description;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #amountMN}.
+         *
+         * @return value of instance variable {@link #amountMN}
+         */
+        public BigDecimal getAmountMN()
+        {
+            return this.amountMN;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #amountMN}.
+         *
+         * @param _amountMN value for instance variable {@link #amountMN}
+         */
+        public void addAmountMN(final BigDecimal _amountMN)
+        {
+            this.amountMN = this.amountMN.add(_amountMN);
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #amountME}.
+         *
+         * @return value of instance variable {@link #amountME}
+         */
+        public BigDecimal getAmountME()
+        {
+            return this.amountME;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #amountME}.
+         *
+         * @param _amountME value for instance variable {@link #amountME}
+         */
+        public void addAmountME(final BigDecimal _amountME)
+        {
+            this.amountME = this.amountME.add(_amountME);
+        }
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
 
     }
 }
