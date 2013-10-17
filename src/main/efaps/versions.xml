@@ -70,22 +70,11 @@
             import org.efaps.db.QueryBuilder;
             import org.efaps.db.InstanceQuery;
             import org.efaps.esjp.admin.ui.UIUpdate;
-            import org.efaps.importer.DataImport;
 
             EFAPS_LOGGER.info("Importing Data for eFapsApp-Accounting");
 
             RunLevel.init("shell");
             RunLevel.execute();
-
-            // Admin_User_JAASKey
-            QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
-            queryBldr.addWhereAttrEqValue("Key", "Accounting_Admin");
-            InstanceQuery query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            if (!query.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Data.xml")).updateInDB();
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml")).updateInDB();
-            }
 
             UIUpdate update = new UIUpdate();
 
