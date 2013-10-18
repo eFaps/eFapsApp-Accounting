@@ -29,9 +29,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: SalesSettings.java 9599 2013-06-12 18:56:55Z jan@moxter.net $
+ * @version $Id: AccountingSettings.java 9599 2013-06-12 18:56:55Z jan@moxter.net $
  */
-@EFapsUUID("3cad9ef8-22e6-4b3f-9a97-3aa984d8d6c6")
+@EFapsUUID("21f06c50-bd20-4ed5-8325-3df5426e5986")
 @EFapsRevision("$Rev: 9599 $")
 public interface AccountingSettings
 {

@@ -31,9 +31,9 @@ import org.efaps.util.cache.CacheReloadException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Sales.java 9442 2013-05-16 23:05:46Z jan@moxter.net $
+ * @version $Id: TwoPlan.java 9442 2013-05-16 23:05:46Z jan@moxter.net $
  */
-@EFapsUUID("70a6a397-b8ef-40c5-853e-cff331bc79bb")
+@EFapsUUID("ded4c72c-82c2-4881-856f-ad5c579a2f14")
 @EFapsRevision("$Rev: 9442 $")
 public final class Accounting
 {
