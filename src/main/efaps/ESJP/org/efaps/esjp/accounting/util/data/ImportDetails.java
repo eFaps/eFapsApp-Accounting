@@ -346,12 +346,12 @@ public class ImportDetails
                 Insert insertpos = null;
                 Account acc = null;
                 if (amountCreditMN.compareTo(amountDebitMN.abs()) > 0) {
-                    acc = getRoundingAccount(AccountingSettings.ROUNDINGDEBIT);
+                    acc = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGDEBIT);
                     acc.addAmountMN(amountCreditMN.subtract(amountDebitMN.abs()).negate());
                     acc.addAmountME(amountCreditME.subtract(amountDebitME.abs()).negate());
                     insertpos = new Insert(CIAccounting.TransactionPositionDebit);
                 } else {
-                    acc = getRoundingAccount(AccountingSettings.ROUNDINGCREDIT);
+                    acc = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGCREDIT);
                     acc.addAmountMN(amountDebitMN.abs().subtract(amountCreditMN));
                     acc.addAmountME(amountDebitME.abs().subtract(amountCreditME));
                     insertpos = new Insert(CIAccounting.TransactionPositionCredit);
@@ -367,7 +367,7 @@ public class ImportDetails
             } else if (amountCreditMN.compareTo(amountDebitMN.abs()) != 0
                         && amountCreditMN.subtract(amountDebitMN.abs()).abs().compareTo(new BigDecimal("0.05")) > 0) {
                 Insert insertpos = null;
-                final Account acc = getRoundingAccount(AccountingSettings.TRANSFERACCOUNT);;
+                final Account acc = getRoundingAccount(AccountingSettings.PERIOD_TRANSFERACCOUNT);;
                 if (amountCreditMN.compareTo(amountDebitMN.abs()) > 0) {
                     acc.addAmountMN(amountCreditMN.subtract(amountDebitMN.abs()).negate());
                     acc.addAmountME(amountCreditME.subtract(amountDebitME.abs()).negate());

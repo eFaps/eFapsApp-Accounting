@@ -70,6 +70,8 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -329,9 +331,7 @@ public abstract class Payment_Base
     {
         final StringBuilder html = new StringBuilder();
 
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final DecimalFormat formater = Calculator_Base.getFormatInstance();
         final PriceUtil priceUtil = new PriceUtil();
 

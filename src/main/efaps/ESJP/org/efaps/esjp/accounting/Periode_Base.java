@@ -85,9 +85,10 @@ public abstract class Periode_Base
     public static final Set<String> DEFAULTSETTINGS4PERIOD = new LinkedHashSet<String>();
     {
         Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_NAME);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.ROUNDINGCREDIT);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.ROUNDINGDEBIT);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.TRANSFERACCOUNT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_EXVATACCOUNT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_ROUNDINGCREDIT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_ROUNDINGDEBIT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_TRANSFERACCOUNT);
 
     }
 

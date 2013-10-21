@@ -49,6 +49,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -318,11 +320,10 @@ public abstract class ExternalVoucher_Base
         try {
             final BigDecimal amount = (BigDecimal) formater.parse(_parameter.getParameterValue("amountExternal"));
             //Accounting-Configuration
-            final SystemConfiguration config = SystemConfiguration.get(
-                            UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
+            final SystemConfiguration config = Accounting.getSysConfig();
             if (config != null) {
                 final Properties props = config.getObjectAttributeValueAsProperties(periodeInst);
-                final String vatAcc = props.getProperty("ExternalVATAccount");
+                final String vatAcc = props.getProperty(AccountingSettings.PERIOD_EXVATACCOUNT);
                 if (vatAcc != null && !vatAcc.isEmpty()) {
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                     queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
@@ -407,8 +408,7 @@ public abstract class ExternalVoucher_Base
         final String value = (String) properties.get("hasFieldPicker");
 
         // Accounting-Configuration
-        final SystemConfiguration sysconf = SystemConfiguration.get(
-                            UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
+        final SystemConfiguration sysconf = Accounting.getSysConfig();
         if ("true".equalsIgnoreCase(value)
                             && !sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")) {
             ret.put(ReturnValues.TRUE, true);
