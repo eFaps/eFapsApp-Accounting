@@ -39,7 +39,10 @@
             <child>Accounting_DocumentMyDesk</child>
             <child>Accounting_PaymentMyDesk</child>
             <child>Accounting_PurchaseRecordMyDesk</child>
+            <child>Sales_Document_ReportMyDesk</child>
+            <child>Sales_PaymentRetention_Report</child>
             <child>Accounting_ActionDefinitionMyDesk</child>
+            <child>Products_KardexMyDesk</child>            
         </childs>
     </definition>
 </ui-menu>
