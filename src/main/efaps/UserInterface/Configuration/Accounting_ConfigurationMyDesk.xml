@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,24 +19,17 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>250c6cd3-f4c4-4dd2-aa12-6f497260afce</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
+    <uuid>89908db1-2021-4afd-8ef3-0ea77f557e3b</uuid>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_MyDesk</name>
+        <name>Accounting_ConfigurationMyDesk</name>
         <childs>
-            <child>Accounting_PeriodeMyDesk</child>
-            <child>Accounting_ConfigurationMyDesk</child>
-            <child>Accounting_ReportMyDesk</child>
-            <child>Accounting_DocumentMyDesk</child>
-            <child>Accounting_PaymentMyDesk</child>
-            <child>Accounting_PurchaseRecordMyDesk</child>
+            <child>Sales_TaxCategoryMyDesk</child>
+            <child>ERP_DocumentTypeMyDesk</child>
             <child>Accounting_ActionDefinitionMyDesk</child>
         </childs>
     </definition>
