@@ -35,6 +35,7 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
@@ -150,16 +151,20 @@ public abstract class Trigger_Base
     {
         final PrintQuery print = new PrintQuery(_instance);
         print.addAttribute(CIAccounting.TransactionPositionAbstract.TransactionLink);
-        print.addSelect("linkto[AccountLink].oid");
-        print.addSelect("linkto[AccountLink].attribute[SumBooked]");
+        final SelectBuilder selAccInst = SelectBuilder.get()
+                        .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).instance();
+        final SelectBuilder selAccBooked = SelectBuilder.get()
+                        .linkto(CIAccounting.TransactionPositionAbstract.AccountLink)
+                        .attribute(CIAccounting.AccountAbstract.SumBooked);
+        print.addSelect(selAccInst, selAccBooked);
         print.execute();
 
-        BigDecimal total = print.<BigDecimal>getSelect("linkto[AccountLink].attribute[SumBooked]");
+        BigDecimal total = print.<BigDecimal>getSelect(selAccBooked);
         if (total == null) {
             total = BigDecimal.ZERO;
         }
 
-        final Instance accountInst = Instance.get(print.<String>getSelect("linkto[AccountLink].oid"));
+        final Instance accountInst = print.<Instance>getSelect(selAccInst);
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction);
         attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.Status,
                         Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());

@@ -69,6 +69,7 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -340,7 +341,7 @@ public abstract class Transaction_Base
         final SystemConfiguration config = Accounting.getSysConfig();
         final String uuidStr = config.getAttributeValue(AccountingSettings.RATECURTYPE4DOCS);
         if (uuidStr != null) {
-            UUID uuid = UUID.fromString(uuidStr);
+            final UUID uuid = UUID.fromString(uuidStr);
             type = Type.get(uuid);
         }
         return type;
@@ -360,28 +361,31 @@ public abstract class Transaction_Base
     {
         final StringBuilder ret = new StringBuilder();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
-        queryBldr.addWhereAttrEqValue("FromAccountLink", Instance.get(_accountOid).getId());
-        final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute("OID", "Numerator", "Denominator");
-        print.addSelect("linkto[ToAccountLink].attribute[Name]");
-        print.execute();
+        queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink,
+                        Instance.get(_accountOid).getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+                        CIAccounting.Account2AccountAbstract.Denominator);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Account2AccountAbstract.ToAccountLink)
+                        .attribute(CIAccounting.AccountAbstract.Name);
+        multi.addSelect(sel);
+        multi.execute();
 
-        while (print.next()) {
-            final String to = print.<String>getSelect("linkto[ToAccountLink].attribute[Name]");
-            final String oid = print.<String>getAttribute("OID");
-            final Integer numerator = print.<Integer>getAttribute("Numerator");
-            final Integer denominator = print.<Integer>getAttribute("Denominator");
+        while (multi.next()) {
+            final String to = multi.<String>getSelect(sel);
+            final Integer numerator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
+            final Integer denominator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
             final BigDecimal percent = new BigDecimal(numerator).divide(new BigDecimal(denominator),
                             BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
-            final Instance instance = Instance.get(oid);
+            final Instance instance = multi.getCurrentInstance();
             if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
                 ret.append("<input type='checkbox' name='account2accountOID").append(_postFix)
-                    .append("' checked='checked' value='").append(oid).append("'/>").append(percent).append("% ==> ")
-                    .append(to).append("; ");
+                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>")
+                    .append(percent).append("% ==> ").append(to).append("; ");
             } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
                 ret.append("<input type='checkbox' name='account2accountOID").append(_postFix)
-                    .append("' checked='checked' value='").append(oid).append("'/>-").append(percent).append("% ==> ")
-                    .append(to).append("; ");
+                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>-")
+                    .append(percent).append("% ==> ").append(to).append("; ");
             } else {
                 ret.append("<span>").append(DBProperties.getProperty(instance.getType().getName() + ".ShortName"))
                                 .append(": ").append(percent).append("% ==> ").append(to).append("; </span>");
@@ -745,9 +749,9 @@ public abstract class Transaction_Base
             final String name = multi.<String>getAttribute(CIContacts.Contact.Name);
             final Long id = multi.<Long>getAttribute(CIContacts.Contact.ID);
             final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", id.toString());
-            map.put("eFapsAutoCompleteVALUE", name);
-            map.put("eFapsAutoCompleteCHOICE", name);
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), id.toString());
+            map.put( EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name);
             list.add(map);
         }
         final Return retVal = new Return();
@@ -934,7 +938,7 @@ public abstract class Transaction_Base
                                                    final Document _doc)
         throws EFapsException
     {
-        // check if the fiel is existing
+        // check if the field is existing
         final StringBuilder ret = new StringBuilder();
         if (_parameter.getParameterValue("subJournal") != null) {
 
