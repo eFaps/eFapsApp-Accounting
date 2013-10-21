@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,6 +52,8 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.accounting.Import_Base.ImportAccount;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.common.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -79,7 +82,68 @@ public abstract class Periode_Base
      */
     public static final String PERIODECURRENCYKEY = "eFaps_Accounting_PeriodeCurrency";
 
+    public static final Set<String> DEFAULTSETTINGS4PERIOD = new LinkedHashSet<String>();
+    {
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_NAME);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.ROUNDINGCREDIT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.ROUNDINGDEBIT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.TRANSFERACCOUNT);
 
+    }
+
+    /**
+     * Called on a command to create a new period including account table and
+     * reports.
+     *
+     * @param _parameter Paremeter
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Insert insert = new Insert(CIAccounting.Periode);
+        insert.add(CIAccounting.Periode.Name,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.name.name));
+        insert.add(CIAccounting.Periode.FromDate,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.fromDate.name));
+        insert.add(CIAccounting.Periode.ToDate,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.toDate.name));
+        insert.add(CIAccounting.Periode.CurrencyLink,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.currencyLink.name));
+        insert.execute();
+        final Instance periodInst = insert.getInstance();
+        final StringBuilder props = new StringBuilder();
+
+        for (final String setting : Periode_Base.DEFAULTSETTINGS4PERIOD) {
+            if (props.length() > 0) {
+                props.append("\n");
+            }
+            props.append(setting).append("=");
+            if (AccountingSettings.PERIOD_NAME.equals(setting)) {
+                props.append(_parameter.getParameterValue("name"));
+            } else {
+
+            }
+        }
+
+        final SystemConf conf = new SystemConf();
+        //Accounting-Configuration
+        conf.addObjectAttribute(Accounting.getSysConfig().getUUID(), periodInst,  props.toString() );
+
+        final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
+                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+        final FileParameter reports = Context.getThreadContext().getFileParameters().get(
+                        CIFormAccounting.Accounting_PeriodeForm.reports.name);
+        if (accountTable != null && accountTable.getSize() > 0) {
+            final Import imp = new Import();
+            final HashMap<String, ImportAccount> accounts = imp.createAccountTable(periodInst, accountTable);
+            if (reports != null && reports.getSize() > 0) {
+                imp.createReports(periodInst, reports, accounts);
+            }
+        }
+        return new Return();
+    }
 
     /**
      * @param _instance instance of a period or an account
@@ -126,48 +190,6 @@ public abstract class Periode_Base
         Context.getThreadContext().setSessionAttribute(Periode_Base.PERIODECURRENCYKEY, null);
         ret.put(ReturnValues.TRUE, true);
         return ret;
-    }
-
-    /**
-     * Called on a command to create a new period including account table and
-     * reports.
-     *
-     * @param _parameter Paremeter
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return create(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Insert insert = new Insert(CIAccounting.Periode);
-        insert.add(CIAccounting.Periode.Name,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.name.name));
-        insert.add(CIAccounting.Periode.FromDate,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.fromDate.name));
-        insert.add(CIAccounting.Periode.ToDate,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.toDate.name));
-        insert.add(CIAccounting.Periode.CurrencyLink,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.currencyLink.name));
-        insert.execute();
-        final Instance periodInst = insert.getInstance();
-
-        final SystemConf conf = new SystemConf();
-        //Accounting-Configuration
-        conf.addObjectAttribute(UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"), periodInst,
-                        "Name=" + _parameter.getParameterValue("name"));
-
-        final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
-        final FileParameter reports = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.reports.name);
-        if (accountTable != null && accountTable.getSize() > 0) {
-            final Import imp = new Import();
-            final HashMap<String, ImportAccount> accounts = imp.createAccountTable(periodInst, accountTable);
-            if (reports != null && reports.getSize() > 0) {
-                imp.createReports(periodInst, reports, accounts);
-            }
-        }
-        return new Return();
     }
 
     public Return updateTableAccount(final Parameter _parameter)

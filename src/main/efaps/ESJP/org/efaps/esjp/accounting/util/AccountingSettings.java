@@ -48,6 +48,18 @@ public interface AccountingSettings
      */
     String RATECURTYPE4DOCS = "org.efaps.accounting.RateCurrencyType4Documents";
 
+
+
+
+
+
+
+    //Setting belonging to a period, therefor only one word and not a org.efaps...
+    /**
+     * Account name for credit to round when the difference between credit and debit is minimum.
+     */
+    String PERIOD_NAME = "Name";
+
     /**
      * Account name for credit to round when the difference between credit and debit is minimum.
      */
