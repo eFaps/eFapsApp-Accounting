@@ -191,6 +191,8 @@ public class ImportDetails
         for (final String[] row : entries) {
             i++;
             final String docNumber = row[0];
+            final String ruc = row[1];
+            final String dateStr = row[2];
             final String accountStr = row[5];
             final String accountDesc = row[4];
             final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Locale.GERMAN);
@@ -226,9 +228,9 @@ public class ImportDetails
                             doc = map.get(name);
                         } else {
                             if (_docMap != null && _docMap.containsKey(name)) {
-                                doc = new Document(name, _docMap.get(name));
+                                doc = new Document(name, _docMap.get(name), ruc, dateStr, accountDesc);
                             } else {
-                                doc = new Document(name, null);
+                                doc = new Document(name, null, ruc, dateStr, accountDesc);
                             }
                         }
 
@@ -285,11 +287,14 @@ public class ImportDetails
 
             final Insert insert = new Insert(CIAccounting.TransactionOpeningBalance);
             insert.add(CIAccounting.TransactionOpeningBalance.Date, _date);
-            if (_docMap != null) {
-                insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Apertura");
-            } else {
-                insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Apertura sin Documento");
-            }
+            final StringBuilder descBldr = new StringBuilder()
+                .append(doc.getInstance().getType().getLabel()).append(": ")
+                .append(doc.getName()).append(" - RUC: ")
+                .append(doc.getRuc()).append(" - ")
+                .append(doc.getDate()).append(" - ")
+                .append(doc.getDesc());
+
+            insert.add(CIAccounting.TransactionOpeningBalance.Description, descBldr.toString());
             insert.add(CIAccounting.TransactionOpeningBalance.Status,
                             Status.find(CIAccounting.TransactionStatus.Open));
             insert.add(CIAccounting.TransactionOpeningBalance.PeriodeLink, periodeInst);
@@ -426,8 +431,11 @@ public class ImportDetails
 
     public static class Document
     {
-        private String name;
-        private Instance instance;
+        private final String name;
+        private final Instance instance;
+        private final String ruc;
+        private final String date;
+        private final String desc;
         private BigDecimal amountMECredit;
         private BigDecimal amountMEDebit;
         private BigDecimal amountMNCredit;
@@ -435,9 +443,15 @@ public class ImportDetails
         private final Map<String, Account> accounts;
 
         public Document(final String _name,
-                        final Instance _instance) {
+                        final Instance _instance,
+                        final String _ruc,
+                        final String _date,
+                        final String _desc) {
             this.name = _name;
             this.instance = _instance;
+            this.ruc = _ruc;
+            this.date = _date;
+            this.desc = _desc;
             this.amountMECredit = BigDecimal.ZERO;
             this.amountMEDebit = BigDecimal.ZERO;
             this.amountMNCredit = BigDecimal.ZERO;
@@ -452,13 +466,6 @@ public class ImportDetails
         {
             return name;
         }
-        /**
-         * @param name the name to set
-         */
-        private void setName(final String name)
-        {
-            this.name = name;
-        }
 
         /**
          * @return the instance
@@ -467,12 +474,30 @@ public class ImportDetails
         {
             return instance;
         }
+
+
         /**
-         * @param name the instance to set
+         * @return the ruc
          */
-        private void setInstance(final Instance _instance)
+        private String getRuc()
         {
-            this.instance = _instance;
+            return ruc;
+        }
+
+        /**
+         * @return the date
+         */
+        private String getDate()
+        {
+            return date;
+        }
+
+        /**
+         * @return the desc
+         */
+        private String getDesc()
+        {
+            return desc;
         }
 
         /**
