@@ -88,15 +88,16 @@ public class ImportDetails
         final String filename = paramMap.get("location");
         final String dateStr = paramMap.get("date");
         final String typeStr = paramMap.get("type");
+        final Boolean inverse = "true".equalsIgnoreCase(paramMap.get("inverse"));
         final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
         final DateTime date = dateStr != null ? new DateTime(format.parse(dateStr)) : new DateTime();
         final File file = new File(filename);
         try {
             if (typeStr != null) {
                 final Map<String, Instance> map = checkDocs(file, Type.get(typeStr));
-                checkAccounts(file, map, date);
+                checkAccounts(file, map, date, inverse);
             } else {
-                checkAccounts(file, null, date);
+                checkAccounts(file, null, date, inverse);
             }
 
 //            final List<Account> accs = readAccounts4Concar(file);
@@ -178,7 +179,8 @@ public class ImportDetails
 
     protected List<Document> checkAccounts(final File _file,
                                            final Map<String, Instance> _docMap,
-                                           final DateTime _date)
+                                           final DateTime _date,
+                                           final Boolean _inverse)
         throws IOException, EFapsException
     {
         final List<Document> ret = new ArrayList<Document>();
@@ -234,8 +236,13 @@ public class ImportDetails
                             }
                         }
 
-                        final BigDecimal amountME = (BigDecimal) formater.parse(amountMEStr);
-                        final BigDecimal amountMN = (BigDecimal) formater.parse(amountMNStr);
+                        BigDecimal amountME = (BigDecimal) formater.parse(amountMEStr);
+                        BigDecimal amountMN = (BigDecimal) formater.parse(amountMNStr);
+
+                        if (_inverse) {
+                            amountME = amountME.negate();
+                            amountMN = amountMN.negate();
+                        }
 
                         if (amountMN.compareTo(BigDecimal.ZERO) >= 0) {
                             doc.addAmountMECredit(amountME);
@@ -288,7 +295,7 @@ public class ImportDetails
             final Insert insert = new Insert(CIAccounting.TransactionOpeningBalance);
             insert.add(CIAccounting.TransactionOpeningBalance.Date, _date);
             final StringBuilder descBldr = new StringBuilder()
-                .append(doc.getInstance().getType().getLabel()).append(": ")
+                .append(doc.getInstance() != null ? doc.getInstance().getType().getLabel() : "Sin Documento").append(": ")
                 .append(doc.getName()).append(" - RUC: ")
                 .append(doc.getRuc()).append(" - ")
                 .append(doc.getDate()).append(" - ")
