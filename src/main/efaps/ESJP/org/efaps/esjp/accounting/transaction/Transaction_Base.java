@@ -789,8 +789,14 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _doc          Document the calculation must be done for
+     * @return true
+     * @throws EFapsException on error
+     */
     protected Boolean buildDoc4ExecuteButton(final Parameter _parameter,
-                                          final Document _doc)
+                                             final Document _doc)
         throws EFapsException
     {
         final String caseOid = _parameter.getParameterValue("case");
@@ -798,11 +804,10 @@ public abstract class Transaction_Base
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
                         Instance.get(caseOid).getId());
-        queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.Default, true);
         final MultiPrintQuery print = queryBldr.getPrint();
 
         final SelectBuilder oidSel = new SelectBuilder()
-                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
+            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
         final SelectBuilder nameSel = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
                         .attribute(CIAccounting.AccountAbstract.Name);
@@ -811,46 +816,56 @@ public abstract class Transaction_Base
                         .attribute(CIAccounting.AccountAbstract.Description);
         print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                         CIAccounting.Account2CaseAbstract.Denominator,
-                        CIAccounting.Account2CaseAbstract.LinkValue);
+                        CIAccounting.Account2CaseAbstract.LinkValue,
+                        CIAccounting.Account2CaseAbstract.Default);
         print.addSelect(oidSel, nameSel, descSel);
         print.execute();
         while (print.next()) {
-            final String oid = print.<String>getSelect(oidSel);
-            final String name = print.<String>getSelect(nameSel);
-            final String desc = print.<String>getSelect(descSel);
-            final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
-            final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
-            final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
-            final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
-                            BigDecimal.ROUND_HALF_UP);
-            final BigDecimal accAmount;
             final Type type = print.getCurrentInstance().getType();
-            if (type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
-                            || type.equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
-                accAmount = mul.multiply(_doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
-            } else {
-                accAmount = mul.multiply(_doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
-            }
+            final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
+                            || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
+            final Boolean isDefault = print.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
+            // classRel or default selected will be added
+            boolean add = classRel || isDefault;
+            if (add) {
+                final String oid = print.<String>getSelect(oidSel);
+                final String name = print.<String>getSelect(nameSel);
+                final String desc = print.<String>getSelect(descSel);
+                final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
+                final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
+                final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
+                final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
+                                BigDecimal.ROUND_HALF_UP);
+                final BigDecimal accAmount;
 
-            final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                            .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP);
-            String postFix;
-            Map<String, TargetAccount> acounts;
-            if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
-                            || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
-                postFix = "_Credit";
-                acounts = _doc.getCreditAccounts();
-            } else {
-                postFix = "_Debit";
-                acounts = _doc.getDebitAccounts();
+                if (classRel) {
+                    accAmount = mul.multiply(_doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    add = isDefault || accAmount.compareTo(BigDecimal.ZERO) != 0;
+                } else {
+                    accAmount = mul.multiply(_doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                }
+
+                final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
+                                                                .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP);
+                String postFix;
+                Map<String, TargetAccount> acounts;
+                if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
+                                || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
+                    postFix = "_Credit";
+                    acounts = _doc.getCreditAccounts();
+                } else {
+                    postFix = "_Debit";
+                    acounts = _doc.getDebitAccounts();
+                }
+                if (add) {
+                    final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
+                    account.setAmountRate(accAmountRate);
+                    account.setLink(getLinkString(oid, postFix));
+                    account.setRate(rate);
+                    acounts.put(oid, account);
+                }
             }
-            final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
-            account.setAmountRate(accAmountRate);
-            account.setLink(getLinkString(oid, postFix));
-            account.setRate(rate);
-            acounts.put(oid, account);
         }
-
         return true;
     }
 
@@ -1156,12 +1171,13 @@ public abstract class Transaction_Base
                     queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance.getId());
                     final MultiPrintQuery multi = queryBldr.getPrint();
                     final SelectBuilder sel = new SelectBuilder()
-                        .linkto(CISales.PositionAbstract.Product).clazz().type();
+                                    .linkto(CISales.PositionAbstract.Product).clazz().type();
                     multi.addSelect(sel);
                     multi.addAttribute(CISales.PositionSumAbstract.NetPrice);
                     multi.execute();
                     while (multi.next()) {
-                        final BigDecimal posamount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+                        final BigDecimal posamount = multi
+                                        .<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                         final List<Classification> clazzes = multi.getSelect(sel);
                         if (clazzes != null) {
                             for (final Classification clazz : clazzes) {
@@ -1180,7 +1196,7 @@ public abstract class Transaction_Base
                         }
                     }
                 }
-                ret = this.clazz2Amount.containsKey(_linkId) ?  this.clazz2Amount.get(_linkId) : BigDecimal.ZERO;
+                ret = this.clazz2Amount.containsKey(_linkId) ? this.clazz2Amount.get(_linkId) : BigDecimal.ZERO;
             } else {
                 ret = BigDecimal.ZERO;
             }
