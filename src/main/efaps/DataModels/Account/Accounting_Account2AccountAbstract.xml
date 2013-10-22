@@ -64,5 +64,12 @@
             <sqlcolumn>DENOMINATOR</sqlcolumn>
             <defaultvalue>1</defaultvalue>
         </attribute>
+        <attribute>
+            <name>Deactivatable </name>
+            <type>Boolean</type>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>ACTIVE</sqlcolumn>
+            <defaultvalue>false</defaultvalue>
+        </attribute>
     </definition>
 </datamodel-type>

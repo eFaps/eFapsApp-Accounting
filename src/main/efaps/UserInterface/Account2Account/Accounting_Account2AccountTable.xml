@@ -49,6 +49,10 @@
             <property name="Label">Accounting_Account2AccountAbstract/Denominator.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
+         <field name="deactivatable">
+            <property name="Label">Accounting_Account2AccountAbstract/Deactivatable.Label</property>
+            <property name="Attribute">Deactivatable</property>
+        </field>
         <field name="toAccount">
             <property name="SelectAlternateOID">linkto[ToAccountLink].oid</property>
             <property name="Select">linkto[ToAccountLink].attribute[Name]</property>

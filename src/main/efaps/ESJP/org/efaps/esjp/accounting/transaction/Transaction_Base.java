@@ -94,6 +94,13 @@ public abstract class Transaction_Base
      */
     public static final String CASE_SESSIONKEY = "eFaps_Selected_Accounting_Case";
 
+    /**
+     * Numbering of the transaction.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return renumber(final Parameter _parameter)
         throws EFapsException
     {
@@ -144,6 +151,12 @@ public abstract class Transaction_Base
         return new Return();
     }
 
+    /**
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return startvalue
+     * @throws EFapsException on error
+     */
     protected String getStartValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -164,6 +177,16 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _transInst instance of the transaction
+     * @param _instName current name
+     * @param _previousName previous name
+     * @param _setStatus set the status
+     * @return startvalue
+     * @throws EFapsException on error
+     */
     protected String setName(final Parameter _parameter,
                              final Instance _transInst,
                              final String _instName,
@@ -194,11 +217,6 @@ public abstract class Transaction_Base
      * @return new Return
      * @throws EFapsException on error
      */
-    /**
-     * @param _parameter
-     * @return
-     * @throws EFapsException
-     */
     public Return setPeriodeUIFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -228,7 +246,7 @@ public abstract class Transaction_Base
                 .linkto(CIAccounting.ReportNodeRoot.ReportLink)
                 .linkto(CIAccounting.ReportAbstract.PeriodeLink).instance();
             final SelectBuilder selReport = new SelectBuilder()
-            .linkto(CIAccounting.ReportNodeRoot.ReportLink).instance();
+                .linkto(CIAccounting.ReportNodeRoot.ReportLink).instance();
             print.addSelect(selReport, selPeriod);
             print.execute();
             instance = print.<Instance>getSelect(selPeriod);
@@ -272,7 +290,7 @@ public abstract class Transaction_Base
 
     /**
      * Get the exchange Rate for a Date inside a periode.
-     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _periodeInst  Instance of the periode
      * @param _currId       id of the currency
      * @param _date         date the exchange rate is wanted for
@@ -329,8 +347,8 @@ public abstract class Transaction_Base
      * Method to get the rate currency type to use for the document register or booked.
      *
      * @param _parameter as passed from eFaps API
-     * @return
-     * @throws EFapsException
+     * @return type for currency rate
+     * @throws EFapsException on errpr
      */
     protected Type getType4RateCurrency(final Parameter _parameter)
         throws EFapsException
@@ -348,7 +366,7 @@ public abstract class Transaction_Base
     /**
      * Make a string for the link of account2account.
      *
-     * @param _accountOid oid of the eaccount
+     * @param _accountOid oid of the account
      * @param _postFix postfix
      * @return StringBuilder
      * @throws EFapsException on error
@@ -363,7 +381,8 @@ public abstract class Transaction_Base
                         Instance.get(_accountOid).getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
-                        CIAccounting.Account2AccountAbstract.Denominator);
+                        CIAccounting.Account2AccountAbstract.Denominator,
+                        CIAccounting.Account2AccountAbstract.Deactivatable);
         final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Account2AccountAbstract.ToAccountLink)
                         .attribute(CIAccounting.AccountAbstract.Name);
         multi.addSelect(sel);
@@ -371,23 +390,20 @@ public abstract class Transaction_Base
 
         while (multi.next()) {
             final String to = multi.<String>getSelect(sel);
+            final Boolean deactivatable = multi
+                            .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
             final Integer numerator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
             final Integer denominator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
             final BigDecimal percent = new BigDecimal(numerator).divide(new BigDecimal(denominator),
                             BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
             final Instance instance = multi.getCurrentInstance();
-            if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
-                ret.append("<input type='checkbox' name='account2accountOID").append(_postFix)
-                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>")
-                    .append(percent).append("% ==> ").append(to).append("; ");
-            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
-                ret.append("<input type='checkbox' name='account2accountOID").append(_postFix)
-                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>-")
-                    .append(percent).append("% ==> ").append(to).append("; ");
-            } else {
-                ret.append("<span>").append(DBProperties.getProperty(instance.getType().getName() + ".ShortName"))
-                                .append(": ").append(percent).append("% ==> ").append(to).append("; </span>");
+            if (deactivatable != null && deactivatable) {
+                ret.append("<input type='checkbox' name='acc2acc").append(_postFix)
+                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>");
             }
+            ret.append(DBProperties.getFormatedDBProperty(
+                            Transaction.class.getName() + ".LinkString4" + instance.getType().getName(),
+                            new Object[] { percent, StringEscapeUtils.escapeEcmaScript(to) }));
         }
         return ret;
     }
@@ -713,7 +729,7 @@ public abstract class Transaction_Base
             final Long id = multi.<Long>getAttribute(CIContacts.Contact.ID);
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), id.toString());
-            map.put( EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name);
             list.add(map);
         }
@@ -749,7 +765,8 @@ public abstract class Transaction_Base
                 Boolean isCross = true;
                 final Properties typesProps = Accounting.getSysConfig()
                                 .getAttributeValueAsProperties(AccountingSettings.DOCUMENT_DOCPERCONF);
-                final Properties periodeProps = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodeInstance);
+                final Properties periodeProps = Accounting.getSysConfig().getObjectAttributeValueAsProperties(
+                                periodeInstance);
                 if (typesProps.containsKey(docInst.getType().getUUID().toString())) {
                     final String typeConf = typesProps.getProperty(docInst.getType().getUUID().toString());
                     isCross = "true".equals(periodeProps.getProperty(typeConf));
@@ -777,7 +794,7 @@ public abstract class Transaction_Base
 
             if (doc.getInstance() != null) {
                 doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType())
-                                ||doc.getInstance().getType().isKindOf(CISales.CreditNote.getType()));
+                                || doc.getInstance().getType().isKindOf(CISales.CreditNote.getType()));
                 addAccount4BankCash(_parameter, doc);
             }
 
@@ -869,6 +886,12 @@ public abstract class Transaction_Base
         return true;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc      doc the script must be build for
+     * @return StringBuilder
+     * @throws EFapsException on error
+     */
     protected StringBuilder buildHtml4ExecuteButton(final Parameter _parameter,
                                                     final Document _doc)
         throws EFapsException
@@ -901,8 +924,6 @@ public abstract class Transaction_Base
         js.append("}\n").append(getScriptValues(_parameter, _doc));
 
         js.append(getSetSubJournalScript(_parameter, _doc));
-
-
         return js;
     }
 
@@ -976,6 +997,7 @@ public abstract class Transaction_Base
     }
 
     /**
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _doc  Document
      * @return StringBuilder
      */

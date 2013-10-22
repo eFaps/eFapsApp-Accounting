@@ -23,6 +23,7 @@ package org.efaps.esjp.accounting.transaction;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,6 +60,8 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -71,6 +74,10 @@ import org.joda.time.DateTime;
 public abstract class Create_Base
     extends Create
 {
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Create_Base.class);
 
     /**
      * Create a Transaction for a PaymentDocument.
@@ -707,7 +714,7 @@ public abstract class Create_Base
         final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
         final String[] types = _parameter.getParameterValues("type_" + _postFix);
         final String[] curr = _parameter.getParameterValues("rateCurrencyLink_" + _postFix);
-        final String[] account2accountOids = _parameter.getParameterValues("account2accountOID_" + _postFix);
+        final String[] acc2accOids = _parameter.getParameterValues("acc2acc_" + _postFix);
         final String[] label2projectOids = _parameter.getParameterValues("labelLink_" + _postFix);
         final DecimalFormat formater = new Transaction().getFormater(null, null);
         try {
@@ -759,77 +766,73 @@ public abstract class Create_Base
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
                     queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink,
                                        accountInst.getId());
-                    final MultiPrintQuery print = queryBldr.getPrint();
-                    print.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                                       CIAccounting.Account2AccountAbstract.Denominator,
-                                      CIAccounting.Account2AccountAbstract.ToAccountLink);
-                    print.execute();
-                    while (print.next()) {
-                        final Instance instance = print.getCurrentInstance();
-                        boolean add = false;
+                                      CIAccounting.Account2AccountAbstract.ToAccountLink,
+                                      CIAccounting.Account2AccountAbstract.Deactivatable);
+                    multi.execute();
+                    while (multi.next()) {
+                        final Instance instance = multi.getCurrentInstance();
                         Insert insert3 = null;
-                        BigDecimal amount2 = amount.multiply(new BigDecimal(print.<Integer>getAttribute("Numerator"))
-                                        .divide(new BigDecimal(print.<Integer>getAttribute("Denominator")),
-                                                        BigDecimal.ROUND_HALF_UP));
-                        BigDecimal rateAmount2 = rateAmount.multiply(
-                                        new BigDecimal(print.<Integer>getAttribute("Numerator"))
-                                                  .divide(new BigDecimal(print.<Integer>getAttribute("Denominator")),
-                                                                        BigDecimal.ROUND_HALF_UP));
-                        if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
-                            if (account2accountOids != null) {
-                                for (final String check : account2accountOids) {
-                                    if (instance.getOid().equals(check)) {
-                                        add = true;
-                                        insert3 = new Insert(type);
-                                        break;
-                                    }
-                                }
-                            }
-                        } else if (instance.getType().getUUID()
-                                                       .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
-                            if (account2accountOids != null) {
-                                for (final String check : account2accountOids) {
-                                    if (instance.getOid().equals(check)) {
-                                        add = true;
-                                        if (type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
-                                            insert3 = new Insert(CIAccounting.TransactionPositionCredit.uuid);
-                                        } else {
-                                            insert3 = new Insert(CIAccounting.TransactionPositionDebit.uuid);
-                                        }
-                                        amount2 = amount2.negate();
-                                        break;
-                                    }
-                                }
-                            }
-                        } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
-                            if (isDebitTrans) {
-                                insert3 = new Insert(CIAccounting.TransactionPositionCredit);
-                            } else {
-                                insert3 = new Insert(CIAccounting.TransactionPositionDebit);
-                                amount2 = amount2.negate();
-                                rateAmount2 = rateAmount2.negate();
-                            }
-                            add = true;
-                        } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
-                            if (isDebitTrans) {
-                                insert3 = new Insert(CIAccounting.TransactionPositionDebit);
-                                amount2 = amount2.negate();
-                                rateAmount2 = rateAmount2.negate();
-                            } else {
-                                insert3 = new Insert(CIAccounting.TransactionPositionCredit);
-                            }
-                            add = true;
+                        Boolean deactivatable = multi
+                                        .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
+                        if (deactivatable == null) {
+                            deactivatable = false;
                         }
-                        if (add) {
-                            insert3.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _instance.getId());
-                            insert3.add(CIAccounting.TransactionPositionAbstract.AccountLink,
-                                            print.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
-                            insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getId());
-                            insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, curr[i]);
-                            insert3.add(CIAccounting.TransactionPositionAbstract.Rate, rateObj);
-                            insert3.add(CIAccounting.TransactionPositionAbstract.Amount, amount2);
-                            insert3.add(CIAccounting.TransactionPositionAbstract.RateAmount, rateAmount2);
-                            insert3.execute();
+                        // if not deactivatable or selected in the UserInterface
+                        if (!deactivatable || (acc2accOids != null && deactivatable
+                                        &&  Arrays.asList(acc2accOids).contains(instance.getOid()))) {
+                            final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
+                                            CIAccounting.Account2AccountAbstract.Numerator));
+                            final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
+                                            CIAccounting.Account2AccountAbstract.Denominator));
+
+                            BigDecimal amount2 = amount.multiply(numerator).divide(denominator,
+                                            BigDecimal.ROUND_HALF_UP);
+                            BigDecimal rateAmount2 = rateAmount.multiply(numerator).divide(denominator,
+                                            BigDecimal.ROUND_HALF_UP);
+
+                            if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
+                                insert3 = new Insert(type);
+                            } else if (instance.getType().getUUID()
+                                            .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
+                                if (type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
+                                    insert3 = new Insert(CIAccounting.TransactionPositionCredit.uuid);
+                                } else {
+                                    insert3 = new Insert(CIAccounting.TransactionPositionDebit.uuid);
+                                }
+                                amount2 = amount2.negate();
+                            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
+                                if (isDebitTrans) {
+                                    insert3 = new Insert(CIAccounting.TransactionPositionCredit);
+                                } else {
+                                    insert3 = new Insert(CIAccounting.TransactionPositionDebit);
+                                    amount2 = amount2.negate();
+                                    rateAmount2 = rateAmount2.negate();
+                                }
+                            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
+                                if (isDebitTrans) {
+                                    insert3 = new Insert(CIAccounting.TransactionPositionDebit);
+                                    amount2 = amount2.negate();
+                                    rateAmount2 = rateAmount2.negate();
+                                } else {
+                                    insert3 = new Insert(CIAccounting.TransactionPositionCredit);
+                                }
+                            }
+                            if (insert3 == null) {
+                               Create_Base.LOG.error("Missing defintion");
+                            } else {
+                                insert3.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _instance.getId());
+                                insert3.add(CIAccounting.TransactionPositionAbstract.AccountLink,
+                                                multi.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
+                                insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getId());
+                                insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, curr[i]);
+                                insert3.add(CIAccounting.TransactionPositionAbstract.Rate, rateObj);
+                                insert3.add(CIAccounting.TransactionPositionAbstract.Amount, amount2);
+                                insert3.add(CIAccounting.TransactionPositionAbstract.RateAmount, rateAmount2);
+                                insert3.execute();
+                            }
                         }
                     }
                 }

@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2013 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,9 +23,8 @@
 
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>847f6e9d-9752-4eb9-b610-4544c517d0bb</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -38,37 +37,36 @@
         <field name="type">
             <property name="Attribute">Type</property>
         </field>
-
         <field name="numerator">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Numerator</property>
             <property name="Required">true</property>
         </field>
-
         <field name="denominator">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Denominator</property>
             <property name="Required">true</property>
         </field>
-
+        <field name="deactivatable">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Deactivatable</property>
+            <property name="Required">true</property>
+        </field>
         <field name="fromAccountLink">
             <property name="SelectAlternateOID">linkto[FromAccountLink].oid</property>
             <property name="Select">linkto[FromAccountLink].attribute[Name]</property>
             <property name="Label">Accounting_Account2AccountForm.fromAccountLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-
         <field name="toAccountLink">
             <property name="SelectAlternateOID">linkto[ToAccountLink].oid</property>
             <property name="Select">linkto[ToAccountLink].attribute[Name]</property>
             <property name="Label">Accounting_Account2AccountForm.toAccountLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
@@ -80,7 +78,6 @@
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -93,7 +90,6 @@
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
     </definition>
 </ui-form>
