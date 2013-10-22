@@ -64,12 +64,6 @@
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>Number</name>
-            <type>String</type>
-            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
-            <sqlcolumn>NUMB</sqlcolumn>
-        </attribute>
-        <attribute>
             <name>TypeLink</name>
             <type>Link</type>
             <typelink>ERP_DocumentType</typelink>

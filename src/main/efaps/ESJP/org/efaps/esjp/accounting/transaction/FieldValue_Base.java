@@ -22,7 +22,6 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,7 +48,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
@@ -962,49 +960,6 @@ public abstract class FieldValue_Base
     protected abstract CharSequence getDocInformation(final Parameter _parameter,
                                                       final Document _document)
         throws EFapsException;
-
-    /**
-     * Method to get the value for the number.
-     *
-     * @param _parameter Parameter as passed by the eFaps API.
-     * @return Return containing the value
-     * @throws EFapsException on error
-     */
-    public Return getNumberFieldValueUI(final Parameter _parameter)
-        throws EFapsException
-    {
-        final FieldValue fValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        DateTime firstDate = null;
-        DateTime lastDate = null;
-        if (fValue.getTargetMode().equals(TargetMode.CREATE)) {
-            if (fValue.getField().getName().equals("number")) {
-                firstDate = new DateTime().dayOfMonth().withMinimumValue();
-                lastDate = new DateTime().dayOfMonth().withMaximumValue();
-            }
-        }
-
-        final Return retVal = new Return();
-        if (firstDate != null && lastDate != null) {
-            final Instance inst = (Instance) Context.getThreadContext()
-                                                .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
-            String number = getMaxNumber(firstDate, lastDate, inst.getId());
-            if (number == null) {
-                final Integer month = firstDate.getMonthOfYear();
-                number = "0001-" + (month.intValue() < 10 ? "0" + month : month);
-            } else {
-                final String numTmp = number.substring(0, number.indexOf("-"));
-                final int length = numTmp.trim().length();
-                final Integer numInt = Integer.parseInt(numTmp.trim()) + 1;
-                final NumberFormat nf = NumberFormat.getInstance();
-                nf.setMinimumIntegerDigits(length);
-                nf.setMaximumIntegerDigits(length);
-                nf.setGroupingUsed(false);
-                number = nf.format(numInt) + number.substring(number.indexOf("-")).trim();
-            }
-            retVal.put(ReturnValues.VALUES, number);
-        }
-        return retVal;
-    }
 
     /**
      * @param _parameter Parameter as passed from the eFaps API

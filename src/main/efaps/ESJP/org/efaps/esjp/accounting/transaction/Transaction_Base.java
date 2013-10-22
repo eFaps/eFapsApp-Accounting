@@ -46,10 +46,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -390,41 +388,6 @@ public abstract class Transaction_Base
                 ret.append("<span>").append(DBProperties.getProperty(instance.getType().getName() + ".ShortName"))
                                 .append(": ").append(percent).append("% ==> ").append(to).append("; </span>");
             }
-        }
-        return ret;
-    }
-
-    /**
-     * Method to get the maximum for a value from the database.
-     *
-     * @param _firstDate DateTime for search of date initial.
-     * @param _lastDate DateTime for search of date finally.
-     * @param _periode Long for search filter to periode.
-     * @return ret Return for maximum value.
-     * @throws EFapsException on error
-     */
-    protected String getMaxNumber(final DateTime _firstDate,
-                                  final DateTime _lastDate,
-                                  final Long _periode)
-        throws EFapsException
-    {
-        String ret = null;
-        final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Transaction);
-        queryBuilder.addWhereAttrGreaterValue(CIAccounting.Transaction.Date, _firstDate.minusMinutes(1));
-        queryBuilder.addWhereAttrLessValue(CIAccounting.Transaction.Date, _lastDate.plusMinutes(1));
-        queryBuilder.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, _periode);
-        final AttributeQuery attrQuery = queryBuilder.getAttributeQuery(CIAccounting.Transaction.ID);
-
-        final QueryBuilder docQueryBuilder = new QueryBuilder(CIAccounting.TransactionClassExternal);
-        docQueryBuilder.addWhereAttrInQuery(CIAccounting.TransactionClassExternal.TransactionLink, attrQuery);
-        docQueryBuilder.addOrderByAttributeDesc(CIAccounting.TransactionClassExternal.Number);
-        final InstanceQuery query = docQueryBuilder.getQuery();
-        query.setLimit(1);
-        final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
-        multi.addAttribute(CIAccounting.TransactionClassExternal.Number);
-        multi.execute();
-        if (multi.next()) {
-            ret = multi.getAttribute(CIAccounting.TransactionClassExternal.Number);
         }
         return ret;
     }

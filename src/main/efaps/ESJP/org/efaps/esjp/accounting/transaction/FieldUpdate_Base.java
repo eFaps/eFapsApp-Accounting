@@ -23,7 +23,6 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -350,90 +349,6 @@ public abstract class FieldUpdate_Base
             retVal.put(ReturnValues.VALUES, list);
         } catch (final ParseException e) {
             throw new EFapsException(Transaction_Base.class, "update4Rate.ParseException", e);
-        }
-        return retVal;
-    }
-    /**
-     * Method to get the value for the number in case of updated a number.
-     *
-     * @param _parameter Parameter as passed by the eFaps API.
-     * @return Return containing the value
-     * @throws EFapsException on error
-     */
-    public Return updateNumberFieldValueUI(final Parameter _parameter)
-        throws EFapsException
-    {
-        Return retVal = new Return();
-        final String number = _parameter.getParameterValue("number");
-        final String date = _parameter.getParameterValue("date_eFapsDate");
-        String number4read;
-        if (!number.isEmpty() && number.trim().length() > 0) {
-            final Integer month = DateUtil.getDateFromParameter(date).getMonthOfYear();
-            final String[] numTmp = number.split("-");
-            try {
-                final Integer numInt = Integer.parseInt(numTmp[0].trim());
-                final NumberFormat nf = NumberFormat.getInstance();
-                nf.setMinimumIntegerDigits(4);
-                nf.setMaximumIntegerDigits(4);
-                nf.setGroupingUsed(false);
-                number4read = nf.format(numInt) + "-" + (month.intValue() < 10 ? "0" + month : month);
-                final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-                final Map<String, String> map = new HashMap<String, String>();
-                map.put("number", number4read);
-                list.add(map);
-                retVal.put(ReturnValues.VALUES, list);
-            } catch (final NumberFormatException e) {
-                // in case that the user used an invalid value a default is set
-                retVal = updateNumberValueUI(_parameter);
-            }
-        } else {
-            retVal = updateNumberValueUI(_parameter);
-        }
-        return retVal;
-    }
-
-
-    /**
-     * Method to get the value for the number in case of selected a new Date.
-     *
-     * @param _parameter Parameter as passed by the eFaps API.
-     * @return Return containing the value
-     * @throws EFapsException on error
-     */
-    public Return updateNumberValueUI(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final String dateSel = (_parameter.getParameterValue("extDate_eFapsDate") != null
-                                                ? _parameter.getParameterValue("extDate_eFapsDate")
-                                                                : _parameter.getParameterValue("date_eFapsDate"));
-        final DateTime date = DateUtil.getDateFromParameter(dateSel);
-        final DateTime newDate = new DateTime(date);
-        final DateTime firstDate = newDate.dayOfMonth().withMinimumValue();
-        final DateTime lastDate = newDate.dayOfMonth().withMaximumValue();
-
-        if (firstDate != null && lastDate != null) {
-            final Instance inst = (Instance) Context.getThreadContext()
-                                                .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
-            String number = getMaxNumber(firstDate, lastDate, inst.getId());
-            if (number == null) {
-                final Integer month = firstDate.getMonthOfYear();
-                number = "0001-" + (month.intValue() < 10 ? "0" + month : month);
-            } else {
-                final String numTmp = number.substring(0, number.indexOf("-"));
-                final int length = numTmp.trim().length();
-                final Integer numInt = Integer.parseInt(numTmp.trim()) + 1;
-                final NumberFormat nf = NumberFormat.getInstance();
-                nf.setMinimumIntegerDigits(length);
-                nf.setMaximumIntegerDigits(length);
-                nf.setGroupingUsed(false);
-                number = nf.format(numInt) + number.substring(number.indexOf("-")).trim();
-            }
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put("number", number);
-            list.add(map);
-            retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
     }

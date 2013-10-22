@@ -425,7 +425,6 @@ public abstract class Create_Base
             classInsert.add(classification.getLinkAttributeName(), instance.getId());
             classInsert.add(CIAccounting.TransactionClassExternal.TypeLink, _parameter.getParameterValue("typeLink"));
             classInsert.add(CIAccounting.TransactionClassExternal.DocumentLink, docInst.getId());
-            classInsert.add(CIAccounting.TransactionClassExternal.Number, _parameter.getParameterValue("number"));
             classInsert.execute();
 
             final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));

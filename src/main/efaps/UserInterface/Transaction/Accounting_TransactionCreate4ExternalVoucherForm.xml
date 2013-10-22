@@ -118,11 +118,6 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <property name="Columns">12</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="updateNumberValueUI"
-                name="Accounting_TransactionCreate4ExternalForm.extDate.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE">
-            </trigger>
         </field>
         <field name="purchaseRecord">
             <property name="ModeCreate">EDITABLE</property>
