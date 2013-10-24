@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -39,6 +40,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -82,6 +84,7 @@ public abstract class Import_Base
         /** */
         A2CTYPE("[Account2Case_Type]"),
         A2CACC("[Account2Case_Account]"),
+        A2CCLA("[Account2Case_Classification]"),
         A2CNUM("[Account2Case_Numerator]"),
         A2CDENUM("[Account2Case_Denominator]"),
         A2CDEFAULT("[Account2Case_Default]"),
@@ -243,8 +246,8 @@ public abstract class Import_Base
         Import_Base.ACC2ACC.put("ViewSumAccount", CIAccounting.ViewSum2Account);
         Import_Base.ACC2ACC.put("AccountCosting", CIAccounting.Account2AccountCosting);
         Import_Base.ACC2ACC.put("AccountInverseCosting", CIAccounting.Account2AccountCostingInverse);
-        Import_Base.ACC2ACC.put("AccountCredit", CIAccounting.Account2AccountCredit);
-        Import_Base.ACC2ACC.put("AccountDebit", CIAccounting.Account2AccountDebit);
+        Import_Base.ACC2ACC.put("AccountAbono", CIAccounting.Account2AccountCredit);
+        Import_Base.ACC2ACC.put("AccountCargo", CIAccounting.Account2AccountDebit);
     }
 
 
@@ -252,6 +255,8 @@ public abstract class Import_Base
     static {
         Import_Base.ACC2CASE.put("Credit", CIAccounting.Account2CaseCredit);
         Import_Base.ACC2CASE.put("Debit", CIAccounting.Account2CaseDebit);
+        Import_Base.ACC2CASE.put("CreditClassification", CIAccounting.Account2CaseCredit4Classification);
+        Import_Base.ACC2CASE.put("DebitClassification", CIAccounting.Account2CaseDebit4Classification);
     }
 
     /**
@@ -429,7 +434,7 @@ public abstract class Import_Base
             entries.remove(0);
 
             for (final String[] row : entries) {
-                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, null, null);
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, validateMap, null);
                 accounts.put(account.getValue(), account);
             }
             for (final ImportAccount account : accounts.values()) {
@@ -446,8 +451,10 @@ public abstract class Import_Base
                     final List<Type> lstTypes = account.getLstTypeConn();
                     final List<String> lstTarget = account.getLstTargetConn();
 
-                    final int cont = 0;
+                    int cont = 0;
                     for (final Type type : lstTypes) {
+                        deleteExistingConnections(type, account.getInstance());
+
                         final String nameAcc = lstTarget.get(cont);
                         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
@@ -463,6 +470,7 @@ public abstract class Import_Base
                                             query.getCurrentValue().getId());
                             insert.execute();
                         }
+                        cont++;
                     }
                 }
             }
@@ -470,6 +478,20 @@ public abstract class Import_Base
             throw new EFapsException(Periode.class, "createAccountTable.IOException", e);
         }
         return accounts;
+    }
+
+    protected void deleteExistingConnections(final Type _type,
+                                             final Instance _accInstance)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldrConn = new QueryBuilder(_type);
+        queryBldrConn.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, _accInstance);
+        final InstanceQuery query = queryBldrConn.getQuery();
+        query.execute();
+        while (query.next()) {
+            final Delete delete = new Delete(query.getCurrentValue());
+            delete.execute();
+        }
     }
 
     protected HashMap<String, ImportAccount> createViewAccountTable(final Instance _periodInst,
@@ -663,6 +685,7 @@ public abstract class Import_Base
         private String caseDescription;
         private CIType casetype;
         private CIType a2cType;
+        private String a2cClass;
         private String a2cNum;
         private String a2cDenum;
         private boolean a2cDefault;
@@ -679,32 +702,36 @@ public abstract class Import_Base
         {
             try {
                 this.periodeInst = _periodInst;
-                this.caseName = _row[_colName2Index.get(Import_Base.CaseColumn.CASENAME.getKey())].trim().replaceAll(
-                                "\n",
-                                "");
+                this.caseName = _row[_colName2Index.get(Import_Base.CaseColumn.CASENAME.getKey())].trim()
+                                .replaceAll("\n", "");
                 this.caseDescription = _row[_colName2Index.get(Import_Base.CaseColumn.CASEDESC.getKey())].trim()
-                                .replaceAll("\n",
-                                                "");
+                                .replaceAll("\n", "");
                 final String type = _row[_colName2Index.get(Import_Base.CaseColumn.CASETYPE.getKey())].trim()
-                                .replaceAll(
-                                                "\n", "");
+                                .replaceAll("\n", "");
                 this.casetype = Import_Base.TYPE2TYPE.get(type);
-                final String a2c = _row[_colName2Index.get(Import_Base.CaseColumn.A2CTYPE.getKey())].trim().replaceAll(
-                                "\n", "");
+                final String a2c = _row[_colName2Index.get(Import_Base.CaseColumn.A2CTYPE.getKey())].trim()
+                                .replaceAll("\n", "");
+
                 this.a2cType = Import_Base.ACC2CASE.get(a2c);
 
-                this.a2cNum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CNUM.getKey())].trim().replaceAll(
-                                "\n", "");
-                this.a2cDenum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CDENUM.getKey())].trim().replaceAll(
-                                "\n", "");
+                this.a2cNum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CNUM.getKey())].trim()
+                                .replaceAll("\n", "");
+                this.a2cDenum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CDENUM.getKey())].trim()
+                                .replaceAll("\n", "");
                 this.a2cDefault = "yes".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.CaseColumn.A2CDEFAULT
                                 .getKey())])
                                 || "true".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.CaseColumn.A2CDEFAULT
                                                 .getKey())]);
 
                 final String accName = _row[_colName2Index.get(Import_Base.CaseColumn.A2CACC.getKey())].trim()
-                                .replaceAll(
-                                                "\n", "");
+                                .replaceAll("\n", "");
+
+                if (_colName2Index.containsKey(Import_Base.CaseColumn.A2CCLA.getKey())
+                        && (a2cType.getType().isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
+                            || a2cType.getType().isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
+                    this.a2cClass = _row[_colName2Index.get(Import_Base.CaseColumn.A2CCLA.getKey())].trim()
+                                .replaceAll("\n", "");
+                }
 
                 final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
@@ -758,6 +785,9 @@ public abstract class Import_Base
             insert.add(CIAccounting.Account2CaseAbstract.Denominator, this.a2cDenum);
             insert.add(CIAccounting.Account2CaseAbstract.Numerator, this.a2cNum);
             insert.add(CIAccounting.Account2CaseAbstract.Default, this.a2cDefault);
+            if (this.a2cClass != null) {
+                insert.add(CIAccounting.Account2CaseAbstract.LinkValue, Classification.get(this.a2cClass).getId());
+            }
             insert.execute();
         }
 
