@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 7855 $
- * Last Changed:    $Date: 2012-08-02 20:35:53 -0500 (jue, 02 ago 2012) $
- * Last Changed By: $Author: jan@moxter.net $
+ * Revision:        $Rev: 10283 $
+ * Last Changed:    $Date: 2013-09-24 14:46:54 -0500 (mar, 24 sep 2013) $
+ * Last Changed By: $Author: jorge.cueva@moxter.net $
  */
 
 package org.efaps.esjp.accounting;

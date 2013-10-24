@@ -871,7 +871,6 @@ public abstract class Report_Base
             }
             return ret.toString();
         }
-
     }
 
     /**
