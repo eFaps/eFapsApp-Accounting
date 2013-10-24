@@ -451,10 +451,10 @@ public abstract class Import_Base
                     final List<Type> lstTypes = account.getLstTypeConn();
                     final List<String> lstTarget = account.getLstTargetConn();
 
+                    deleteExistingConnections(lstTypes, account.getInstance());
+
                     int cont = 0;
                     for (final Type type : lstTypes) {
-                        deleteExistingConnections(type, account.getInstance());
-
                         final String nameAcc = lstTarget.get(cont);
                         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
@@ -480,17 +480,19 @@ public abstract class Import_Base
         return accounts;
     }
 
-    protected void deleteExistingConnections(final Type _type,
+    protected void deleteExistingConnections(final List<Type> _lstTypes,
                                              final Instance _accInstance)
         throws EFapsException
     {
-        final QueryBuilder queryBldrConn = new QueryBuilder(_type);
-        queryBldrConn.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, _accInstance);
-        final InstanceQuery query = queryBldrConn.getQuery();
-        query.execute();
-        while (query.next()) {
-            final Delete delete = new Delete(query.getCurrentValue());
-            delete.execute();
+        for (final Type type : _lstTypes) {
+            final QueryBuilder queryBldrConn = new QueryBuilder(type);
+            queryBldrConn.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, _accInstance);
+            final InstanceQuery query = queryBldrConn.getQuery();
+            query.execute();
+            while (query.next()) {
+                final Delete delete = new Delete(query.getCurrentValue());
+                delete.execute();
+            }
         }
     }
 
