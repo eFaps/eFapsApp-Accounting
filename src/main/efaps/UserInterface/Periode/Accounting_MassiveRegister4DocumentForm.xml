@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 5317 $
+  Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (Mon, 16 Aug 2010) $
+  Last Changed By: $Author: miguel.a.aranya $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>169113d5-22b7-417f-835e-8e2d74b00f1e</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev: 5317 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_MassiveRegister4DocumentForm</name>
+        <field name="setPeriode">
+            <property name="ModeCreate">HIDDEN</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="setPeriodeUIFieldValue"
+                name="Accounting_TransactionCreate4DocBankCashForm.setPeriode.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="storeOIDS">
+            <property name="ModeCreate">HIDDEN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                    method="getStoreOIDsFieldValue"
+                    name="Accounting_MassiveRegister4DocumentForm.storeOIDS.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="date">
+            <property name="Label">Accounting_MassiveRegister4DocumentForm.date.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+        </field>
+        <field name="useDate">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_MassiveRegister4DocumentForm.useDate.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
+                event="UI_FIELD_VALUE" >
+                <property name="checked">false</property>
+            </trigger>
+        </field>
+        <field name="useRounding">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_MassiveRegister4DocumentForm.useRounding.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
+                event="UI_FIELD_VALUE" >
+                <property name="checked">true</property>
+            </trigger>
+        </field>
+        <field name="case">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionForm.case.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getCaseFieldValue"
+                name="Accounting_TransactionCreate4DocForm.case.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Accounting_CaseDocRegister</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

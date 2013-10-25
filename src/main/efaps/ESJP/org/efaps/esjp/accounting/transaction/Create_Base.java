@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
@@ -51,6 +52,8 @@ import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Periode;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.TargetAccount;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -60,6 +63,8 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -516,8 +521,6 @@ public abstract class Create_Base
         classInsert.execute();
     }
 
-
-
     /**
      * Create the classifcation.
      * @param _parameter Parameter as passed from the eFaps API
@@ -968,7 +971,7 @@ public abstract class Create_Base
      * @return new Return
      * @throws EFapsException on error
      */
-    public Return create4DocMassive(final Parameter _parameter)
+    public Return createDocMassive4Stock(final Parameter _parameter)
         throws EFapsException
     {
         String[] oids = new String[0];
@@ -1019,10 +1022,10 @@ public abstract class Create_Base
                 insert.execute();
                 final Instance transInst = insert.getInstance();
                 for (final TargetAccount account : doc.getCreditAccounts().values()) {
-                    insertPosition4Massiv(doc, transInst, CIAccounting.TransactionPositionCredit, account);
+                    insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionCredit, account);
                 }
                 for (final TargetAccount account : doc.getDebitAccounts().values()) {
-                    insertPosition4Massiv(doc, transInst, CIAccounting.TransactionPositionDebit, account);
+                    insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionDebit, account);
                 }
                 createDocClass(_parameter, transInst, docInst);
             }
@@ -1047,6 +1050,206 @@ public abstract class Create_Base
     }
 
     /**
+     * @param _parameter
+     * @return
+     * @throws EFapsException
+     */
+    public Return createDoc4Massive(final Parameter _parameter) throws EFapsException {
+        final Instance instPeriode = _parameter.getCallInstance();
+        DateTime date = new DateTime(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.date.name));
+        final boolean useDateForm = Boolean.parseBoolean(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.useDate.name));
+        final boolean useRounding = Boolean.parseBoolean(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.useRounding.name));
+        final String[] oidsDoc = (String[]) Context.getThreadContext()
+                        .getSessionAttribute(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.storeOIDS.name);
+        for (final String oid : oidsDoc) {
+            final Instance instDoc = Instance.get(oid);
+            if (instDoc.isValid()) {
+                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+                final PrintQuery printCase = new PrintQuery(caseInst);
+                printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
+                printCase.execute();
+                final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
+                final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
+                                                : CISales.DocumentSumAbstract.RateNetTotal.name;
+                final PrintQuery print = new PrintQuery(instDoc);
+                print.addAttribute(CISales.DocumentSumAbstract.Name,
+                                CISales.DocumentSumAbstract.Date,
+                                CISales.DocumentSumAbstract.RateCurrencyId);
+                print.addAttribute(attrName);
+                print.execute();
+
+                if (!useDateForm) {
+                    date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
+                }
+                final String name = print.<String>getAttribute(CISales.DocumentSumAbstract.Name);
+                final Long currId = print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+
+                final BigDecimal amount = print.<BigDecimal>getAttribute(attrName);
+                final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
+                final String dateStr = date.withChronology(Context.getThreadContext().getChronology())
+                                .toString(formatter.withLocale(Context.getThreadContext().getLocale()));
+                final StringBuilder val = new StringBuilder();
+                val.append(DBProperties.getProperty(instDoc.getType().getName() + ".Label")).append(" ")
+                                .append(name).append(" ").append(dateStr);
+                final String desc = val.toString();
+
+                final Transaction txn = new Transaction();
+                final Rate rate = txn.getExchangeRate(_parameter, instPeriode, currId, date, null);
+                final Document doc = txn.new Document(instDoc);
+                doc.setAmount(amount);
+                doc.setFormater(txn.getFormater(2, 2));
+                doc.setDate(date);
+                doc.setRate(rate);
+
+                new Transaction().buildDoc4ExecuteButton(_parameter, doc);
+
+                // validate the transaction and if necessary create rounding parts
+                final PrintQuery checkPrint = new PrintQuery(doc.getInstance());
+                checkPrint.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                checkPrint.executeWithoutAccessCheck();
+
+                final BigDecimal checkCrossTotal = checkPrint
+                                .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                BigDecimal debit = BigDecimal.ZERO;
+                for (final TargetAccount acc : doc.getDebitAccounts().values()) {
+                    debit = debit.add(acc.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+                }
+                BigDecimal credit = BigDecimal.ZERO;
+                for (final TargetAccount acc : doc.getCreditAccounts().values()) {
+                    credit = credit.add(acc.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+                }
+                if (useRounding) {
+                    // is does not sum to 0 but is less then the max defined
+                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instPeriode);
+                    final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMINAMOUNT);
+                    final BigDecimal diffMin = (diffMinStr != null && !diffMinStr.isEmpty())
+                                    ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
+                    if ((checkCrossTotal.compareTo(debit) != 0 || checkCrossTotal.compareTo(credit) != 0)
+                                    && debit.subtract(credit).abs().compareTo(diffMin) < 0) {
+                        final TargetAccount acc = doc.getDebitAccounts().values().iterator().next();
+                        if (checkCrossTotal.compareTo(debit) > 0) {
+                            final TargetAccount account = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGDEBIT);
+                            account.setAmount(checkCrossTotal.subtract(debit));
+                            account.setRate(acc.getRate());
+                            final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
+                                            .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
+                            account.setAmountRate(rateAmount);
+                            doc.getDebitAccounts().put(account.getOid(), account);
+                            debit = debit.add(checkCrossTotal.subtract(debit));
+                        }
+                        if (checkCrossTotal.compareTo(credit) > 0){
+                            final TargetAccount account = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGCREDIT);
+                            doc.getCreditAccounts().put(account.getOid(), account);
+                            account.setAmount(checkCrossTotal.subtract(credit));
+                            account.setRate(acc.getRate());
+                            final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
+                                            .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
+                            account.setAmountRate(rateAmount);
+                            credit = credit.add(checkCrossTotal.subtract(credit));
+                        }
+                    }
+                }
+                final boolean valid = checkCrossTotal.compareTo(debit) == 0 && checkCrossTotal.compareTo(credit) == 0;
+
+                if (valid) {
+                    createTrans4DocMassive(_parameter, doc, instPeriode, desc);
+                }
+            }
+        }
+        return new Return();
+    }
+
+    /**
+     * @param _key
+     * @return
+     * @throws EFapsException
+     */
+    protected TargetAccount getRoundingAccount(final String _key)
+        throws EFapsException
+    {
+        final Instance periodInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        Transaction_Base.PERIODE_SESSIONKEY);
+        TargetAccount ret = null;
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final String name = props.getProperty(_key);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, name);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            ret = new Transaction().new TargetAccount(multi.getCurrentInstance().getOid(),
+                            multi.<String>getAttribute(CIAccounting.AccountAbstract.Name),
+                            multi.<String>getAttribute(CIAccounting.AccountAbstract.Description), BigDecimal.ZERO);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _doc
+     * @param _instPeriode
+     * @param _description
+     * @throws EFapsException
+     */
+    protected void createTrans4DocMassive(final Parameter _parameter,
+                                          final Document _doc,
+                                          final Instance _instPeriode,
+                                          final String _description)
+        throws EFapsException
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        final Insert insert = new Insert(CIAccounting.Transaction);
+        insert.add(CIAccounting.Transaction.Description, _description);
+        insert.add(CIAccounting.Transaction.Date, _doc.getDate());
+        insert.add(CIAccounting.Transaction.PeriodeLink, _instPeriode);
+        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+        insert.execute();
+
+        final Instance instance = insert.getInstance();
+
+        final Classification classType = properties.containsKey("Classification")
+                        ? Classification.get((String) properties.get("Classification")) : null;
+        if (classType != null) {
+            final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
+            final Insert insertClassRel = new Insert(classification1.getClassifyRelationType());
+            insertClassRel.add(classification1.getRelLinkAttributeName(), instance.getId());
+            insertClassRel.add(classification1.getRelTypeAttributeName(), classification1.getId());
+            insertClassRel.execute();
+
+            final Insert insertClass = new Insert(classification1);
+            insertClass.add(classification1.getLinkAttributeName(), instance.getId());
+            insertClass.execute();
+
+            final Classification classification2 = classType;
+            final Insert insertClassRel2 = new Insert(classification2.getClassifyRelationType());
+            insertClassRel2.add(classification2.getRelLinkAttributeName(), instance.getId());
+            insertClassRel2.add(classification2.getRelTypeAttributeName(), classification2.getId());
+            insertClassRel2.execute();
+
+            final Insert insertClass2 = new Insert(classification2);
+            insertClass2.add(classification2.getLinkAttributeName(), instance.getId());
+            insertClass2.add(CIAccounting.TransactionClassDocument.DocumentLink, _doc.getInstance());
+            insertClass2.execute();
+        }
+
+        final Instance transInst = insert.getInstance();
+
+        for (final TargetAccount account : _doc.getCreditAccounts().values()) {
+            insertPosition4Massiv(_parameter, _doc, transInst, CIAccounting.TransactionPositionCredit, account);
+        }
+        for (final TargetAccount account : _doc.getDebitAccounts().values()) {
+            insertPosition4Massiv(_parameter, _doc, transInst, CIAccounting.TransactionPositionDebit, account);
+        }
+
+    }
+
+    /**
      * @param _doc          Document
      * @param _transInst    Transaction Instance
      * @param _type         CITYpe
@@ -1054,7 +1257,8 @@ public abstract class Create_Base
      * @return Instance of the new position
      * @throws EFapsException   on error
      */
-    protected Instance insertPosition4Massiv(final Document _doc,
+    protected Instance insertPosition4Massiv(final Parameter _parameter,
+                                             final Document _doc,
                                              final Instance _transInst,
                                              final CIType _type,
                                              final TargetAccount _account)
@@ -1062,13 +1266,14 @@ public abstract class Create_Base
     {
         final boolean isDebitTrans = _type.equals(CIAccounting.TransactionPositionDebit);
         final Instance accInst = Instance.get(_account.getOid());
+        final Instance periodeInst = _parameter.getCallInstance();
+        final Instance curInstance = new Periode().getCurrency(periodeInst).getInstance();
         final Insert insert = new Insert(_type);
         insert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transInst.getId());
         insert.add(CIAccounting.TransactionPositionAbstract.AccountLink, accInst.getId());
-        insert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink,
-                        _doc.getRate().getCurInstance().getInstance().getId());
+        insert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
         insert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
-                        _account.getRate().getCurInstance().getInstance().getId());
+                        _account.getRate().getCurInstance().getInstance());
         insert.add(CIAccounting.TransactionPositionAbstract.Rate,
                         new Object[] {_doc.getRate().getValue(), _account.getRate().getValue() });
         final BigDecimal rateAmount = _account.getAmount();
@@ -1135,8 +1340,7 @@ public abstract class Create_Base
                 insert3.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transInst.getId());
                 insert3.add(CIAccounting.TransactionPositionAbstract.AccountLink,
                                 print.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
-                insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink,
-                                _doc.getRate().getCurInstance().getInstance().getId());
+                insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
                 insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
                                 _account.getRate().getCurInstance().getInstance().getId());
                 insert3.add(CIAccounting.TransactionPositionAbstract.Rate,

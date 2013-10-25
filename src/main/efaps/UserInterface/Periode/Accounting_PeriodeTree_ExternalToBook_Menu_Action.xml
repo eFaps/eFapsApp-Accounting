@@ -37,6 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PeriodeTree_ExternalToBook_Menu_Action_Book</child>
+            <child>Accounting_PeriodeTree_ExternalToBook_Menu_Action_MassiveBook</child>
         </childs>
     </definition>
 

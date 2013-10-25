@@ -37,6 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_Book</child>
+            <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_MassiveBook</child>
             <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateRate</child>
             <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateDocument</child>
         </childs>

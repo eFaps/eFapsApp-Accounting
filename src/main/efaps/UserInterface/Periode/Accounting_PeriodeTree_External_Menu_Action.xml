@@ -38,6 +38,7 @@
         <childs>
             <child>Accounting_PeriodeTree_External_Menu_Action_Register</child>
             <child>Accounting_PeriodeTree_External_Menu_Action_Create</child>
+            <child>Accounting_PeriodeTree_External_Menu_Action_MassiveRegister</child>
         </childs>
     </definition>
 

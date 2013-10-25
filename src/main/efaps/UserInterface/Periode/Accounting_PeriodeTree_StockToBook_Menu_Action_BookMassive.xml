@@ -39,7 +39,7 @@
         <target>
             <form>Accounting_BookMassivForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
-                method="create4DocMassive"/>
+                method="createDocMassive4Stock"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

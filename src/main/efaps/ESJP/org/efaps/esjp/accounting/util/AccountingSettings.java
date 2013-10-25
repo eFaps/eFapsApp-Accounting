@@ -65,6 +65,11 @@ public interface AccountingSettings
     String PERIOD_ROUNDINGDEBIT = "RoundingDebit";
 
     /**
+     * Minimum difference amount between credit and debit with the document tota amount.
+     */
+    String PERIOD_ROUNDINGMINAMOUNT = "RoundingMinAmount";
+
+    /**
      * Account name for debit to round when the difference between credit and debit is minimum.
      */
     String PERIOD_EXVATACCOUNT = "ExternalVATAccount";
