@@ -55,7 +55,14 @@
             <property name="Attribute">Active</property>
             <property name="Required">true</property>
         </field>
-         <field name="periodeLink">
+        <field name="isCross">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">IsCross</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="periodeLink">
             <property name="SelectAlternateOID">linkto[PeriodeAbstractLink].oid</property>
             <property name="Select">linkto[PeriodeAbstractLink].attribute[Name]</property>
             <property name="Label">Accounting_CaseAbstract/PeriodeAbstractLink.Label</property>

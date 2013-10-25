@@ -78,12 +78,19 @@
             <sqltable>Accounting_CaseSQLTable</sqltable>
             <sqlcolumn>DESCR</sqlcolumn>
         </attribute>
-         <attribute>
+        <attribute>
             <name>Active</name>
             <type>Boolean</type>
             <sqltable>Accounting_CaseSQLTable</sqltable>
             <sqlcolumn>ACTIVE</sqlcolumn>
             <defaultvalue>true</defaultvalue>
+        </attribute>
+        <attribute>
+            <name>IsCross</name>
+            <type>Boolean</type>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>ISCROSS</sqlcolumn>
+            <defaultvalue>false</defaultvalue>
         </attribute>
         <attribute>
             <name>Creator</name>

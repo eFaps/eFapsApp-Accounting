@@ -23,6 +23,7 @@ package org.efaps.esjp.accounting;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,7 +117,6 @@ public abstract class Import_Base
         }
     }
 
-
     /**
      * Columns for an account table.
      *
@@ -137,7 +137,11 @@ public abstract class Import_Base
         /** */
         ACC_REL("[Account_Relation]"),
         /** */
-        ACC_TARGET("[Account_Target]");
+        ACC_TARGET("[Account_Target]"),
+        /** */
+        ACC_RELNUM("[Account_RelNumerator]"),
+        /** */
+        ACC_RELDEN("[Account_RelDenominator]");
 
         /** Key. */
         private final String key;
@@ -321,7 +325,8 @@ public abstract class Import_Base
             final String parentName = multi.<String>getSelect(sel);
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
             final String desc = multi.<String>getAttribute(CIAccounting.AccountAbstract.Description);
-            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, desc, null, null, null, null));
+            ret.put(name, new ImportAccount(multi.getCurrentInstance(),
+                            parentName, name, desc, null, null, null, null, null, null));
         }
 
         return ret;
@@ -450,12 +455,16 @@ public abstract class Import_Base
                                 account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
                     final List<Type> lstTypes = account.getLstTypeConn();
                     final List<String> lstTarget = account.getLstTargetConn();
+                    final List<BigDecimal> lstNumerator = account.getLstNumerator();
+                    final List<BigDecimal> lstDenominator = account.getLstDenominator();
 
                     deleteExistingConnections(lstTypes, account.getInstance());
 
                     int cont = 0;
                     for (final Type type : lstTypes) {
                         final String nameAcc = lstTarget.get(cont);
+                        final Integer numerator = lstNumerator.get(cont).intValue();
+                        final Integer denominator = lstDenominator.get(cont).intValue();
                         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
                         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
@@ -468,6 +477,8 @@ public abstract class Import_Base
                                             account.getInstance().getId());
                             insert.add(CIAccounting.Account2AccountAbstract.ToAccountLink,
                                             query.getCurrentValue().getId());
+                            insert.add(CIAccounting.Account2AccountAbstract.Numerator, numerator);
+                            insert.add(CIAccounting.Account2AccountAbstract.Denominator, denominator);
                             insert.execute();
                         }
                         cont++;
@@ -848,6 +859,16 @@ public abstract class Import_Base
         private final List<String> lstTargetConn;
 
         /**
+         * List of Numerator numbers for the account connection.
+         */
+        private final List<BigDecimal> lstNumerator;
+
+        /**
+         * List of Denominator numbers for the account connection.
+         */
+        private final List<BigDecimal> lstDenominator;
+
+        /**
          * @param _periode periode this account belong to
          * @param _colName2Index mapping o column name to index
          * @param _row actual row
@@ -862,13 +883,15 @@ public abstract class Import_Base
         {
             this.lstTypeConn = new ArrayList<Type>();
             this.lstTargetConn = new ArrayList<String>();
+            this.lstNumerator = new ArrayList<BigDecimal>();
+            this.lstDenominator = new ArrayList<BigDecimal>();
 
-            this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
-                            "");
+            this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim()
+                            .replaceAll("\n", "");
             this.description = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim()
                             .replaceAll("\n", "");
-            final String type = _row[_colName2Index.get(Import_Base.AcccountColumn.TYPE.getKey())].trim().replaceAll(
-                            "\n", "");
+            final String type = _row[_colName2Index.get(Import_Base.AcccountColumn.TYPE.getKey())].trim()
+                            .replaceAll("\n", "");
             final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.AcccountColumn.SUMMARY
                             .getKey())]);
             final String parentTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.PARENT.getKey())];
@@ -879,10 +902,16 @@ public abstract class Import_Base
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
                     final String targetConnTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_TARGET.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
+                    final String numeratorTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_RELNUM.getKey()
+                                    .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
+                    final String denominatorTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_RELDEN.getKey()
+                                    .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
                     if (typeConnTmp != null && !typeConnTmp.isEmpty()
                                     && targetConnTmp != null && !targetConnTmp.isEmpty()) {
                         this.lstTypeConn.add(Type.get(Import_Base.ACC2ACC.get(typeConnTmp).uuid));
                         this.lstTargetConn.add(targetConnTmp);
+                        this.lstNumerator.add(new BigDecimal(numeratorTmp));
+                        this.lstDenominator.add(new BigDecimal(denominatorTmp));
                     }
                 }
                 this.order = _row[_colName2Index.get(Import_Base.AcccountColumn.KEY.getKey())]
@@ -997,6 +1026,8 @@ public abstract class Import_Base
         {
             this.lstTypeConn = new ArrayList<Type>();
             this.lstTargetConn = new ArrayList<String>();
+            this.lstNumerator = new ArrayList<BigDecimal>();
+            this.lstDenominator = new ArrayList<BigDecimal>();
 
             this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
                             "");
@@ -1024,7 +1055,9 @@ public abstract class Import_Base
                              final String _order,
                              final String _path,
                              final List<Type> _lstTypeConn,
-                             final List<String> _lstTargetConn)
+                             final List<String> _lstTargetConn,
+                             final List<BigDecimal> _lstNumerator,
+                             final List<BigDecimal> _lstDenominator)
         {
             this.instance = _accountIns;
             this.parent = _parentName;
@@ -1032,6 +1065,8 @@ public abstract class Import_Base
             this.description = _description;
             this.lstTypeConn = _lstTypeConn;
             this.lstTargetConn = _lstTargetConn;
+            this.lstNumerator = _lstNumerator;
+            this.lstDenominator = _lstDenominator;
             this.order = _order;
             this.path = _path;
         }
@@ -1104,6 +1139,22 @@ public abstract class Import_Base
         private List<String> getLstTargetConn()
         {
             return this.lstTargetConn;
+        }
+
+        /**
+         * @return the lstNumerator
+         */
+        private List<BigDecimal> getLstNumerator()
+        {
+            return lstNumerator;
+        }
+
+        /**
+         * @return the lstDenominator
+         */
+        private List<BigDecimal> getLstDenominator()
+        {
+            return lstDenominator;
         }
 
         /**

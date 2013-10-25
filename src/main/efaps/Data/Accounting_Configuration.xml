@@ -45,17 +45,6 @@
             <description>Deactivate the field picker.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.accounting.Document2DocumentPeriodeConfig</key>
-            <value><![CDATA[491aa65f-cbc8-464c-86bc-ef19ed6302ad=ExternalAmountIsCross
-8b19ef73-b093-480a-8596-f1380b4e24f6=ExternalAmountIsCross
-612efbd7-8843-447f-bb44-7983a3e87a43=ExternalAmountIsCross
-180bf737-8816-4e36-ad71-5ee6392e185b=InternalAmountIsCross
-40ebe7bf-ab1e-4ac5-bfbf-81f7c13e8530=InternalAmountIsCross
-6409ee95-3cd2-4063-8080-d010466fd5c7=InternalAmountIsCross
-77b5c009-0b45-40d4-8417-a79c30568904=InternalAmountIsCross]]></value>
-            <description>Sales_IncomingInvoice, Sales_IncomingReceipt, Accounting_ExternalVoucher, Sales_Invoice, Sales_Receipt, Sales_CreditNote, Sales_Reminder.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.accounting.RateCurrencyType4Documents</key>
             <value>3fecbf3a-4454-40ef-a182-713b211a283f</value>
             <description>Rate currency type UUID used for calculate debit and credit positions for a transaction (ERP_CurrencyRateClient: 86f8af65-5996-4481-b92a-17605d9281ba), (Accounting_ERP_CurrencyRateAccounting: 3fecbf3a-4454-40ef-a182-713b211a283f).</description>

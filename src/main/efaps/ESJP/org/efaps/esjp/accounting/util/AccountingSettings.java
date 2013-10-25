@@ -37,12 +37,6 @@ public interface AccountingSettings
 {
 
     /**
-     * UUID's. <br/>
-     * UUID's of the documents with the accounting amount configuration.
-     */
-    String DOCUMENT_DOCPERCONF = "org.efaps.accounting.Document2DocumentPeriodeConfig";
-
-    /**
      * Rate currency type used for calculate debit and credit positions for a
      * transaction (ERP_CurrencyRateClient, Accounting_ERP_CurrencyRateAccounting).
      */

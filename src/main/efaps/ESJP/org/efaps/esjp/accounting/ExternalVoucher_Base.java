@@ -284,17 +284,14 @@ public abstract class ExternalVoucher_Base
                     throws EFapsException
     {
         BigDecimal[] getAmounts = new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ZERO };
-        final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
-        //Accounting-Configuration
-        final SystemConfiguration config = SystemConfiguration.get(
-                    UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
-        boolean isCross = false;
-        if (config != null) {
-            final Properties props = config.getObjectAttributeValueAsProperties(periodeInst);
-            isCross = "true".equalsIgnoreCase(props.getProperty("ExternalAmountIsCross"));
-            getAmounts = evalAmounts(_parameter, isCross);
-        }
+
+        final Instance caseInst = Instance.get(_parameter.getParameterValue(CIFormAccounting
+                        .Accounting_TransactionCreate4ExternalVoucherForm.case_field.name));
+        final PrintQuery print = new PrintQuery(caseInst);
+        print.addAttribute(CIAccounting.CaseAbstract.IsCross);
+        print.execute();
+        final boolean isCross = print.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
+        getAmounts = evalAmounts(_parameter, isCross);
         return getAmounts;
     }
 

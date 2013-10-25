@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -762,15 +761,12 @@ public abstract class Transaction_Base
             if (curr == null && amountStr == null) {
                 final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
                 doc.setInstance(docInst);
-                Boolean isCross = true;
-                final Properties typesProps = Accounting.getSysConfig()
-                                .getAttributeValueAsProperties(AccountingSettings.DOCUMENT_DOCPERCONF);
-                final Properties periodeProps = Accounting.getSysConfig().getObjectAttributeValueAsProperties(
-                                periodeInstance);
-                if (typesProps.containsKey(docInst.getType().getUUID().toString())) {
-                    final String typeConf = typesProps.getProperty(docInst.getType().getUUID().toString());
-                    isCross = "true".equals(periodeProps.getProperty(typeConf));
-                }
+
+                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+                final PrintQuery printCase = new PrintQuery(caseInst);
+                printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
+                printCase.execute();
+                final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
                 final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
                                                 : CISales.DocumentSumAbstract.RateNetTotal.name;
                 final PrintQuery print = new PrintQuery(docInst);
