@@ -57,17 +57,17 @@ public interface AccountingSettings
     /**
      * Account name for credit to round when the difference between credit and debit is minimum.
      */
-    String PERIOD_ROUNDINGCREDIT = "RoundingCredit";
+    String PERIOD_ROUNDINGCREDIT = "RoundingCreditAccount";
 
     /**
      * Account name for debit to round when the difference between credit and debit is minimum.
      */
-    String PERIOD_ROUNDINGDEBIT = "RoundingDebit";
+    String PERIOD_ROUNDINGDEBIT = "RoundingDebitAccount";
 
     /**
-     * Minimum difference amount between credit and debit with the document tota amount.
+     * Maximum difference amount between credit and debit with the document tota amount.
      */
-    String PERIOD_ROUNDINGMINAMOUNT = "RoundingMinAmount";
+    String PERIOD_ROUNDINGMAXAMOUNT = "RoundingMaxAmount";
 
     /**
      * Account name for debit to round when the difference between credit and debit is minimum.

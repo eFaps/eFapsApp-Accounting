@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -80,15 +80,19 @@ public abstract class Periode_Base
     /**
      * Key used to store the currency in the session.
      */
-    public static final String PERIODECURRENCYKEY = "eFaps_Accounting_PeriodeCurrency";
+    public static final String PERIODECURRENCYKEY = Periode.class.getName() + ".PeriodeCurrencySessionKey";
 
-    public static final Set<String> DEFAULTSETTINGS4PERIOD = new LinkedHashSet<String>();
+    /**
+     * Default setting to be added on creation of a period.
+     */
+    public static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<String, String>();
     {
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_NAME);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_EXVATACCOUNT);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_ROUNDINGCREDIT);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_ROUNDINGDEBIT);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.add(AccountingSettings.PERIOD_TRANSFERACCOUNT);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_NAME, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXVATACCOUNT, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGDEBIT, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_TRANSFERACCOUNT, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT, "0.05");
 
     }
 
@@ -116,21 +120,20 @@ public abstract class Periode_Base
         final Instance periodInst = insert.getInstance();
         final StringBuilder props = new StringBuilder();
 
-        for (final String setting : Periode_Base.DEFAULTSETTINGS4PERIOD) {
+        for (final Entry<String, String> entry : Periode_Base.DEFAULTSETTINGS4PERIOD.entrySet()) {
             if (props.length() > 0) {
                 props.append("\n");
             }
-            props.append(setting).append("=");
-            if (AccountingSettings.PERIOD_NAME.equals(setting)) {
+            props.append(entry.getKey()).append("=");
+            if (AccountingSettings.PERIOD_NAME.equals(entry.getKey())) {
                 props.append(_parameter.getParameterValue("name"));
-            } else {
-
+            } else if (entry.getValue() != null) {
+                props.append(entry.getValue());
             }
         }
 
         final SystemConf conf = new SystemConf();
-        //Accounting-Configuration
-        conf.addObjectAttribute(Accounting.getSysConfig().getUUID(), periodInst,  props.toString() );
+        conf.addObjectAttribute(Accounting.getSysConfig().getUUID(), periodInst,  props.toString());
 
         final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
                         CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
@@ -184,15 +187,25 @@ public abstract class Periode_Base
         return inst2curr.get(_instance);
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return cleanPeriode(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
-        Context.getThreadContext().setSessionAttribute(Periode_Base.PERIODECURRENCYKEY, null);
+        Context.getThreadContext().removeSessionAttribute(Periode_Base.PERIODECURRENCYKEY);
         ret.put(ReturnValues.TRUE, true);
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return updateTableAccount(final Parameter _parameter)
         throws EFapsException
     {
@@ -206,6 +219,11 @@ public abstract class Periode_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return updateViewTableAccount(final Parameter _parameter)
         throws EFapsException
     {
@@ -219,6 +237,11 @@ public abstract class Periode_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return updateCaseTable(final Parameter _parameter)
         throws EFapsException
     {
@@ -306,14 +329,14 @@ public abstract class Periode_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                      Status.find(CISales.InvoiceStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.InvoiceStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.ReceiptStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.ReceiptStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.CreditNoteStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.CreditNoteStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.ReminderStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.ReminderStatus.uuid, "Paid").getId());
+                                      Status.find(CISales.InvoiceStatus.Open),
+                                      Status.find(CISales.InvoiceStatus.Paid),
+                                      Status.find(CISales.ReceiptStatus.Open),
+                                      Status.find(CISales.ReceiptStatus.Paid),
+                                      Status.find(CISales.CreditNoteStatus.Open),
+                                      Status.find(CISales.CreditNoteStatus.Paid),
+                                      Status.find(CISales.ReminderStatus.Open),
+                                      Status.find(CISales.ReminderStatus.Paid));
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
@@ -372,14 +395,14 @@ public abstract class Periode_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                      Status.find(CISales.InvoiceStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.InvoiceStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.ReceiptStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.ReceiptStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.CreditNoteStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.CreditNoteStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.ReminderStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.ReminderStatus.uuid, "Paid").getId());
+                                      Status.find(CISales.InvoiceStatus.Open),
+                                      Status.find(CISales.InvoiceStatus.Paid),
+                                      Status.find(CISales.ReceiptStatus.Open),
+                                      Status.find(CISales.ReceiptStatus.Paid),
+                                      Status.find(CISales.CreditNoteStatus.Open),
+                                      Status.find(CISales.CreditNoteStatus.Paid),
+                                      Status.find(CISales.ReminderStatus.Open),
+                                      Status.find(CISales.ReminderStatus.Paid));
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
         // Accounting_AccountTree_DocsToGain
         if (uuidTypeDoc.equals(UUID.fromString("63f34c69-fe9a-4e5b-adab-b90268b2a34f"))) {
@@ -429,8 +452,8 @@ public abstract class Periode_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentStockAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentStockAbstract.StatusAbstract,
-                                      Status.find(CISales.DeliveryNoteStatus.uuid, "Closed").getId(),
-                                      Status.find(CISales.ReturnSlipStatus.uuid, "Closed").getId());
+                                      Status.find(CISales.DeliveryNoteStatus.Closed),
+                                      Status.find(CISales.ReturnSlipStatus.Closed));
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentStockAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentStockAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentStockAbstract.ID, attrQuery);
@@ -467,7 +490,7 @@ public abstract class Periode_Base
         final DateTime from = print.<DateTime> getAttribute(CIAccounting.Periode.FromDate);
         final DateTime to = print.<DateTime> getAttribute(CIAccounting.Periode.ToDate);
 
-        final List<Long> statusArrayBalance = new ArrayList<Long>();
+        final List<Status> statusArrayBalance = new ArrayList<Status>();
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
         if (properties.containsKey("PettyCashBalanceStatus")) {
@@ -475,11 +498,11 @@ public abstract class Periode_Base
             if (status != null) {
                 final String[] statusStr = status.split(",");
                 for (final String statusId : statusStr) {
-                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, statusId.trim()).getId());
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, statusId.trim()));
                 }
             }
         } else {
-            statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
+            statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
         }
         if (!statusArrayBalance.isEmpty()) {
             queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
@@ -490,11 +513,11 @@ public abstract class Periode_Base
         queryBldr2.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
         final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(CISales.Payment.CreateDocument);
 
-        final List<Long> statusArrayReceipt = new ArrayList<Long>();
+        final List<Status> statusArrayReceipt = new ArrayList<Status>();
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.ExternalVoucher2Document);
-        final AttributeQuery attrQueryDoc
-                = attrQueryBldr.getAttributeQuery(CIAccounting.ExternalVoucher2Document.ToLink);
+        final AttributeQuery attrQueryDoc = attrQueryBldr.getAttributeQuery(
+                        CIAccounting.ExternalVoucher2Document.ToLink);
 
         final QueryBuilder queryBldr3 = new QueryBuilder(CISales.PettyCashReceipt);
         if (properties.containsKey("PettyCashReceiptStatus")) {
@@ -502,11 +525,11 @@ public abstract class Periode_Base
             if (status != null) {
                 final String[] statusStr = status.split(",");
                 for (final String statusId : statusStr) {
-                    statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, statusId.trim()).getId());
+                    statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, statusId.trim()));
                 }
             }
         } else {
-            statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, "Closed").getId());
+            statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.Closed));
         }
         if (!statusArrayReceipt.isEmpty()) {
             queryBldr3.addWhereAttrEqValue(CISales.PettyCashReceipt.Status, statusArrayReceipt.toArray());
@@ -582,11 +605,11 @@ public abstract class Periode_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                      Status.find(CISales.IncomingInvoiceStatus.uuid, "Open").getId(),
-                                      Status.find(CISales.IncomingInvoiceStatus.uuid, "Paid").getId(),
-                                      Status.find(CISales.PaymentOrderStatus.uuid, "Open").getId(),
-                                      Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId(),
-                                      Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Paid").getId());
+                                      Status.find(CISales.IncomingInvoiceStatus.Open),
+                                      Status.find(CISales.IncomingInvoiceStatus.Paid),
+                                      Status.find(CISales.PaymentOrderStatus.Open),
+                                      Status.find(CIAccounting.ExternalVoucherStatus.Open),
+                                      Status.find(CIAccounting.ExternalVoucherStatus.Paid));
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
@@ -641,11 +664,11 @@ public abstract class Periode_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                        Status.find(CISales.IncomingInvoiceStatus.uuid, "Open").getId(),
-                                        Status.find(CISales.IncomingInvoiceStatus.uuid, "Paid").getId(),
-                                        Status.find(CISales.PaymentOrderStatus.uuid, "Open").getId(),
-                                        Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId(),
-                                        Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Paid").getId());
+                                        Status.find(CISales.IncomingInvoiceStatus.Open),
+                                        Status.find(CISales.IncomingInvoiceStatus.Paid),
+                                        Status.find(CISales.PaymentOrderStatus.Open),
+                                        Status.find(CIAccounting.ExternalVoucherStatus.Open),
+                                        Status.find(CIAccounting.ExternalVoucherStatus.Paid));
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
         final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
@@ -683,18 +706,22 @@ public abstract class Periode_Base
         };
         return multi.execute(_parameter);
     }
-
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Object Array
+     * @throws EFapsException on error
+     */
     protected Object[] getStati4Payment(final Parameter _parameter)
         throws CacheReloadException
     {
-        final List<Long> statuses = new ArrayList<Long>();
+        final List<Status> statuses = new ArrayList<Status>();
         final Set<Type> types = getTypeList(_parameter, CISales.PaymentDocumentIOAbstract.getType());
         for (final Type type : types) {
             if (!type.isAbstract()) {
                 final StatusGroup statusGroup = Status.get(type.getStatusAttribute().getLink().getName());
                 for (final Entry<String, Status> entry : statusGroup.entrySet()) {
                     if (!"Booked".equals(entry.getKey()) && !"Canceled".equals(entry.getKey())) {
-                        statuses.add(entry.getValue().getId());
+                        statuses.add(entry.getValue());
                     }
                 }
             }

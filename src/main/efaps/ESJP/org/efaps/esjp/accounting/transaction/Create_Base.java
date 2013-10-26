@@ -1124,7 +1124,7 @@ public abstract class Create_Base
                 if (useRounding) {
                     // is does not sum to 0 but is less then the max defined
                     final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instPeriode);
-                    final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMINAMOUNT);
+                    final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT);
                     final BigDecimal diffMin = (diffMinStr != null && !diffMinStr.isEmpty())
                                     ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
                     if ((checkCrossTotal.compareTo(debit) != 0 || checkCrossTotal.compareTo(credit) != 0)
