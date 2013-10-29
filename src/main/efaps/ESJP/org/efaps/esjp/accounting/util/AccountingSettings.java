@@ -42,13 +42,10 @@ public interface AccountingSettings
      */
     String RATECURTYPE4DOCS = "org.efaps.accounting.RateCurrencyType4Documents";
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    //Setting belonging to a period, therefore only one word and not a org.efaps...
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-    //Setting belonging to a period, therefor only one word and not a org.efaps...
     /**
      * Account name for credit to round when the difference between credit and debit is minimum.
      */
@@ -63,6 +60,16 @@ public interface AccountingSettings
      * Account name for debit to round when the difference between credit and debit is minimum.
      */
     String PERIOD_ROUNDINGDEBIT = "RoundingDebitAccount";
+
+    /**
+     * Account name for gain on recalculation of exchange rates between currencies..
+     */
+    String PERIOD_EXCHANGELOSS = "ExchangeLossAccount";
+
+    /**
+     * Account name for gain on recalculation of exchange rates between currencies..
+     */
+    String PERIOD_EXCHANGEGAIN = "ExchangeGainAccount";
 
     /**
      * Maximum difference amount between credit and debit with the document tota amount.

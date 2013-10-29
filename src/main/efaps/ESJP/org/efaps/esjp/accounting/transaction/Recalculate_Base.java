@@ -33,10 +33,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -57,6 +55,8 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -382,16 +382,14 @@ public abstract class Recalculate_Base
                                                final BigDecimal _gainloss)
         throws EFapsException
     {
-        // Accounting-Configuration
-        final SystemConfiguration acc = SystemConfiguration.get(UUID
-                        .fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
-        final Properties gainLoss = acc.getObjectAttributeValueAsProperties(_parameter.getInstance());
+        final Properties gainLoss = Accounting.getSysConfig().getObjectAttributeValueAsProperties(
+                        _parameter.getInstance());
         final String accStr;
 
         if (_gainloss.signum() < 0) {
-            accStr = gainLoss.getProperty("ExchangeLoss");
+            accStr = gainLoss.getProperty(AccountingSettings.PERIOD_EXCHANGELOSS);
         } else {
-            accStr = gainLoss.getProperty("ExchangeGain");
+            accStr = gainLoss.getProperty(AccountingSettings.PERIOD_EXCHANGEGAIN);
         }
         String[] accs = new String[2];
         final String[] check = new String[2];
@@ -403,7 +401,7 @@ public abstract class Recalculate_Base
                 for (int i = 0; i < accs.length; i++) {
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                     queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
-                                            _parameter.getInstance().getId());
+                                    _parameter.getInstance().getId());
                     queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accs[i].toString());
                     final MultiPrintQuery multi = queryBldr.getPrint();
                     multi.addAttribute(CIAccounting.AccountAbstract.OID);
@@ -422,6 +420,44 @@ public abstract class Recalculate_Base
         return map;
     }
 
+    /**
+     * Validate that on ly simple accounts are selected.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return validate4SimpleAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        boolean check = true;
+        final String[] relOIDs = (String[]) Context.getThreadContext()
+                        .getSessionAttribute(CIFormAccounting.Accounting_SimpleAccountForm.document.name);
+        for (final String oid : relOIDs) {
+            final Instance relInst = Instance.get(oid);
+            if (!(relInst.isValid() && relInst.getType().isKindOf(
+                            CIAccounting.AccountConfigSimple2Periode.getType()))) {
+                check = false;
+                break;
+            }
+        }
+
+        if (check) {
+            ret.put(ReturnValues.TRUE, true);
+        } else {
+            ret.put(ReturnValues.SNIPLETT,
+                            DBProperties.getProperty(Recalculate.class.getName() + ".validate4SimpleAccount"));
+        }
+
+        return ret;
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return createGainLoss4SimpleAccount(final Parameter _parameter)
         throws EFapsException
     {
@@ -430,16 +466,16 @@ public abstract class Recalculate_Base
         printPer.execute();
         final DateTime dateFrom = printPer.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
 
-        final String[] oidsDoc = (String[]) Context.getThreadContext()
+        final String[] relOIDs = (String[]) Context.getThreadContext()
                         .getSessionAttribute(CIFormAccounting.Accounting_SimpleAccountForm.document.name);
-        final DateTime dateTo = new DateTime(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_SimpleAccountForm.date.name));
+        final DateTime dateTo = new DateTime(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_SimpleAccountForm.date.name));
         Insert insert = null;
         BigDecimal totalSum = BigDecimal.ZERO;
         CurrencyInst curr = null;
-        for (final String oid : oidsDoc) {
-            final Instance instDoc = Instance.get(oid);
-            final PrintQuery print = new PrintQuery(instDoc);
+        for (final String oid : relOIDs) {
+            final Instance relInst = Instance.get(oid);
+            final PrintQuery print = new PrintQuery(relInst);
             final SelectBuilder selAccount = new SelectBuilder()
                             .linkto(CIAccounting.AccountConfigSimple2Periode.FromLink).oid();
             print.addSelect(selAccount);
@@ -448,7 +484,7 @@ public abstract class Recalculate_Base
 
                 final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.Transaction);
                 // filter classification Pay
-                attrQuerBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                attrQuerBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance());
                 attrQuerBldr.addWhereAttrGreaterValue(CIAccounting.Transaction.Date, dateFrom.minusMinutes(1));
                 attrQuerBldr.addWhereAttrLessValue(CIAccounting.Transaction.Date, dateTo.plusDays(1));
                 final AttributeQuery attrQuery = attrQuerBldr.getAttributeQuery(CIAccounting.Transaction.ID);
@@ -469,9 +505,10 @@ public abstract class Recalculate_Base
                     final BigDecimal oldAmount = multi
                                     .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
                     final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
-                                multi.<Long>getAttribute(CIAccounting.TransactionPositionAbstract.RateCurrencyLink));
+                                            multi.<Long>getAttribute(
+                                                            CIAccounting.TransactionPositionAbstract.RateCurrencyLink));
                     final Instance currentInst = Instance.get(CIERP.Currency.getType(),
-                                multi.<Long>getAttribute(CIAccounting.TransactionPositionAbstract.CurrencyLink));
+                                    multi.<Long>getAttribute(CIAccounting.TransactionPositionAbstract.CurrencyLink));
                     curr = new CurrencyInst(currentInst);
                     final PriceUtil priceUtil = new PriceUtil();
                     final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
@@ -497,16 +534,10 @@ public abstract class Recalculate_Base
                     if (gainlossSum.compareTo(BigDecimal.ZERO) != 0) {
                         final String[] accOids = map.get("accountOids");
                         if (insert == null) {
-                            final DateTimeFormatter formater = DateTimeFormat.mediumDate();
-                            final String dateStr = dateTo.withChronology(
-                                            Context.getThreadContext().getChronology()).toString(
-                                            formater.withLocale(Context.getThreadContext().getLocale()));
-                            final StringBuilder description = new StringBuilder();
-                            description.append(DBProperties
-                                            .getProperty("Accounting_SimpleAccountForm.TxnRecalculate.Label"))
-                                            .append(" ").append(dateStr);
+                            final String descr = DBProperties.getFormatedDBProperty(Recalculate.class.getName()
+                                            + ".gainLoss4SimpleAccountTransDesc", dateTo.toDate());
                             insert = new Insert(CIAccounting.Transaction);
-                            insert.add(CIAccounting.Transaction.Description, description.toString());
+                            insert.add(CIAccounting.Transaction.Description, descr);
                             insert.add(CIAccounting.Transaction.Date, dateTo);
                             insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
                             insert.add(CIAccounting.Transaction.Status,
@@ -527,8 +558,8 @@ public abstract class Recalculate_Base
                         insertPos.add(CIAccounting.TransactionPositionCredit.CurrencyLink, curr.getInstance().getId());
                         insertPos.add(CIAccounting.TransactionPositionCredit.RateCurrencyLink,
                                         curr.getInstance().getId());
-                        insertPos.add(CIAccounting.TransactionPositionCredit.Rate, new Object[] {
-                                        BigDecimal.ONE, BigDecimal.ONE });
+                        insertPos.add(CIAccounting.TransactionPositionCredit.Rate,
+                                        new Object[] {BigDecimal.ONE, BigDecimal.ONE });
                         insertPos.execute();
 
                         insertPos = new Insert(CIAccounting.TransactionPositionDebit);
@@ -544,8 +575,8 @@ public abstract class Recalculate_Base
                         insertPos.add(CIAccounting.TransactionPositionDebit.CurrencyLink, curr.getInstance().getId());
                         insertPos.add(CIAccounting.TransactionPositionDebit.RateCurrencyLink,
                                         curr.getInstance().getId());
-                        insertPos.add(CIAccounting.TransactionPositionDebit.Rate, new Object[] {
-                                        BigDecimal.ONE, BigDecimal.ONE });
+                        insertPos.add(CIAccounting.TransactionPositionDebit.Rate,
+                                        new Object[] { BigDecimal.ONE, BigDecimal.ONE });
                         insertPos.execute();
                     }
                 }
@@ -579,9 +610,11 @@ public abstract class Recalculate_Base
             classInsert.add(CIAccounting.TransactionClassGainLoss.RateCurrencyLink,
                             curr.getInstance().getId());
             classInsert.add(CIAccounting.TransactionClassGainLoss.Rate,
-                            new Object[] {BigDecimal.ONE, BigDecimal.ONE});
+                            new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             classInsert.execute();
         }
+        // clean up
+        Context.getThreadContext().removeSessionAttribute(CIFormAccounting.Accounting_SimpleAccountForm.document.name);
         return new Return();
     }
 

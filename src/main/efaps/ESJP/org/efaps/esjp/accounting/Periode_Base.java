@@ -91,6 +91,8 @@ public abstract class Periode_Base
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXVATACCOUNT, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGDEBIT, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGEGAIN, null);
+        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGELOSS, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_TRANSFERACCOUNT, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT, "0.05");
 

@@ -32,6 +32,7 @@
             <property name="Label">Accounting_Periode2Account/Type.Label</property>
             <property name="ModeSearch">READONLY</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="ModeSearch">READONLY</property>
