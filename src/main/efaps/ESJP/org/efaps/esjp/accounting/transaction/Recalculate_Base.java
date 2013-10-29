@@ -386,7 +386,7 @@ public abstract class Recalculate_Base
                         _parameter.getInstance());
         final String accStr;
 
-        if (_gainloss.signum() < 0) {
+        if (_gainloss.signum() > 0) {
             accStr = gainLoss.getProperty(AccountingSettings.PERIOD_EXCHANGELOSS);
         } else {
             accStr = gainLoss.getProperty(AccountingSettings.PERIOD_EXCHANGEGAIN);
@@ -473,7 +473,9 @@ public abstract class Recalculate_Base
         Insert insert = null;
         BigDecimal totalSum = BigDecimal.ZERO;
         CurrencyInst curr = null;
+
         for (final String oid : relOIDs) {
+            Instance tarCurInst = null;
             final Instance relInst = Instance.get(oid);
             final PrintQuery print = new PrintQuery(relInst);
             final SelectBuilder selAccount = new SelectBuilder()
@@ -490,7 +492,7 @@ public abstract class Recalculate_Base
                 final AttributeQuery attrQuery = attrQuerBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-                queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, instAcc.getId());
+                queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, instAcc);
                 queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
@@ -518,11 +520,11 @@ public abstract class Recalculate_Base
                     BigDecimal gainloss = BigDecimal.ZERO;
                     if (!currentInst.equals(targetCurrInst)) {
                         gainloss = newAmount.subtract(oldAmount);
+                        tarCurInst = targetCurrInst;
                     } else {
                         gainloss = newAmount;
                     }
                     gainlossSum = gainlossSum.add(gainloss);
-
                 }
                 totalSum = totalSum.add(gainlossSum);
 
@@ -539,44 +541,40 @@ public abstract class Recalculate_Base
                             insert = new Insert(CIAccounting.Transaction);
                             insert.add(CIAccounting.Transaction.Description, descr);
                             insert.add(CIAccounting.Transaction.Date, dateTo);
-                            insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                            insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance());
                             insert.add(CIAccounting.Transaction.Status,
-                                            Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                                            Status.find(CIAccounting.TransactionStatus.Open));
                             insert.execute();
                         }
 
-                        Insert insertPos = new Insert(CIAccounting.TransactionPositionCredit);
-                        insertPos.add(CIAccounting.TransactionPositionCredit.TransactionLink, insert.getId());
-                        if (gainlossSum.signum() < 0) {
-                            insertPos.add(CIAccounting.TransactionPositionCredit.AccountLink, instAcc.getId());
+                        Insert insertPos = new Insert(CIAccounting.TransactionPositionDebit);
+                        insertPos.add(CIAccounting.TransactionPositionDebit.TransactionLink, insert.getInstance());
+                        if (gainlossSum.signum() > 0) {
+                            insertPos.add(CIAccounting.TransactionPositionDebit.AccountLink, Instance.get(accOids[0]));
                         } else {
-                            insertPos.add(CIAccounting.TransactionPositionCredit.AccountLink,
-                                            Instance.get(accOids[0]).getId());
-                        }
-                        insertPos.add(CIAccounting.TransactionPositionCredit.Amount, gainlossSum.abs());
-                        insertPos.add(CIAccounting.TransactionPositionCredit.RateAmount, gainlossSum.abs());
-                        insertPos.add(CIAccounting.TransactionPositionCredit.CurrencyLink, curr.getInstance().getId());
-                        insertPos.add(CIAccounting.TransactionPositionCredit.RateCurrencyLink,
-                                        curr.getInstance().getId());
-                        insertPos.add(CIAccounting.TransactionPositionCredit.Rate,
-                                        new Object[] {BigDecimal.ONE, BigDecimal.ONE });
-                        insertPos.execute();
-
-                        insertPos = new Insert(CIAccounting.TransactionPositionDebit);
-                        insertPos.add(CIAccounting.TransactionPositionDebit.TransactionLink, insert.getId());
-                        if (gainlossSum.signum() < 0) {
-                            insertPos.add(CIAccounting.TransactionPositionDebit.AccountLink,
-                                            Instance.get(accOids[0]).getId());
-                        } else {
-                            insertPos.add(CIAccounting.TransactionPositionDebit.AccountLink, instAcc.getId());
+                            insertPos.add(CIAccounting.TransactionPositionDebit.AccountLink, instAcc);
                         }
                         insertPos.add(CIAccounting.TransactionPositionDebit.Amount, gainlossSum.abs().negate());
-                        insertPos.add(CIAccounting.TransactionPositionDebit.RateAmount, gainlossSum.abs().negate());
-                        insertPos.add(CIAccounting.TransactionPositionDebit.CurrencyLink, curr.getInstance().getId());
-                        insertPos.add(CIAccounting.TransactionPositionDebit.RateCurrencyLink,
-                                        curr.getInstance().getId());
+                        insertPos.add(CIAccounting.TransactionPositionDebit.RateAmount, BigDecimal.ZERO);
+                        insertPos.add(CIAccounting.TransactionPositionDebit.CurrencyLink, curr.getInstance());
+                        insertPos.add(CIAccounting.TransactionPositionDebit.RateCurrencyLink, tarCurInst);
                         insertPos.add(CIAccounting.TransactionPositionDebit.Rate,
                                         new Object[] { BigDecimal.ONE, BigDecimal.ONE });
+                        insertPos.execute();
+
+                        insertPos = new Insert(CIAccounting.TransactionPositionCredit);
+                        insertPos.add(CIAccounting.TransactionPositionCredit.TransactionLink, insert.getInstance());
+                        if (gainlossSum.signum() > 0) {
+                            insertPos.add(CIAccounting.TransactionPositionCredit.AccountLink, instAcc);
+                        } else {
+                            insertPos.add(CIAccounting.TransactionPositionCredit.AccountLink, Instance.get(accOids[0]));
+                        }
+                        insertPos.add(CIAccounting.TransactionPositionCredit.Amount, gainlossSum.abs());
+                        insertPos.add(CIAccounting.TransactionPositionCredit.RateAmount, BigDecimal.ZERO);
+                        insertPos.add(CIAccounting.TransactionPositionCredit.CurrencyLink, curr.getInstance());
+                        insertPos.add(CIAccounting.TransactionPositionCredit.RateCurrencyLink, tarCurInst);
+                        insertPos.add(CIAccounting.TransactionPositionCredit.Rate,
+                                        new Object[] {BigDecimal.ONE, BigDecimal.ONE });
                         insertPos.execute();
                     }
                 }
@@ -587,28 +585,27 @@ public abstract class Recalculate_Base
             // create classifications
             final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
             final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
-            relInsert1.add(classification1.getRelLinkAttributeName(), instance.getId());
+            relInsert1.add(classification1.getRelLinkAttributeName(), instance);
             relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
             relInsert1.execute();
 
             final Insert classInsert1 = new Insert(classification1);
-            classInsert1.add(classification1.getLinkAttributeName(), instance.getId());
+            classInsert1.add(classification1.getLinkAttributeName(), instance);
             classInsert1.execute();
 
             final Classification classification =
                             (Classification) CIAccounting.TransactionClassGainLoss.getType();
             final Insert relInsert = new Insert(classification.getClassifyRelationType());
-            relInsert.add(classification.getRelLinkAttributeName(), instance.getId());
+            relInsert.add(classification.getRelLinkAttributeName(), instance);
             relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
             relInsert.execute();
 
             final Insert classInsert = new Insert(classification);
-            classInsert.add(classification.getLinkAttributeName(), instance.getId());
+            classInsert.add(classification.getLinkAttributeName(), instance);
             classInsert.add(CIAccounting.TransactionClassGainLoss.Amount, totalSum);
             classInsert.add(CIAccounting.TransactionClassGainLoss.RateAmount, totalSum);
-            classInsert.add(CIAccounting.TransactionClassGainLoss.CurrencyLink, curr.getInstance().getId());
-            classInsert.add(CIAccounting.TransactionClassGainLoss.RateCurrencyLink,
-                            curr.getInstance().getId());
+            classInsert.add(CIAccounting.TransactionClassGainLoss.CurrencyLink, curr.getInstance());
+            classInsert.add(CIAccounting.TransactionClassGainLoss.RateCurrencyLink, curr.getInstance());
             classInsert.add(CIAccounting.TransactionClassGainLoss.Rate,
                             new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             classInsert.execute();
