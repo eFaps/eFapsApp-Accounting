@@ -23,7 +23,6 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,8 +64,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
-import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -337,12 +335,11 @@ public abstract class FieldValue_Base
             final DateTime date = _parameter.getParameterValue("date") != null
                 ? new DateTime(_parameter.getParameterValue("date"))
                 : new DateTime().withTime(0, 0, 0, 0);
-            final Map<Long, Rate> rates = new HashMap<Long, Rate>();
             html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">")
                 .append(getDocumentFieldValue(_parameter, doc))
-                .append(getCostInformation(_parameter, date, doc, rates))
+                .append(getCostInformation(_parameter, date, doc))
                 .append("<script type=\"text/javascript\">")
-                .append(getScript(_parameter, doc, rates))
+                .append(getScript(_parameter, doc))
                 .append("</script>")
                 .append("</span>");
         }
@@ -447,9 +444,7 @@ public abstract class FieldValue_Base
             final BigDecimal rateNetTotal = print.<BigDecimal>getAttribute(
                             CISales.DocumentSumAbstract.RateNetTotal);
             final String currSymbol = print.<String>getSelect(currSymbSel);
-            _doc.setCurrSymbol(currSymbol);
             final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel);
-            _doc.setRateCurrOID(print.<String>getSelect(rateCurrOidSel));
 
             final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
 
@@ -489,14 +484,12 @@ public abstract class FieldValue_Base
      * @param _parameter        Parameter as passed from the eFaps API
      * @param _date             Date the cost will be search for
      * @param _doc              Instance of the Document the form was opened for
-     * @param _rates            map with rates
      * @return html snipplet
      * @throws EFapsException on error
      */
     protected StringBuilder getCostInformation(final Parameter _parameter,
                                                final DateTime _date,
-                                               final Document _doc,
-                                               final Map<Long, Rate> _rates)
+                                               final Document _doc)
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
@@ -504,13 +497,10 @@ public abstract class FieldValue_Base
             boolean costValidated = true;
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final boolean script = !"true".equalsIgnoreCase((String) props.get("noScript"));
-            final Instance periode = (Instance) Context.getThreadContext()
+            final Instance periodInst = (Instance) Context.getThreadContext()
                                     .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
-            final CurrencyInst periodeCurr = new Periode().getCurrency(periode);
-            _doc.setRateCurrOID(periodeCurr.getInstance().getOid());
-            _doc.setCurrSymbol(periodeCurr.getSymbol());
-            _doc.setRate(getExchangeRate(_parameter, periode, periodeCurr.getInstance().getId(),
-                            _date == null ? new DateTime() : _date, _rates));
+            final RateInfo rate = evaluateRate(_parameter, periodInst, _date == null ? new DateTime() : _date, null);
+             _doc.setRateInfo(rate);
 
             html.append("<table>");
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
@@ -524,7 +514,6 @@ public abstract class FieldValue_Base
             final SelectBuilder descSel = new SelectBuilder(sel).attribute(CIProducts.ProductAbstract.Description);
             multi.addSelect(oidSel, nameSel, descSel);
             multi.execute();
-            final Map<String, CurrencyInst> oid2inst = new HashMap<String, CurrencyInst>();
             boolean first = true;
             BigDecimal total = BigDecimal.ZERO;
             while (multi.next()) {
@@ -567,23 +556,21 @@ public abstract class FieldValue_Base
                 if (query.next()) {
                     final PrintQuery print = new PrintQuery(query.getCurrentValue());
                     print.addAttribute(CIProducts.ProductCost.Price);
-                    final SelectBuilder currSel = new SelectBuilder().linkto(CIProducts.ProductCost.CurrencyLink).oid();
+                    final SelectBuilder currSel = new SelectBuilder().linkto(CIProducts.ProductCost.CurrencyLink).instance();
                     print.addSelect(currSel);
                     print.executeWithoutAccessCheck();
                     final BigDecimal price = print.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
-                    final String currOid = print.<String>getSelect(currSel);
-                    final CurrencyInst currInst;
-                    if (oid2inst.containsKey(currOid)) {
-                        currInst = oid2inst.get(currOid);
-                    } else {
-                        currInst = new CurrencyInst(Instance.get(currOid));
-                    }
+                    final Instance currInst = print.<Instance>getSelect(currSel);
+
+                    final RateInfo rateTmp = evaluateRate(_parameter, periodInst,
+                                    _date == null ? new DateTime() : _date,  currInst);
+
                     final BigDecimal cost = quantity.multiply(new BigDecimal(uom.getNumerator()))
                                         .divide(new BigDecimal(uom.getDenominator())).multiply(price);
                     html.append("<td>").append(getFormater(2, 2).format(price)).append("</td>")
-                         .append("<td>").append(currInst.getSymbol()).append("</td>");
-                    final Rate rate = getExchangeRate(_parameter, periode, currInst.getInstance().getId(),
-                                    _date == null ? new DateTime() : _date, _rates);
+                         .append("<td>").append(rateTmp.getCurrencyInst().getSymbol()).append("</td>");
+
+
                     if (script) {
                         analyzeProduct(_doc, _doc.getCreditAccounts(), prodInst.getOid(), cost, rate,
                                        CIAccounting.AccountBalanceSheetAsset2ProductClass,
@@ -593,7 +580,7 @@ public abstract class FieldValue_Base
                                         CIAccounting.AccountIncomeStatementExpenses);
                     }
                     total = total.add(cost.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                    .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP));
+                                    .divide(rateTmp.getRate(), BigDecimal.ROUND_HALF_UP));
                 } else {
                     html.append("<td></td>")
                         .append("<td></td>");
@@ -607,9 +594,9 @@ public abstract class FieldValue_Base
                 .append("<td colspan=4></td><td>").append(getFormater(2, 2).format(total))
                 .append("<input type=\"hidden\" name=\"amountExternal\" value=\"").append(total).append("\"/>")
                 .append("</td>")
-                .append("<td>").append(periodeCurr.getSymbol())
+                .append("<td>").append(rate.getCurrencyInst().getSymbol())
                 .append("<input type=\"hidden\" name=\"currencyExternal\" value=\"")
-                .append(periodeCurr.getInstance().getId()).append("\"/>")
+                .append(rate.getInstance4Currency().getId()).append("\"/>")
                 .append("</td>")
                 .append("<tr>")
                 .append("</table>");
@@ -628,8 +615,7 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected void getPriceInformation(final Parameter _parameter,
-                                       final Document _doc,
-                                       final Map<Long, Rate> _rates)
+                                       final Document _doc)
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
@@ -653,7 +639,7 @@ public abstract class FieldValue_Base
             final BigDecimal taxAmount = cross.subtract(net).multiply(newRatepos);
             final BigDecimal prodAmount = net.multiply(newRatepos);
             analyzeTax(_doc.getCreditAccounts(), multi.<String>getSelect(taxOisSel), taxAmount);
-            final Rate rate = getExchangeRate(_parameter, periode, _doc.getRateCurrInst().getId(), _doc.getDate(), _rates);
+            final RateInfo rate = evaluateRate(_parameter, periode, _doc.getDate(), _doc.getRateCurrInst());
             analyzeProduct(_doc, _doc.getCreditAccounts(), multi.<String>getSelect(prodOidSel), prodAmount, rate,
                            CIAccounting.AccountIncomeStatementRevenue2ProductClass,
                            CIAccounting.AccountIncomeStatementRevenue);
@@ -671,8 +657,7 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected StringBuilder getScript(final Parameter _parameter,
-                                      final Document _doc,
-                                      final Map<Long, Rate> _rates)
+                                      final Document _doc)
         throws EFapsException
     {
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -681,7 +666,7 @@ public abstract class FieldValue_Base
         final StringBuilder ret = new StringBuilder();
         if (script && !_doc.getDebitAccounts().isEmpty() && !_doc.getCreditAccounts().isEmpty()) {
             if (_doc.isSumsDoc()) {
-                getPriceInformation(_parameter, _doc, _rates);
+                getPriceInformation(_parameter, _doc);
             }
             ret .append("function setDebit() {\n");
             int index = 0;
@@ -731,7 +716,7 @@ public abstract class FieldValue_Base
                                   final Map<String, TargetAccount> _account2Amount,
                                   final String _productOid,
                                   final BigDecimal _amount,
-                                  final Rate _rate,
+                                  final RateInfo _rate,
                                   final CIType _relType,
                                   final CIType _acountType)
         throws EFapsException
@@ -756,7 +741,7 @@ public abstract class FieldValue_Base
                         id = multi.<Long>getAttribute(CIAccounting.Account2ProductClass.FromAccountAbstractLink);
                         break;
                     }
-                    current = (Classification) current.getParentClassification();
+                    current = current.getParentClassification();
                 }
                 if (id != null) {
                     final PrintQuery print2 = new PrintQuery(Instance.get(_acountType.getType(), id));
@@ -768,13 +753,13 @@ public abstract class FieldValue_Base
                     if (accountOID != null) {
                         if (_account2Amount.containsKey(accountOID)) {
                             final TargetAccount account = _account2Amount.get(accountOID);
-                            if (_rate.getCurInstance().getInstance().equals(account.getRate().getCurInstance())) {
+                            if (_rate.getInstance4Currency().equals(account.getRateInfo().getInstance4Currency())) {
                                 account.add(_amount);
                             } else {
                                 account.setAmount(account.getAmountRate()
                                                 .add(_amount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                .divide(_rate.getValue(), BigDecimal.ROUND_HALF_UP)));
-                                account.setRate(_doc.getRate());
+                                                .divide(_rate.getRate(), BigDecimal.ROUND_HALF_UP)));
+                                account.setRateInfo(_doc.getRateInfo());
                                 account.setAmountRate(null);
                             }
                         } else {
@@ -783,7 +768,7 @@ public abstract class FieldValue_Base
                                             print2.<String>getAttribute(CIAccounting.AccountAbstract.Description),
                                             _amount);
                             _account2Amount.put(accountOID, account);
-                            account.setRate(_rate);
+                            account.setRateInfo(_rate);
                         }
                     }
                     break;

@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -60,7 +59,7 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -102,14 +101,13 @@ public abstract class Create_Base
                         .getParameterValue(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.useDate.name));
         final String[] oidsPay = (String[]) Context.getThreadContext()
                         .getSessionAttribute(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.document.name);
-        final Map<Long, Rate> curr2Rate = new HashMap<Long, Rate>();
         final CurrencyInst curInstance = new Periode().getCurrency(periodeInst);
         for (final String oid : oidsPay) {
             final Instance payDocInst = Instance.get(oid);
             if (payDocInst.isValid()) {
-
                 final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
-                queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, payDocInst.getId());
+                queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink,
+                                payDocInst.getId());
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder sel = new SelectBuilder().linkto(
                                 CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
@@ -138,12 +136,11 @@ public abstract class Create_Base
                     final DateTime dateTmp = useDateForm ? date : d2payDate;
 
                     final Insert insert = new Insert(CIAccounting.Transaction);
-                    insert.add(CIAccounting.Transaction.PeriodeLink, periodeInst.getId());
+                    insert.add(CIAccounting.Transaction.PeriodeLink, periodeInst);
                     insert.add(CIAccounting.Transaction.Date, dateTmp);
                     insert.add(CIAccounting.Transaction.Description,
                                     getDescription4Payment(_parameter, multi.getCurrentInstance()));
-                    insert.add(CIAccounting.Transaction.Status, Status
-                                    .find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                    insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
                     insert.execute();
 
                     if (incoming) {
@@ -153,19 +150,18 @@ public abstract class Create_Base
                     }
                     createPaymentClass(_parameter, insert.getInstance(), payDocInst);
 
-                    final Rate rate = new Transaction().getExchangeRate(_parameter, periodeInst, rateCurInst.getId(),
-                                    dateTmp, curr2Rate);
-                    final Object[] rates = new Object[] { BigDecimal.ONE, rate.getLabel() };
+                    final RateInfo rate = new Transaction().evaluateRate(_parameter, periodeInst, dateTmp, rateCurInst);
+
+                    final Object[] rates = rate.getRateObject();
                     final BigDecimal rateAmount = amount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                    .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
+                                    .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
 
                     final Insert posInsert = new Insert(CIAccounting.TransactionPositionDebit);
                     posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, insert.getId());
                     posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink,
                                     incoming ? targetAccInst.getId() : sourceAccInst.getId());
-                    posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance()
-                                    .getId());
-                    posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getId());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance());
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst);
                     posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, rates);
                     posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, amount.negate());
                     posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, rateAmount.negate());
@@ -175,9 +171,8 @@ public abstract class Create_Base
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.TransactionLink, insert.getId());
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.AccountLink,
                                     incoming ? sourceAccInst.getId() : targetAccInst.getId());
-                    posInsert2.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance()
-                                    .getId());
-                    posInsert2.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getId());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance.getInstance());
+                    posInsert2.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst);
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.Rate, rates);
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.RateAmount, amount);
                     posInsert2.add(CIAccounting.TransactionPositionAbstract.Amount, rateAmount);
@@ -1003,8 +998,7 @@ public abstract class Create_Base
 
             final Instance docInst = Instance.get(oid);
             final Document doc = trans.new Document(docInst);
-            final Map<Long, Rate> rates = new HashMap<Long, Rate>();
-            trans.getCostInformation(_parameter, date, doc, rates);
+            trans.getCostInformation(_parameter, date, doc);
             if (doc.getInstance() != null) {
                 doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
             }
@@ -1075,9 +1069,10 @@ public abstract class Create_Base
                 final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
                                                 : CISales.DocumentSumAbstract.RateNetTotal.name;
                 final PrintQuery print = new PrintQuery(instDoc);
+                final SelectBuilder sel =SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                print.addSelect(sel);
                 print.addAttribute(CISales.DocumentSumAbstract.Name,
-                                CISales.DocumentSumAbstract.Date,
-                                CISales.DocumentSumAbstract.RateCurrencyId);
+                                CISales.DocumentSumAbstract.Date);
                 print.addAttribute(attrName);
                 print.execute();
 
@@ -1085,7 +1080,7 @@ public abstract class Create_Base
                     date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
                 }
                 final String name = print.<String>getAttribute(CISales.DocumentSumAbstract.Name);
-                final Long currId = print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+                final Instance currInst = print.<Instance>getSelect(sel);
 
                 final BigDecimal amount = print.<BigDecimal>getAttribute(attrName);
                 final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
@@ -1097,12 +1092,12 @@ public abstract class Create_Base
                 final String desc = val.toString();
 
                 final Transaction txn = new Transaction();
-                final Rate rate = txn.getExchangeRate(_parameter, instPeriode, currId, date, null);
+                final RateInfo rate = txn.evaluateRate(_parameter, instPeriode, date, currInst);
                 final Document doc = txn.new Document(instDoc);
                 doc.setAmount(amount);
                 doc.setFormater(txn.getFormater(2, 2));
                 doc.setDate(date);
-                doc.setRate(rate);
+                doc.setRateInfo(rate);
 
                 new Transaction().buildDoc4ExecuteButton(_parameter, doc);
 
@@ -1133,20 +1128,20 @@ public abstract class Create_Base
                         if (checkCrossTotal.compareTo(debit) > 0) {
                             final TargetAccount account = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGDEBIT);
                             account.setAmount(checkCrossTotal.subtract(debit));
-                            account.setRate(acc.getRate());
+                            account.setRateInfo(acc.getRateInfo());
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
-                                            .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
+                                            .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
                             account.setAmountRate(rateAmount);
                             doc.getDebitAccounts().put(account.getOid(), account);
                             debit = debit.add(checkCrossTotal.subtract(debit));
                         }
-                        if (checkCrossTotal.compareTo(credit) > 0){
+                        if (checkCrossTotal.compareTo(credit) > 0) {
                             final TargetAccount account = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGCREDIT);
                             doc.getCreditAccounts().put(account.getOid(), account);
                             account.setAmount(checkCrossTotal.subtract(credit));
-                            account.setRate(acc.getRate());
+                            account.setRateInfo(acc.getRateInfo());
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
-                                            .divide(rate.getValue(), 12, BigDecimal.ROUND_HALF_UP);
+                                            .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
                             account.setAmountRate(rateAmount);
                             credit = credit.add(checkCrossTotal.subtract(credit));
                         }
@@ -1273,9 +1268,9 @@ public abstract class Create_Base
         insert.add(CIAccounting.TransactionPositionAbstract.AccountLink, accInst.getId());
         insert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
         insert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
-                        _account.getRate().getCurInstance().getInstance());
+                        _account.getRateInfo().getInstance4Currency());
         insert.add(CIAccounting.TransactionPositionAbstract.Rate,
-                        new Object[] {_doc.getRate().getValue(), _account.getRate().getValue() });
+                        new Object[] {_doc.getRateInfo().getRate(), _account.getRateInfo().getRate() });
         final BigDecimal rateAmount = _account.getAmount();
         insert.add(CIAccounting.TransactionPositionAbstract.RateAmount,
                         isDebitTrans ? rateAmount.negate() :  rateAmount);
@@ -1342,9 +1337,9 @@ public abstract class Create_Base
                                 print.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
                 insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
                 insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
-                                _account.getRate().getCurInstance().getInstance().getId());
+                                _account.getRateInfo().getInstance4Currency());
                 insert3.add(CIAccounting.TransactionPositionAbstract.Rate,
-                                new Object[] {_doc.getRate().getValue(), _account.getRate().getValue() });
+                                new Object[] {_doc.getRateInfo().getRate(), _account.getRateInfo().getRate() });
                 insert3.add(CIAccounting.TransactionPositionAbstract.Amount, amount2);
                 insert3.add(CIAccounting.TransactionPositionAbstract.RateAmount, rateAmount2);
                 insert3.execute();

@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -45,6 +46,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -59,11 +61,15 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -71,6 +77,8 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for transaction in accounting.
@@ -92,6 +100,13 @@ public abstract class Transaction_Base
      * Key for the selected case to store it in the session.
      */
     public static final String CASE_SESSIONKEY = "eFaps_Selected_Accounting_Case";
+
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Transaction.class);
+
 
     /**
      * Numbering of the transaction.
@@ -287,60 +302,73 @@ public abstract class Transaction_Base
         return formater;
     }
 
+
     /**
-     * Get the exchange Rate for a Date inside a periode.
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _periodeInst  Instance of the periode
-     * @param _currId       id of the currency
-     * @param _date         date the exchange rate is wanted for
-     * @param _curr2Rate    map of currencyid to rates
-     * @return rate
+     * @param _periodInst Instance of the period
+     * @param _date     date the rate must be evaluated for
+     * @param _currentCurrencyInst instance of the currency the rate is wanted for
+     * @return RateInfo instance
      * @throws EFapsException on error
      */
-    public Rate getExchangeRate(final Parameter _parameter,
-                                   final Instance _periodeInst,
-                                   final Long _currId,
-                                   final DateTime _date,
-                                   final Map<Long, Rate> _curr2Rate)
+    protected RateInfo evaluateRate(final Parameter _parameter,
+                                    final Instance _periodInst,
+                                    final DateTime _date,
+                                    final Instance _currentCurrencyInst)
         throws EFapsException
     {
-        final Rate ret;
-        if (_curr2Rate != null && _curr2Rate.containsKey(_currId)) {
-            ret = _curr2Rate.get(_currId);
+        final PrintQuery print = new CachedPrintQuery(_periodInst).setLifespan(1).setLifespanUnit(TimeUnit.HOURS);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Periode.CurrencyLink).instance();
+        print.addSelect(sel);
+        print.execute();
+        final Instance perCurrInst = print.<Instance>getSelect(sel);
+        final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+        final Currency currency = getCurrency(_parameter);
+        final RateInfo ret;
+        if (perCurrInst.equals(baseCurrency) || _currentCurrencyInst == null) {
+            ret = currency.evaluateRateInfo(_parameter, _date, _currentCurrencyInst == null ? perCurrInst
+                            : _currentCurrencyInst);
         } else {
-            final CurrencyInst curInstance = new Periode().getCurrency(_periodeInst);
-            if (curInstance.getInstance().getId() == _currId) {
-                ret = new Rate(curInstance, BigDecimal.ONE);
-            } else {
-                final QueryBuilder queryBldr = new QueryBuilder(getType4RateCurrency(_parameter));
-                queryBldr.addWhereAttrEqValue(CIAccounting.ERP_CurrencyRateAccounting.CurrencyLink, _currId);
-                queryBldr.addWhereAttrLessValue(CIAccounting.ERP_CurrencyRateAccounting.ValidFrom,
-                                _date.plusMinutes(1));
-                queryBldr.addWhereAttrGreaterValue(CIAccounting.ERP_CurrencyRateAccounting.ValidUntil,
-                                _date.minusMinutes(1));
-                final MultiPrintQuery print = queryBldr.getPrint();
-                final SelectBuilder valSel = new SelectBuilder()
-                                .attribute(CIAccounting.ERP_CurrencyRateAccounting.Rate).value();
-                final SelectBuilder labSel = new SelectBuilder()
-                                .attribute(CIAccounting.ERP_CurrencyRateAccounting.Rate).label();
-                final SelectBuilder curSel = new SelectBuilder()
-                                .linkto(CIAccounting.ERP_CurrencyRateAccounting.CurrencyLink).oid();
-                print.addSelect(valSel, labSel, curSel);
-                print.execute();
-                if (print.next()) {
-                    ret = new Rate(new CurrencyInst(Instance.get(print.<String>getSelect(curSel))),
-                                   print.<BigDecimal>getSelect(valSel),
-                                   print.<BigDecimal>getSelect(labSel));
-                } else {
-                    ret = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(), _currId)), BigDecimal.ONE);
-                }
-            }
-            if (_curr2Rate != null) {
-                _curr2Rate.put(_currId, ret);
-            }
+            ret = currency.evaluateRateInfos(_parameter, _date, _currentCurrencyInst, perCurrInst)[2];
         }
         return ret;
     }
+
+    protected Currency getCurrency(final Parameter _parameter)
+    {
+        final Currency ret = new Currency()
+        {
+            @Override
+            protected Type getType4ExchangeRate(final Parameter _parameter)
+            {
+                return CIAccounting.ERP_CurrencyRateAccounting.getType();
+            }
+        };
+        return ret;
+    }
+
+    protected RateFormatter getRateFormatter(final Parameter _parameter)
+    {
+        return new RateFormatter();
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _date     date the rate must be evaluated for
+     * @param _currentCurrencyInst instance of the currency the rate is wanted for
+     * @return RateInfo instance
+     * @throws EFapsException on error
+     */
+    protected RateInfo evaluateRate(final Parameter _parameter,
+                                    final DateTime _date,
+                                    final Instance _currentCurrencyInst)
+        throws EFapsException
+    {
+        return getCurrency(_parameter).evaluateRateInfo(_parameter, _date, _currentCurrencyInst);
+    }
+
 
     /**
      * Method to get the rate currency type to use for the document register or booked.
@@ -569,24 +597,30 @@ public abstract class Transaction_Base
      * @return true
      */
     protected boolean evalValues(final Parameter _parameter,
-                                 final String _postFix)
+                                 final String _postFix) throws EFapsException
     {
         boolean ret = true;
         final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
         final String[] rates = _parameter.getParameterValues("rate_" + _postFix);
         final String[] accountOids = _parameter.getParameterValues("accountLink_" + _postFix);
-        if (amounts != null && accountOids != null) {
-            for (int i = 0; i < amounts.length; i++) {
-                final String amount = amounts[i];
-                final String accountOid = accountOids[i];
-                final BigDecimal rate = amounts[i].length() > 0 ? new BigDecimal(rates[i]) : BigDecimal.ZERO;
-                if (!(amount.length() > 0 && accountOid.length() > 0 && rate.compareTo(BigDecimal.ZERO) != 0)) {
-                    ret = false;
-                    break;
+        final RateFormatter frmt = getRateFormatter(_parameter);
+        try {
+            if (amounts != null && accountOids != null) {
+                for (int i = 0; i < amounts.length; i++) {
+                    final String amount = amounts[i];
+                    final String accountOid = accountOids[i];
+                    final BigDecimal rate = amounts[i].length() > 0
+                                    ? (BigDecimal) frmt.getFrmt4RateUI().parse(rates[i]) : BigDecimal.ZERO;
+                    if (!(amount.length() > 0 && accountOid.length() > 0 && rate.compareTo(BigDecimal.ZERO) != 0)) {
+                        ret = false;
+                        break;
+                    }
                 }
+            } else {
+                ret = false;
             }
-        } else {
-            ret = false;
+        } catch (final ParseException e) {
+            Transaction_Base.LOG.error("Catched ParserException", e);
         }
         return ret;
     }
@@ -749,15 +783,12 @@ public abstract class Transaction_Base
     {
         final Return ret = new Return();
         try {
-            final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                            Transaction_Base.PERIODE_SESSIONKEY);
-
             final String curr = _parameter.getParameterValue("currencyExternal");
             final String amountStr = _parameter.getParameterValue("amountExternal");
 
             final Document doc = new Document();
             doc.setFormater(getFormater(2, 2));
-            final Long currId;
+            final Instance currInst;
             if (curr == null && amountStr == null) {
                 final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
                 doc.setInstance(docInst);
@@ -770,21 +801,23 @@ public abstract class Transaction_Base
                 final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
                                                 : CISales.DocumentSumAbstract.RateNetTotal.name;
                 final PrintQuery print = new PrintQuery(docInst);
-                print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                .instance();
+                print.addSelect(sel);
                 print.addAttribute(attrName);
                 print.execute();
-                currId = print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+                currInst = print.<Instance>getSelect(sel);
                 doc.setAmount(print.<BigDecimal>getAttribute(attrName));
             } else {
                 doc.setAmount((BigDecimal) doc.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
-                currId = Long.parseLong(curr);
+                currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
             }
 
             final String dateStr = _parameter.getParameterValue("date_eFapsDate");
             doc.setDate(DateUtil.getDateFromParameter(dateStr));
 
-            final Rate rate = getExchangeRate(_parameter, periodeInstance, currId, doc.getDate(), null);
-            doc.setRate(rate);
+            final RateInfo rateInfo = evaluateRate(_parameter, doc.getDate(), currInst);
+            doc.setRateInfo(rateInfo);
 
             buildDoc4ExecuteButton(_parameter, doc);
 
@@ -813,7 +846,7 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final String caseOid = _parameter.getParameterValue("case");
-        final Rate rate = _doc.getRate();
+        final RateInfo rateInfo = _doc.getRateInfo();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
                         Instance.get(caseOid).getId());
@@ -859,7 +892,7 @@ public abstract class Transaction_Base
                 }
 
                 final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                                .divide(rate.getValue(), BigDecimal.ROUND_HALF_UP);
+                                                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
                 String postFix;
                 Map<String, TargetAccount> acounts;
                 if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
@@ -874,7 +907,7 @@ public abstract class Transaction_Base
                     final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
                     account.setAmountRate(accAmountRate);
                     account.setLink(getLinkString(oid, postFix));
-                    account.setRate(rate);
+                    account.setRateInfo(rateInfo);
                     acounts.put(oid, account);
                 }
             }
@@ -987,7 +1020,7 @@ public abstract class Transaction_Base
             final TargetAccount account = new TargetAccount(instance.getOid(),
                             print.<String>getAttribute(CIAccounting.AccountAbstract.Name),
                             print.<String>getAttribute(CIAccounting.AccountAbstract.Description), amount);
-            account.setRate(_doc.getRate());
+            account.setRateInfo(_doc.getRateInfo());
             accounts.put(instance.getOid(), account);
         }
     }
@@ -1027,15 +1060,16 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
+        final CurrencyInst curInst = _account.getRateInfo().getCurrencyInst();
         ret.append("document.getElementsByName('amount").append(_suffix).append("')[").append(_index)
             .append("].value = '").append(StringEscapeUtils.escapeEcmaScript(_account.getAmountFormated())).append("';")
             .append("document.getElementsByName('rateCurrencyLink").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(_account.getRate().getCurInstance().getInstance().getId()).append("';")
+            .append("].value = '").append(curInst.getInstance().getId()).append("';")
             .append("document.getElementsByName('rate").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(_account.getRate().getLabel()).append("';")
+            .append("].value = '").append(_account.getRateInfo().getRateUIFrmt()).append("';")
             .append("document.getElementsByName('rate").append(_suffix).append("").append(RateUI.INVERTEDSUFFIX)
             .append("')[").append(_index).append("].value ='")
-            .append(_account.getRate().getCurInstance().isInvert()).append("';")
+            .append(curInst.isInvert()).append("';")
             .append("document.getElementsByName('amountRate").append(_suffix)
             .append("')[").append(_index).append("].appendChild(document.createTextNode('")
             .append(StringEscapeUtils.escapeEcmaScript(_account.getAmountRateFormated())).append("'));")
@@ -1104,19 +1138,9 @@ public abstract class Transaction_Base
         private boolean sumsDoc;
 
         /**
-         * OID of the rate currency.
-         */
-        private String rateCurrOID;
-
-        /**
          * Date of this Document.
          */
         private DateTime date;
-
-        /**
-         * Symbol of the Curency.
-         */
-        private String currSymbol;
 
         /**
          * List of TargetAccounts for debit.
@@ -1144,9 +1168,9 @@ public abstract class Transaction_Base
         private TargetAccount debtorAccount;
 
         /**
-         * Rate for the document.
+         * RateInfo of the Document.
          */
-        private Rate rate;
+        private RateInfo rateInfo;
 
         /**
          * Invert this document. (Means change the map for debit and credit).
@@ -1254,7 +1278,6 @@ public abstract class Transaction_Base
             return this.costValidated;
         }
 
-
         /**
          * Setter method for instance variable {@link #costValidated}.
          *
@@ -1265,29 +1288,6 @@ public abstract class Transaction_Base
         {
             this.costValidated = _costValidated;
         }
-
-
-        /**
-         * Getter method for the instance variable {@link #rate}.
-         *
-         * @return value of instance variable {@link #rate}
-         */
-        public Rate getRate()
-        {
-            return this.rate;
-        }
-
-        /**
-         * Setter method for instance variable {@link #rate}.
-         *
-         * @param _rate value for instance variable {@link #rate}
-         */
-
-        public void setRate(final Rate _rate)
-        {
-            this.rate = _rate;
-        }
-
 
         /**
          * Getter method for the instance variable {@link #formater}.
@@ -1374,21 +1374,13 @@ public abstract class Transaction_Base
         }
 
         /**
-         * @param _currSymbol   Symbol for the Currency
-         */
-        public void setCurrSymbol(final String _currSymbol)
-        {
-            this.currSymbol = _currSymbol;
-        }
-
-        /**
          * Getter method for the instance variable {@link #currSymbol}.
          *
          * @return value of instance variable {@link #currSymbol}
          */
-        public String getCurrSymbol()
+        public String getCurrSymbol() throws EFapsException
         {
-            return this.currSymbol;
+            return this.rateInfo.getCurrencyInst().getSymbol();
         }
 
         /**
@@ -1422,19 +1414,11 @@ public abstract class Transaction_Base
         }
 
         /**
-         * @param _oid  OID
-         */
-        public void setRateCurrOID(final String _oid)
-        {
-            this.rateCurrOID = _oid;
-        }
-
-        /**
          * @return Instance of the Rate Currency
          */
         public Instance getRateCurrInst()
         {
-            return Instance.get(this.rateCurrOID);
+            return this.rateInfo.getInstance4Currency();
         }
 
         /**
@@ -1537,6 +1521,28 @@ public abstract class Transaction_Base
         {
             return  getFormater().format(getDifference());
         }
+
+
+        /**
+         * Getter method for the instance variable {@link #rateInfo}.
+         *
+         * @return value of instance variable {@link #rateInfo}
+         */
+        public RateInfo getRateInfo()
+        {
+            return this.rateInfo;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #rateInfo}.
+         *
+         * @param _rateInfo value for instance variable {@link #rateInfo}
+         */
+        public void setRateInfo(final RateInfo _rateInfo)
+        {
+            this.rateInfo = _rateInfo;
+        }
     }
 
 
@@ -1572,9 +1578,9 @@ public abstract class Transaction_Base
         private Instance currInstance;
 
         /**
-         * Rate.
+         * RateInfo.
          */
-        private Rate rate;
+        private RateInfo rateInfo;
 
         /**
          * Amount of this account.
@@ -1700,36 +1706,15 @@ public abstract class Transaction_Base
         }
 
         /**
-         * Getter method for the instance variable {@link #rate}.
-         *
-         * @return value of instance variable {@link #rate}
-         */
-        public Rate getRate()
-        {
-            return this.rate;
-        }
-
-        /**
-         * Setter method for instance variable {@link #rate}.
-         *
-         * @param _rate value for instance variable {@link #rate}
-         */
-
-        public void setRate(final Rate _rate)
-        {
-            this.rate = _rate;
-        }
-
-        /**
          * Getter method for the instance variable {@link #amountRate}.
          *
          * @return value of instance variable {@link #amountRate}
          */
         public BigDecimal getAmountRate()
         {
-            if (this.amountRate == null && this.amount != null && this.rate != null) {
+            if (this.amountRate == null && this.amount != null && this.rateInfo != null) {
                 this.amountRate = this.amount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                    .divide(this.rate.getValue(), BigDecimal.ROUND_HALF_UP);
+                    .divide(getRateInfo().getRate(), BigDecimal.ROUND_HALF_UP);
             }
             return this.amountRate;
         }
@@ -1739,7 +1724,6 @@ public abstract class Transaction_Base
          *
          * @param _amountRate value for instance variable {@link #amountRate}
          */
-
         public void setAmountRate(final BigDecimal _amountRate)
         {
             this.amountRate = _amountRate;
@@ -1770,10 +1754,29 @@ public abstract class Transaction_Base
          *
          * @param _link value for instance variable {@link #link}
          */
-
         public void setLink(final StringBuilder _link)
         {
             this.link = _link;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #rateInfo}.
+         *
+         * @return value of instance variable {@link #rateInfo}
+         */
+        public RateInfo getRateInfo()
+        {
+            return this.rateInfo;
+        }
+
+        /**
+         * Setter method for instance variable {@link #rateInfo}.
+         *
+         * @param _rateInfo value for instance variable {@link #rateInfo}
+         */
+        public void setRateInfo(final RateInfo _rateInfo)
+        {
+            this.rateInfo = _rateInfo;
         }
     }
 }

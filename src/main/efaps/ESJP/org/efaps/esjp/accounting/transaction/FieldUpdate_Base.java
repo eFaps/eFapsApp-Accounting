@@ -42,7 +42,7 @@ import org.efaps.db.Instance;
 import org.efaps.esjp.accounting.Periode;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -199,18 +199,19 @@ public abstract class FieldUpdate_Base
             final String[] amounts = _parameter.getParameterValues("amount_" + postfix);
 
             final int pos = getSelectedRow(_parameter);
-            final DecimalFormat rateFormater = getFormater(0, 8);
-            final DecimalFormat formater = getFormater(2, 2);
-            final BigDecimal amountRate = amounts[pos].isEmpty() ? BigDecimal.ZERO
-                                                           : (BigDecimal) rateFormater.parse(amounts[pos]);
-
             final String dateStr = _parameter.getParameterValue("date_eFapsDate");
             final DateTime date = DateUtil.getDateFromParameter(dateStr);
             final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
                             Transaction_Base.PERIODE_SESSIONKEY);
 
-            final Rate rate = getExchangeRate(_parameter, periodeInstance, Long.parseLong(currIds[pos]), date, null);
-            final BigDecimal sum = getSum(_parameter, postfix, pos, null, rate.getValue());
+            final RateInfo rate = evaluateRate(_parameter, periodeInstance, date,
+                            Instance.get(CIERP.Currency.getType(), currIds[pos]));
+            final DecimalFormat rateFormater = rate.getFormatter().getFrmt4RateUI();
+            final DecimalFormat formater = getFormater(2, 2);
+            final BigDecimal amountRate = amounts[pos].isEmpty() ? BigDecimal.ZERO
+                            : (BigDecimal) rateFormater.parse(amounts[pos]);
+
+            final BigDecimal sum = getSum(_parameter, postfix, pos, null, rate.getRate());
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
             final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
             final String sumStr = formater.format(sum) + " "
@@ -220,11 +221,11 @@ public abstract class FieldUpdate_Base
 
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Map<String, String> map = new HashMap<String, String>();
-            map.put("rate_" + postfix, rateFormater.format(rate.getLabel()));
-            map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.getCurInstance().isInvert());
+            map.put("rate_" + postfix, rate.getRateUIFrmt());
+            map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.getCurrencyInst().isInvert());
             map.put("sum" + postfix, sumStr);
             map.put("amountRate_" + postfix,
-                            formater.format(amountRate.setScale(8).divide(rate.getValue(), BigDecimal.ROUND_HALF_UP)));
+                            formater.format(amountRate.setScale(12).divide(rate.getRate(), BigDecimal.ROUND_HALF_UP)));
             map.put("sumTotal", sumStr2);
             list.add(map);
             ret.put(ReturnValues.VALUES, list);
@@ -273,15 +274,14 @@ public abstract class FieldUpdate_Base
                 final Document doc = new Document(docInst);
                 final String dateStr = _parameter.getParameterValue("date_eFapsDate");
                 final DateTime date = DateUtil.getDateFromParameter(dateStr);
-                final Map<Long, Rate> rates = new HashMap<Long, Rate>();
                 final FieldValue fielValue = new FieldValue();
                 js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
                     .append(StringEscapeUtils.escapeEcmaScript(
                                     fielValue.getDocumentFieldValue(_parameter, doc).toString()))
                     .append(StringEscapeUtils.escapeEcmaScript(
-                                    fielValue.getCostInformation(_parameter, date, doc, rates).toString()))
+                                    fielValue.getCostInformation(_parameter, date, doc).toString()))
                     .append("'; ")
-                    .append(fielValue.getScript(_parameter, doc, rates));
+                    .append(fielValue.getScript(_parameter, doc));
             }
         }
 
@@ -387,17 +387,17 @@ public abstract class FieldUpdate_Base
         final StringBuilder ret = new StringBuilder();
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
         final DateTime date = DateUtil.getDateFromParameter(dateStr);
-        final Map<Long, Rate> curr2Rate = new HashMap<Long, Rate>();
         final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
                         Transaction_Base.PERIODE_SESSIONKEY);
         if (currIds != null) {
             for (int i = 0; i < currIds.length; i++) {
-                final Long id = Long.parseLong(currIds[i]);
-                final Rate rate = getExchangeRate(_parameter, periodeInstance, id, date, curr2Rate);
+                final RateInfo rate = evaluateRate(_parameter, periodeInstance, date,
+                                Instance.get(CIERP.Currency.getType(), currIds[i]));
                 ret.append("document.getElementsByName('").append(_targetFieldName).append("')[").append(i)
-                    .append("].value='").append(rate.getLabel()).append("';")
-                    .append("document.getElementsByName('").append(_targetFieldName).append(RateUI.INVERTEDSUFFIX)
-                    .append("')[").append(i).append("].value='").append(rate.getCurInstance().isInvert())
+                    .append("].value='").append(rate.getRateUIFrmt()).append("';")
+                    .append("document.getElementsByName('").append(_targetFieldName)
+                    .append(RateUI.INVERTEDSUFFIX)
+                    .append("')[").append(i).append("].value='").append(rate.getCurrencyInst().isInvert())
                     .append("';");
             }
         }

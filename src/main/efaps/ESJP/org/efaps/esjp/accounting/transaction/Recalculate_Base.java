@@ -64,7 +64,7 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Currency_Base.RateInfo;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.DocumentSum;
 import org.efaps.ui.wicket.util.EFapsKey;
