@@ -31,7 +31,7 @@
             <menu>Accounting_PeriodeTree_PettyCashReceipt_Menu</menu>
             <table>Accounting_Sales_PettyCashReceiptTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode" method="getPettyCashExternals">
-                <property name="Types">ERP_DocumentAbstract</property>
+                <property name="Type">ERP_DocumentAbstract</property>
             </evaluate>
         </target>
         <!-- properties -->

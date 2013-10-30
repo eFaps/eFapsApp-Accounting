@@ -37,7 +37,9 @@
             <menu>Accounting_PeriodeTree_StockToBook_Menu</menu>
             <table>Accounting_PeriodeDocumentTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode"
-                method="getStockToBook" />
+                method="getStockToBook">
+                <property name="Type">ERP_DocumentAbstract</property>
+            </evaluate>>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

@@ -38,7 +38,7 @@
             <table>Sales_IncomingInvoiceTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode"
                 method="getExternalsToBook" >
-                    <property name="Types">ERP_DocumentAbstract</property>
+                    <property name="Type">ERP_DocumentAbstract</property>
             </evaluate>
         </target>
         <!-- properties -->

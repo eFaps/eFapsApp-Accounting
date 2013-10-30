@@ -32,7 +32,7 @@
             <table>Sales_PaymentDocumentAbstractTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode"
                 method="getPaymentToBook">
-                <property name="Types">Sales_PaymentDocumentIOAbstract</property>
+                <property name="Type">Sales_PaymentDocumentIOAbstract</property>
             </evaluate>
         </target>
         <!-- properties -->
