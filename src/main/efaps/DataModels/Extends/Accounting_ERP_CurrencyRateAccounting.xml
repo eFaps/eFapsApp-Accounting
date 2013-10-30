@@ -36,6 +36,21 @@
         <trigger program="org.efaps.esjp.erp.Currency"
             method="trigger4Insert"
             name="Accounting_ERP_CurrencyRateAccounting.INSERT_POST"
-            event="INSERT_POST" />
+            event="INSERT_POST" index="1"/>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Accounting_ERP_CurrencyRateAccounting.INSERT_POST.2"
+            event="INSERT_POST" index="2">
+            <property name="CacheName">org.efaps.esjp.erp.Currency.CacheKey4Rate</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Accounting_ERP_CurrencyRateAccounting.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="CacheName">org.efaps.esjp.erp.Currency.CacheKey4Rate</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Accounting_ERP_CurrencyRateAccounting.DELETE_POST"
+            event="DELETE_POST">
+            <property name="CacheName">org.efaps.esjp.erp.Currency.CacheKey4Rate</property>
+        </trigger>      
     </definition>
 </datamodel-type>

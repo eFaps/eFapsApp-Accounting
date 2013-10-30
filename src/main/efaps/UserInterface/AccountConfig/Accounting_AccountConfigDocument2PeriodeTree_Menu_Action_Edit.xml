@@ -15,36 +15,34 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5317 $
- Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>7c52329c-9f4b-4dad-b73f-5c41f74eaaae</uuid>
+    <uuid>d0ec447f-6008-4227-b93b-233a2e9d9a08</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev: 5317 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_GainLoss_Menu_Action_SimpleRecalculate</name>
-        <!-- target definition -->
+        <name>Accounting_AccountConfigDocument2PeriodeTree_Menu_Action_Edit</name>
+
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+
+        <!-- target definitions -->
         <target>
-            <form>Accounting_GainLoss4SimpleAccountForm</form>
-            <execute program="org.efaps.esjp.accounting.transaction.Recalculate"
-                method="createGainLoss4SimpleAccount" />
-            <validate program="org.efaps.esjp.accounting.transaction.Recalculate" 
-                method="validate4SimpleAccount"/>    
+            <form>Accounting_AccountConfigDocument2PeriodeForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
         </target>
 
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">800</property>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <property name="TargetMode">edit</property>
     </definition>
 </ui-command>

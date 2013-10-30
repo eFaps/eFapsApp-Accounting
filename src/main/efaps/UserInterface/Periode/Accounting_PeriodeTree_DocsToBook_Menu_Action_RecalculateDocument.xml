@@ -31,8 +31,9 @@
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_SimpleAccountForm</form>
-            <execute method="createGainLoss4DocumentAccount" program="org.efaps.esjp.accounting.transaction.Recalculate">
+            <form>Accounting_GainLoss4DocumentAccountForm</form>
+            <execute method="createGainLoss4DocumentAccount" 
+                    program="org.efaps.esjp.accounting.transaction.Recalculate">
             </execute>
         </target>
         <!-- properties -->
