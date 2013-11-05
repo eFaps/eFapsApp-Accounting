@@ -65,7 +65,6 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.util.Sales;
@@ -509,7 +508,7 @@ public abstract class Transaction_Base
         BigDecimal rate = BigDecimal.ONE;
         try {
             final String[] rates = _parameter.getParameterValues("rate" + _postfix);
-            rate = (BigDecimal) Calculator_Base.getFormatInstance().parse(rates[_index]);
+            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate().parse(rates[_index]);
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
