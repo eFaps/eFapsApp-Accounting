@@ -57,26 +57,12 @@
             <property name="Required">true</property>
         </field>
         <field name="rateCurrencyLink">
+            <property name="Attribute">RateCurrencyLink</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
+            <property name="ModeView">READONLY</property>
             <property name="Label">Accounting_TransactionPositionForm.rateCurrencyLink.Label</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
-                method="rateCurrencyFieldValueUI"
-                name="Accounting_TransactionPositionForm.rateCurrencyLink.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="update4CurrenyRate"
-                name="Accounting_TransactionPositionForm.rateCurrencyLink.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
-        </field>
-        <field name="rateCurrencyLink4View">
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
-            <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
-            <property name="Label">Accounting_TransactionPositionForm.rateCurrencyLink.Label</property>
         </field>
         <field name="rate">
             <property name="ModeCreate">EDITABLE</property>
