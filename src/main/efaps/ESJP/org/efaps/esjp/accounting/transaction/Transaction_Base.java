@@ -60,9 +60,11 @@ import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.PriceUtil;
@@ -278,7 +280,6 @@ public abstract class Transaction_Base
         return new Return();
     }
 
-
     /**
      * @return a formater used to format bigdecimal for the user interface
      * @param _maxFrac maximum Faction, null to deactivate
@@ -454,7 +455,7 @@ public abstract class Transaction_Base
     {
         BigDecimal ret = BigDecimal.ZERO;
         try {
-            final DecimalFormat formater = getFormater(null, null);
+            final DecimalFormat formater = NumberFormatter.get().getFormatter(null, null);
             final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
             final String[] rates = _parameter.getParameterValues("rate_" + _postFix);
             final String[] ratesInv = _parameter.getParameterValues("rate_" + _postFix + RateUI.INVERTEDSUFFIX);
@@ -636,7 +637,7 @@ public abstract class Transaction_Base
     {
         final Return ret = new Return();
         final Instance docInst = Instance.get(_parameter.getParameterValue("selectedRow"));
-        final DecimalFormat formater = getFormater(4, 4);
+        final DecimalFormat formater = NumberFormatter.get().getFormatter(4, 4);
         final String rate = formater.format(getCurrencyRate(_parameter, docInst));
         ret.put(ReturnValues.VALUES, rate);
         return ret;
@@ -786,7 +787,7 @@ public abstract class Transaction_Base
             final String amountStr = _parameter.getParameterValue("amountExternal");
 
             final Document doc = new Document();
-            doc.setFormater(getFormater(2, 2));
+            doc.setFormater(NumberFormatter.get().getFormatter(2, 2));
             final Instance currInst;
             if (curr == null && amountStr == null) {
                 final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
@@ -1106,6 +1107,64 @@ public abstract class Transaction_Base
         if (summary != null && !summary) {
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
+
+    public Return validateEdit4CheckAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final Instance transPosInst = _parameter.getInstance();
+
+        if (transPosInst.isValid()) {
+            final String rateAmountStr = _parameter
+                            .getParameterValue(CIFormAccounting.Accounting_TransactionPositionForm.rateAmount.name);
+            final String amountStr = _parameter
+                            .getParameterValue(CIFormAccounting.Accounting_TransactionPositionForm.amount.name);
+
+            if (!validateAmounts4EditTransactionPos(_parameter, transPosInst, rateAmountStr, amountStr)) {
+                ret.put(ReturnValues.SNIPLETT, DBProperties
+                        .getProperty("org.efaps.esjp.accounting.transaction.Transaction.NonEdit4TransactionPosition"));
+            } else {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+
+        return ret;
+    }
+
+    protected boolean validateAmounts4EditTransactionPos(final Parameter _parameter,
+                                                         final Instance _instance,
+                                                         final String... _amounts)
+        throws EFapsException
+    {
+        final DecimalFormat formatter = NumberFormatter.get().getFormatter(null, 2);
+
+        boolean ret = true;
+
+        if (_amounts != null && _amounts.length > 0) {
+            for (final String amountStr : _amounts) {
+                try {
+                    final BigDecimal amount = (BigDecimal) formatter.parse(amountStr);
+                    if (CIAccounting.TransactionPositionCredit.getType().equals(_instance.getType())) {
+                        if (amount.signum() < 0) {
+                            ret = false;
+                            break;
+                        }
+                    } else if (CIAccounting.TransactionPositionDebit.getType().equals(_instance.getType())) {
+                        if (amount.signum() > 0) {
+                            ret = false;
+                            break;
+                        }
+                    }
+                } catch (final ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+
         return ret;
     }
 
@@ -1679,7 +1738,7 @@ public abstract class Transaction_Base
         public String getAmountFormated()
             throws EFapsException
         {
-            return getFormater(2, 2).format(getAmount());
+            return NumberFormatter.get().getFormatter(2, 2).format(getAmount());
         }
 
         /**
@@ -1735,7 +1794,7 @@ public abstract class Transaction_Base
         public String getAmountRateFormated()
             throws EFapsException
         {
-            return getFormater(2, 2).format(getAmountRate());
+            return NumberFormatter.get().getFormatter(2, 2).format(getAmountRate());
         }
 
         /**
