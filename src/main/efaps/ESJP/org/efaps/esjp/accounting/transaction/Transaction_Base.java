@@ -533,7 +533,11 @@ public abstract class Transaction_Base
         if (evalValues(_parameter, "Debit") && evalValues(_parameter, "Credit")) {
             final BigDecimal debit = getSum(_parameter, "Debit", null, null, null);
             final BigDecimal credit = getSum(_parameter, "Credit", null, null, null);
-            if (credit.subtract(debit).compareTo(BigDecimal.ZERO) == 0) {
+            if (credit.compareTo(BigDecimal.ZERO) == 0 && debit.compareTo(BigDecimal.ZERO) == 0) {
+                html.append(DBProperties
+                                .getProperty("org.efaps.esjp.accounting.transaction.Transaction.noCreateWithZeroTotal"));
+                ret.put(ReturnValues.SNIPLETT, html.toString());
+            } else if (credit.subtract(debit).compareTo(BigDecimal.ZERO) == 0) {
                 if (html.length() == 0) {
                     ret.put(ReturnValues.TRUE, true);
                 } else {
@@ -544,7 +548,7 @@ public abstract class Transaction_Base
                 Instance inst = _parameter.getCallInstance();
                 if (!inst.getType().getUUID().equals(CIAccounting.Periode.uuid)) {
                     inst = (Instance) Context.getThreadContext()
-                                                .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                                    .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
                 }
                 final Instance currinst = new Periode().getCurrency(inst).getInstance();
                 final PrintQuery query = new PrintQuery(currinst);
