@@ -29,16 +29,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPosition4ViewTable</name>
         <!-- fields -->
-        <field name="credit">
-            <property name="Attribute">Amount</property>
-            <property name="Label">Accounting_TransactionPositionAbstract.creditAmount.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Align">right</property>
-            <trigger program="org.efaps.esjp.accounting.Account" method="getValue4Signum"
-                name="Accounting_TransactionPosition4ViewTable.credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Signum">POSITIV</property>
-            </trigger>
-        </field>
         <field name="debit">
             <property name="Attribute">Amount</property>
             <property name="Label">Accounting_TransactionPositionAbstract.debitAmount.Label</property>
@@ -47,6 +37,16 @@
             <trigger program="org.efaps.esjp.accounting.Account" method="getValue4Signum"
                 name="Accounting_TransactionPosition4ViewTable.debit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Signum">NEGATIV</property>
+            </trigger>
+        </field>
+        <field name="credit">
+            <property name="Attribute">Amount</property>
+            <property name="Label">Accounting_TransactionPositionAbstract.creditAmount.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.accounting.Account" method="getValue4Signum"
+                name="Accounting_TransactionPosition4ViewTable.credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Signum">POSITIV</property>
             </trigger>
         </field>
         <field name="currencyLink">
