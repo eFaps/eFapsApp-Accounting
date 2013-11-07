@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>e19bd2df-cc2b-4eba-8347-50e01c25bd1d</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_TransactionPosition4ViewTable</name>
+        <!-- fields -->
+        <field name="credit">
+            <property name="Attribute">Amount</property>
+            <property name="Label">Accounting_TransactionPositionAbstract.creditAmount.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.accounting.Account" method="getValue4Signum"
+                name="Accounting_TransactionPosition4ViewTable.credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Signum">POSITIV</property>
+            </trigger>
+        </field>
+        <field name="debit">
+            <property name="Attribute">Amount</property>
+            <property name="Label">Accounting_TransactionPositionAbstract.debitAmount.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.accounting.Account" method="getValue4Signum"
+                name="Accounting_TransactionPosition4ViewTable.debit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Signum">NEGATIV</property>
+            </trigger>
+        </field>
+        <field name="currencyLink">
+            <property name="SelectAlternateOID">linkto[CurrencyLink].oid</property>
+            <property name="Select">linkto[CurrencyLink].attribute[Symbol]</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/CurrencyLink.Label</property>
+        </field>
+        <field name="accountLink">
+            <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[AccountLink].oid</property>
+            <property name="Select">linkto[AccountLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionPositionTable.accountLink.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="description">
+            <property name="ModeSearch">READONLY</property>
+            <property name="Select">linkto[AccountLink].attribute[Description]</property>
+            <property name="Label">Accounting_TransactionPositionTable.description.Label</property>
+        </field>
+        <field name="rateAmount">
+            <property name="Attribute">RateAmount</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/RateAmount.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="rateCurrencyLink">
+            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
+            <property name="Select">linkto[RateCurrencyLink].attribute[Symbol]</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/RateCurrencyLink.Label</property>
+        </field>
+    </definition>
+</ui-table>

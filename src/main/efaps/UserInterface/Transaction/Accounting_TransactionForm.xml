@@ -208,7 +208,7 @@
         </field>
         <field name="transactionPosition4ViewTable" character="Target">
             <property name="ModeEdit">NONE</property>
-            <table>Accounting_TransactionPositionTable</table>
+            <table>Accounting_TransactionPosition4ViewTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Accounting_TransactionPositionAbstract</property>
                 <property name="LinkFroms">TransactionLink</property>
