@@ -614,6 +614,15 @@ public abstract class Create_Base
 
     }
 
+
+
+    public Return create4Exchange(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4Doc(_parameter);
+    }
+
+
     /**
      * Method called to create a transaction including its positions.
      *

@@ -111,6 +111,13 @@
             <!-- connect the Accounting_ExternalVoucherTree_Transaction to Sales_IncomingInvoiceTree menu -->
             update.add2Menu("20bda4db-6afa-4223-abcf-6746bc4b2a18", "0370fa3a-6733-4481-841a-645d0e78e54f", -1);
 
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_ExchangeTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "feff8e73-a7f7-4717-8cd9-104f57b678a5", -1);
+
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_IncomingExchangeTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "d3586d4f-7b25-49b6-9319-2ba4e6cf68af", -1);
+
+
             <!-- connect the Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing to Sales_IncomingInvoiceTree menu -->
             update.add2Menu("56cd1287-922e-487c-84a2-07350d757473", "0370fa3a-6733-4481-841a-645d0e78e54f", -1);
 

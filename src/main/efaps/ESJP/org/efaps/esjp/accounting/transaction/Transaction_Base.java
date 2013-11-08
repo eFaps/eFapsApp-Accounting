@@ -786,55 +786,57 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        try {
-            final String curr = _parameter.getParameterValue("currencyExternal");
-            final String amountStr = _parameter.getParameterValue("amountExternal");
+        final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+        if (caseInst.isValid()) {
+            try {
+                final String curr = _parameter.getParameterValue("currencyExternal");
+                final String amountStr = _parameter.getParameterValue("amountExternal");
 
-            final Document doc = new Document();
-            doc.setFormater(NumberFormatter.get().getFormatter(2, 2));
-            final Instance currInst;
-            if (curr == null && amountStr == null) {
-                final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-                doc.setInstance(docInst);
+                final Document doc = new Document();
+                doc.setFormater(NumberFormatter.get().getFormatter(2, 2));
+                final Instance currInst;
+                if (curr == null && amountStr == null) {
+                    final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
+                    doc.setInstance(docInst);
 
-                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-                final PrintQuery printCase = new PrintQuery(caseInst);
-                printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
-                printCase.execute();
-                final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-                final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                                : CISales.DocumentSumAbstract.RateNetTotal.name;
-                final PrintQuery print = new PrintQuery(docInst);
-                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                                .instance();
-                print.addSelect(sel);
-                print.addAttribute(attrName);
-                print.execute();
-                currInst = print.<Instance>getSelect(sel);
-                doc.setAmount(print.<BigDecimal>getAttribute(attrName));
-            } else {
-                doc.setAmount((BigDecimal) doc.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
-                currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
+                    final PrintQuery printCase = new PrintQuery(caseInst);
+                    printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
+                    printCase.execute();
+                    final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
+                    final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
+                                    : CISales.DocumentSumAbstract.RateNetTotal.name;
+                    final PrintQuery print = new PrintQuery(docInst);
+                    final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                    .instance();
+                    print.addSelect(sel);
+                    print.addAttribute(attrName);
+                    print.execute();
+                    currInst = print.<Instance>getSelect(sel);
+                    doc.setAmount(print.<BigDecimal>getAttribute(attrName));
+                } else {
+                    doc.setAmount((BigDecimal) doc.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
+                    currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
+                }
+
+                final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+                doc.setDate(DateUtil.getDateFromParameter(dateStr));
+
+                final RateInfo rateInfo = evaluateRate(_parameter, doc.getDate(), currInst);
+                doc.setRateInfo(rateInfo);
+
+                buildDoc4ExecuteButton(_parameter, doc);
+
+                if (doc.getInstance() != null) {
+                    doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType())
+                                    || doc.getInstance().getType().isKindOf(CISales.CreditNote.getType()));
+                    addAccount4BankCash(_parameter, doc);
+                }
+
+                final StringBuilder js = buildHtml4ExecuteButton(_parameter, doc);
+                ret.put(ReturnValues.SNIPLETT, js.toString());
+            } catch (final ParseException e) {
+                throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
             }
-
-            final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-            doc.setDate(DateUtil.getDateFromParameter(dateStr));
-
-            final RateInfo rateInfo = evaluateRate(_parameter, doc.getDate(), currInst);
-            doc.setRateInfo(rateInfo);
-
-            buildDoc4ExecuteButton(_parameter, doc);
-
-            if (doc.getInstance() != null) {
-                doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType())
-                                || doc.getInstance().getType().isKindOf(CISales.CreditNote.getType()));
-                addAccount4BankCash(_parameter, doc);
-            }
-
-            final StringBuilder js = buildHtml4ExecuteButton(_parameter, doc);
-            ret.put(ReturnValues.SNIPLETT, js.toString());
-        } catch (final ParseException e) {
-            throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
         }
         return ret;
     }

@@ -23,24 +23,19 @@
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>12070d24-bd35-4914-be36-a97be9b652df</uuid>
+    <uuid>47395d66-f4c5-4389-97ec-acb04118e6a7</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Exchange</name>
+        <name>Accounting_PeriodeTree_Case_Menu_Action_CreateExchange</name>
+
+        <!-- target definitions -->
         <target>
-            <menu>Accounting_PeriodeTree_Exchange_Menu</menu>
-            <table>Accounting_PeriodeExchangeTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">Sales_Exchange</property>
-                <property name="StatusGrp01">Sales_ExchangeStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_IncomingExchange</property>
-                <property name="StatusGrp02">Sales_IncomingExchangeStatus</property>
-                <property name="Status02">Open</property>
-            </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" 
+            <form>Accounting_CaseForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" 
                 method="configObjectCheck" 
                 name="Accounting_PeriodeTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
@@ -48,7 +43,13 @@
             </trigger>
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_CaseExchange</property>
+        <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodeAbstractLink</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
+
 </ui-command>
