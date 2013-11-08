@@ -87,4 +87,9 @@ public interface AccountingSettings
      */
     String PERIOD_TRANSFERACCOUNT = "TransferAccount";
 
+    /**
+     * Activate the Exchange mechanism.
+     */
+    String PERIOD_ACTIVATEEXCHANGE = "ActivateExchange";
+
 }

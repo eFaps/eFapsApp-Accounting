@@ -39,8 +39,9 @@
             <menu>Accounting_PeriodeTree_Menu</menu>
             <form>Accounting_PeriodeForm</form>
         </target>
-        <!-- type tree for -->
-         <childs>
+        <type>Accounting_Periode</type>
+        
+        <childs>
             <child>Accounting_PeriodeTree_Account</child>
             <child>Accounting_PeriodeTree_AccountStructurBrowser</child>
             <child>Accounting_PeriodeTree_View</child>
@@ -51,14 +52,13 @@
             <child>Accounting_PeriodeTree_Payment</child>
             <child>Accounting_PeriodeTree_StockToBook</child>
             <child>Accounting_PeriodeTree_PettyCashReceipt</child>
+            <child>Accounting_PeriodeTree_Exchange</child>
             <child>Accounting_PeriodeTree_Transaction</child>
             <child>Accounting_PeriodeTree_GainLoss</child>
             <child>Accounting_PeriodeTree_BankCash</child>
             <child>Accounting_PeriodeTree_Case</child>
             <child>Accounting_PeriodeTree_Label</child>
         </childs>
-        
-       
 
         <!-- properties -->
         <property name="Target">content</property>
