@@ -122,22 +122,28 @@ public abstract class JournalDataSource_Base
 
             final Map<?, ?> props = (Map<?, ?>) getParameter().get(ParameterValues.PROPERTIES);
             final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.TransactionAbstract);
-            queryBuilder.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, getInstance().getId());
-            queryBuilder.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
-            queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
-            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
-            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
-            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Description);
-
             if (getParameter().getInstance().isValid()
-                            && getParameter().getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
+                        && getParameter().getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Report2Transaction);
                 attrQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Transaction.FromLinkAbstract, getParameter()
                                 .getInstance().getId());
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIAccounting.Report2Transaction.ToLinkAbstract);
                 queryBuilder.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery);
+
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIAccounting.ReportSubJournal);
+                attrQueryBldr2.addWhereAttrEqValue(CIAccounting.ReportSubJournal.ID, getInstance());
+                final AttributeQuery attrQuery2 = attrQueryBldr2.
+                                getAttributeQuery(CIAccounting.ReportSubJournal.PeriodeLink);
+                queryBuilder.addWhereAttrInQuery(CIAccounting.TransactionAbstract.PeriodeLink, attrQuery2);
+            } else {
+                queryBuilder.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, getInstance());
             }
+            queryBuilder.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
+            queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
+            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
+            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
+            queryBuilder.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Description);
 
             if (props.containsKey("Classifications")) {
                 final String classStr = (String) props.get("Classifications");
