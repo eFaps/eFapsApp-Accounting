@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -167,32 +165,45 @@ public abstract class PurchaseRecordReport_Base
             final SelectBuilder selRelDocType = new SelectBuilder(selRel).type();
             final SelectBuilder selRelDocInst = new SelectBuilder(selRel).instance();
             final SelectBuilder selRelDocName = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.Name);
-            final SelectBuilder selRelDocRevision = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.Revision);
+            final SelectBuilder selRelDocRevision = new SelectBuilder(selRel)
+                            .attribute(CISales.DocumentSumAbstract.Revision);
             final SelectBuilder selRelDocDate = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.Date);
-            final SelectBuilder selRelDocDueDate = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.DueDate);
-            final SelectBuilder selRelDocNTotal = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.NetTotal);
-            final SelectBuilder selRelDocCTotal = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.CrossTotal);
-            final SelectBuilder selRelDocRNTotal = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.RateNetTotal);
-            final SelectBuilder selRelDocRCTotal = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            final SelectBuilder selRelDocRateLabel = new SelectBuilder(selRel).attribute(CISales.DocumentSumAbstract.Rate).label();
+            final SelectBuilder selRelDocDueDate = new SelectBuilder(selRel)
+                            .attribute(CISales.DocumentSumAbstract.DueDate);
+            final SelectBuilder selRelDocNTotal = new SelectBuilder(selRel)
+                            .attribute(CISales.DocumentSumAbstract.NetTotal);
+            final SelectBuilder selRelDocCTotal = new SelectBuilder(selRel)
+                            .attribute(CISales.DocumentSumAbstract.CrossTotal);
+            final SelectBuilder selRelDocRNTotal = new SelectBuilder(selRel)
+                            .attribute(CISales.DocumentSumAbstract.RateNetTotal);
+            final SelectBuilder selRelDocRCTotal = new SelectBuilder(selRel)
+                            .attribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final SelectBuilder selRelDocRateLabel = new SelectBuilder(selRel).attribute(
+                            CISales.DocumentSumAbstract.Rate).label();
 
             final SelectBuilder selRelDocCurInst = new SelectBuilder(selRel)
-                                            .attribute(CISales.DocumentSumAbstract.CurrencyId).instance();
+                            .attribute(CISales.DocumentSumAbstract.CurrencyId).instance();
             final SelectBuilder selRelDocRCurInst = new SelectBuilder(selRel)
-                                            .attribute(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                            .attribute(CISales.DocumentSumAbstract.RateCurrencyId).instance();
 
-            final SelectBuilder selRelDocContact = new SelectBuilder(selRel).linkto(CISales.DocumentSumAbstract.Contact);
-            final SelectBuilder selRelDocContactName = new SelectBuilder(selRelDocContact).attribute(CIContacts.Contact.Name);
+            final SelectBuilder selRelDocContact = new SelectBuilder(selRel)
+                            .linkto(CISales.DocumentSumAbstract.Contact);
+            final SelectBuilder selRelDocContactName = new SelectBuilder(selRelDocContact)
+                            .attribute(CIContacts.Contact.Name);
             final SelectBuilder selRelDocContactTax = new SelectBuilder(selRelDocContact)
-                                            .clazz(CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
+                            .clazz(CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
 
-            final SelectBuilder selRelTypeLink = new SelectBuilder().linkto(CIAccounting.PurchaseRecord2Document.TypeLink);
-            final SelectBuilder selRelTypeLinkName = new SelectBuilder(selRelTypeLink).attribute(CIERP.DocumentType.Name);
+            final SelectBuilder selRelTypeLink = new SelectBuilder()
+                            .linkto(CIAccounting.PurchaseRecord2Document.TypeLink);
+            final SelectBuilder selRelTypeLinkName = new SelectBuilder(selRelTypeLink)
+                            .attribute(CIERP.DocumentType.Name);
 
             final MultiPrintQuery multi = new MultiPrintQuery(instances);
-            multi.addSelect(selRelDocType, selRelDocInst, selRelDocName, selRelDocRevision, selRelDocDate, selRelDocDueDate,
+            multi.addSelect(selRelDocType, selRelDocInst, selRelDocName, selRelDocRevision, selRelDocDate,
+                            selRelDocDueDate,
                             selRelDocNTotal, selRelDocCTotal, selRelDocRNTotal, selRelDocRCTotal, selRelDocRateLabel,
-                            selRelDocCurInst, selRelDocRCurInst, selRelDocContactName, selRelDocContactTax, selRelTypeLinkName);
+                            selRelDocCurInst, selRelDocRCurInst, selRelDocContactName, selRelDocContactTax,
+                            selRelTypeLinkName);
             multi.addAttribute(CIAccounting.PurchaseRecord2Document.DetractionDate,
                             CIAccounting.PurchaseRecord2Document.DetractionName,
                             CIAccounting.PurchaseRecord2Document.DetractionAmount);
@@ -210,9 +221,12 @@ public abstract class PurchaseRecordReport_Base
                 final BigDecimal rateTmp = multi.<BigDecimal>getSelect(selRelDocRateLabel);
                 final String typeLinkName = multi.<String>getSelect(selRelTypeLinkName);
                 final String docRevision = multi.<String>getSelect(selRelDocRevision);
-                final String detractionName = multi.<String>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionName);
-                final BigDecimal detractionAmount = multi.<BigDecimal>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionAmount);
-                final DateTime detractionDate = multi.<DateTime>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionDate);
+                final String detractionName = multi
+                                .<String>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionName);
+                final BigDecimal detractionAmount = multi
+                                .<BigDecimal>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionAmount);
+                final DateTime detractionDate = multi
+                                .<DateTime>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionDate);
                 final Instance docDerivatedRel = getDocumentDerivated(instDoc, CISales.IncomingInvoice.getType());
 
                 BigDecimal netTotal = multi.<BigDecimal>getSelect(selRelDocNTotal);
@@ -241,19 +255,13 @@ public abstract class PurchaseRecordReport_Base
                 map.put(PurchaseRecordReport_Base.Field.DOC_IGV.getKey(), export ? null : igv);
                 map.put(PurchaseRecordReport_Base.Field.DOC_EXPORT.getKey(), export ? crossTotal : null);
 
-                final Pattern patternSN = Pattern.compile("^\\d+");
-                final Matcher matcherSN = patternSN.matcher(docName);
-                if (matcherSN.find()) {
-                    map.put(PurchaseRecordReport_Base.Field.DOC_SN.getKey(), matcherSN.group());
-                } else {
-                    map.put(PurchaseRecordReport_Base.Field.DOC_SN.getKey(), docName);
-                }
+                final String[] nameAr = docName.split("\\W");
 
-                final Pattern patternNo = Pattern.compile("(?<=\\D)\\d+");
-                final Matcher matcherNo = patternNo.matcher(docName);
-                if (matcherNo.find()) {
-                    map.put(PurchaseRecordReport_Base.Field.DOC_NUMBER.getKey(), matcherNo.group());
+                if (nameAr.length == 2 && nameAr[0].length() < nameAr[1].length()) {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_SN.getKey(), nameAr[0]);
+                    map.put(PurchaseRecordReport_Base.Field.DOC_NUMBER.getKey(), nameAr[1]);
                 } else {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_SN.getKey(), "");
                     map.put(PurchaseRecordReport_Base.Field.DOC_NUMBER.getKey(), docName);
                 }
 
@@ -265,8 +273,9 @@ public abstract class PurchaseRecordReport_Base
 
                 if (docDerivatedRel != null && docDerivatedRel.isValid()) {
                     final SelectBuilder selLinkName = new SelectBuilder()
-                                            .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
-                                            .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(CIERP.DocumentType.Name);
+                                    .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
+                                    .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                                    .attribute(CIERP.DocumentType.Name);
 
                     final PrintQuery printDocRel = new PrintQuery(docDerivatedRel);
                     printDocRel.addAttribute(CISales.DocumentSumAbstract.Date,
@@ -282,9 +291,9 @@ public abstract class PurchaseRecordReport_Base
                                     docRelName.split("-").length == 2 ? docRelName.split("-")[0] : "");
                     map.put(PurchaseRecordReport_Base.Field.DOCREL_SUFNAME.getKey(),
                                     docRelName.split("-").length == 2 ? docRelName.split("-")[1] : docRelName);
-                    map.put(PurchaseRecordReport_Base.Field.DOCREL_TYPE.getKey(), printDocRel.<String>getSelect(selLinkName));
+                    map.put(PurchaseRecordReport_Base.Field.DOCREL_TYPE.getKey(),
+                                    printDocRel.<String>getSelect(selLinkName));
                 }
-
                 values.add(map);
             }
         }
