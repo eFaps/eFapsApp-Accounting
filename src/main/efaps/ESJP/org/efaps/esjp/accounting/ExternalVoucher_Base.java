@@ -52,6 +52,7 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
@@ -435,7 +436,7 @@ public abstract class ExternalVoucher_Base
                 throws EFapsException
             {
 
-                final Classification classification = (Classification) CISales.Contacts_ClassSupplier.getType();
+                final Classification classification = (Classification) CIContacts.ClassSupplier.getType();
                 final Insert relInsert1 = new Insert(classification.getClassifyRelationType());
                 relInsert1.add(classification.getRelLinkAttributeName(), _contactInst.getId());
                 relInsert1.add(classification.getRelTypeAttributeName(), classification.getId());

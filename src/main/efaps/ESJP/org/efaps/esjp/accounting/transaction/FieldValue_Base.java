@@ -367,7 +367,7 @@ public abstract class FieldValue_Base
         //Selects
         final SelectBuilder accSel = new SelectBuilder()
                         .linkto(CISales.DocumentSumAbstract.Contact)
-                        .clazz(CISales.Contacts_ClassClient)
+                        .clazz(CIContacts.ClassClient)
                         .linkfrom(CIAccounting.AccountCurrentDebtor2ContactClassClient,
                                         CIAccounting.AccountCurrentDebtor2ContactClassClient.ToClassClientLink)
                         .linkto(CIAccounting.AccountCurrentDebtor2ContactClassClient.FromAccountLink);
