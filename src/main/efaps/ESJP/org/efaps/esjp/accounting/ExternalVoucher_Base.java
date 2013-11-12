@@ -95,7 +95,7 @@ public abstract class ExternalVoucher_Base
         }
         new Create().create4External(_parameter);
 
-        connect2DocumentType(_parameter, createdDoc.getInstance());
+        connect2DocumentType(_parameter, createdDoc);
         return new Return();
     }
 
@@ -259,7 +259,7 @@ public abstract class ExternalVoucher_Base
                 _parameter.getParameters().remove("document");
             }
             new Create().create4External(_parameter);
-            connect2DocumentType(_parameter, createdDoc.getInstance());
+            connect2DocumentType(_parameter, createdDoc);
         }
 
         return new Return();
@@ -267,14 +267,14 @@ public abstract class ExternalVoucher_Base
 
     @Override
     protected void connect2DocumentType(final Parameter _parameter,
-                                        final Instance _instance)
+                                        final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final Long docTypeId = Long.parseLong(_parameter
                         .getParameterValue(CIFormAccounting.Accounting_TransactionClassExternalForm.typeLink.name));
-        if (docTypeId != null && _instance.isValid()) {
+        if (docTypeId != null && _createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
             insert.add(CISales.Document2DocumentType.DocumentTypeLink, docTypeId);
             insert.execute();
         }
