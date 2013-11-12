@@ -38,16 +38,10 @@
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
 	</field>
-	<variable name="debitTransactionSum" class="java.math.BigDecimal"/>
-	<variable name="creditTransactionSum" class="java.math.BigDecimal"/>
-	<variable name="debitTransactionTotal" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$V{debitTransactionSum}]]></variableExpression>
-	</variable>
-	<variable name="creditTransactionTotal" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$V{creditTransactionSum}]]></variableExpression>
-	</variable>
-	<variable name="debitTransaction" class="java.math.BigDecimal"/>
-	<variable name="creditTransaction" class="java.math.BigDecimal"/>
+	<variable name="debitTransactionSum" class="java.math.BigDecimal" resetType="Page" calculation="Sum"/>
+	<variable name="creditTransactionSum" class="java.math.BigDecimal" resetType="Page" calculation="Sum"/>
+	<variable name="debitTransactionTotal" class="java.math.BigDecimal" calculation="Sum"/>
+	<variable name="creditTransactionTotal" class="java.math.BigDecimal" calculation="Sum"/>
 	<pageHeader>
 		<band height="17" splitType="Stretch">
 			<textField>
@@ -218,22 +212,65 @@
 					<subreportParameterExpression><![CDATA[$P{RateCurrencyType}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_JournalPositions")]]></dataSourceExpression>
+				<returnValue subreportVariable="debitSum" toVariable="debitTransactionSum" calculation="Sum"/>
+				<returnValue subreportVariable="creditSum" toVariable="creditTransactionSum" calculation="Sum"/>
+				<returnValue subreportVariable="debitSum" toVariable="debitTransactionTotal" calculation="Sum"/>
+				<returnValue subreportVariable="creditSum" toVariable="creditTransactionTotal" calculation="Sum"/>
 				<subreportExpression><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="22" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<textField>
-				<reportElement uuid="b339d16a-4ee4-4ac7-bf64-add042e9b5c8" x="315" y="5" width="80" height="16"/>
+				<reportElement uuid="b339d16a-4ee4-4ac7-bf64-add042e9b5c8" x="315" y="0" width="80" height="16">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="1ee74bd8-9045-42d7-96bc-aeecadeee46a" x="395" y="5" width="40" height="16"/>
+				<reportElement uuid="1ee74bd8-9045-42d7-96bc-aeecadeee46a" x="395" y="0" width="40" height="16">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
+	<summary>
+		<band height="15">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="edf75cb9-7df8-4c58-ae95-64e20fbcebcb" x="662" y="0" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debitTransactionTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="5059f411-d475-49ed-94c7-8c2bf5a40105" x="732" y="0" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{creditTransactionTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
 </jasperReport>

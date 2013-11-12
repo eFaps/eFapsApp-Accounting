@@ -33,12 +33,6 @@
 		<property name="Select" value="linkto[AccountLink].attribute[Description]"/>
 	</field>
 	<sortField name="accountName"/>
-	<variable name="debitSum" class="java.math.BigDecimal" resetType="Page" calculation="Sum">
-		<variableExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : BigDecimal.ZERO)]]></variableExpression>
-	</variable>
-	<variable name="creditSum" class="java.math.BigDecimal" resetType="Page" calculation="Sum">
-		<variableExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount} : BigDecimal.ZERO)]]></variableExpression>
-	</variable>
 	<variable name="amount" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$P{Active}
 		? ($F{currencyDB}.getId() != $P{CurrencyUI}.getId()
@@ -48,8 +42,15 @@
 			: $F{rateAmount})
 		: $F{amount}]]></variableExpression>
 	</variable>
+	<variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount}.abs() : BigDecimal.ZERO)]]></variableExpression>
+	</variable>
+	<variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : BigDecimal.ZERO)]]></variableExpression>
+	</variable>
 	<detail>
 		<band height="14" splitType="Prevent">
+			<property name="local_mesure_unitheight" value="pixel"/>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
 				<reportElement uuid="a09b7030-845d-48d8-a9df-902faa967ea1" stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="60" height="14"/>
 				<box leftPadding="2">

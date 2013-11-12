@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 4.6.0-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ExternalVoucherJournal" language="groovy" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1150" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ExternalVoucherJournal" language="groovy" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1150" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="62912a1f-ec46-4137-8f7c-b472480df89f">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -53,7 +53,7 @@
 	<pageHeader>
 		<band height="20" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" mode="Transparent" x="1" y="0" width="662" height="17" backcolor="#FFFFFF"/>
+				<reportElement uuid="39fb0057-ae07-4e4c-ab53-5797aad61eb9" style="TableHeading" mode="Transparent" x="1" y="0" width="662" height="17" backcolor="#FFFFFF"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="2" rightPadding="2">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -71,7 +71,7 @@
 	<columnHeader>
 		<band height="33" splitType="Stretch">
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="260" y="17" width="60" height="16"/>
+				<reportElement uuid="93945040-abab-4c61-bc8d-d49a7b40e30e" style="TableHeading" positionType="Float" mode="Opaque" x="260" y="17" width="60" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -81,7 +81,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="46" y="17" width="53" height="16" backcolor="#CCCCCC">
+				<reportElement uuid="539165ab-ddbe-4c8c-9db1-d6551dc5a969" style="TableHeading" positionType="Float" mode="Opaque" x="46" y="17" width="53" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
@@ -93,7 +93,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement key="" x="813" y="0" width="150" height="14">
+				<reportElement uuid="f814284e-b123-4ef3-9918-f9ab7148207e" key="" x="813" y="0" width="150" height="14">
 					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
 				</reportElement>
 				<box rightPadding="2"/>
@@ -101,12 +101,12 @@
 				<text><![CDATA[Lima,]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement isPrintRepeatedValues="false" x="963" y="0" width="148" height="14"/>
+				<reportElement uuid="aeb57d3a-7d4d-4032-8a01-d91b73fee9c3" isPrintRepeatedValues="false" x="963" y="0" width="148" height="14"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="523" y="17" width="70" height="16"/>
+				<reportElement uuid="5ddcf41f-8c02-4140-b65b-eb1eb738d22c" style="TableHeading" positionType="Float" mode="Opaque" x="523" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -116,7 +116,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="99" y="17" width="161" height="16" backcolor="#CCCCCC"/>
+				<reportElement uuid="8f233411-1cc9-43c8-a60b-d0968acbd0fb" style="TableHeading" positionType="Float" mode="Opaque" x="99" y="17" width="161" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -126,7 +126,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
+				<reportElement uuid="f9ba3eac-8d1f-4009-87ad-8f01c38a8f09" style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
@@ -138,7 +138,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.name}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="320" y="17" width="203" height="16"/>
+				<reportElement uuid="b84428fc-ea9d-4479-bbe5-44b996f6fca5" style="TableHeading" positionType="Float" mode="Opaque" x="320" y="17" width="203" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -148,7 +148,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountDescription}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="663" y="17" width="100" height="16" backcolor="#CCCCCC"/>
+				<reportElement uuid="a906f6a0-7174-49f3-ac1b-c110018c3d22" style="TableHeading" positionType="Float" mode="Opaque" x="663" y="17" width="100" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -158,7 +158,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="763" y="17" width="50" height="16" backcolor="#CCCCCC"/>
+				<reportElement uuid="f921d103-3915-45b8-90d1-7e9a908d82fa" style="TableHeading" positionType="Float" mode="Opaque" x="763" y="17" width="50" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -168,7 +168,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="813" y="17" width="150" height="16" backcolor="#CCCCCC"/>
+				<reportElement uuid="05f46f07-8de9-4aea-8760-59819a15175e" style="TableHeading" positionType="Float" mode="Opaque" x="813" y="17" width="150" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -178,7 +178,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherContactName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="963" y="17" width="148" height="16" backcolor="#CCCCCC"/>
+				<reportElement uuid="4185bc2c-1db6-4a23-a8ce-dec6fb9593f9" style="TableHeading" positionType="Float" mode="Opaque" x="963" y="17" width="148" height="16" backcolor="#CCCCCC"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -188,7 +188,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.externalVoucherContactTaxNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="TableHeading" positionType="Float" mode="Opaque" x="593" y="17" width="70" height="16"/>
+				<reportElement uuid="4e906188-74d7-4c2c-9419-d9d82a0bc74c" style="TableHeading" positionType="Float" mode="Opaque" x="593" y="17" width="70" height="16"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
 				</box>
@@ -202,7 +202,7 @@
 	<detail>
 		<band height="14" splitType="Prevent">
 			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="46" y="0" width="53" height="14"/>
+				<reportElement uuid="6849b751-613d-45c8-aa6d-c250614e4a2b" stretchType="RelativeToBandHeight" mode="Transparent" x="46" y="0" width="53" height="14"/>
 				<box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="0">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -214,7 +214,7 @@
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
+				<reportElement uuid="d93598a2-b0f1-4cd1-a7dd-00a2f82ad8ab" stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -226,7 +226,7 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="99" y="0" width="161" height="14"/>
+				<reportElement uuid="f7dec412-5209-4420-b5e3-102c6c1da225" stretchType="RelativeToBandHeight" x="99" y="0" width="161" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -238,7 +238,7 @@
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<subreport>
-				<reportElement x="260" y="0" width="403" height="14"/>
+				<reportElement uuid="fefdca6c-7dec-4a54-8332-1b8e1cf868be" x="260" y="0" width="403" height="14"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_JournalPositions")]]></dataSourceExpression>
 				<returnValue subreportVariable="debitSum" toVariable="debitTransactionSum" calculation="Sum"/>
@@ -248,7 +248,7 @@
 				<subreportExpression><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
 			</subreport>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="663" y="0" width="100" height="14"/>
+				<reportElement uuid="53d14ee4-094f-40a1-a2aa-6a29cdfc50ad" stretchType="RelativeToBandHeight" x="663" y="0" width="100" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -260,7 +260,7 @@
 				<textFieldExpression><![CDATA[$F{externalVoucherName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="763" y="0" width="50" height="14"/>
+				<reportElement uuid="386bd642-eb19-454d-bf1b-c2031f5b21f9" stretchType="RelativeToBandHeight" x="763" y="0" width="50" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -272,7 +272,7 @@
 				<textFieldExpression><![CDATA[$F{externalVoucherDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="813" y="0" width="150" height="14"/>
+				<reportElement uuid="70bf7eb1-f55e-4dc2-9b1f-74226d5309b7" stretchType="RelativeToBandHeight" x="813" y="0" width="150" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -284,7 +284,7 @@
 				<textFieldExpression><![CDATA[$F{externalVoucherContactName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="963" y="0" width="148" height="14"/>
+				<reportElement uuid="ba2b63c0-5e8e-4a09-8d03-04ae07b0b01f" stretchType="RelativeToBandHeight" x="963" y="0" width="148" height="14"/>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -300,15 +300,49 @@
 	<pageFooter>
 		<band height="26" splitType="Stretch">
 			<textField>
-				<reportElement x="315" y="5" width="80" height="16"/>
+				<reportElement uuid="bbc0293d-36c7-4c39-8e77-3bd0aef3f84b" x="315" y="5" width="80" height="16"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="395" y="5" width="40" height="16"/>
+				<reportElement uuid="fdeb6a7d-d50a-44f7-9319-5e6116d7d0fd" x="395" y="5" width="40" height="16"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
+	<summary>
+		<band height="15">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="03872df1-5957-41b1-8b32-69ecadda19d9" x="523" y="0" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debitTransactionTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="ce3bd008-4417-4975-a424-9dd856a1f800" x="593" y="0" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{creditTransactionTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
 </jasperReport>
