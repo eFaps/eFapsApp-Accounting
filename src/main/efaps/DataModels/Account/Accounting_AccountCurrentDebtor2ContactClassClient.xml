@@ -40,7 +40,7 @@
         <attribute>
             <name>ToClassClientLink</name>
             <type>Link</type>
-            <typelink>Contacts_ClassSupplier</typelink>
+            <typelink>Contacts_ClassClient</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
