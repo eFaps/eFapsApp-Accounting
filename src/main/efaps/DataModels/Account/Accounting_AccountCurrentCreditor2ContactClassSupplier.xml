@@ -40,7 +40,7 @@
         <attribute>
             <name>ToSupplierLink</name>
             <type>Link</type>
-            <typelink>Sales_Contacts_ClassSupplier</typelink>
+            <typelink>Contacts_ClassSupplier</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
