@@ -40,7 +40,7 @@
             <table>Contacts_ContactTable</table>
             <evaluate program="org.efaps.esjp.accounting.Account"
                 method="searchContact">
-                <property name="ClassType">Sales_Contacts_ClassClient</property>
+                <property name="ClassType">Contacts_ClassClient</property>
                 <property name="Types">Contacts_Contact</property>
             </evaluate>
         </target>
