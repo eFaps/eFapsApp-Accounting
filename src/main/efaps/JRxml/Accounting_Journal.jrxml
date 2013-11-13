@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Journal" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="7015cf64-0aee-4bb9-ad93-18c76046ec30">
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="lastPageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="columnFooter"/>
+	<property name="net.sf.jasperreports.export.pdf.exclude.origin.band.6" value="summary"/>
 	<style name="TableHeading" mode="Transparent" forecolor="#000000" backcolor="#CCCCCC" fill="Solid" hAlign="Left" vAlign="Top" markup="styled" isBlankWhenNull="false" fontName="SansSerif" fontSize="12" isBold="true" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false">
 		<pen lineWidth="1.0"/>
 		<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
@@ -213,6 +219,89 @@
 			</subreport>
 		</band>
 	</detail>
+	<columnFooter>
+		<band height="28" splitType="Stretch">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="46f28615-8847-4b80-a322-7b3da2dc07bb" x="732" y="0" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{creditTransactionSum}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="7547c1f8-e2fd-4e64-a308-72e08c5bf08c" x="662" y="0" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debitTransactionSum}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="1a570cf2-9212-4e78-b33a-9a6097b9c5b5" x="732" y="14" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{creditTransactionTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="6896b3c3-327f-4ec3-85b5-7882e486e947" x="662" y="14" width="70" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{debitTransactionTotal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ce424909-3f86-4649-ae6c-e78f56cec472" x="0" y="0" width="60" height="14">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Subtotal:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b3968a5-7dc3-43ac-8fac-b4b9f4c127f2" x="0" y="14" width="60" height="14">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
 	<pageFooter>
 		<band height="14" splitType="Stretch">
 			<textField>
@@ -268,6 +357,16 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$V{creditTransactionTotal}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="dda05530-e524-4ebb-8f56-4d4e094c90fe" x="0" y="0" width="60" height="14">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>
