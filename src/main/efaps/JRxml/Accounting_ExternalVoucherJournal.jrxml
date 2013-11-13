@@ -4,10 +4,6 @@
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
@@ -132,8 +128,12 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f9ba3eac-8d1f-4009-87ad-8f01c38a8f09" style="TableHeading" positionType="Float" mode="Opaque" x="1" y="17" width="45" height="16" backcolor="#CCCCCC">
+				<reportElement uuid="f9ba3eac-8d1f-4009-87ad-8f01c38a8f09" style="TableHeading" positionType="Float" mode="Opaque" x="0" y="17" width="46" height="16" backcolor="#CCCCCC">
 					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
 					<rightPen lineWidth="1.0"/>
@@ -220,7 +220,10 @@
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="d93598a2-b0f1-4cd1-a7dd-00a2f82ad8ab" stretchType="RelativeToTallestObject" x="1" y="0" width="45" height="14"/>
+				<reportElement uuid="d93598a2-b0f1-4cd1-a7dd-00a2f82ad8ab" stretchType="RelativeToTallestObject" x="0" y="0" width="46" height="14">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
 				<box topPadding="2" leftPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<bottomPen lineWidth="1.0"/>
@@ -341,17 +344,17 @@
 				<textFieldExpression><![CDATA[$V{creditTransactionSum}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="c6fa52f5-9ad6-41b7-adfc-19b4489cb812" x="0" y="14" width="60" height="14"/>
-				<textElement>
+				<reportElement uuid="c6fa52f5-9ad6-41b7-adfc-19b4489cb812" x="0" y="14" width="46" height="14"/>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="0f28971a-a518-4c04-81a0-284d7bc72cc5" x="0" y="0" width="60" height="14">
+				<reportElement uuid="0f28971a-a518-4c04-81a0-284d7bc72cc5" x="0" y="0" width="46" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[Subtotal:]]></text>
@@ -440,11 +443,11 @@
 				<textFieldExpression><![CDATA[$V{creditTransactionTotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="54d6eb0c-4939-4bdf-b01d-d1e278204cb1" x="0" y="0" width="60" height="14">
+				<reportElement uuid="54d6eb0c-4939-4bdf-b01d-d1e278204cb1" x="0" y="0" width="46" height="14">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
