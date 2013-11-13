@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2013 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:         The eFaps Team
+  Revision:       $Rev$
+  Last Changed:   $Date$
+  Last Changed By:$Author$
+
+
+-->
+
+
+<data-import xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    
+    <definition name="Import_CostTextPosition" file="Import_CostTextPosition.csv">
+        <type name="Products_ProductCostTextPosition">
+            <attribute name="Name" column="Name" validate="false"/>
+            <attribute name="Description" column="Description" validate="false"/>
+            <attribute name="Active" fixedValue="true"/>
+            <attribute name="TaxCategory" fixedValue="1"/>
+            <attribute name="Dimension" class="org.efaps.esjp.data.columns.DimensionColumn" validateClass="org.efaps.esjp.data.columns.DimensionColumn">
+                <property name="Column">Dimension</property>
+            </attribute>
+        </type>
+    </definition>
+     <definition name="Import_ConfigLink4CostTextPosition" file="Import_ConfigLink4CostTextPosition.csv">
+        <type name="Admin_Common_SystemConfigurationLink">
+            <attribute name="Key" column="key" validate="false" parentLink="false"/>
+            <attribute name="Description" column="description" validate="false"/>
+            <attribute name="CompanyLink" fixedValue="0"/>
+            <attribute name="Value" class="org.efaps.esjp.data.columns.QueryColumn" validateClass="org.efaps.esjp.data.columns.QueryColumn">
+                <property name="TypeColumn">valueType</property>
+                <property name="SelectColumn">valueSelect</property>
+                <property name="QueryAttribute">valueAttr</property>
+                <property name="QueryValue">valueValue</property>
+            </attribute>
+            <attribute name="AbstractLink" class="org.efaps.esjp.data.columns.QueryColumn" validateClass="org.efaps.esjp.data.columns.QueryColumn">
+                <property name="TypeColumn">linkType</property>
+                <property name="SelectColumn">linkSelect</property>
+                <property name="QueryAttribute">linkAttr</property>
+                <property name="QueryValue">linkValue</property>
+            </attribute>
+        </type>
+    </definition>
+    
+</data-import>

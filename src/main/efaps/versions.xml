@@ -70,7 +70,8 @@
             import org.efaps.db.QueryBuilder;
             import org.efaps.db.InstanceQuery;
             import org.efaps.esjp.admin.ui.UIUpdate;
-
+            import org.efaps.esjp.data.ObjectImport;
+            
             EFAPS_LOGGER.info("Importing Data for eFapsApp-Accounting");
 
             RunLevel.init("shell");

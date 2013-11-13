@@ -42,6 +42,19 @@ public interface AccountingSettings
      */
     String RATECURTYPE4DOCS = "org.efaps.accounting.RateCurrencyType4Documents";
 
+    /**
+     * Link to a Products_ProductCostTextPosition used for creating Positions
+     * in an External Voucher applying VAT.
+     */
+    String CTP4VAT = "org.efaps.accounting.CostTextPosition4VAT";
+
+    /**
+     * Link to a Products_ProductCostTextPosition used for creating Positions
+     * in an External Voucher without Tax.
+     */
+    String CTP4FREE = "org.efaps.accounting.CostTextPosition4TaxFree";
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////
     //Setting belonging to a period, therefore only one word and not a org.efaps...
     ////////////////////////////////////////////////////////////////////////////////////////////////////

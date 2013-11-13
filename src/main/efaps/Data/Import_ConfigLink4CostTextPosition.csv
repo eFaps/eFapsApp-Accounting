@@ -1,0 +1,3 @@
+key,description,valueType,valueSelect,valueAttr,valueValue,linkType,linkSelect,linkAttr,linkValue
+org.efaps.accounting.CostTextPosition4VAT,Link to a Products_ProductCostTextPosition used for creating Positions in an External Voucher applying VAT.,Products_ProductCostTextPosition,oid,Name,99914C,Admin_Common_SystemConfiguration,id,UUID,ca0a1df1-2211-45d9-97c8-07af6636a9b9
+org.efaps.accounting.CostTextPosition4TaxFree,"Link to a Products_ProductCostTextPosition used for creating Positions in an External Voucher without Tax",Products_ProductCostTextPosition,oid,Name,99924C,Admin_Common_SystemConfiguration,id,UUID,ca0a1df1-2211-45d9-97c8-07af6636a9b9
