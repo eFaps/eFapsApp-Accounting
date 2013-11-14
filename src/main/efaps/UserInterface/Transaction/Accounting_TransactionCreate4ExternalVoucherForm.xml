@@ -268,11 +268,16 @@
                 name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"/>
         </field>
+         <field name="amountExternalWithoutTax">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.amountExternalWithoutTax.Label</property>
+        </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Columns">120</property>
         </field>
 
         <field name="transactionPositionDebit" character="Heading">

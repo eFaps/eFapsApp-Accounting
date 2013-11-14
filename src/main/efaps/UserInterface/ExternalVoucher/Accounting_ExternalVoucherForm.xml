@@ -154,16 +154,29 @@
             <property name="Phrase">$&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Name]&gt; - $&lt;linkfrom[Accounting_TransactionClassExternal#DocumentLink].linkto[TypeLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
         </field>
+         <field name="headingPositon" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Accounting_ExternalVoucherForm.headingPositon.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="positionTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Accounting_ExternalVoucherPositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_ExternalVoucherPosition</property>
+                <property name="LinkFrom">ExternalVoucherLink</property>
+            </evaluate>
+        </field>
         <field name="netTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="Label">Accounting_ExternalVoucherForm/NetTotal.Label</property>
+            <property name="Label">Accounting_ExternalVoucher/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="Label">Accounting_ExternalVoucherForm/CrossTotal.Label</property>
+            <property name="Label">Accounting_ExternalVoucher/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
