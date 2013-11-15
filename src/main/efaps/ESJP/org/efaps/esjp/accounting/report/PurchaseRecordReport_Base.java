@@ -47,6 +47,7 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.QueryCache;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
@@ -72,6 +73,8 @@ import org.slf4j.LoggerFactory;
 public abstract class PurchaseRecordReport_Base
     extends EFapsMapDataSource
 {
+
+    private static String CACHEDQUERYKEY = PurchaseRecordReport.class.getName() + "CachedQueryKey";
 
     /**
      * Logger for this class.
@@ -160,10 +163,14 @@ public abstract class PurchaseRecordReport_Base
                      final Map<String, Object> _jrParameters)
         throws EFapsException
     {
+        QueryCache.cleanByKey(PurchaseRecordReport_Base.CACHEDQUERYKEY);
+
         final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         final List<Instance> instances = getInstances(_parameter);
 
         if (instances.size() > 0) {
+            final Map<Instance, PosSum4Doc> posSums = getPosSums(_parameter);
+
             final SelectBuilder selRel = new SelectBuilder().linkto(CIAccounting.PurchaseRecord2Document.ToLink);
             final SelectBuilder selRelDocType = new SelectBuilder(selRel).type();
             final SelectBuilder selRelDocInst = new SelectBuilder(selRel).instance();
@@ -234,14 +241,27 @@ public abstract class PurchaseRecordReport_Base
 
                 BigDecimal netTotal = multi.<BigDecimal>getSelect(selRelDocNTotal);
                 BigDecimal crossTotal = multi.<BigDecimal>getSelect(selRelDocCTotal);
-                BigDecimal igv = crossTotal.subtract(netTotal);
 
-                final Boolean export = BigDecimal.ZERO.compareTo(igv) == 0;
+                final PosSum4Doc posSum = posSums.get(instDoc);
+                BigDecimal taxfree;
+                if (posSum != null) {
+                     taxfree = posSum.getTaxFree(_parameter);
+                } else {
+                    taxfree = BigDecimal.ZERO;
+                }
+                BigDecimal igv = crossTotal.subtract(netTotal);
+                netTotal = netTotal.subtract(taxfree);
+
+                if (crossTotal.compareTo(netTotal) == 0) {
+                    taxfree = netTotal;
+                    netTotal = BigDecimal.ZERO;
+                }
 
                 if (CISales.IncomingCreditNote.getType().equals(docType)) {
                     netTotal = netTotal.negate();
                     crossTotal = crossTotal.negate();
                     igv = igv.negate();
+                    taxfree = taxfree.negate();
                 }
 
                 PurchaseRecordReport_Base.LOG.debug("Document OID '{}'", instDoc.getOid());
@@ -253,10 +273,10 @@ public abstract class PurchaseRecordReport_Base
                 map.put(PurchaseRecordReport_Base.Field.DOC_NAME.getKey(), docName);
                 map.put(PurchaseRecordReport_Base.Field.DOC_CONTACT.getKey(), contactName);
                 map.put(PurchaseRecordReport_Base.Field.DOC_TAXNUM.getKey(), contactTaxNum);
-                map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTAL.getKey(), export ? null : netTotal);
+                map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTAL.getKey(), netTotal);
                 map.put(PurchaseRecordReport_Base.Field.DOC_CROSSTOTAL.getKey(), crossTotal);
-                map.put(PurchaseRecordReport_Base.Field.DOC_IGV.getKey(), export ? null : igv);
-                map.put(PurchaseRecordReport_Base.Field.DOC_EXPORT.getKey(), export ? crossTotal : null);
+                map.put(PurchaseRecordReport_Base.Field.DOC_IGV.getKey(), igv);
+                map.put(PurchaseRecordReport_Base.Field.DOC_EXPORT.getKey(), taxfree);
 
                 final String[] nameAr = docName.split("\\W");
 
@@ -365,6 +385,46 @@ public abstract class PurchaseRecordReport_Base
     }
 
 
+    protected Map<Instance, PosSum4Doc> getPosSums(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<Instance, PosSum4Doc> ret = new HashMap<Instance, PosSum4Doc>();
+        if (_parameter.getInstance() != null) {
+            final Instance purchaseInst = _parameter.getInstance();
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.FromLink, purchaseInst);
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIAccounting.PurchaseRecord2Document.ToLink);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocInst = SelectBuilder.get()
+                            .linkto(CISales.PositionSumAbstract.DocumentAbstractLink).instance();
+            final SelectBuilder selTaxInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.Tax).instance();
+            multi.addSelect(selDocInst, selTaxInst);
+            multi.addAttribute(CISales.PositionSumAbstract.CrossPrice, CISales.PositionSumAbstract.NetPrice);
+            multi.execute();
+            while (multi.next()) {
+                final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
+                final BigDecimal net = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+                final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                final Instance taxInst = multi.<Instance>getSelect(selTaxInst);
+                if (!ret.containsKey(docInst)) {
+                    ret.put(docInst, getPosSum4Doc(_parameter));
+                }
+                final PosSum4Doc posSum = ret.get(docInst);
+                posSum.addCross(cross, taxInst);
+                posSum.addNet(net, taxInst);
+            }
+        }
+        return ret;
+    }
+
+    protected PosSum4Doc getPosSum4Doc(final Parameter _parameter)
+    {
+        return new PosSum4Doc();
+    }
+
     /**
      * Method for obtains a new List with instance of the documents.
      *
@@ -379,8 +439,7 @@ public abstract class PurchaseRecordReport_Base
     {
         final List<Instance> ret = new ArrayList<Instance>();
         final Map<String, List<Instance>> values = new TreeMap<String, List<Instance>>();
-
-        if (_parameter.get(ParameterValues.INSTANCE) != null) {
+        if (_parameter.getInstance() != null) {
             final Instance purchaseInst = _parameter.getInstance();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
             queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.FromLink, purchaseInst);
@@ -468,4 +527,62 @@ public abstract class PurchaseRecordReport_Base
     public Return updateFilterActiveUIValue(final Parameter _parameter) {
         return new Return();
     }
+
+    public static class PosSum4Doc
+    {
+
+        private final Map<Instance, BigDecimal> tax2cross = new HashMap<Instance, BigDecimal>();
+
+        private final Map<Instance, BigDecimal> tax2net = new HashMap<Instance, BigDecimal>();
+
+        /**
+         * @param _cross
+         * @param _taxInst
+         */
+        public void addCross(final BigDecimal _cross,
+                             final Instance _taxInst)
+        {
+            if (!this.tax2cross.containsKey(_taxInst)) {
+                this.tax2cross.put(_taxInst, BigDecimal.ZERO);
+            }
+            this.tax2cross.put(_taxInst,this.tax2cross.get(_taxInst).add(_cross));
+        }
+
+        /**
+         * @param _net
+         * @param _taxInst
+         */
+        public void addNet(final BigDecimal _net,
+                           final Instance _taxInst)
+        {
+            if (!this.tax2net.containsKey(_taxInst)) {
+                this.tax2net.put(_taxInst, BigDecimal.ZERO);
+            }
+            this.tax2net.put(_taxInst,this.tax2net.get(_taxInst).add(_net));
+        }
+
+        /**
+         * @param _parameter
+         */
+        public BigDecimal getTaxFree(final Parameter _parameter)
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.TaxCategory);
+            attrQueryBldr.addWhereAttrEqValue(CISales.TaxCategory.UUID, "25267a7d-84a9-428f-990e-9d99b133faf4");
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.TaxCategory.ID);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
+            queryBldr.addWhereAttrInQuery(CISales.Tax.TaxCategory, attrQuery);
+            final InstanceQuery query = queryBldr.getCachedQuery(PurchaseRecordReport_Base.CACHEDQUERYKEY);
+            query.execute();
+            while (query.next()) {
+                final Instance taxFreeInst = query.getCurrentValue();
+                if (this.tax2net.containsKey(taxFreeInst)) {
+                    ret = ret.add(this.tax2net.get(taxFreeInst));
+                }
+            }
+            return ret;
+        }
+    }
+
 }

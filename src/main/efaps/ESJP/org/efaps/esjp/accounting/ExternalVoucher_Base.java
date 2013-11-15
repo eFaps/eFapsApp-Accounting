@@ -134,9 +134,12 @@ public abstract class ExternalVoucher_Base
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("currencyExternal"));
         final BigDecimal[] amounts = evalAmounts(_parameter);
-        final BigDecimal netTotal = amounts[0];
-        final BigDecimal crossTotal = amounts[1];
+        BigDecimal netTotal = amounts[0];
+        BigDecimal crossTotal = amounts[1];
         final BigDecimal taxfree = amounts[2];
+
+        netTotal = netTotal.add(taxfree);
+        crossTotal = crossTotal.add(taxfree);
 
         createdDoc.addValue(ExternalVoucher_Base.AMOUNTSKEY, amounts);
 
@@ -180,9 +183,9 @@ public abstract class ExternalVoucher_Base
             createdDoc.addValue(getFieldName4Attribute(_parameter,
                             CIAccounting.ExternalVoucher.RateCrossTotal.name), crossTotal);
 
-            docInsert.add(CIAccounting.ExternalVoucher.RateNetTotal, netTotal.add(taxfree));
+            docInsert.add(CIAccounting.ExternalVoucher.RateNetTotal, netTotal);
             createdDoc.addValue(getFieldName4Attribute(_parameter,
-                            CIAccounting.ExternalVoucher.RateNetTotal.name), netTotal.add(taxfree));
+                            CIAccounting.ExternalVoucher.RateNetTotal.name), netTotal);
 
             docInsert.add(CIAccounting.ExternalVoucher.CrossTotal,
                             crossTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
@@ -190,9 +193,9 @@ public abstract class ExternalVoucher_Base
                             crossTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
 
             docInsert.add(CIAccounting.ExternalVoucher.NetTotal,
-                            netTotal.add(taxfree).setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
+                            netTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
             createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.NetTotal.name),
-                            netTotal.add(taxfree).setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
+                            netTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
         }
         docInsert.add(CIAccounting.ExternalVoucher.RateDiscountTotal, BigDecimal.ZERO);
         docInsert.add(CIAccounting.ExternalVoucher.DiscountTotal, BigDecimal.ZERO);

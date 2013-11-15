@@ -111,7 +111,7 @@ public abstract class PurchaseRecord_Base
             printDocQuery.addSelect(selDocTypeIns);
             printDocQuery.executeWithoutAccessCheck();
             final Instance docTypeIns = printDocQuery.<Instance>getSelect(selDocTypeIns);
-            if (docTypeIns.isValid()) {
+            if (docTypeIns != null && docTypeIns.isValid()) {
                 final Update update = new Update(instance);
                 update.add(CIAccounting.PurchaseRecord2Document.TypeLink, docTypeIns.getId());
                 update.executeWithoutTrigger();
