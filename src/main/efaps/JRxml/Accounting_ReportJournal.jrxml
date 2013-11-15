@@ -49,7 +49,7 @@
 	<pageHeader>
 		<band height="50" splitType="Stretch">
 			<textField>
-				<reportElement uuid="eae07de5-3737-497f-8a7c-d3e9664561e6" style="TableHeading" mode="Opaque" x="1" y="0" width="801" height="17" backcolor="#FFFFFF"/>
+				<reportElement uuid="eae07de5-3737-497f-8a7c-d3e9664561e6" style="TableHeading" mode="Opaque" x="0" y="32" width="801" height="17" backcolor="#FFFFFF"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="2" rightPadding="2">
 					<pen lineWidth="0.0"/>
 					<topPen lineWidth="0.0"/>
@@ -63,7 +63,7 @@
 				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.heading}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="f355f1c0-1012-4f98-9ee2-0e82f5bd1891" x="0" y="33" width="120" height="16">
+				<reportElement uuid="f355f1c0-1012-4f98-9ee2-0e82f5bd1891" x="0" y="16" width="120" height="16">
 					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -72,7 +72,7 @@
 				<text><![CDATA[RUC:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="53f91baf-22b2-4a7a-a65d-03c20b2e97a2" x="0" y="17" width="120" height="16">
+				<reportElement uuid="53f91baf-22b2-4a7a-a65d-03c20b2e97a2" x="0" y="0" width="120" height="16">
 					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
@@ -81,14 +81,14 @@
 				<text><![CDATA[Empresa:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="eef7bec3-7097-4b54-8dd6-c63059b7ed88" x="120" y="33" width="482" height="16"/>
+				<reportElement uuid="eef7bec3-7097-4b54-8dd6-c63059b7ed88" x="120" y="16" width="482" height="16"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ca88b973-28ea-4650-ae8f-01070fbfb0f8" x="120" y="17" width="482" height="16"/>
+				<reportElement uuid="ca88b973-28ea-4650-ae8f-01070fbfb0f8" x="120" y="0" width="482" height="16"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>
 				</textElement>
