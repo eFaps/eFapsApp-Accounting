@@ -40,6 +40,8 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -85,6 +87,17 @@ public abstract class ReportJournalDataSource_Base
         _jrParameters.put("CurrencyBase", curBase);
         _jrParameters.put("CurrencyUI", curInst.getInstance());
         _jrParameters.put("RateCurrencyType", rateCurType);
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                _jrParameters.put("CompanyName", companyName);
+                _jrParameters.put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
     }
 
     @Override

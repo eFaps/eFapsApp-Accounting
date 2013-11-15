@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -22,7 +23,10 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -76,7 +80,7 @@ public abstract class PurchaseRecord_Base
                 final Map<Integer, String> nonStatus = analyseProperty(_parameter, "NoStatus");
                 if (!nonStatus.isEmpty()) {
                     final List<Long> listStatus = new ArrayList<Long>();
-                    for (Entry<Integer, String> entry : nonStatus.entrySet()) {
+                    for (final Entry<Integer, String> entry : nonStatus.entrySet()) {
                         final Type statusLink = Type.get(_queryBldr.getTypeUUID()).getStatusAttribute().getLink();
                         listStatus.add(Status.find(statusLink.getUUID(), entry.getValue()).getId());
                     }
@@ -135,5 +139,24 @@ public abstract class PurchaseRecord_Base
             }
         }
         return new Return();
+    }
+
+    public Return printReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StandartReport report = new StandartReport();
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+                report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
+
+        return report.execute(_parameter);
     }
 }

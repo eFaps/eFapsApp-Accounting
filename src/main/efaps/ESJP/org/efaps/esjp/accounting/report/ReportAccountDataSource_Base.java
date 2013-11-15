@@ -44,6 +44,8 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -163,6 +165,17 @@ public abstract class ReportAccountDataSource_Base
                 values.put(ReportAccountDataSource.Field.WINLOSSFINAL.getKey(),
                                 multi.getAttribute(CIAccounting.ReportNodeAccount.ShowSum));
                 getValues().add(values);
+            }
+        }
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                _jrParameters.put("CompanyName", companyName);
+                _jrParameters.put("CompanyTaxNum", companyTaxNumb);
             }
         }
     }

@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_PurchaseRecord" language="groovy" pageWidth="1272" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1032" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="d119da9b-db3d-464e-93ea-c47906dd57b3">
 	<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
-    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
 	<import value="org.efaps.admin.datamodel.Status"/>
@@ -12,6 +12,8 @@
 		<property name="hasSubReport" value="true"/>
 	</parameter>
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="attribute[Date]"/>
 	</field>
@@ -34,42 +36,89 @@
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<pageHeader>
-		<band height="16" splitType="Stretch">
+		<band height="56" splitType="Stretch">
 			<staticText>
-				<reportElement uuid="139e8ef7-f24d-4274-85c8-8731dc345948" x="895" y="0" width="70" height="14"/>
+				<reportElement uuid="139e8ef7-f24d-4274-85c8-8731dc345948" x="895" y="36" width="70" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Lima,]]></text>
 			</staticText>
 			<textField pattern="dd.MM.yyyy">
-				<reportElement uuid="fc6fe6af-8d65-4547-a022-31c95f7283ae" x="965" y="0" width="172" height="14"/>
+				<reportElement uuid="fc6fe6af-8d65-4547-a022-31c95f7283ae" x="965" y="36" width="172" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="305ecb99-43ea-4c7d-9aeb-062815bff7f1" x="545" y="0" width="70" height="14"/>
+				<reportElement uuid="305ecb99-43ea-4c7d-9aeb-062815bff7f1" x="545" y="36" width="70" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="001126fa-b2d8-4d27-a8e3-6976682e2aa3" x="685" y="0" width="70" height="14"/>
+				<reportElement uuid="001126fa-b2d8-4d27-a8e3-6976682e2aa3" x="685" y="36" width="70" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e3e7b8f1-3bdf-4e54-8c16-9d9d3b56baa3" x="390" y="0" width="155" height="14"/>
+				<reportElement uuid="e3e7b8f1-3bdf-4e54-8c16-9d9d3b56baa3" x="390" y="36" width="155" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d0a435b4-456e-4c4d-8cec-27c9a73ec353" x="615" y="0" width="70" height="14"/>
+				<reportElement uuid="d0a435b4-456e-4c4d-8cec-27c9a73ec353" x="615" y="36" width="70" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[-]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="82ba9030-a240-4e3b-87a6-2b5afe4317ff" x="0" y="0" width="157" height="14"/>
+				<reportElement uuid="82ba9030-a240-4e3b-87a6-2b5afe4317ff" x="0" y="36" width="157" height="14">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement/>
 				<text><![CDATA[Registro de Compras]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="8e20f81b-2a89-4201-aab1-43bf7f8b8f0c" x="0" y="16" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e5231517-3017-43b5-9261-954e0ffb1717" x="0" y="0" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e96adf58-9577-4ac4-ac68-fa9499487cf8" x="120" y="16" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8e12feea-30b2-41f2-87d9-156a865e1aba" x="120" y="0" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>

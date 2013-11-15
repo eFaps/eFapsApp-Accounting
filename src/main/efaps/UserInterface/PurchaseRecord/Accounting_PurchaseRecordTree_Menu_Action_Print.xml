@@ -31,7 +31,7 @@
 
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
+            <execute program="org.efaps.esjp.accounting.PurchaseRecord" method="printReport">
                 <property name="JasperReport">Accounting_PurchaseRecord</property>
                 <property name="Mime">xls</property>
             </execute>

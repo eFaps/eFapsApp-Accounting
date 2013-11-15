@@ -35,7 +35,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionTree_Menu_Action_Print</name>
         <target>
-            <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
+            <execute program="org.efaps.esjp.accounting.transaction.Transaction" method="printReport">
                 <property name="JasperReport">Accounting_Transaction</property>
                 <property name="Mime">pdf</property>
             </execute>

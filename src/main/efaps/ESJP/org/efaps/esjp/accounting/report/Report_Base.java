@@ -74,6 +74,8 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -343,6 +345,18 @@ public abstract class Report_Base
             final JRDataSource ds = new AccountingDataSource(table);
             setFileName(dataTree.getName());
             jrb.setDataSource(ds);
+
+            final SystemConfiguration config = ERP.getSysConfig();
+            if (config != null) {
+                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+                final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+                if (companyName != null && companyTaxNumb != null
+                                && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                    jrb.getJasperParameters().put("CompanyName", companyName);
+                    jrb.getJasperParameters().put("CompanyTaxNum", companyTaxNumb);
+                }
+            }
 
             ret.put(ReturnValues.VALUES, super.getFile(jrb.toJasperPrint(), mime));
             ret.put(ReturnValues.TRUE, true);

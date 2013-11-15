@@ -30,6 +30,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.apache.commons.collections.comparators.ComparatorChain;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -43,6 +44,8 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -217,8 +220,18 @@ public abstract class DocTransactionsSource_Base
                 return String.valueOf(_arg0.get("accName")).compareTo(String.valueOf(_arg1.get("accName")));
             }});
         Collections.sort(getValues(), chain);
-    }
 
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                _jrParameters.put("CompanyName", companyName);
+                _jrParameters.put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
+    }
 
     protected boolean add(final String _accName,
                           final String[] _filters) {

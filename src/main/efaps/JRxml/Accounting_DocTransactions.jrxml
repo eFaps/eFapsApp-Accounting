@@ -7,6 +7,8 @@
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="UUID" value="e0cd8918-2a65-4ecd-aef4-d655ae10da2c"/>
 	</parameter>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<field name="transDate" class="org.joda.time.DateTime">
 		<property name="Key" value="transDate"/>
 	</field>
@@ -216,6 +218,43 @@
 			</band>
 		</groupHeader>
 	</group>
+	<pageHeader>
+		<band height="36">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<staticText>
+				<reportElement uuid="85fc1fc2-025b-419e-a076-aeba3708d2f6" x="-1" y="16" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd3d545f-7619-4b98-9897-b6c0d2933f16" x="-1" y="0" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="57cef9d3-6c72-4ac5-9a1e-83352d72c642" x="119" y="16" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2d60ac2d-70ff-4c9f-b945-278d9fa242ba" x="119" y="0" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
 	<detail>
 		<band height="14">
 			<textField isStretchWithOverflow="true" pattern="">

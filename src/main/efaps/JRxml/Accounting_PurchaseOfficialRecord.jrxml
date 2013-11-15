@@ -16,6 +16,8 @@
 	</parameter>
 	<parameter name="Mime" class="java.lang.String"/>
 	<parameter name="PurchaseDate" class="org.joda.time.DateTime"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<field name="docRevision" class="java.lang.String">
 		<property name="Key" value="docRevision"/>
 	</field>
@@ -97,22 +99,64 @@
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<pageHeader>
-		<band height="15" splitType="Stretch">
+		<band height="55" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement uuid="305ecb99-43ea-4c7d-9aeb-062815bff7f1" x="605" y="0" width="140" height="14"/>
+				<reportElement uuid="305ecb99-43ea-4c7d-9aeb-062815bff7f1" x="604" y="38" width="140" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[(new SimpleDateFormat("MMMMM, yyyy", Context.getThreadContext().getLocale())).format($P{PurchaseDate}.toDate()).toUpperCase()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="e3e7b8f1-3bdf-4e54-8c16-9d9d3b56baa3" x="450" y="0" width="155" height="14"/>
+				<reportElement uuid="e3e7b8f1-3bdf-4e54-8c16-9d9d3b56baa3" x="449" y="38" width="155" height="14">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="82ba9030-a240-4e3b-87a6-2b5afe4317ff" x="0" y="0" width="259" height="14"/>
+				<reportElement uuid="82ba9030-a240-4e3b-87a6-2b5afe4317ff" x="0" y="38" width="259" height="14">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
 				<textElement/>
 				<text><![CDATA[Registro de Compras]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="8c4bc271-6d6c-4cc1-9833-eeb78c434905" x="0" y="16" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="35facc44-73b6-4c81-a558-8e501516196b" x="0" y="0" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5867fe01-d59d-41eb-af8d-b9b7ddf9620f" x="120" y="16" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="257157bf-ebea-49a0-8254-4ad1bf262390" x="120" y="0" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>

@@ -37,6 +37,8 @@
 		<defaultValueExpression><![CDATA[null]]></defaultValueExpression>
 	</parameter>
 	<parameter name="TargetCurrencyLabel" class="java.lang.String"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<field name="transaction" class="java.lang.String">
 		<property name="Select" value="linkto[TransactionLink].attribute[Description]"/>
 	</field>
@@ -346,19 +348,52 @@
 		</groupFooter>
 	</group>
 	<pageHeader>
-		<band height="14">
+		<band height="48">
 			<textField pattern="dd.MM.yyyy">
-				<reportElement uuid="ea537b65-0130-493d-9fe5-32edef5ed2a7" isPrintRepeatedValues="false" x="438" y="0" width="112" height="14"/>
+				<reportElement uuid="ea537b65-0130-493d-9fe5-32edef5ed2a7" isPrintRepeatedValues="false" x="406" y="32" width="112" height="14"/>
 				<textElement/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="1c5108b1-6a90-449a-826d-d2884aa08398" key="" x="382" y="0" width="56" height="14">
+				<reportElement uuid="1c5108b1-6a90-449a-826d-d2884aa08398" key="" x="350" y="32" width="56" height="14">
+					<property name="local_mesure_unity" value="pixel"/>
 					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<text><![CDATA[Lima,]]></text>
 			</staticText>
+			<staticText>
+				<reportElement uuid="9a6e3285-9903-46fa-8885-556e5616c30e" x="0" y="16" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="64fc77e3-04a4-4b16-b59a-d81315898030" x="0" y="0" width="120" height="16">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2d57a4e9-61d0-416c-9815-1ed2cbd50efe" x="120" y="16" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="57e1f7aa-b748-4fa4-ab01-ce28aebe01be" x="120" y="0" width="482" height="16"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
