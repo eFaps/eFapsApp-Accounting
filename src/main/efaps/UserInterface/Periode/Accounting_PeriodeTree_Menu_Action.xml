@@ -41,6 +41,7 @@
             <child>Accounting_PeriodeTree_Menu_Action_Recalculate</child>
             <child>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</child>
             <child>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</child>
+            <child>Accounting_PeriodeTree_Menu_Action_VerifyTransactions</child>
             <child>Accounting_PeriodeTree_Transaction_Menu_Action_SetStatusClosed</child>
         </childs>
     </definition>

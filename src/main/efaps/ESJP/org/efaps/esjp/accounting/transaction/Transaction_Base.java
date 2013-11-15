@@ -22,16 +22,30 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -54,6 +68,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.accounting.Periode;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -62,6 +77,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -1174,6 +1190,17 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    public Return getHtml4InvalidTransactions(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final AbstractDynamicReport dyRp = new TransactionInvalid();
+        dyRp.setFileName("PurchaseSaleReport");
+        final String html = dyRp.getHtmlSnipplet(_parameter);
+        ret.put(ReturnValues.SNIPLETT, html);
+        return ret;
+    }
+
     /**
      * Used to hold necessary informations about a document.
      */
@@ -1841,6 +1868,143 @@ public abstract class Transaction_Base
         public void setRateInfo(final RateInfo _rateInfo)
         {
             this.rateInfo = _rateInfo;
+        }
+    }
+
+    public class TransactionInvalid
+    extends AbstractDynamicReport
+    {
+
+        @Override
+        protected JRDataSource createDataSource(final Parameter _parameter)
+            throws EFapsException
+        {
+            final DRDataSource dataSource = new DRDataSource("date", "transaction", "accountName",
+                            "accountDescription", "debit", "credit");
+            final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
+            ConnectionResource con = null;
+            final String complStmt = "select date,descr,accName,accDescr,amount,rateamount,S1"
+                        + " from t_acctransaction t0 inner join "
+                        + " (select t1.transactionid,amount,rateamount,t2.name as accName,t2.descr as accDescr,S1"
+                        + " from t_acctransactionpos t1 inner join"
+                        + " t_accaccount t2 on t1.accountid=t2.id"
+                        + " inner join"
+                        + " (select transactionid, sum(amount) as S1 from t_acctransactionpos group by transactionid)"
+                        + " as t3 on t1.transactionid=t3.transactionid where t3.S1>0 or t3.S1<0) as t4"
+                        + " on t0.id=t4.transactionid";
+            try {
+                con = Context.getThreadContext().getConnectionResource();
+                Statement stmt = null;
+
+                try {
+                    stmt = con.getConnection().createStatement();
+                    final ResultSet rs = stmt.executeQuery(complStmt);
+                    while (rs.next()) {
+                        final Map<String, Object> map = new HashMap<String, Object>();
+                        map.put("date", rs.getDate("date"));
+                        map.put("transaction", rs.getString("descr"));
+                        map.put("accountName", rs.getString("accName"));
+                        map.put("accountDescription", rs.getString("accDescr"));
+                        final BigDecimal amount = rs.getBigDecimal("amount");
+                        map.put("debit", amount.signum() > 0 ? amount : null);
+                        map.put("credit", amount.signum() < 0 ? amount.abs() : null);
+                        lst.add(map);
+                    }
+                    rs.close();
+                } finally {
+                    if (stmt != null) {
+                        stmt.close();
+                    }
+                }
+                con.commit();
+            } catch (final SQLException e) {
+                throw new EFapsException(Transaction_Base.class, "executeQuery4InvalidTransactions", e);
+            } finally {
+                if (con != null && con.isOpened()) {
+                    con.abort();
+                }
+            }
+
+            Collections.sort(lst, new Comparator<Map<String, Object>>()
+            {
+                @Override
+                public int compare(final Map<String, Object> _o1,
+                                   final Map<String, Object> _o2)
+                {
+                    final Date date1 = (Date) _o1.get("date");
+                    final Date date2 = (Date) _o2.get("date");
+                    final int ret;
+                    if (date1.equals(date2)) {
+                            final String txn1 = (String) _o1.get("transaction");
+                            final String txn2 = (String) _o2.get("transaction");
+                            ret = txn1.compareTo(txn2);
+                    } else {
+                        ret = date1.compareTo(date2);
+                    }
+                    return ret;
+                }
+            });
+
+            for (final Map<String, Object> map : lst) {
+                dataSource.add(map.get("date"),
+                                map.get("transaction"),
+                                map.get("accountName"),
+                                map.get("accountDescription"),
+                                map.get("debit"),
+                                map.get("credit"));
+            }
+            return dataSource;
+        }
+
+        /**
+         * @param _parameter Parameter as passed from the eFaps API
+         * @param _queryBldr QueryBuilder the criteria will be added to
+         * @throws EFapsException on error
+         */
+        protected void add2QueryBuilder(final Parameter _parameter,
+                                        final QueryBuilder _queryBldr)
+            throws EFapsException
+        {
+            // to be implemented by subclasses
+        }
+
+        @Override
+        protected void addColumnDefintion(final Parameter _parameter,
+                                          final JasperReportBuilder _builder)
+            throws EFapsException
+        {
+            final TextColumnBuilder<Date> dateColumn = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.accounting.transaction.TransactionInvalid.Date"), "date",
+                            DynamicReports.type.dateType());
+            final TextColumnBuilder<String> transaction  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.accounting.transaction.TransactionInvalid.Transaction"),
+                            "transaction", DynamicReports.type.stringType());
+            final TextColumnBuilder<String> accountName  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.accounting.transaction.TransactionInvalid.AccountName"),
+                            "accountName", DynamicReports.type.stringType());
+            final TextColumnBuilder<String> accountDescription  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.accounting.transaction.TransactionInvalid.AccountDescription"),
+                            "accountDescription", DynamicReports.type.stringType());
+            accountDescription.setWidth(350);
+            final TextColumnBuilder<BigDecimal> debit = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.accounting.transaction.TransactionInvalid.Debit"), "debit",
+                            DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<BigDecimal> credit = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.accounting.transaction.TransactionInvalid.Credit"), "credit",
+                            DynamicReports.type.bigDecimalType());
+
+            final ColumnGroupBuilder transactionGroup = DynamicReports.grp.group(transaction).groupByDataType();
+            final ColumnGroupBuilder dateGroup = DynamicReports.grp.group(dateColumn).groupByDataType();
+
+            final AggregationSubtotalBuilder<BigDecimal> debitSum = DynamicReports.sbt.sum(debit);
+            final AggregationSubtotalBuilder<BigDecimal> creditSum = DynamicReports.sbt.sum(credit);
+
+            _builder.addColumn(dateColumn, transaction, accountName, accountDescription, debit, credit);
+
+            _builder.groupBy(dateGroup, transactionGroup);
+
+            _builder.addSubtotalAtGroupFooter(transactionGroup, debitSum);
+            _builder.addSubtotalAtGroupFooter(transactionGroup, creditSum);
         }
     }
 }
