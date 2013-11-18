@@ -42,6 +42,7 @@
         <type>Accounting_Periode</type>
         
         <childs>
+            <child>Accounting_PeriodeTree_SubPeriod</child>
             <child>Accounting_PeriodeTree_Account</child>
             <child>Accounting_PeriodeTree_AccountStructurBrowser</child>
             <child>Accounting_PeriodeTree_View</child>
