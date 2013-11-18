@@ -22,27 +22,28 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>46512945-b5b1-4210-a441-05ac532ec677</uuid>
+    <uuid>3544711d-243e-43ef-b8e9-09e85cb1e3b3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</name>
-
-        <!-- target definitions -->
+        <name>Accounting_SubPeriodMyDesk</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Modifier</role>
+            <role>Accounting_Reader</role>
+        </access>
         <target>
-            <form>Accounting_SubPeriodForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" >
-                <property name="StatusGroup">Accounting_SubPeriodStatus</property>
-                <property name="Status">Open</property>
-            </execute>
+            <table>Accounting_SubPeriodTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_SubPeriod</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="cleanPeriode"
+                name="Accounting_PeriodeMyDesk.UI_ACCESSCHECK" program="org.efaps.esjp.accounting.Periode" />
         </target>
+
         <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_SubPeriod</property>
-        <property name="TargetConnectAttribute">Accounting_SubPeriod/PeriodLink</property>
-        <property name="TargetMode">create</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
 </ui-command>

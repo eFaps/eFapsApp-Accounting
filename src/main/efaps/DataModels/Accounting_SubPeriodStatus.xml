@@ -20,29 +20,24 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>46512945-b5b1-4210-a441-05ac532ec677</uuid>
+    <uuid>837b265c-ff2f-4c35-a8fa-c0b5b2036507</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</name>
-
-        <!-- target definitions -->
-        <target>
-            <form>Accounting_SubPeriodForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" >
-                <property name="StatusGroup">Accounting_SubPeriodStatus</property>
-                <property name="Status">Open</property>
-            </execute>
-        </target>
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_SubPeriod</property>
-        <property name="TargetConnectAttribute">Accounting_SubPeriod/PeriodLink</property>
-        <property name="TargetMode">create</property>
+        <name>Accounting_SubPeriodStatus</name>
+        <parent>Admin_DataModel_StatusAbstract</parent>
+        <status key="Open">
+            <description>Closed.</description>
+        </status>
+        <status key="Closed">
+            <description>Closed.</description>
+        </status>
+        <status key="Booked">
+            <description>Booked.</description>
+        </status>
     </definition>
-</ui-command>
+</datamodel-statusgroup>

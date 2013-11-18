@@ -20,29 +20,19 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>46512945-b5b1-4210-a441-05ac532ec677</uuid>
+    <uuid>0b44df6c-c4e8-4ec8-8f0b-1185dcdc1996</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</name>
-
-        <!-- target definitions -->
-        <target>
-            <form>Accounting_SubPeriodForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" >
-                <property name="StatusGroup">Accounting_SubPeriodStatus</property>
-                <property name="Status">Open</property>
-            </execute>
-        </target>
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_SubPeriod</property>
-        <property name="TargetConnectAttribute">Accounting_SubPeriod/PeriodLink</property>
-        <property name="TargetMode">create</property>
+        <name>Accounting_SubPeriodTree_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_SubPeriodTree_Menu_Action</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

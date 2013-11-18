@@ -55,6 +55,15 @@
             <sqltable>Accounting_SubPeriodSQLTable</sqltable>
             <sqlcolumn>PERIODID</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Accounting_SubPeriodStatus</typelink>
+            <sqltable>Accounting_SubPeriodSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Accounting_SubPeriod.Status.RANGE_VALUE" event="RANGE_VALUE" />
+        </attribute>
         <attribute>
             <name>Name</name>
             <type>String</type>
