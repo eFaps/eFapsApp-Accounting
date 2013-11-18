@@ -34,6 +34,7 @@
             <column name="TYPEID"   not-null="true"     type="INTEGER"/>
             <column name="FROMID"   not-null="true"     type="INTEGER"/>
             <column name="TOID"     not-null="true"     type="INTEGER"/>
+            <column name="STR1"                         type="STRING_SHORT" length="128" />
             <column name="CREATOR"  not-null="true"     type="INTEGER"/>
             <column name="CREATED"  not-null="true"     type="DATETIME"/>
             <column name="MODIFIER" not-null="true"     type="INTEGER"/>

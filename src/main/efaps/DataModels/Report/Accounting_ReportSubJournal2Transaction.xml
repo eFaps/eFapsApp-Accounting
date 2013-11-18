@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>48fa4820-7efe-44c9-bac3-b0057834f73e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -42,5 +43,15 @@
             <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>Number</name>
+            <type>String</type>
+            <sqltable>Accounting_Report2ObjectSQLTable</sqltable>
+            <sqlcolumn>STR1</sqlcolumn>
+        </attribute>
+        <trigger program="org.efaps.esjp.accounting.SubJournal" 
+            method="insertPostTrigger"
+            name="Accounting_ReportSubJournal2Transaction.INSERT_POST" 
+            event="INSERT_POST"></trigger>
     </definition>
 </datamodel-type>
