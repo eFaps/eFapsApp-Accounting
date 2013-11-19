@@ -82,6 +82,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                    method="getDateFieldValue"
+                    name="Accounting_TransactionCreate4DocForm.date.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE"/>
             <trigger event="UI_FIELD_UPDATE" method="update4Date"
                 name="Accounting_TransactionCreate4DocForm.date.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.accounting.transaction.FieldUpdate" />

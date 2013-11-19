@@ -958,4 +958,23 @@ public abstract class FieldValue_Base
         ret.put(ReturnValues.VALUES, BigDecimal.ONE);
         return ret;
     }
+
+    public Return getDateFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String selected = Context.getThreadContext().getParameter("selectedRow");
+        final Instance docInst = Instance.get(selected);
+        DateTime date = new DateTime();
+        if (docInst.isValid()) {
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentAbstract.Date);
+            print.executeWithoutAccessCheck();
+
+            date = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+        }
+
+        ret.put(ReturnValues.VALUES, date);
+        return ret;
+    }
 }
