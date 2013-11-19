@@ -22,34 +22,17 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>c007fbb6-c9ab-4c88-84aa-3a4b6e83b7b6</uuid>
+    <uuid>c3020702-3e6e-42d6-adc4-ab324bf1b120</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_Document</name>
+        <name>Accounting_SubPeriodTree_DocsToBook</name>
         <target>
-            <menu>Accounting_PeriodeTree_Document_Menu</menu>
+            <menu>Accounting_PeriodeTree_DocsToBook_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
-            <evaluate method="getDocuments" program="org.efaps.esjp.accounting.SubPeriod">
+            <evaluate method="getDocumentsToBook" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">ERP_DocumentAbstract</property>
-                <property name="StatusGrp01">Sales_InvoiceStatus</property>
-                <property name="Status01">Open</property>
-                <property name="StatusGrp02">Sales_InvoiceStatus</property>
-                <property name="Status02">Paid</property>
-                <property name="StatusGrp03">Sales_ReceiptStatus</property>
-                <property name="Status03">Open</property>
-                <property name="StatusGrp04">Sales_ReceiptStatus</property>
-                <property name="Status04">Paid</property>
-                <property name="StatusGrp05">Sales_CreditNoteStatus</property>
-                <property name="Status05">Open</property>
-                <property name="StatusGrp06">Sales_CreditNoteStatus</property>
-                <property name="Status06">Paid</property>
-                <property name="StatusGrp05">Sales_ReminderStatus</property>
-                <property name="Status05">Open</property>
-                <property name="StatusGrp06">Sales_ReminderStatus</property>
-                <property name="Status06">Paid</property>
             </evaluate>
         </target>
         <!-- properties -->

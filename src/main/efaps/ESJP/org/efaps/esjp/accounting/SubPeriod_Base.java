@@ -26,14 +26,19 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -78,6 +83,31 @@ public abstract class SubPeriod_Base
     public Return getDocuments(final Parameter _parameter)
         throws EFapsException
     {
-        return new Periode().getDocuments(_parameter);
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new PrintQuery(instance);
+                print.addAttribute(CIAccounting.SubPeriod.FromDate);
+                print.addAttribute(CIAccounting.SubPeriod.ToDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIAccounting.TransactionClassDocument.DocumentLink);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
     }
+
+
 }

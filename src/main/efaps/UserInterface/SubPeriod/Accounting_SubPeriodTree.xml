@@ -40,6 +40,7 @@
 
         <childs>
             <child>Accounting_SubPeriodTree_Document</child>
+            <child>Accounting_SubPeriodTree_DocsToBook</child>
         </childs>
 
         <!-- properties -->
