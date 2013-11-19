@@ -32,7 +32,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashReceipt_Class</name>
-        <purpose classification="true" abstract="true">
+        <purpose classification="true">
             <LinkColumn>DocumentLink</LinkColumn>
         </purpose>
         <attribute>
