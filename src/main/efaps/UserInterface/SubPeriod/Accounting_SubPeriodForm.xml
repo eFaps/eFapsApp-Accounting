@@ -46,18 +46,21 @@
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Columns">12</property>
         </field>
         <field name="toDate">
             <property name="Attribute">ToDate</property>
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Columns">12</property>
         </field>
         <field name="declarationDate">
             <property name="Attribute">DeclarationDate</property>
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Columns">12</property>
         </field>
          <field name="status">
             <property name="Attribute">Status</property>

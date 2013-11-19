@@ -56,6 +56,13 @@ public abstract class SubPeriod_Base
      */
     public static final String CACHEKEY = SubPeriod.class.getName() + ".CacheKey";
 
+    /**
+     * Set the related period as an instance key.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
     public Return setPeriodInstance(final Parameter _parameter)
         throws EFapsException
     {
@@ -80,6 +87,14 @@ public abstract class SubPeriod_Base
         return ret;
     }
 
+    /**
+     * Called from a tree menu command to present the documents that are not
+     * included in accounting yet.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
     public Return getDocuments(final Parameter _parameter)
         throws EFapsException
     {
@@ -91,7 +106,7 @@ public abstract class SubPeriod_Base
                 throws EFapsException
             {
                 final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new PrintQuery(instance);
+                final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
                 print.addAttribute(CIAccounting.SubPeriod.FromDate);
                 print.addAttribute(CIAccounting.SubPeriod.ToDate);
                 print.execute();
@@ -109,5 +124,107 @@ public abstract class SubPeriod_Base
         return multi.execute(_parameter);
     }
 
+    /**
+     * Called from a tree menu command to present the documents that are already
+     * included in accounting.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getDocumentsToBook(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
+                transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
+                final AttributeQuery tranAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassDocument.TransactionLink, tranAttrQuery);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                                CIAccounting.TransactionClassDocument.DocumentLink);
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+
+    /**
+     * Called from a tree menu command to present the documents that are with status
+     * booked and therefor must be worked on still.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getExternals(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.SubPeriod.FromDate);
+                print.addAttribute(CIAccounting.SubPeriod.ToDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIAccounting.TransactionClassExternal.DocumentLink);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+    /**
+     * Called from a tree menu command to present the documents that are with status
+     * booked and therefor must be worked on still.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getExternalsToBook(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
+                transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
+                final AttributeQuery tranAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
+                attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassExternal.TransactionLink, tranAttrQuery);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                                CIAccounting.TransactionClassExternal.DocumentLink);
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
 }
