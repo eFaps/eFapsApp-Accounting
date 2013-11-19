@@ -299,9 +299,42 @@ public abstract class Report_Base
         try {
 
             final JasperReportBuilder jrb = DynamicReports.report();
-            addTitle(_parameter, jrb, dataTree);
-            addPageHeader(_parameter, jrb, dataTree);
-            addFooter(_parameter, jrb, dataTree);
+            boolean addTitle;
+            boolean addPageHeader;
+            boolean addPageFooter;
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String name = (String) properties.get("JasperReport");
+            if (name != null) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
+                queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, name);
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                Instance instance = null;
+                if (query.next()) {
+                    instance = query.getCurrentValue();
+                } else {
+                    throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
+                }
+                final JasperDesign design = JasperUtil.getJasperDesign(instance);
+                addTitle = design.getTitle() == null;
+                addPageHeader = design.getPageHeader() == null;
+                addPageFooter = design.getPageFooter() == null;
+                jrb.setTemplateDesign(design);
+            } else {
+                addTitle = true;
+                addPageHeader = true;
+                addPageFooter = true;
+            }
+
+            if (addTitle) {
+                addTitle(_parameter, jrb, dataTree);
+            }
+            if (addPageHeader) {
+                addPageHeader(_parameter, jrb, dataTree);
+            }
+            if (addPageFooter) {
+                addPageFooter(_parameter, jrb, dataTree);
+            }
             if (print) {
                 jrb.highlightDetailEvenRows();
             } else {
@@ -323,23 +356,6 @@ public abstract class Report_Base
                 jrb.addColumn(numberColumn);
 
                 jrb.addField("node_" + y, Object.class);
-            }
-
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String name = (String) properties.get("JasperReport");
-            if (name != null) {
-                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
-                queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, name);
-                final InstanceQuery query = queryBldr.getQuery();
-                query.execute();
-                Instance instance = null;
-                if (query.next()) {
-                    instance = query.getCurrentValue();
-                } else {
-                    throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
-                }
-                final JasperDesign design = JasperUtil.getJasperDesign(instance);
-                jrb.setTemplateDesign(design);
             }
 
             final JRDataSource ds = new AccountingDataSource(table);
@@ -372,9 +388,9 @@ public abstract class Report_Base
 
 
 
-    protected void addFooter(final Parameter _parameter,
-                             final JasperReportBuilder _jrb,
-                             final ReportTree _dataTree)
+    protected void addPageFooter(final Parameter _parameter,
+                                 final JasperReportBuilder _jrb,
+                                 final ReportTree _dataTree)
     {
         // for implementation purpose
     }
