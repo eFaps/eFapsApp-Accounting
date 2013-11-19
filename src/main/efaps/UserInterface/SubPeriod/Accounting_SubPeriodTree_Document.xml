@@ -33,7 +33,7 @@
             <menu>Accounting_PeriodeTree_Document_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getDocuments" program="org.efaps.esjp.accounting.SubPeriod">
-                <property name="Type">ERP_DocumentAbstract</property>
+                <property name="Type">Sales_DocumentSumAbstract</property>
                 <property name="StatusGrp01">Sales_InvoiceStatus</property>
                 <property name="Status01">Open</property>
                 <property name="StatusGrp02">Sales_InvoiceStatus</property>

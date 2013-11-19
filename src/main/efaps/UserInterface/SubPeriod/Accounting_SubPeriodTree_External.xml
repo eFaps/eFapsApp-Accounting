@@ -40,12 +40,10 @@
                 <property name="Status02">Paid</property>
                 <property name="StatusGrp03">Sales_PaymentOrderStatus</property>
                 <property name="Status03">Open</property>
-                <property name="StatusGrp04">Sales_PaymentOrderStatus</property>
-                <property name="Status04">Paid</property>
-                <property name="StatusGrp05">Sales_ExternalVoucherStatus</property>
-                <property name="Status05">Open</property>
-                <property name="StatusGrp06">Sales_ExternalVoucherStatus</property>
-                <property name="Status06">Paid</property>
+                <property name="StatusGrp04">Accounting_ExternalVoucherStatus</property>
+                <property name="Status04">Open</property>
+                <property name="StatusGrp05">Accounting_ExternalVoucherStatus</property>
+                <property name="Status05">Paid</property>
             </evaluate>
         </target>
         <!-- properties -->
