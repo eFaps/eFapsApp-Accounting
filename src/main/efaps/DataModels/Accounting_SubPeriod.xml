@@ -112,5 +112,21 @@
             <sqltable>Accounting_SubPeriodSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
+        
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Accounting_SubPeriod.INSERT_POST"
+            event="INSERT_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.SubPeriod.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Accounting_SubPeriod.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.SubPeriod.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Accounting_SubPeriod.DELETE_POST"
+            event="DELETE_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.SubPeriod.CacheKey</property>
+        </trigger>  
     </definition>
 </datamodel-type>

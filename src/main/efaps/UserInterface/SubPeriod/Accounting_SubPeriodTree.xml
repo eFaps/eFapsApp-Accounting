@@ -34,6 +34,7 @@
         <target>
             <menu>Accounting_SubPeriodTree_Menu</menu>
             <form>Accounting_SubPeriodForm</form>
+            <evaluate method="setPeriodInstance" program="org.efaps.esjp.accounting.SubPeriod"></evaluate>
         </target>
         <type>Accounting_SubPeriod</type>
 

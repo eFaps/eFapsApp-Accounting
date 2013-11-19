@@ -40,6 +40,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -49,6 +50,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.TargetAccount;
 import org.efaps.esjp.accounting.util.Accounting;
@@ -357,21 +359,28 @@ public abstract class Create_Base
         throws EFapsException
     {
         Instance parent = _parameter.getCallInstance();
-        // in case that an accountis the parent the periode is searched
+        // in case that an account is the parent the periode is searched
         if (parent.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
             final PrintQuery print = new PrintQuery(parent);
-            final SelectBuilder sel = new SelectBuilder()
-                .linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).oid();
+            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
+                            .instance();
             print.addSelect(sel);
             print.execute();
-            parent = Instance.get(print.<String>getSelect(sel));
+            parent = print.<Instance>getSelect(sel);
+        } else if (parent.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(parent, SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            parent = print.<Instance>getSelect(selPeriodInst);
         }
         final Insert insert = new Insert(CIAccounting.Transaction);
         insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
         insert.add(CIAccounting.Transaction.Description, _description);
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodeLink, parent.getId());
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+        insert.add(CIAccounting.Transaction.PeriodeLink, parent);
+        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open"));
         insert.execute();
         final Instance instance = insert.getInstance();
         insertPositions(_parameter, instance, "Credit", null);

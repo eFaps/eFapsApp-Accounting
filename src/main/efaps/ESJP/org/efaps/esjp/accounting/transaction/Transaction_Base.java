@@ -70,6 +70,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -114,13 +115,12 @@ public abstract class Transaction_Base
     /**
      * Key for the active Periode to store it in the session.
      */
-    public static final String PERIODE_SESSIONKEY = "eFaps_Active_Accounting_Periode";
+    public static final String PERIODE_SESSIONKEY = Transaction.class.getName() + ".ActiveAccountingPeriod";
 
     /**
      * Key for the selected case to store it in the session.
      */
-    public static final String CASE_SESSIONKEY = "eFaps_Selected_Accounting_Case";
-
+    public static final String CASE_SESSIONKEY = Transaction.class.getName() + ".SelectedAccountingCase";
 
     /**
      * Logger for this class.
@@ -265,8 +265,7 @@ public abstract class Transaction_Base
             print.addSelect(sel);
             print.execute();
             instance = Instance.get(print.<String>getSelect(sel));
-        }
-        if (instance.getType().isKindOf(CIAccounting.ReportNodeAbstract.getType())) {
+        } else if (instance.getType().isKindOf(CIAccounting.ReportNodeAbstract.getType())) {
             while (!instance.getType().isKindOf(CIAccounting.ReportNodeRoot.getType())) {
                 final PrintQuery print = new PrintQuery(instance);
                 final SelectBuilder sel = new SelectBuilder()
@@ -289,6 +288,14 @@ public abstract class Transaction_Base
             if (reportInst.isValid() && reportInst.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
                 instance = reportInst;
             }
+        } else if (instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            instance = print.<Instance>getSelect(selPeriodInst);
+
         }
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (!props.containsKey("case")
