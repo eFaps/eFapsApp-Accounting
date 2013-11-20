@@ -237,7 +237,8 @@ public abstract class PurchaseRecordReport_Base
                                 .<BigDecimal>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionAmount);
                 final DateTime detractionDate = multi
                                 .<DateTime>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionDate);
-                final Instance docDerivatedRel = getDocumentDerivated(instDoc, CISales.IncomingInvoice.getType());
+                final Instance docDerivatedRel = getDocumentDerivated(instDoc, true) == null
+                                ? getDocumentDerivated(instDoc, false) : getDocumentDerivated(instDoc, true);
 
                 BigDecimal netTotal = multi.<BigDecimal>getSelect(selRelDocNTotal);
                 BigDecimal crossTotal = multi.<BigDecimal>getSelect(selRelDocCTotal);
@@ -359,25 +360,36 @@ public abstract class PurchaseRecordReport_Base
         getValues().addAll(values);
     }
 
-
     protected Instance getDocumentDerivated(final Instance _document,
-                                            final Type _type)
+                                            final boolean _inverse)
         throws EFapsException
     {
-        Instance ret = Instance.get(null);
+        Instance ret = null;
         if (CISales.IncomingCreditNote.getType().equals(_document.getType())
                         || CISales.IncomingReminder.getType().equals(_document.getType())) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.To, _document.getId());
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.From);
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
+            if (_inverse) {
+                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, _document);
+            } else {
+                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, _document);
+            }
+            final AttributeQuery attrQuery;
+            if (_inverse) {
+                attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink);
+            } else {
+                attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+            }
 
-            final QueryBuilder queryBldr = new QueryBuilder(_type);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
             queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
+                            CISales.IncomingInvoice.getType().getId(),
+                            CIAccounting.ExternalVoucher.getType().getId());
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
-            while (query.next()) {
+
+            if (query.next()) {
                 ret = query.getCurrentValue();
-                break;
             }
         }
 
