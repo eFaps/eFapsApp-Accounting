@@ -32,10 +32,17 @@ import java.util.Map;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.VariableBuilder;
 import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
+import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.dynamicreports.report.constant.Evaluation;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.StretchType;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -151,6 +158,15 @@ public abstract class SubJournal_Base
     {
 
         @Override
+        protected StyleBuilder getColumnStyle4Pdf(final Parameter _parameter)
+            throws EFapsException
+        {
+            return super.getColumnStyle4Pdf(_parameter).setTopBorder(DynamicReports.stl.pen1Point())
+                            .setBottomBorder(DynamicReports.stl.pen1Point());
+        }
+
+
+        @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
@@ -164,11 +180,14 @@ public abstract class SubJournal_Base
             final SelectBuilder selTransInst = SelectBuilder.get()
                             .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink).instance();
             final SelectBuilder selDate = SelectBuilder.get()
-                            .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink).attribute(CIAccounting.TransactionAbstract.Date);
+                            .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink)
+                            .attribute(CIAccounting.TransactionAbstract.Date);
             final SelectBuilder selName = SelectBuilder.get()
-                            .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink).attribute(CIAccounting.TransactionAbstract.Name);
+                            .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink)
+                            .attribute(CIAccounting.TransactionAbstract.Name);
             final SelectBuilder selDescr = SelectBuilder.get()
-                            .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink).attribute(CIAccounting.TransactionAbstract.Description);
+                            .linkto(CIAccounting.ReportSubJournal2Transaction.ToLink)
+                            .attribute(CIAccounting.TransactionAbstract.Description);
             multi.addSelect(selTransInst, selDate, selName, selDescr);
             multi.addAttribute(CIAccounting.ReportSubJournal2Transaction.Number);
             multi.execute();
@@ -197,9 +216,11 @@ public abstract class SubJournal_Base
             final SelectBuilder selTransInst2 = SelectBuilder.get()
                             .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink).instance();
             final SelectBuilder selAccName = SelectBuilder.get()
-                            .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).attribute(CIAccounting.AccountAbstract.Name);
+                            .linkto(CIAccounting.TransactionPositionAbstract.AccountLink)
+                            .attribute(CIAccounting.AccountAbstract.Name);
             final SelectBuilder selAccDesc = SelectBuilder.get()
-                            .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).attribute(CIAccounting.AccountAbstract.Description);
+                            .linkto(CIAccounting.TransactionPositionAbstract.AccountLink)
+                            .attribute(CIAccounting.AccountAbstract.Description);
             posMulti.addSelect(selTransInst2, selAccName, selAccDesc);
             posMulti.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
             posMulti.execute();
@@ -207,11 +228,14 @@ public abstract class SubJournal_Base
                 final Instance transInst = posMulti.<Instance>getSelect(selTransInst2);
                 final SubJournalData data = values.get(transInst);
                 final Map<String, Object> map = new HashMap<String, Object>();
-                final BigDecimal amount = posMulti.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+                final BigDecimal amount = posMulti
+                                .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
                 if (amount.compareTo(BigDecimal.ZERO) < 0) {
                     map.put("debit", amount.abs());
+                    data.addDebit(amount.abs());
                 } else {
                     map.put("credit", amount.abs());
+                    data.addCredit(amount.abs());
                 }
                 map.put("accName", posMulti.<String>getSelect(selAccName));
                 map.put("accDescr", posMulti.<String>getSelect(selAccDesc));
@@ -227,6 +251,19 @@ public abstract class SubJournal_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
+            final VariableBuilder<BigDecimal> debitSumPage = DynamicReports.variable("debitSum", BigDecimal.class,
+                            Calculation.SUM);
+            debitSumPage.setResetType(Evaluation.PAGE);
+            final VariableBuilder<BigDecimal> creditSumPage = DynamicReports.variable("creditSum", BigDecimal.class,
+                            Calculation.SUM);
+            creditSumPage.setResetType(Evaluation.PAGE);
+
+            final VariableBuilder<BigDecimal> debitSumTotal = DynamicReports.variable("debitSum", BigDecimal.class,
+                            Calculation.SUM);
+
+            final VariableBuilder<BigDecimal> creditSumTotal = DynamicReports.variable("creditSum", BigDecimal.class,
+                            Calculation.SUM);
+
             final TextColumnBuilder<Integer> rowNumCol = DynamicReports.col.reportRowNumberColumn().setWidth(3);
 
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column("name",
@@ -238,36 +275,57 @@ public abstract class SubJournal_Base
             final TextColumnBuilder<Date> dateColumn = DynamicReports.col.column("date",
                             DynamicReports.type.dateType()).setWidth(8);
 
-            final TextColumnBuilder<String> descrColumn = DynamicReports.col.column( "descr",
+            final TextColumnBuilder<String> descrColumn = DynamicReports.col.column("descr",
                             DynamicReports.type.stringType()).setWidth(19);
 
             final SubreportBuilder subreport = DynamicReports.cmp.subreport(getSubreportDesign(_parameter))
-                            .setDataSource(getSubreportData(_parameter));
+                            .setDataSource(getSubreportData(_parameter))
+                            .setStretchType(StretchType.RELATIVE_TO_TALLEST_OBJECT)
+                            .setStyle(DynamicReports.stl.style().setBorder(DynamicReports.stl.pen1Point()));
 
             final ComponentColumnBuilder posColumn = DynamicReports.col.componentColumn(subreport).setWidth(54);
 
+            final TextFieldBuilder<String> debitSbtPage = DynamicReports.cmp.text(new CustomTextSubtotal(debitSumPage));
+            final TextFieldBuilder<String> creditSbtPage = DynamicReports.cmp
+                            .text(new CustomTextSubtotal(creditSumPage));
+            final TextFieldBuilder<String> debitSbtTotal = DynamicReports.cmp
+                            .text(new CustomTextSubtotal(debitSumTotal));
+            final TextFieldBuilder<String> creditSbtTotal = DynamicReports.cmp.text(new CustomTextSubtotal(
+                            creditSumTotal));
+
             final HorizontalListBuilder header = DynamicReports.cmp.horizontalList();
             header.add(DynamicReports.cmp.text("N").setWidth(3))
-                .add(DynamicReports.cmp.text("Name").setWidth(8))
-                .add(DynamicReports.cmp.text("Number").setWidth(8))
-                .add(DynamicReports.cmp.text("Date").setWidth(8))
-                .add(DynamicReports.cmp.text("Description").setWidth(19))
+                            .add(DynamicReports.cmp.text("Name").setWidth(8))
+                            .add(DynamicReports.cmp.text("Number").setWidth(8))
+                            .add(DynamicReports.cmp.text("Date").setWidth(8))
+                            .add(DynamicReports.cmp.text("Description").setWidth(19))
 
-                .add(DynamicReports.cmp.text("accDescr").setWidth(9))
-                .add(DynamicReports.cmp.text("accName").setWidth(27))
-                .add(DynamicReports.cmp.text("Debit").setWidth(9))
-                .add(DynamicReports.cmp.text("Credit").setWidth(9));
+                            .add(DynamicReports.cmp.text("accDescr").setWidth(9))
+                            .add(DynamicReports.cmp.text("accName").setWidth(27))
+                            .add(DynamicReports.cmp.text("Debit").setWidth(9))
+                            .add(DynamicReports.cmp.text("Credit").setWidth(9));
+
+            final HorizontalListBuilder sumList = DynamicReports.cmp.horizontalList();
+            sumList.add(DynamicReports.cmp.text("").setWidth(82))
+                   .add(debitSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                   .add(creditSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                   .newRow()
+                   .add(DynamicReports.cmp.text("").setWidth(82))
+                   .add(debitSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                   .add(creditSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT));
 
             _builder.fields(DynamicReports.field("positions", List.class))
-                .addColumn(rowNumCol, nameColumn, numberColumn, dateColumn, descrColumn, posColumn)
-                .addColumnHeader(header);
-
+                            .addColumn(rowNumCol, nameColumn, numberColumn, dateColumn, descrColumn, posColumn)
+                            .addColumnHeader(header)
+                            .variables(debitSumPage, creditSumPage, debitSumTotal, creditSumTotal)
+                            .addColumnFooter(sumList);
         }
-
     }
 
     public static class SubJournalData
     {
+        private BigDecimal debitSum = BigDecimal.ZERO;
+        private BigDecimal creditSum = BigDecimal.ZERO;
 
         private String number;
         private String name;
@@ -382,6 +440,61 @@ public abstract class SubJournal_Base
         {
             this.date = _date;
         }
+
+
+        /**
+         * Getter method for the instance variable {@link #debitSum}.
+         *
+         * @return value of instance variable {@link #debitSum}
+         */
+        public BigDecimal getDebitSum()
+        {
+            return this.debitSum;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #debitSum}.
+         *
+         * @param _debitSum value for instance variable {@link #debitSum}
+         */
+        public void setDebitSum(final BigDecimal _debitSum)
+        {
+            this.debitSum = _debitSum;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #creditSum}.
+         *
+         * @return value of instance variable {@link #creditSum}
+         */
+        public BigDecimal getCreditSum()
+        {
+            return this.creditSum;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #creditSum}.
+         *
+         * @param _creditSum value for instance variable {@link #creditSum}
+         */
+        public void setCreditSum(final BigDecimal _creditSum)
+        {
+            this.creditSum = _creditSum;
+        }
+
+        public SubJournalData addCredit(final BigDecimal _credit)
+        {
+            this.creditSum = this.creditSum.add(_credit);
+            return this;
+        }
+        public SubJournalData addDebit(final BigDecimal _debit)
+        {
+            this.debitSum = this.debitSum.add(_debit);
+            return this;
+        }
     }
 
     public static class SubreportDesign
@@ -426,4 +539,25 @@ public abstract class SubJournal_Base
             return new JRMapCollectionDataSource(value);
         }
     }
+
+
+    private class CustomTextSubtotal
+        extends AbstractSimpleExpression<String>
+    {
+
+        private static final long serialVersionUID = 1L;
+        private final VariableBuilder<BigDecimal>total;
+
+        public CustomTextSubtotal( final VariableBuilder<BigDecimal> _total)
+        {
+            this.total = _total;
+        }
+
+        @Override
+        public String evaluate(final ReportParameters _reportParameters)
+        {
+            return DynamicReports.type.bigDecimalType().valueToString(this.total, _reportParameters);
+        }
+    }
+
 }
