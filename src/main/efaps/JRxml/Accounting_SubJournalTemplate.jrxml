@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 4.7.0-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_SubJournalTemplate" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="eab70bb6-cc48-455c-bdbf-c24b52eb7710">
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+        <property name="UUID" value="111310c3-1801-4370-a578-60b64bcc791c"/>
+    </parameter>
+    <parameter name="CompanyName" class="java.lang.String">
+        <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+    </parameter>
+	<parameter name="CompanyTaxNum" class="java.lang.String">
+        <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+    </parameter>
+    <parameter name="ReportName" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+    </parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<pageHeader>
+		<band height="47" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9bc0936b-3055-4bf9-9dfb-97e74a70a830" x="0" y="2" width="110" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="51cad138-3e19-44f3-8441-51b15710330c" x="120" y="0" width="170" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+            <textField>
+                <reportElement uuid="51cad138-3e19-44f3-8441-51b15710222c" x="120" y="20" width="170" height="20"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$P{ReportName}]]></textFieldExpression>
+            </textField>
+		</band>
+	</pageHeader>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d3e2bedf-ee19-4ae9-b7a4-00fc2047ede3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -28,9 +30,8 @@
         <name>Accounting_ReportSubJournalTree_Menu_Action_Print</name>
         <target>
             <form>Accounting_Journal_CreateForm</form>
-            <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
-                <property name="JasperReport">Accounting_Journal</property>
-                <property name="DataSourceClass">org.efaps.esjp.accounting.JournalDataSource </property>
+            <execute program="org.efaps.esjp.accounting.report.SubJournal" method="createReport" >
+                <property name="DesignTemplate">Accounting_SubJournalTemplate</property>
             </execute>
         </target>
         <property name="Target">modal</property>
