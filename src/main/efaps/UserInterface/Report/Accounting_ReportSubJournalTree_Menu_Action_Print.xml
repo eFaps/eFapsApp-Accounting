@@ -31,7 +31,8 @@
         <target>
             <form>Accounting_Journal_CreateForm</form>
             <execute program="org.efaps.esjp.accounting.report.SubJournal" method="createReport" >
-                <property name="DesignTemplate">Accounting_SubJournalTemplate</property>
+                <property name="TemplateDesign4PDF">Accounting_SubJournalTemplate</property>
+                <property name="TemplateDesign4XLS">Accounting_SubJournalTemplate</property>
             </execute>
         </target>
         <property name="Target">modal</property>

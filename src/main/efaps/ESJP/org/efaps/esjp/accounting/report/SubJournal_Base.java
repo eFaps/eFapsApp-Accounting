@@ -42,6 +42,7 @@ import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.Evaluation;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.StretchType;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -64,6 +65,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base.ExportType;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
@@ -101,9 +103,11 @@ public abstract class SubJournal_Base
         dyRp.getReport().addParameter("FromDate", dateFrom.toDate());
         dyRp.getReport().addParameter("ToDate", dateTo.toDate());
         dyRp.getReport().addParameter("ReportName",
-                        DBProperties.getFormatedDBProperty(SubJournal.class.getName() + ".ReportName", name));
+                        DBProperties.getFormatedDBProperty(SubJournal.class.getName() + ".ReportName",
+                                        new Object[] { name }));
 
-        dyRp.setFileName(DBProperties.getFormatedDBProperty(SubJournal.class.getName() + ".FileName", name));
+        dyRp.setFileName(DBProperties.getFormatedDBProperty(SubJournal.class.getName() + ".FileName",
+                        new Object[] { name }));
 
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
@@ -143,9 +147,10 @@ public abstract class SubJournal_Base
         return new SubJournalData();
     }
 
-    protected SubreportDesign getSubreportDesign(final Parameter _parameter)
+    protected SubreportDesign getSubreportDesign(final Parameter _parameter,
+                                                 final ExportType _exType)
     {
-        return new SubreportDesign();
+        return new SubreportDesign(_exType);
     }
     protected SubreportData getSubreportData(final Parameter _parameter)
     {
@@ -164,7 +169,6 @@ public abstract class SubJournal_Base
             return super.getColumnStyle4Pdf(_parameter).setTopBorder(DynamicReports.stl.pen1Point())
                             .setBottomBorder(DynamicReports.stl.pen1Point());
         }
-
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
@@ -246,6 +250,14 @@ public abstract class SubJournal_Base
             return new JRBeanCollectionDataSource(datasource);
         }
 
+        protected TextFieldBuilder<String> getTitle(final Parameter _parameter,
+                                                    final String _key)
+        {
+            return DynamicReports.cmp.text(DBProperties.getProperty(SubJournal.class.getName() + "." + _key)).setStyle(
+                            DynamicReports.stl.style().setBold(true));
+        }
+
+
         @Override
         protected void addColumnDefintion(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
@@ -264,26 +276,27 @@ public abstract class SubJournal_Base
             final VariableBuilder<BigDecimal> creditSumTotal = DynamicReports.variable("creditSum", BigDecimal.class,
                             Calculation.SUM);
 
-            final TextColumnBuilder<Integer> rowNumCol = DynamicReports.col.reportRowNumberColumn().setWidth(3);
+            final TextColumnBuilder<Integer> rowNumCol = DynamicReports.col.reportRowNumberColumn();
 
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column("name",
-                            DynamicReports.type.stringType()).setWidth(8);
+                            DynamicReports.type.stringType());
 
             final TextColumnBuilder<String> numberColumn = DynamicReports.col.column("number",
-                            DynamicReports.type.stringType()).setWidth(8);
+                            DynamicReports.type.stringType());
 
             final TextColumnBuilder<Date> dateColumn = DynamicReports.col.column("date",
-                            DynamicReports.type.dateType()).setWidth(8);
+                            DynamicReports.type.dateType()).setPattern("dd/MM/yyyy");
 
             final TextColumnBuilder<String> descrColumn = DynamicReports.col.column("descr",
-                            DynamicReports.type.stringType()).setWidth(19);
+                            DynamicReports.type.stringType());
 
-            final SubreportBuilder subreport = DynamicReports.cmp.subreport(getSubreportDesign(_parameter))
+            final SubreportBuilder subreport = DynamicReports.cmp
+                            .subreport(getSubreportDesign(_parameter, getExType()))
                             .setDataSource(getSubreportData(_parameter))
-                            .setStretchType(StretchType.RELATIVE_TO_TALLEST_OBJECT)
+             .setStretchType(StretchType.RELATIVE_TO_BAND_HEIGHT)
                             .setStyle(DynamicReports.stl.style().setBorder(DynamicReports.stl.pen1Point()));
 
-            final ComponentColumnBuilder posColumn = DynamicReports.col.componentColumn(subreport).setWidth(54);
+            final ComponentColumnBuilder posColumn = DynamicReports.col.componentColumn(subreport);
 
             final TextFieldBuilder<String> debitSbtPage = DynamicReports.cmp.text(new CustomTextSubtotal(debitSumPage));
             final TextFieldBuilder<String> creditSbtPage = DynamicReports.cmp
@@ -293,32 +306,71 @@ public abstract class SubJournal_Base
             final TextFieldBuilder<String> creditSbtTotal = DynamicReports.cmp.text(new CustomTextSubtotal(
                             creditSumTotal));
 
+            final TextFieldBuilder<String> nameTitle = getTitle(_parameter, "Name");
+            final TextFieldBuilder<String> rowNumTitle = getTitle(_parameter, "RowNum");
+            final TextFieldBuilder<String> numberTitle = getTitle(_parameter,"Number");
+            final TextFieldBuilder<String> dateTitle = getTitle(_parameter,"Date");
+            final TextFieldBuilder<String> descrTitle = getTitle(_parameter,"Description");
+            final TextFieldBuilder<String> accNameTitle = getTitle(_parameter,"AccName");
+            final TextFieldBuilder<String> accDescrTitle = getTitle(_parameter,"AccDescr");
+            final TextFieldBuilder<String> debitTitle = getTitle(_parameter,"Debit");
+            final TextFieldBuilder<String> creditTitle = getTitle(_parameter,"Credit");
+
             final HorizontalListBuilder header = DynamicReports.cmp.horizontalList();
-            header.add(DynamicReports.cmp.text("N").setWidth(3))
-                            .add(DynamicReports.cmp.text("Name").setWidth(8))
-                            .add(DynamicReports.cmp.text("Number").setWidth(8))
-                            .add(DynamicReports.cmp.text("Date").setWidth(8))
-                            .add(DynamicReports.cmp.text("Description").setWidth(19))
+            header.add(rowNumTitle).add(nameTitle).add(numberTitle).add(dateTitle).add(descrTitle).add(accNameTitle)
+                            .add(accDescrTitle).add(debitTitle).add(creditTitle);
 
-                            .add(DynamicReports.cmp.text("accDescr").setWidth(9))
-                            .add(DynamicReports.cmp.text("accName").setWidth(27))
-                            .add(DynamicReports.cmp.text("Debit").setWidth(9))
-                            .add(DynamicReports.cmp.text("Credit").setWidth(9));
+            if (ExportType.PDF.equals(getExType())) {
+                rowNumTitle.setWidth(3);
+                rowNumCol.setWidth(3);
+                nameTitle.setWidth(8);
+                nameColumn.setWidth(8);
+                numberTitle.setWidth(8);
+                numberColumn.setWidth(8);
+                dateTitle.setWidth(8);
+                dateColumn.setWidth(8);
+                descrTitle.setWidth(19);
+                descrColumn.setWidth(19);
 
-            final HorizontalListBuilder sumList = DynamicReports.cmp.horizontalList();
-            sumList.add(DynamicReports.cmp.text("").setWidth(82))
-                   .add(debitSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
-                   .add(creditSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
-                   .newRow()
-                   .add(DynamicReports.cmp.text("").setWidth(82))
-                   .add(debitSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
-                   .add(creditSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT));
+                posColumn.setWidth(54);
+                accNameTitle.setWidth(9);
+                accDescrTitle.setWidth(27);
+                debitTitle.setWidth(9);
+                creditTitle.setWidth(9);
+
+                final HorizontalListBuilder sumList = DynamicReports.cmp.horizontalList();
+                sumList.add(DynamicReports.cmp.text("").setWidth(82))
+                       .add(debitSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                       .add(creditSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                       .newRow()
+                       .add(DynamicReports.cmp.text("").setWidth(82))
+                       .add(debitSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                       .add(creditSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT));
+
+                _builder.addColumnFooter(sumList);
+            } else if (ExportType.EXCEL.equals(getExType())) {
+                _builder.setPageFormat(1000, 400, PageOrientation.LANDSCAPE);
+                rowNumTitle.setFixedWidth(30);
+                rowNumCol.setFixedWidth(30);
+                nameTitle.setFixedWidth(60);
+                nameColumn.setFixedWidth(60);
+                numberTitle.setFixedWidth(60);
+                numberColumn.setFixedWidth(60);
+                dateTitle.setFixedWidth(60);
+                dateColumn.setFixedWidth(60);
+                descrTitle.setFixedWidth(120);
+                descrColumn.setFixedWidth(120);
+
+                accNameTitle.setFixedWidth(60);
+                accDescrTitle.setFixedWidth(180);
+                debitTitle.setFixedWidth(60);
+                creditTitle.setFixedWidth(60);
+            }
 
             _builder.fields(DynamicReports.field("positions", List.class))
                             .addColumn(rowNumCol, nameColumn, numberColumn, dateColumn, descrColumn, posColumn)
                             .addColumnHeader(header)
-                            .variables(debitSumPage, creditSumPage, debitSumTotal, creditSumTotal)
-                            .addColumnFooter(sumList);
+                            .variables(debitSumPage, creditSumPage, debitSumTotal, creditSumTotal);
         }
     }
 
@@ -502,26 +554,44 @@ public abstract class SubJournal_Base
     {
 
         private static final long serialVersionUID = 1L;
+        private final ExportType exType;
+
+        public SubreportDesign(final ExportType _exType) {
+            this.exType = _exType;
+        }
 
         @Override
-        public JasperReportBuilder evaluate(final ReportParameters reportParameters)
+        public JasperReportBuilder evaluate(final ReportParameters _reportParameters)
         {
             final TextColumnBuilder<String> accName = DynamicReports.col.column("accName",
-                            DynamicReports.type.stringType()).setWidth(17);
+                            DynamicReports.type.stringType());
             final TextColumnBuilder<String> accDescr = DynamicReports.col.column("accDescr",
-                            DynamicReports.type.stringType()).setWidth(49);
+                            DynamicReports.type.stringType());
 
             final TextColumnBuilder<BigDecimal> debit = DynamicReports.col.column("debit",
-                            DynamicReports.type.bigDecimalType()).setWidth(17);
+                            DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<BigDecimal> credit = DynamicReports.col.column("credit",
-                            DynamicReports.type.bigDecimalType()).setWidth(17);
-            final JasperReportBuilder report = DynamicReports.report()
-                            .columns(accName, accDescr, debit, credit)
-                            .setColumnStyle(DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(2))
+                            DynamicReports.type.bigDecimalType());
+
+            final JasperReportBuilder report = DynamicReports.report();
+
+            if (ExportType.PDF.equals(this.exType)) {
+                report.setColumnStyle(DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(2))
                                             .setLeftBorder(DynamicReports.stl.pen1Point())
                                             .setRightBorder(DynamicReports.stl.pen1Point())
                                             .setBottomBorder(DynamicReports.stl.pen1Point())
                                             .setTopBorder(DynamicReports.stl.pen1Point()));
+                accName.setWidth(17);
+                accDescr.setWidth(49);
+                debit.setWidth(17);
+                credit.setWidth(17);
+            }  else if (ExportType.EXCEL.equals(this.exType)) {
+                accName.setFixedWidth(60);
+                accDescr.setFixedWidth(180);
+                debit.setFixedWidth(60);
+                credit.setFixedWidth(60);
+            }
+            report.columns(accName, accDescr, debit, credit);
             return report;
         }
     }
