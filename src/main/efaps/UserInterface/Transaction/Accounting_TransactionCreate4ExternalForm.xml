@@ -157,12 +157,6 @@
                 name="Accounting_TransactionCreate4DocForm.docStatus.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"/>
         </field>
-        <field name="typeLinkGroup" character="Group">
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="GroupCount">2</property>
-        </field>
         <field name="typeLink">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
