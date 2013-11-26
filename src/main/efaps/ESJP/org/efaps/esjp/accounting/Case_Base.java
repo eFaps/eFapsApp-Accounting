@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -33,21 +32,18 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 
 
@@ -113,73 +109,6 @@ public abstract class Case_Base
             html.append("-");
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
-
-    /**
-     * Get the value for a dropdown field for classifications.
-     *@param _parameter Paremeter as passed from the eFaPS API
-     * @return Return with html snipplet
-     * @throws EFapsException on error
-     */
-    public Return classificationLinkFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Return ret;
-        if (fieldvalue.getTargetMode().equals(TargetMode.EDIT)) {
-            ret = new Return();
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final List<Type> typesList = new ArrayList<Type>();
-            final String typesStr = (String) props.get("Types");
-            final String[] types = typesStr.split(";");
-            for (final String type : types) {
-                final Type rootClass = Type.get(type);
-                typesList.addAll(getChildClassifications((Classification) rootClass));
-            }
-
-            final Map<String, Long> values = new TreeMap<String, Long>();
-            for (final Type type : typesList) {
-                Classification clazz = (Classification) type;
-                String label = type.getLabel();
-                while (clazz.getParentClassification() != null) {
-                    clazz = clazz.getParentClassification();
-                    label = clazz.getLabel() + " - " + label;
-                }
-                values.put(label, type.getId());
-            }
-            final StringBuilder html = new StringBuilder();
-            html.append("<select name=\"").append(fieldvalue.getField().getName()).append("\" ")
-                            .append(UIInterface.EFAPSTMPTAG).append(" >");
-            for (final Entry<String, Long> entry : values.entrySet()) {
-                html.append("<option value=\"").append(entry.getValue()).append("\"");
-                if (entry.getValue().equals(fieldvalue.getValue())) {
-                    html.append(" selected=\"selected\" ");
-                }
-                html.append(">").append(entry.getKey()).append("</option>");
-            }
-            html.append("</select>");
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        } else {
-            ret = linkFieldValue(_parameter);
-        }
-        return ret;
-    }
-
-    /**
-     * Get the list of child classifications.
-     * @param _parent parent classification
-     * @return list of classifications
-     * @throws CacheReloadException on error
-     */
-    protected List<Type> getChildClassifications(final Classification _parent)
-        throws CacheReloadException
-    {
-        final List<Type> ret = new ArrayList<Type>();
-        for (final Type child : _parent.getChildClassifications()) {
-            ret.addAll(getChildClassifications((Classification) child));
-            ret.add(child);
-        }
         return ret;
     }
 

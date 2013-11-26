@@ -61,16 +61,30 @@
         <field name="classificationLink">
             <property name="Attribute">ClassificationLink</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="Label">Accounting_Account2CaseDebit4Classification/ClassificationLink.Label</property>
-            <trigger program="org.efaps.esjp.accounting.Case"
-                method="classificationLinkFieldValue"
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getClassificationDropDownFieldValue"
                 name="Accounting_Account2CaseTable.classificationLink.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="Types">Products_Class</property>
+                <property name="Classification">Products_Class</property>
              </trigger>
              <trigger program="org.efaps.esjp.accounting.Case"
                 method="classificationLinkAccessCheck"
                 name="Accounting_Account2CaseTable.classificationLink.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="classificationLink4view">
+            <property name="Attribute">LinkValue</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Accounting_Account2CaseDebit4Classification/ClassificationLink.Label</property>
+            <trigger program="org.efaps.esjp.accounting.Case"
+                method="linkFieldValue"
+                name="Accounting_Account2CaseTable.link.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
+            <trigger program="org.efaps.esjp.accounting.Case"
+                method="classificationLinkAccessCheck"
+                name="Accounting_Account2CaseTable.classificationLink4view.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK"/>
         </field>
         <field name="fromAccountAbstractLink">
