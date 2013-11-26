@@ -33,6 +33,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashReceipt_ClassForm</name>
         <type>Sales_PettyCashReceipt_Class</type>
+        <!-- 
         <field name="actionDefinitionLink">
             <property name="Attribute">ActionDefinitionLink</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -54,6 +55,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
         </field>
+         -->
         <field name="receiptTypeLink">
             <property name="Columns">15</property>
             <property name="Attribute">ReceiptTypeLink</property>
