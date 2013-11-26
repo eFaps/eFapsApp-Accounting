@@ -32,6 +32,7 @@
             <table>Accounting_Sales_PettyCashReceiptTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode" method="getPettyCashExternals">
                 <property name="Type">ERP_DocumentAbstract</property>
+                <property name="PettyCashBalanceStatus">Verified</property>
             </evaluate>
         </target>
         <!-- properties -->
