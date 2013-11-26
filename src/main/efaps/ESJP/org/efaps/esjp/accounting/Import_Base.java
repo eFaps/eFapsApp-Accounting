@@ -674,7 +674,7 @@ public abstract class Import_Base
                             if (ret.get(column.getKey().replace("]", "") + entry.getKey() + "]") == null) {
                                 throw new EFapsException(Import_Base.class, "ColumnNotDefinded", column.getKey());
                             } else {
-                                if (entry.getValue().size() != 2) {
+                                if (column instanceof AcccountColumn && entry.getValue().size() != 4) {
                                     throw new EFapsException(Import_Base.class, "ColumnNotDefinded",
                                                     column.getKey() + entry.getKey());
                                 }
