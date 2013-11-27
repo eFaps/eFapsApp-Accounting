@@ -242,6 +242,7 @@ public abstract class Import_Base
         Import_Base.TYPE2TYPE.put("CaseGeneral", CIAccounting.CaseGeneral);
         Import_Base.TYPE2TYPE.put("CasePayroll", CIAccounting.CasePayroll);
         Import_Base.TYPE2TYPE.put("CasePettyCash", CIAccounting.CasePettyCash);
+        Import_Base.TYPE2TYPE.put("CasePettyCashRegister", CIAccounting.CasePettyCashReceiptRegister);
         Import_Base.TYPE2TYPE.put("CaseStockBooking", CIAccounting.CaseStockBooking);
     }
 
