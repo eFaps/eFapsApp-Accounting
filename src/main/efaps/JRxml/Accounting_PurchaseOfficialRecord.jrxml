@@ -141,7 +141,7 @@
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Empresa:]]></text>
+				<text><![CDATA[EMPRESA:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="5867fe01-d59d-41eb-af8d-b9b7ddf9620f" x="120" y="16" width="482" height="16"/>
