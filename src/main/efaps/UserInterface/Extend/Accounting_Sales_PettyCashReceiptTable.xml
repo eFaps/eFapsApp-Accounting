@@ -44,6 +44,10 @@
             <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
             <property name="HRef">TREEMENU</property>
         </field>
+        <field name="receiptType">
+            <property name="Select">class[Sales_PettyCashReceipt_Class].linkto[ReceiptTypeLink].attribute[Value]</property>
+            <property name="Label">Sales_PettyCashReceipt_Class/ReceiptTypeLink.Label</property>
+        </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
@@ -68,6 +72,11 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
+        <!-- <field name="pettyCash">
+            <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].oid</property>
+            <property name="Select">linkfrom[Sales_Payment#CreateDocument].linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].attribute[Name]</property>
+            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+        </field>-->
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
