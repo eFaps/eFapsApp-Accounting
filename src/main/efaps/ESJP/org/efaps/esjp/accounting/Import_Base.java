@@ -1296,9 +1296,9 @@ public abstract class Import_Base
             final String type = _row[_colName2Index.get(Import_Base.ReportColumn.NODE_TYPE.getKey())].trim()
                             .replaceAll("\n", "");
             final boolean showAllways = !"false".equalsIgnoreCase(_row[_colName2Index
-                            .get(Import_Base.ReportColumn.NODE_SHOW.getKey())]);
+                            .get(Import_Base.ReportColumn.NODE_SHOW.getKey())].trim());
             final boolean showSum = !"false".equalsIgnoreCase(_row[_colName2Index
-                            .get(Import_Base.ReportColumn.NODE_SUM.getKey())]);
+                            .get(Import_Base.ReportColumn.NODE_SUM.getKey())].trim());
             final String number = _row[_colName2Index.get(Import_Base.ReportColumn.NODE_NUMBER.getKey())].trim()
                             .replaceAll("\n", "");
             final String value = _row[_colName2Index.get(_level)].trim().replaceAll("\n", "");
