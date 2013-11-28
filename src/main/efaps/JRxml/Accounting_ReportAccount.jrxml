@@ -208,14 +208,6 @@
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[-]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="bf50b36b-dceb-4877-84a9-959ce9710377" x="-1" y="62" width="192" height="14">
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement/>
-				<textFieldExpression><![CDATA[$P{FileName}]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement uuid="b5bf7a32-488d-48b6-9fa4-5f17a18784c5" x="0" y="16" width="120" height="16">
 					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
