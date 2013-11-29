@@ -373,6 +373,16 @@ public abstract class Report_Base
                     jrb.getJasperParameters().put("CompanyTaxNum", companyTaxNumb);
                 }
             }
+            final PrintQuery printQ = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder selPeriodDate = new SelectBuilder()
+                            .linkto(CIAccounting.ReportAbstract.PeriodeLink)
+                            .attribute(CIAccounting.Periode.FromDate);
+            printQ.addSelect(selPeriodDate);
+            printQ.execute();
+            final DateTime periodeDate = printQ.<DateTime>getSelect(selPeriodDate);
+            jrb.getJasperParameters().put("FromDate", this.dateFrom);
+            jrb.getJasperParameters().put("ToDate", this.dateTo);
+            jrb.getJasperParameters().put("PeriodeYear", periodeDate);
 
             ret.put(ReturnValues.VALUES, super.getFile(jrb.toJasperPrint(), mime));
             ret.put(ReturnValues.TRUE, true);
@@ -601,7 +611,7 @@ public abstract class Report_Base
             for (final AbstractNode child : _parent.getChildren()) {
                 ret.addAll(flatten(child));
             }
-            if (added && !_parent.getChildren().isEmpty()) {
+            if (added && !_parent.getChildren().isEmpty() && _parent.getChildren().size() > 1) {
                 ret.add(new TotalNode(getTotalLabel(_parent), _parent.getSum(), _parent.getLevel()));
                 _parent.setTextOnly(true);
             } else if ((_parent.isShowAllways()
