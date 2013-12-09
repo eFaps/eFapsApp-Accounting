@@ -31,7 +31,7 @@
         <name>Accounting_SubPeriodStatus</name>
         <parent>Admin_DataModel_StatusAbstract</parent>
         <status key="Open">
-            <description>Closed.</description>
+            <description>Open.</description>
         </status>
         <status key="Closed">
             <description>Closed.</description>
