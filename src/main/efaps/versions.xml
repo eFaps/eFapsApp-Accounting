@@ -71,7 +71,7 @@
             import org.efaps.db.InstanceQuery;
             import org.efaps.esjp.admin.ui.UIUpdate;
             import org.efaps.esjp.data.ObjectImport;
-            
+
             EFAPS_LOGGER.info("Importing Data for eFapsApp-Accounting");
 
             RunLevel.init("shell");
@@ -83,7 +83,7 @@
             query.executeWithoutAccessCheck();
             if (!query.next()) {
                 ObjectImport objImport = new ObjectImport();
-                objImport.importFromFile(new URL(EFAPS_ROOTURL, "Data/DataImport_CostTextPosition.xml"));
+                //objImport.importFromFile(new URL(EFAPS_ROOTURL, "Data/DataImport_CostTextPosition.xml"));
             }
 
             UIUpdate update = new UIUpdate();
