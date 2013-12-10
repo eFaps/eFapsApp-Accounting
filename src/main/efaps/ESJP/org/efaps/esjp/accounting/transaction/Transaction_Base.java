@@ -331,19 +331,31 @@ public abstract class Transaction_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _periodInst Instance of the period
+     * @param _instance Instance of the period or subperiod
      * @param _date     date the rate must be evaluated for
      * @param _currentCurrencyInst instance of the currency the rate is wanted for
      * @return RateInfo instance
      * @throws EFapsException on error
      */
     protected RateInfo evaluateRate(final Parameter _parameter,
-                                    final Instance _periodInst,
+                                    final Instance _instance,
                                     final DateTime _date,
                                     final Instance _currentCurrencyInst)
         throws EFapsException
     {
-        final PrintQuery print = new CachedPrintQuery(_periodInst).setLifespan(1).setLifespanUnit(TimeUnit.HOURS);
+        Instance instance;
+        if (_instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(_instance, SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            instance = print.<Instance>getSelect(selPeriodInst);
+        } else {
+            instance = _instance;
+        }
+
+        final PrintQuery print = new CachedPrintQuery(instance).setLifespan(1).setLifespanUnit(TimeUnit.HOURS);
         final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Periode.CurrencyLink).instance();
         print.addSelect(sel);
         print.execute();
