@@ -77,6 +77,15 @@
             RunLevel.init("shell");
             RunLevel.execute();
 
+            //Products_ProductCostTextPosition
+            QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("80105c3d-d1ee-4f2b-a8ad-0d155d5ad07f"));
+            InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                ObjectImport objImport = new ObjectImport();
+                objImport.importFromFile(new URL(EFAPS_ROOTURL, "Data/DataImport_CostTextPosition.xml"));
+            }
+
             UIUpdate update = new UIUpdate();
 
             <!-- Accounting_MyDesk, MainToolBar -->
