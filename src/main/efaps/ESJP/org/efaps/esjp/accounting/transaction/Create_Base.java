@@ -735,7 +735,7 @@ public abstract class Create_Base
         final DecimalFormat formater = new Transaction().getFormater(null, null);
         try {
             Instance inst = _parameter.getCallInstance();
-            if (!inst.getType().getUUID().equals(CIAccounting.Periode.uuid)) {
+            if (!inst.getType().isKindOf(CIAccounting.Periode.getType())) {
                 inst = (Instance) Context.getThreadContext().getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
             }
             final Instance curInstance = new Periode().getCurrency(inst).getInstance();
@@ -1066,8 +1066,18 @@ public abstract class Create_Base
      * @return
      * @throws EFapsException
      */
-    public Return createDoc4Massive(final Parameter _parameter) throws EFapsException {
-        final Instance instPeriode = _parameter.getCallInstance();
+    public Return createDoc4Massive(final Parameter _parameter)
+        throws EFapsException
+    {
+        Instance periodeInst = _parameter.getCallInstance();
+        if (_parameter.getCallInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(_parameter.getCallInstance(), SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            periodeInst = print.<Instance>getSelect(selPeriodInst);
+        }
         DateTime date = new DateTime(_parameter
                         .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.date.name));
         final boolean useDateForm = Boolean.parseBoolean(_parameter
@@ -1085,9 +1095,10 @@ public abstract class Create_Base
                 printCase.execute();
                 final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
                 final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                                : CISales.DocumentSumAbstract.RateNetTotal.name;
+                                : CISales.DocumentSumAbstract.RateNetTotal.name;
                 final PrintQuery print = new PrintQuery(instDoc);
-                final SelectBuilder sel =SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                .instance();
                 print.addSelect(sel);
                 print.addAttribute(CISales.DocumentSumAbstract.Name,
                                 CISales.DocumentSumAbstract.Date);
@@ -1110,7 +1121,7 @@ public abstract class Create_Base
                 final String desc = val.toString();
 
                 final Transaction txn = new Transaction();
-                final RateInfo rate = txn.evaluateRate(_parameter, instPeriode, date, currInst);
+                final RateInfo rate = txn.evaluateRate(_parameter, periodeInst, date, currInst);
                 final Document doc = txn.new Document(instDoc);
                 doc.setAmount(amount);
                 doc.setFormater(txn.getFormater(2, 2));
@@ -1136,7 +1147,7 @@ public abstract class Create_Base
                 }
                 if (useRounding) {
                     // is does not sum to 0 but is less then the max defined
-                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instPeriode);
+                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodeInst);
                     final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT);
                     final BigDecimal diffMin = (diffMinStr != null && !diffMinStr.isEmpty())
                                     ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
@@ -1168,7 +1179,7 @@ public abstract class Create_Base
                 final boolean valid = checkCrossTotal.compareTo(debit) == 0 && checkCrossTotal.compareTo(credit) == 0;
 
                 if (valid) {
-                    createTrans4DocMassive(_parameter, doc, instPeriode, desc);
+                    createTrans4DocMassive(_parameter, doc, periodeInst, desc);
                 }
             }
         }
