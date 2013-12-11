@@ -71,7 +71,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Summary</property>
-            <!-- <property name="Label">Accounting_AccountAbstract/Summary.Label</property>  -->
+            <property name="Label">Accounting_AccountAbstract/Summary.Label</property>
         </field>
         <field name="periodeLink">
             <property name="SelectAlternateOID">linkto[PeriodeLink].oid</property>
@@ -83,7 +83,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Active</property>
-            <!-- <property name="Label">Accounting_AccountAbstract/Active.Label</property> -->
+            <property name="Label">Accounting_AccountAbstract/Active.Label</property>
         </field>
         <field name="sumReport">
             <property name="Attribute">SumReport</property>
