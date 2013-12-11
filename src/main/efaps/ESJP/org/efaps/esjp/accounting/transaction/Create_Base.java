@@ -1279,7 +1279,15 @@ public abstract class Create_Base
     {
         final boolean isDebitTrans = _type.equals(CIAccounting.TransactionPositionDebit);
         final Instance accInst = Instance.get(_account.getOid());
-        final Instance periodeInst = _parameter.getCallInstance();
+        Instance periodeInst = _parameter.getCallInstance();
+        if (_parameter.getCallInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(_parameter.getCallInstance(), SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            periodeInst = print.<Instance>getSelect(selPeriodInst);
+        }
         final Instance curInstance = new Periode().getCurrency(periodeInst).getInstance();
         final Insert insert = new Insert(_type);
         insert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transInst.getId());
