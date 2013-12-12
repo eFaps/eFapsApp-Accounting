@@ -72,11 +72,13 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
-        <!-- <field name="pettyCash">
-            <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].oid</property>
-            <property name="Select">linkfrom[Sales_Payment#CreateDocument].linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].attribute[Name]</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
-        </field>-->
+        <field name="pettyCash">
+            <property name="Label">Accounting_Sales_PettyCashReceiptTable.pettyCash.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getSalesAccountFieldValue" name="Accounting_Sales_PettyCashReceiptTable.pettyCash.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+        </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>

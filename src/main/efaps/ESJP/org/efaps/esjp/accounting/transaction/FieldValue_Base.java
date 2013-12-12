@@ -23,6 +23,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,11 @@ import org.joda.time.format.DateTimeFormatter;
 public abstract class FieldValue_Base
     extends Transaction
 {
+    /**
+     * Key for the map to be stored in the request.
+     */
+    public static final String SALESACC_REQKEY = "org.efaps.esjp.accounting.transaction.FieldValue.reqMap4SalesAccount";
+
     public Return getSubJournalFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -975,6 +981,45 @@ public abstract class FieldValue_Base
         }
 
         ret.put(ReturnValues.VALUES, date);
+        return ret;
+    }
+
+    public Return getSalesAccountFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (!Display.NONE.equals(fieldValue.getDisplay())) {
+            @SuppressWarnings("unchecked")
+            Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext()
+                            .getRequestAttribute(FieldValue_Base.SALESACC_REQKEY);
+            if (values == null || (values != null && !values.containsKey(_parameter.getInstance()))) {
+                values = new HashMap<Instance, String>();
+                Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, values);
+                @SuppressWarnings("unchecked")
+                final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+                if (instances != null) {
+                    final MultiPrintQuery multi = new MultiPrintQuery(instances);
+                    final SelectBuilder selPayment = new SelectBuilder()
+                                    .linkfrom(CISales.Payment, CISales.Payment.CreateDocument).instance();
+                    multi.addSelect(selPayment);
+                    multi.executeWithoutAccessCheck();
+                    while (multi.next()) {
+                        final Instance payment = multi.<Instance>getSelect(selPayment);
+                        final PrintQuery print = new PrintQuery(payment);
+                        final SelectBuilder selAccount = new SelectBuilder()
+                                    .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
+                                    .linkto(CISales.TransactionAbstract.Account)
+                                    .attribute(CISales.AccountAbstract.Name);
+                        print.addSelect(selAccount);
+                        print.executeWithoutAccessCheck();
+                        final String accountName = print.<String>getSelect(selAccount);
+                        values.put(multi.getCurrentInstance(), accountName);
+                    }
+                }
+            }
+            ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+        }
         return ret;
     }
 }
