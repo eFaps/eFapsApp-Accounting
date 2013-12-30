@@ -43,6 +43,7 @@
             <child>Accounting_SubPeriodTree_External</child>
             <child>Accounting_SubPeriodTree_DocsToBook</child>
             <child>Accounting_SubPeriodTree_ExternalToBook</child>
+            <child>Accounting_SubPeriodTree_Report</child>
         </childs>
 
         <!-- properties -->

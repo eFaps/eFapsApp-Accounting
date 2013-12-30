@@ -152,6 +152,27 @@ public abstract class Report_Base
     }
 
 
+    /**
+     * Called from a field value event to get the value for the date from field.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return  new Return containing value
+     * @throws EFapsException on error
+     */
+    public Return getDateToFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, getDate(_parameter, false));
+        return ret;
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps Date
+     * @param _from fomr date or to date is wanted
+     * @return date for the UserInterface
+     * @throws EFapsException on error
+     */
     protected DateTime getDate(final Parameter _parameter,
                                final boolean _from)
         throws EFapsException
@@ -163,6 +184,12 @@ public abstract class Report_Base
             inst = _parameter.getInstance();
             if (_parameter.getInstance().getType().isKindOf(CIAccounting.Periode.getType())) {
                 sel.attribute(_from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+            } else if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+                if (_from) {
+                    sel.linkto(CIAccounting.SubPeriod.PeriodLink).attribute(CIAccounting.Periode.FromDate);
+                } else {
+                    sel.attribute(CIAccounting.SubPeriod.ToDate);
+                }
             } else {
                 sel.linkto(CIAccounting.ReportAbstract.PeriodeLink).attribute(
                                 _from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
@@ -190,21 +217,6 @@ public abstract class Report_Base
         }
         return ret;
     }
-
-    /**
-     * Called from a field value event to get the value for the date from field.
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @return  new Return containing value
-     * @throws EFapsException on error
-     */
-    public Return getDateToFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, getDate(_parameter, false));
-        return ret;
-    }
-
 
     /**
      * Executed to create a report account node from the UserInterface.
@@ -1137,8 +1149,7 @@ public abstract class Report_Base
         {
             final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
             final String currency = _parameter.getParameterValue("currency");
-            final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
-            final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
+
             final SystemConfiguration system = Sales.getSysConfig();
             final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
 
@@ -1167,6 +1178,8 @@ public abstract class Report_Base
                 final DateTime date = print.<DateTime>getSelect(selTxnDate);
                 BigDecimal amount = BigDecimal.ZERO;
                 if (active) {
+                    final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+                    final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
                     if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
                         if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
                             final Rate rateTmp = getRates4DateRange(curInstTxnPos.getInstance(), date, rateCurType);

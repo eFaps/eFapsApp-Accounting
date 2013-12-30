@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2013 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>add0e69d-7182-4863-a342-f268d594495a</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_SubPeriodReportPrintForm</name>
+        <!-- fields -->
+        <field name="selectedOIDs">
+            <property name="ModeCreate">HIDDEN</property>
+            <trigger event="UI_FIELD_VALUE" method="getStoreOIDsFieldValue"
+                name="Accounting_SubPeriodReportPrintForm.selectedOIDs.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field" />
+        </field>
+        <field name="mime">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_Report_PrintForm.mime.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getMimeTypeFieldValueUI"
+                name="Accounting_SubPeriodReportPrintForm.mime.UI_FIELD_VALUE"
+                program="org.efaps.esjp.accounting.report.Report" />
+        </field>
+        <field name="dateFrom">
+            <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">12</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
+                name="Accounting_SubPeriodReportPrintForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.accounting.report.Report" />
+        </field>
+        <field name="dateTo">
+            <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">12</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
+                name="Accounting_SubPeriodReportPrintForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.accounting.report.Report" />
+        </field>
+    </definition>
+</ui-form>

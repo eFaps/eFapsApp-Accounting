@@ -20,12 +20,18 @@
 
 package org.efaps.esjp.accounting;
 
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.Command;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
@@ -36,6 +42,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -49,6 +56,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("948a690d-9934-470a-b8fb-b1e4d212010a")
 @EFapsRevision("$Rev$")
 public abstract class SubPeriod_Base
+    extends AbstractCommon
 {
 
     /**
@@ -226,5 +234,65 @@ public abstract class SubPeriod_Base
             }
         };
         return multi.execute(_parameter);
+    }
+
+    /**
+     * Called from a tree menu command to present the reports related to this subperiod.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getReports(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.SubPeriod.PeriodLink);
+                print.execute();
+                _queryBldr.addWhereAttrEqValue(CIAccounting.ReportAbstract.PeriodeLink,
+                                print.getAttribute(CIAccounting.SubPeriod.PeriodLink));
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+
+    public Return printReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        Return ret = new Return();
+        final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("selectedOIDs");
+        if (oids != null && oids.length > 0) {
+            final Instance reportInstance = Instance.get(oids[0]);
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String typeName = reportInstance.getType().getName();
+            final String typeUUID = reportInstance.getType().getUUID().toString();
+            String cmdKey = null;
+            if (properties.containsKey(typeName)) {
+                cmdKey = (String) properties.get(typeName);
+            } else if (properties.containsKey(typeUUID)) {
+                cmdKey = (String) properties.get(typeName);
+            }
+            if (cmdKey != null) {
+                final Command cmd = isUUID(cmdKey) ? Command.get(UUID.fromString(cmdKey)) : Command.get(cmdKey);
+                if (cmd != null) {
+                    final List<Return> tmp = cmd.executeEvents(EventType.UI_COMMAND_EXECUTE,
+                                    ParameterValues.INSTANCE, reportInstance,
+                                    ParameterValues.PARAMETERS, _parameter.getParameters());
+                    if (!tmp.isEmpty()) {
+                        ret = tmp.get(0);
+                    }
+                }
+            }
+        }
+        return ret;
     }
 }

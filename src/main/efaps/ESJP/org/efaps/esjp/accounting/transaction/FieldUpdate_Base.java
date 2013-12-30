@@ -37,10 +37,12 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -284,7 +286,7 @@ public abstract class FieldUpdate_Base
             fromDate = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
             toDate = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
         } else if (periodInst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-            final PrintQuery print = new PrintQuery(periodInst);
+            final PrintQuery print = new CachedPrintQuery(periodInst, SubPeriod_Base.CACHEKEY);
             print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
             print.execute();
             fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
