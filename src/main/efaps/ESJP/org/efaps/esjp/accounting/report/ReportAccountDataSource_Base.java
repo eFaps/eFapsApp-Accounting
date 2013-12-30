@@ -199,8 +199,6 @@ public abstract class ReportAccountDataSource_Base
     {
         final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
         final String currency = _parameter.getParameterValue("currency");
-        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
-        final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
         final SystemConfiguration system = Sales.getSysConfig();
         final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
 
@@ -233,6 +231,8 @@ public abstract class ReportAccountDataSource_Base
 
             BigDecimal amount = BigDecimal.ZERO;
             if (active) {
+                final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+                final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
                 if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
                     if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
                         final Rate rateTmp = new Report()

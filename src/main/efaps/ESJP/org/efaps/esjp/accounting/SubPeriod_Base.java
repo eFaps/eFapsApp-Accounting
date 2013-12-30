@@ -279,7 +279,7 @@ public abstract class SubPeriod_Base
             if (properties.containsKey(typeName)) {
                 cmdKey = (String) properties.get(typeName);
             } else if (properties.containsKey(typeUUID)) {
-                cmdKey = (String) properties.get(typeName);
+                cmdKey = (String) properties.get(typeUUID);
             }
             if (cmdKey != null) {
                 final Command cmd = isUUID(cmdKey) ? Command.get(UUID.fromString(cmdKey)) : Command.get(cmdKey);

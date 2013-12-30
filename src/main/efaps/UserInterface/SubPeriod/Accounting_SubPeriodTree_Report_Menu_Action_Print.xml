@@ -35,7 +35,15 @@
         <target>
             <form>Accounting_SubPeriodReportPrintForm</form>
             <execute method="printReport" program="org.efaps.esjp.accounting.SubPeriod">
+                <!--
+                It is possible to configure it using names or uuids.
                 <property name="Accounting_ReportBalance">Accounting_ReportTree_Menu_Action_Print</property>
+                <property name="Accounting_ReportProfitLoss">Accounting_ReportProfitLossTree_Menu_Action_Print</property>
+                <property name="Accounting_ReportAccount">Accounting_ReportAccountTree_Menu_Action_Print</property>
+                 -->
+                <property name="10cf68e4-c990-4a27-a4c5-a76caf35c8cf">d03e76d8-4673-401f-8f8a-962870ff135a</property>
+                <property name="12285310-0ee3-4a2c-8c45-9b5f09b3972e">6cf1c1df-6a35-4651-94e5-6c807e784b26</property>
+                <property name="aa0b85a3-e9ea-4aea-8870-1ff353647708">42c9b78c-2ad2-41bb-97f2-72f9b8629633</property>
             </execute>
         </target>
         <!-- properties -->
