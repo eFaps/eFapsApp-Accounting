@@ -298,8 +298,8 @@ public abstract class FieldUpdate_Base
                 newDate = toDate;
             }
             if (newDate != null) {
-                final String newDateStr = DateUtil.getDate4Parameter(fromDate);
-                map.put("date_eFapsDate",newDateStr );
+                final String newDateStr = DateUtil.getDate4Parameter(newDate);
+                map.put("date_eFapsDate", newDateStr);
                 _parameter.getParameters().put("date_eFapsDate", new String[]{ newDateStr });
             }
         }

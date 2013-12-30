@@ -965,6 +965,11 @@ public abstract class FieldValue_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return  value for date on opening the form
+     * @throws EFapsException on error
+     */
     public Return getDateFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -976,10 +981,31 @@ public abstract class FieldValue_Base
             final PrintQuery print = new PrintQuery(docInst);
             print.addAttribute(CISales.DocumentAbstract.Date);
             print.executeWithoutAccessCheck();
-
             date = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+        } else if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            DateTime fromDate = null;
+            DateTime toDate = null;
+            if (_parameter.getInstance().getType().isKindOf(CIAccounting.Periode.getType())) {
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                print.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate);
+                print.execute();
+                fromDate = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+                toDate = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+            } else if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
+                print.execute();
+                fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+                toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
+            }
+            if (fromDate != null && toDate != null) {
+                if (date.isBefore(fromDate)) {
+                    date = fromDate;
+                } else if (date.isAfter(toDate)) {
+                    date = toDate;
+                }
+            }
         }
-
         ret.put(ReturnValues.VALUES, date);
         return ret;
     }
