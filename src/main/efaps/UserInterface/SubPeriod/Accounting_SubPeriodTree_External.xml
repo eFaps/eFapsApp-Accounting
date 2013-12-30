@@ -31,7 +31,7 @@
         <name>Accounting_SubPeriodTree_External</name>
         <target>
             <menu>Accounting_PeriodeTree_External_Menu</menu>
-            <table>Sales_IncomingInvoiceTable</table>
+            <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getExternals" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">ERP_DocumentAbstract</property>
                 <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
