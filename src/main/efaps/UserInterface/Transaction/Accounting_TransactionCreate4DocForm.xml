@@ -98,9 +98,9 @@
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">2</property>
         </field>
-        <!-- fields -->
         <field name="date">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">12</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"

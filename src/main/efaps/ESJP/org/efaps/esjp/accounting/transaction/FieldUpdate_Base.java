@@ -39,11 +39,14 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -266,14 +269,47 @@ public abstract class FieldUpdate_Base
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Instance periodInst = _parameter.getInstance();
+        final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+        final DateTime date = DateUtil.getDateFromParameter(dateStr);
+        final Map<String, String> map = new HashMap<String, String>();
+
+        // validate and correct the date, put it in _parameter so that other methods use the correct date
+        DateTime fromDate = null;
+        DateTime toDate = null;
+        if (periodInst.getType().isKindOf(CIAccounting.Periode.getType())) {
+            final PrintQuery print = new PrintQuery(periodInst);
+            print.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate);
+            print.execute();
+            fromDate = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+            toDate = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+        } else if (periodInst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new PrintQuery(periodInst);
+            print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
+            print.execute();
+            fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+            toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
+        }
+        if (fromDate != null && toDate != null) {
+            DateTime newDate = null;
+            if (date.isBefore(fromDate)) {
+                newDate = fromDate;
+            } else if (date.isAfter(toDate)) {
+                newDate = toDate;
+            }
+            if (newDate != null) {
+                final String newDateStr = DateUtil.getDate4Parameter(fromDate);
+                map.put("date_eFapsDate",newDateStr );
+                _parameter.getParameters().put("date_eFapsDate", new String[]{ newDateStr });
+            }
+        }
+
         final StringBuilder js = new StringBuilder();
         if ("true".equalsIgnoreCase((String) props.get("UpdateDocInfo"))) {
             final String docOid = _parameter.getParameterValue("document");
             final Instance docInst = Instance.get(docOid);
             if (docInst.isValid()) {
                 final Document doc = new Document(docInst);
-                final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                final DateTime date = DateUtil.getDateFromParameter(dateStr);
                 final FieldValue fielValue = new FieldValue();
                 js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
                     .append(StringEscapeUtils.escapeEcmaScript(
@@ -285,10 +321,9 @@ public abstract class FieldUpdate_Base
             }
         }
 
-        final Map<String, String> map = new HashMap<String, String>();
         js.append(getCurrencyJS(_parameter, "rateCurrencyLink_Debit", "rate_Debit"))
             .append(getCurrencyJS(_parameter, "rateCurrencyLink_Credit", "rate_Credit"));
-        map.put("eFapsFieldUpdateJS", js.toString());
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
