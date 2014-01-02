@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.accounting.ple;
 
 import java.math.BigDecimal;
@@ -30,15 +29,17 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.accounting.report.PurchaseRecordReport;
-import org.efaps.esjp.accounting.report.PurchaseRecordReport_Base.Field;
 import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.esjp.data.columns.export.FrmtDateTimeColumn;
 import org.efaps.esjp.data.columns.export.FrmtNumberColumn;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.document.DocReport;
+import org.efaps.esjp.sales.document.DocReport_Base.Field;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import com.brsanthu.dataexporter.model.LineNumberColumn;
 
 /**
  * TODO comment!
@@ -46,17 +47,16 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("dc809e4c-205b-4f85-9367-b86e94ff1949")
+@EFapsUUID("67776b3b-0aa9-45cf-a1a5-542e52bd619c")
 @EFapsRevision("$Rev$")
-public abstract class PurchaseRecord_Base
+public abstract class SalesRecord_Base
     extends AbstractExport
 {
-
     public static final String PREFIX = "LE";
 
     public static final String SUFFIX = "1.txt";
 
-    public static final String IDENTIFIER = "080100";
+    public static final String IDENTIFIER = "140100";
 
     public static final String OPERTUNITY = "00";
 
@@ -84,8 +84,8 @@ public abstract class PurchaseRecord_Base
     public void addColumnDefinition(final Parameter _parameter,
                                     final Exporter _exporter)
     {
-        _exporter.addColumns(new FrmtDateTimeColumn(Field.PURCHASE_DATE.getKey(), 8, "yyyyMM00"));  //1
-        _exporter.addColumns(new FrmtColumn(Field.DOC_REVISION.getKey()).setMaxWidth(40)); //2
+        _exporter.addColumns(new FrmtDateTimeColumn(Field.REPORT_DATE.getKey(), 8, "yyyyMM00"));  //1
+        _exporter.addColumns(new LineNumberColumn("corr", 40)); //2
         _exporter.addColumns(new FrmtDateTimeColumn(Field.DOC_DATE.getKey(), 10, "dd/MM/yyyy")); //3
         _exporter.addColumns(new FrmtDateTimeColumn(Field.DOC_DUEDATE.getKey(), 10, "dd/MM/yyyy")); //4
         _exporter.addColumns(new FrmtColumn(Field.DOC_DOCTYPE.getKey()).setMaxWidth(2)); //5
@@ -112,11 +112,8 @@ public abstract class PurchaseRecord_Base
         _exporter.addColumns(new FrmtColumn(Field.DOCREL_TYPE.getKey()).setMaxWidth(2)); //25
         _exporter.addColumns(new FrmtColumn(Field.DOCREL_PREFNAME.getKey()).setMaxWidth(20)); //26
         _exporter.addColumns(new FrmtColumn(Field.DOCREL_SUFNAME.getKey()).setMaxWidth(20)); //27
-        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(20)); //28
-        _exporter.addColumns(new FrmtDateTimeColumn(Field.DETRACTION_DATE.getKey(), 10, "dd/MM/yyyy")); //29
-        _exporter.addColumns(new FrmtColumn(Field.DETRACTION_NAME.getKey()).setMaxWidth(20)); //30
-        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //31
-        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //32
+
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //27
     }
 
     @Override
@@ -124,18 +121,17 @@ public abstract class PurchaseRecord_Base
                                 final Exporter _exporter)
         throws EFapsException
     {
-        final PurchaseRecordReport report = new PurchaseRecordReport();
-
-        final DateTime date4Purchase = report.getDate4Purchase(_parameter);
+        final DocReport report = new DocReport();
+        final String dateFrom = _parameter.getParameterValue("dateFrom");
+        final DateTime date = new DateTime(dateFrom);
         final Map<String, Object> jrParameters = new HashMap<String, Object>();
         report.init(null, _parameter, null, jrParameters);
         final List<Map<String, Object>> values = report.getValues();
         for (final Map<String, Object> value : values) {
-            _exporter.addRow(date4Purchase,
-                            value.get(Field.DOC_REVISION.getKey()),
+            _exporter.addRow(date,
                             value.get(Field.DOC_DATE.getKey()),
                             value.get(Field.DOC_DUEDATE.getKey()),  //4
-                            value.get(Field.DOC_DOCTYPE.getKey()),  //5
+                            value.get(Field.DOC_DUEDATE.getKey()),  //5
                             value.get(Field.DOC_SN.getKey()),       //6
                             null,                                   //7
                             value.get(Field.DOC_NUMBER.getKey()),     //8

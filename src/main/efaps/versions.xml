@@ -124,9 +124,11 @@
             <!-- connect the Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing to Sales_IncomingInvoiceTree menu -->
             update.add2Menu("56cd1287-922e-487c-84a2-07350d757473", "0370fa3a-6733-4481-841a-645d0e78e54f", -1);
 
+            <!-- connect the Accounting_Sales_Document_PLEReport to Sales_Document_ReportMyDesk menu -->
+            update.add2Menu("0bbae7f9-a7ae-4569-a08f-083930135f12", "218a4858-af25-4ad8-8a28-7283cd629766", -1);
+
             <!-- Accounting_Accounting, Admin_Help_MainMenu -->
             update.add2Help("906bd8c4-2e7f-4234-936b-6a1ee74bdf37", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
-
 
         </script>
     </version>
