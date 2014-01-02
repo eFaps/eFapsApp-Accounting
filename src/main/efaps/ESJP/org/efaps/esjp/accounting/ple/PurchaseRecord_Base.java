@@ -133,35 +133,31 @@ public abstract class PurchaseRecord_Base
         for (final Map<String, Object> value : values) {
             _exporter.addRow(date4Purchase,
                             value.get(Field.DOC_REVISION.getKey()),
-                            value.get(Field.DOC_DATE.getKey()),
+                            value.get(Field.DOC_DATE.getKey()),    //
                             value.get(Field.DOC_DUEDATE.getKey()),  //4
                             value.get(Field.DOC_DOCTYPE.getKey()),  //5
                             value.get(Field.DOC_SN.getKey()),       //6
-                            null,                                   //7
-                            value.get(Field.DOC_NUMBER.getKey()),     //8
+                            value.get(Field.DOC_NUMBER.getKey()),   //7
+                            null,                                   //8
                             null,                                   //9
-                            value.get(Field.DOC_DOCTYPE.getKey()),  //10
-                            value.get(Field.DOC_TAXNUM.getKey()),   //11
-                            value.get(Field.DOC_CONTACT.getKey()),  //12
+                            value.get(Field.DOC_TAXNUM.getKey()),   //10
+                            value.get(Field.DOC_CONTACT.getKey()),  //11
+                            BigDecimal.ZERO, //12
                             value.get(Field.DOC_NETTOTAL.getKey()), //13
-                            value.get(Field.DOC_IGV.getKey()),      //14
-                            BigDecimal.ZERO,
-                            BigDecimal.ZERO,
-                            BigDecimal.ZERO,
-                            BigDecimal.ZERO,
-                            BigDecimal.ZERO,
-                            BigDecimal.ZERO,
-                            BigDecimal.ZERO,
-                            value.get(Field.DOC_CROSSTOTAL.getKey()), //22
-                            value.get(Field.DOC_RATE.getKey()), //23
-                            value.get(Field.DOCREL_DATE.getKey()), //24
-                            value.get(Field.DOCREL_TYPE.getKey()), //25
-                            value.get(Field.DOCREL_PREFNAME.getKey()), //26
-                            value.get(Field.DOCREL_SUFNAME.getKey()), //27
-                            null, //28
-                            value.get(Field.DOCREL_SUFNAME.getKey()), //29
-                            null, //30
-                            null//31
+                            BigDecimal.ZERO, //14
+                            BigDecimal.ZERO, //15
+                            BigDecimal.ZERO, //16
+                            value.get(Field.DOC_IGV.getKey()), //17
+                            BigDecimal.ZERO, //18
+                            BigDecimal.ZERO, //19
+                            BigDecimal.ZERO, //20
+                            value.get(Field.DOC_CROSSTOTAL.getKey()), //21
+                            value.get(Field.DOC_RATE.getKey()), //22
+                            value.get(Field.DOCREL_DATE.getKey()), //23
+                            value.get(Field.DOCREL_TYPE.getKey()), //24
+                            value.get(Field.DOCREL_PREFNAME.getKey()), //25
+                            value.get(Field.DOCREL_SUFNAME.getKey()), //26
+                            null //27
                             );
         }
     }
