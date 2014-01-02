@@ -246,7 +246,7 @@ public abstract class PurchaseRecordReport_Base
                 final PosSum4Doc posSum = posSums.get(instDoc);
                 BigDecimal taxfree;
                 if (posSum != null) {
-                     taxfree = posSum.getTaxFree(_parameter);
+                    taxfree = posSum.getTaxFree(_parameter);
                 } else {
                     taxfree = BigDecimal.ZERO;
                 }
@@ -468,7 +468,7 @@ public abstract class PurchaseRecordReport_Base
     }
 
     /**
-     * CReate the Document Report.
+     * Create the Document Report.
      * @param _parameter    Parameter as passed from the eFaps API
      * @return report
      * @throws EFapsException on error
@@ -492,7 +492,13 @@ public abstract class PurchaseRecordReport_Base
         return report.execute(_parameter);
     }
 
-    protected DateTime getDate4Purchase(final Parameter _parameter)
+    /**
+     * Get the date for the report.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return report
+     * @throws EFapsException on error
+     */
+    public DateTime getDate4Purchase(final Parameter _parameter)
         throws EFapsException
     {
         DateTime date = new DateTime();
