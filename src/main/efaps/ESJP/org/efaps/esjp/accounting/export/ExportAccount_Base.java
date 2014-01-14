@@ -70,22 +70,22 @@ public abstract class ExportAccount_Base
     public void addColumnDefinition(final Parameter _parameter,
                                     final DataExporter _exporter)
     {
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.KEY.getKey(), 5));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.VALUE.getKey(), 12));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.PARENT.getKey()).setMaxWidth(12));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.NAME.getKey(), 80));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.TYPE.getKey(), 25));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.SUMMARY.getKey(), 5));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.KEY.getKey(), 5));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.VALUE.getKey(), 12));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.PARENT.getKey()).setMaxWidth(12));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.NAME.getKey(), 80));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.TYPE.getKey(), 25));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.SUMMARY.getKey(), 5));
     }
 
     protected void addAdditionalGroupCols(final Parameter _parameter,
                                           final DataExporter _exporter,
                                           final Integer _order)
     {
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.ACC_REL.getKey().replace("]", _order + "]"), 30));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.ACC_TARGET.getKey().replace("]", _order + "]"), 12));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.ACC_RELNUM.getKey().replace("]", _order + "]"), 3));
-        _exporter.addColumns(new FrmtColumn(ColumnAcccount.ACC_RELDEN.getKey().replace("]", _order + "]"), 3));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.ACC_REL.getKey().replace("]", _order + "]"), 30));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.ACC_TARGET.getKey().replace("]", _order + "]"), 12));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.ACC_RELNUM.getKey().replace("]", _order + "]"), 3));
+        _exporter.addColumns(new FrmtColumn(ColumnAccount.ACC_RELDEN.getKey().replace("]", _order + "]"), 3));
     }
 
     @Override
@@ -114,7 +114,7 @@ public abstract class ExportAccount_Base
             final String parentName = multi.<String>getSelect(selParent);
             final Type type = multi.getCurrentInstance().getType();
 
-            _exporter.addRow(id, name, parentName, description, ExportAccount_Base.TYPE2TYPE.get(type),
+            _exporter.addRow(id, name, parentName, description, AbstractExport_Base.TYPE2TYPE.get(type),
                             summary ? "YES" : "NO");
 
             final QueryBuilder queryBldr2 = new QueryBuilder(CIAccounting.Account2AccountAbstract);
@@ -139,7 +139,7 @@ public abstract class ExportAccount_Base
                 final Integer accNum = multi2.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
                 final Integer accDen = multi2.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
 
-                _exporter.addRow(ExportAccount_Base.TYPE2TYPE.get(accRel), accTarget, accNum, accDen);
+                _exporter.addRow(AbstractExport_Base.TYPE2TYPE.get(accRel), accTarget, accNum, accDen);
             }
         }
     }
