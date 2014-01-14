@@ -54,12 +54,12 @@ public abstract class AbstractExport_Base
     /**
      * Windows-1252/WinLatin 1.
      */
-    public static String CHARSET = "UTF-8";
+    public static final String CHARSET = "UTF-8";
 
     /**
      * Mapping of types as written in the csv and the name in eFaps.
      */
-    protected static final Map<Type, String> TYPE2TYPE = new HashMap<Type, String>();
+    public static final Map<Type, String> TYPE2TYPE = new HashMap<Type, String>();
     static {
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.AccountBalanceSheetAsset.getType(), "Asset");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.AccountBalanceSheetLiability.getType(), "Liability");
