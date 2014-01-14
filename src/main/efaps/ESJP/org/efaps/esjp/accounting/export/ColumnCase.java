@@ -27,19 +27,27 @@ package org.efaps.esjp.accounting.export;
  * @author The eFaps Team
  * @version $Id: $
  */
-public enum ColumnCase implements IColumn
+public enum ColumnCase
+    implements IColumn
 {
     /** */
     A2CTYPE("[Account2Case_Type]"),
+    /** */
     A2CACC("[Account2Case_Account]"),
+    /** */
     A2CCLA("[Account2Case_Classification]"),
+    /** */
     A2CNUM("[Account2Case_Numerator]"),
+    /** */
     A2CDENUM("[Account2Case_Denominator]"),
+    /** */
     A2CDEFAULT("[Account2Case_Default]"),
+    /** */
     CASETYPE("[Case_Type]"),
+    /** */
     CASENAME("[Case_Name]"),
+    /** */
     CASEDESC("[Case_Description]");
-    ;
 
     /** Key. */
     private final String key;

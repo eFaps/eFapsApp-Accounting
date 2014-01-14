@@ -18,33 +18,38 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.accounting.export;
 
 /**
- * Columns for an report.
+ * Columns for an account table.
  *
  * @author The eFaps Team
  * @version $Id: $
  */
-public enum ColumnReport
+public enum ColumnAccount
     implements IColumn
 {
     /** */
-    TYPE("[Report_Type]"),
+    VALUE("[Account_Value]"),
     /** */
-    NAME("[Report_Name]"),
+    NAME("[Account_Name]"),
     /** */
-    DESC("[Report_Description]"),
+    TYPE("[Account_Type]"),
     /** */
-    NUMBERING("[Report_Numbering]"),
+    SUMMARY("[Account_Summary]"),
     /** */
-    NODE_TYPE("[Node_Type]"),
+    PARENT("[Account_Parent]"),
     /** */
-    NODE_SHOW("[Node_ShowAllways]"),
+    KEY("[Account_Key]"),
     /** */
-    NODE_SUM("[Node_ShowSum]"),
+    ACC_REL("[Account_Relation]"),
     /** */
-    NODE_NUMBER("[Node_Number]");
+    ACC_TARGET("[Account_Target]"),
+    /** */
+    ACC_RELNUM("[Account_RelNumerator]"),
+    /** */
+    ACC_RELDEN("[Account_RelDenominator]");
 
     /** Key. */
     private final String key;
@@ -52,7 +57,7 @@ public enum ColumnReport
     /**
      * @param _key key
      */
-    private ColumnReport(final String _key)
+    private ColumnAccount(final String _key)
     {
         this.key = _key;
     }
