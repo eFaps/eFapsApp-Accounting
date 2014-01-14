@@ -21,6 +21,9 @@
 
 package org.efaps.esjp.accounting.export;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.db.MultiPrintQuery;
@@ -101,21 +104,27 @@ public abstract class ExportAccount_Base
         multi.addAttribute(CIAccounting.AccountAbstract.Name,
                         CIAccounting.AccountAbstract.Description,
                         CIAccounting.AccountAbstract.Summary);
-        final SelectBuilder selParent = new SelectBuilder().linkto(CIAccounting.AccountAbstract.ParentLink)
-                        .attribute(CIAccounting.AccountAbstract.Name);
-        multi.addSelect(selParent);
+        final SelectBuilder selParentId = new SelectBuilder().linkto(CIAccounting.AccountAbstract.ParentLink).id();
+        multi.addSelect(selParentId);
         multi.setEnforceSorted(true);
         multi.execute();
+        final List<List<Object>> lstRowsData = new ArrayList<List<Object>>();
         while (multi.next()) {
+            final List<Object> lstColData = new ArrayList<Object>();
             final long id = multi.getCurrentInstance().getId();
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
             final String description = multi.<String>getAttribute(CIAccounting.AccountAbstract.Description);
             final Boolean summary = multi.<Boolean>getAttribute(CIAccounting.AccountAbstract.Summary);
-            final String parentName = multi.<String>getSelect(selParent);
+            final Long parentId = multi.<Long>getSelect(selParentId);
             final Type type = multi.getCurrentInstance().getType();
 
-            _exporter.addRow(id, name, parentName, description, AbstractExport_Base.TYPE2TYPE.get(type),
-                            summary ? "YES" : "NO");
+            lstColData.add(id);
+            lstColData.add(name);
+            lstColData.add(parentId);
+            lstColData.add(description);
+            lstColData.add(ExportAccount_Base.TYPE2TYPE.get(type));
+            lstColData.add(summary ? "YES" : "NO");
+
 
             final QueryBuilder queryBldr2 = new QueryBuilder(CIAccounting.Account2AccountAbstract);
             queryBldr2.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink,
@@ -123,24 +132,32 @@ public abstract class ExportAccount_Base
             final MultiPrintQuery multi2 = queryBldr2.getPrint();
             multi2.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                             CIAccounting.Account2AccountAbstract.Denominator);
-            final SelectBuilder selAccountName = new SelectBuilder()
-                            .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink)
-                            .attribute(CIAccounting.AccountAbstract.Name);
-            multi2.addSelect(selAccountName);
+            final SelectBuilder selAccountId = new SelectBuilder()
+                            .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).id();
+            multi2.addSelect(selAccountId);
             multi2.execute();
-            final int cont = 0;
+            final int cont = 1;
             while (multi2.next()) {
                 if (cont > addGrpCols) {
-                    addAdditionalGroupCols(_parameter, _exporter, cont);
+                    addAdditionalGroupCols(_parameter, _exporter, cont - 1);
                     addGrpCols++;
                 }
                 final Type accRel = multi2.getCurrentInstance().getType();
-                final String accTarget = multi2.<String>getSelect(selAccountName);
+                final Long accTarget = multi2.<Long>getSelect(selAccountId);
                 final Integer accNum = multi2.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
                 final Integer accDen = multi2.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
 
-                _exporter.addRow(AbstractExport_Base.TYPE2TYPE.get(accRel), accTarget, accNum, accDen);
+                lstColData.add(ExportAccount_Base.TYPE2TYPE.get(accRel));
+                lstColData.add(accTarget);
+                lstColData.add(accNum);
+                lstColData.add(accDen);
+
             }
+
+            lstRowsData.add(lstColData);
+        }
+        for (final List<Object> lstCols : lstRowsData) {
+            _exporter.addRow(lstCols.toArray());
         }
     }
 }
