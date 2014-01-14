@@ -49,6 +49,10 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.accounting.export.ColumnAcccount;
+import org.efaps.esjp.accounting.export.ColumnCase;
+import org.efaps.esjp.accounting.export.IColumn;
+import org.efaps.esjp.accounting.export.ColumnReport;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -68,147 +72,6 @@ public abstract class Import_Base
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(Import_Base.class);
-
-    /**
-     * Definitions for Columns.
-     */
-    public interface Column
-    {
-        /**
-         * @return key
-         */
-        String getKey();
-    }
-
-    private enum CaseColumn implements Import_Base.Column {
-
-        /** */
-        A2CTYPE("[Account2Case_Type]"),
-        A2CACC("[Account2Case_Account]"),
-        A2CCLA("[Account2Case_Classification]"),
-        A2CNUM("[Account2Case_Numerator]"),
-        A2CDENUM("[Account2Case_Denominator]"),
-        A2CDEFAULT("[Account2Case_Default]"),
-        CASETYPE("[Case_Type]"),
-        CASENAME("[Case_Name]"),
-        CASEDESC("[Case_Description]");
-        ;
-
-        /** Key. */
-        private final String key;
-
-        /**
-         * @param _key key
-         */
-        private CaseColumn(final String _key)
-        {
-            this.key = _key;
-        }
-
-        /**
-         * Getter method for instance variable {@link #key}.
-         *
-         * @return value of instance variable {@link #key}
-         */
-        @Override
-        public String getKey()
-        {
-            return this.key;
-        }
-    }
-
-    /**
-     * Columns for an account table.
-     *
-     */
-    private enum AcccountColumn implements Import_Base.Column {
-        /** */
-        VALUE("[Account_Value]"),
-        /** */
-        NAME("[Account_Name]"),
-        /** */
-        TYPE("[Account_Type]"),
-        /** */
-        SUMMARY("[Account_Summary]"),
-        /** */
-        PARENT("[Account_Parent]"),
-        /** */
-        KEY("[Account_Key]"),
-        /** */
-        ACC_REL("[Account_Relation]"),
-        /** */
-        ACC_TARGET("[Account_Target]"),
-        /** */
-        ACC_RELNUM("[Account_RelNumerator]"),
-        /** */
-        ACC_RELDEN("[Account_RelDenominator]");
-
-        /** Key. */
-        private final String key;
-
-        /**
-         * @param _key key
-         */
-        private AcccountColumn(final String _key)
-        {
-            this.key = _key;
-        }
-
-        /**
-         * Getter method for instance variable {@link #key}.
-         *
-         * @return value of instance variable {@link #key}
-         */
-        @Override
-        public String getKey()
-        {
-            return this.key;
-        }
-    }
-
-    /**
-     * Columns for an report.
-     */
-    private enum ReportColumn implements Import_Base.Column {
-        /** */
-        TYPE("[Report_Type]"),
-        /** */
-        NAME("[Report_Name]"),
-        /** */
-        DESC("[Report_Description]"),
-        /** */
-        NUMBERING("[Report_Numbering]"),
-        /** */
-        NODE_TYPE("[Node_Type]"),
-        /** */
-        NODE_SHOW("[Node_ShowAllways]"),
-        /** */
-        NODE_SUM("[Node_ShowSum]"),
-        /** */
-        NODE_NUMBER("[Node_Number]");
-
-        /** Key. */
-        private final String key;
-
-        /**
-         * @param _key key
-         */
-        private ReportColumn(final String _key)
-        {
-            this.key = _key;
-        }
-
-        /**
-         * Getter method for instance variable {@link #key}.
-         *
-         * @return value of instance variable {@link #key}
-         */
-        @Override
-        public String getKey()
-        {
-            return this.key;
-        }
-    }
 
     /**
      * Mapping of types as written in the csv and the name in eFaps.
@@ -348,7 +211,7 @@ public abstract class Import_Base
             final CSVReader reader = new CSVReader(new InputStreamReader(_reports.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
             if (!entries.isEmpty()) {
-                final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.ReportColumn.values(),
+                final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnReport.values(),
                                 entries.get(0), null);
                 reader.close();
                 Integer i = 0;
@@ -400,13 +263,13 @@ public abstract class Import_Base
         throws EFapsException
     {
         final ImportReport ret;
-        final String type = _row[_colName2Index.get(Import_Base.ReportColumn.TYPE.getKey())].trim()
+        final String type = _row[_colName2Index.get(ColumnReport.TYPE.getKey())].trim()
             .replaceAll("\n", "");
-        final String name = _row[_colName2Index.get(Import_Base.ReportColumn.NAME.getKey())].trim()
+        final String name = _row[_colName2Index.get(ColumnReport.NAME.getKey())].trim()
             .replaceAll("\n", "");
-        final String description = _row[_colName2Index.get(Import_Base.ReportColumn.DESC.getKey())].trim()
+        final String description = _row[_colName2Index.get(ColumnReport.DESC.getKey())].trim()
                         .replaceAll("\n", "");
-        final String numbering = _row[_colName2Index.get(Import_Base.ReportColumn.NUMBERING.getKey())].trim()
+        final String numbering = _row[_colName2Index.get(ColumnReport.NUMBERING.getKey())].trim()
                         .replaceAll("\n", "");
 
         final String key = type + ":" + name;
@@ -435,7 +298,7 @@ public abstract class Import_Base
             final List<String[]> entries = reader.readAll();
             reader.close();
             final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
-            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.AcccountColumn.values(),
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAcccount.values(),
                             entries.get(0), validateMap);
             entries.remove(0);
 
@@ -492,6 +355,11 @@ public abstract class Import_Base
         return accounts;
     }
 
+    /**
+     * @param _lstTypes
+     * @param _accInstance
+     * @throws EFapsException
+     */
     protected void deleteExistingConnections(final List<Type> _lstTypes,
                                              final Instance _accInstance)
         throws EFapsException
@@ -508,6 +376,12 @@ public abstract class Import_Base
         }
     }
 
+    /**
+     * @param _periodInst
+     * @param _accountTable
+     * @return
+     * @throws EFapsException
+     */
     protected HashMap<String, ImportAccount> createViewAccountTable(final Instance _periodInst,
                                                                 final FileParameter _accountTable)
         throws EFapsException
@@ -519,7 +393,7 @@ public abstract class Import_Base
             final List<String[]> entries = reader.readAll();
             reader.close();
             final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
-            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.AcccountColumn.values(),
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAcccount.values(),
                             entries.get(0), validateMap);
             entries.remove(0);
 
@@ -537,7 +411,8 @@ public abstract class Import_Base
             }
 
             for (final String[] row : entries) {
-                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, validateMap, accountsVal);
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index,
+                                                                row, validateMap, accountsVal);
                 accounts.put(account.getOrder(), account);
             }
             for (final ImportAccount account : accounts.values()) {
@@ -582,6 +457,11 @@ public abstract class Import_Base
     }
 
 
+    /**
+     * @param _periodInst
+     * @param _accountTable
+     * @throws EFapsException
+     */
     protected void createCaseTable(final Instance _periodInst,
                                    final FileParameter _accountTable)
         throws EFapsException
@@ -591,18 +471,18 @@ public abstract class Import_Base
             final List<String[]> entries = reader.readAll();
             reader.close();
             final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
-            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(Import_Base.CaseColumn.values(),
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnCase.values(),
                             entries.get(0), validateMap);
             entries.remove(0);
             final List<ImportCase> cases = new ArrayList<ImportCase>();
             int i = 1;
             boolean valid = true;
             for (final String[] row : entries) {
-                Import_Base.LOG.info("reading Line {}: {}",i, row);
+                Import_Base.LOG.info("reading Line {}: {}", i, row);
                 final ImportCase impCase = new ImportCase(_periodInst, colName2Index, row);
                 if (!impCase.validate()) {
                     valid = false;
-                    Import_Base.LOG.error("Line {} is invalid; {}",i , impCase);
+                    Import_Base.LOG.error("Line {} is invalid; {}", i , impCase);
                 }
                 cases.add(impCase);
                 i++;
@@ -626,10 +506,11 @@ public abstract class Import_Base
      * @param _columns columns to read (defined in the header of the file),
      *            <code>null</code> if all must be read
      * @param _headerLine string array with the header line
+     * @param _validateMap
      * @return map defining for each key the related column number
      * @throws EFapsException if a column from the list of keys is not defined
      */
-    protected Map<String, Integer> evaluateCSVFileHeader(final Import_Base.Column[] _columns,
+    protected Map<String, Integer> evaluateCSVFileHeader(final IColumn[] _columns,
                                                          final String[] _headerLine,
                                                          final Map<String, List<String>> _validateMap)
         throws EFapsException
@@ -642,13 +523,14 @@ public abstract class Import_Base
             if (_columns == null) {
                 ret.put(column, idx);
             } else {
-                for (final Column columns : _columns) {
+                for (final IColumn columns : _columns) {
                     if (columns.getKey().equals(column)) {
                         ret.put(column, idx);
                         break;
                     } else {
                         if (_validateMap != null && column.contains(columns.getKey().replace("]", ""))) {
-                            final String numStr = column.replace(columns.getKey().replace("]", ""), "").replace("]", "");
+                            final String numStr = column.replace(columns.getKey().replace("]", ""), "")
+                                            .replace("]", "");
                             if (_validateMap.containsKey(numStr)) {
                                 final List<String> lst = _validateMap.get(numStr);
                                 lst.add(column);
@@ -668,14 +550,14 @@ public abstract class Import_Base
 
         // if keys are defined, check for all required indexes
         if (_columns != null) {
-            for (final Column column : _columns) {
+            for (final IColumn column : _columns) {
                 if (ret.get(column.getKey()) == null) {
                     if (_validateMap != null) {
                         for (final Entry<String, List<String>> entry : _validateMap.entrySet()) {
                             if (ret.get(column.getKey().replace("]", "") + entry.getKey() + "]") == null) {
                                 throw new EFapsException(Import_Base.class, "ColumnNotDefinded", column.getKey());
                             } else {
-                                if (column instanceof AcccountColumn && entry.getValue().size() != 4) {
+                                if (column instanceof ColumnAcccount && entry.getValue().size() != 4) {
                                     throw new EFapsException(Import_Base.class, "ColumnNotDefinded",
                                                     column.getKey() + entry.getKey());
                                 }
@@ -706,7 +588,9 @@ public abstract class Import_Base
         private Instance accInst;
         private Instance periodeInst;
 
+
         /**
+         * @param _periodInst
          * @param _colName2Index
          * @param _row
          */
@@ -716,34 +600,34 @@ public abstract class Import_Base
         {
             try {
                 this.periodeInst = _periodInst;
-                this.caseName = _row[_colName2Index.get(Import_Base.CaseColumn.CASENAME.getKey())].trim()
+                this.caseName = _row[_colName2Index.get(ColumnCase.CASENAME.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.caseDescription = _row[_colName2Index.get(Import_Base.CaseColumn.CASEDESC.getKey())].trim()
+                this.caseDescription = _row[_colName2Index.get(ColumnCase.CASEDESC.getKey())].trim()
                                 .replaceAll("\n", "");
-                final String type = _row[_colName2Index.get(Import_Base.CaseColumn.CASETYPE.getKey())].trim()
+                final String type = _row[_colName2Index.get(ColumnCase.CASETYPE.getKey())].trim()
                                 .replaceAll("\n", "");
                 this.casetype = Import_Base.TYPE2TYPE.get(type);
-                final String a2c = _row[_colName2Index.get(Import_Base.CaseColumn.A2CTYPE.getKey())].trim()
+                final String a2c = _row[_colName2Index.get(ColumnCase.A2CTYPE.getKey())].trim()
                                 .replaceAll("\n", "");
 
                 this.a2cType = Import_Base.ACC2CASE.get(a2c);
 
-                this.a2cNum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CNUM.getKey())].trim()
+                this.a2cNum = _row[_colName2Index.get(ColumnCase.A2CNUM.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.a2cDenum = _row[_colName2Index.get(Import_Base.CaseColumn.A2CDENUM.getKey())].trim()
+                this.a2cDenum = _row[_colName2Index.get(ColumnCase.A2CDENUM.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.a2cDefault = "yes".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.CaseColumn.A2CDEFAULT
+                this.a2cDefault = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CDEFAULT
                                 .getKey())])
-                                || "true".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.CaseColumn.A2CDEFAULT
+                                || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CDEFAULT
                                                 .getKey())]);
 
-                final String accName = _row[_colName2Index.get(Import_Base.CaseColumn.A2CACC.getKey())].trim()
+                final String accName = _row[_colName2Index.get(ColumnCase.A2CACC.getKey())].trim()
                                 .replaceAll("\n", "");
 
-                if (_colName2Index.containsKey(Import_Base.CaseColumn.A2CCLA.getKey())
-                        && (a2cType.getType().isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
-                            || a2cType.getType().isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
-                    this.a2cClass = _row[_colName2Index.get(Import_Base.CaseColumn.A2CCLA.getKey())].trim()
+                if (_colName2Index.containsKey(ColumnCase.A2CCLA.getKey())
+                    && (this.a2cType.getType().isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
+                        || this.a2cType.getType().isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
+                    this.a2cClass = _row[_colName2Index.get(ColumnCase.A2CCLA.getKey())].trim()
                                 .replaceAll("\n", "");
                 }
 
@@ -771,7 +655,7 @@ public abstract class Import_Base
         }
 
         /**
-         *
+         * @throws EFapsException on error
          */
         public void update()
             throws EFapsException
@@ -873,6 +757,8 @@ public abstract class Import_Base
          * @param _periode periode this account belong to
          * @param _colName2Index mapping o column name to index
          * @param _row actual row
+         * @param _validateMap
+         * @param _accountVal
          * @throws EFapsException on error
          */
         public ImportAccount(final Instance _periode,
@@ -887,25 +773,25 @@ public abstract class Import_Base
             this.lstNumerator = new ArrayList<BigDecimal>();
             this.lstDenominator = new ArrayList<BigDecimal>();
 
-            this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim()
+            this.value = _row[_colName2Index.get(ColumnAcccount.VALUE.getKey())].trim()
                             .replaceAll("\n", "");
-            this.description = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim()
+            this.description = _row[_colName2Index.get(ColumnAcccount.NAME.getKey())].trim()
                             .replaceAll("\n", "");
-            final String type = _row[_colName2Index.get(Import_Base.AcccountColumn.TYPE.getKey())].trim()
+            final String type = _row[_colName2Index.get(ColumnAcccount.TYPE.getKey())].trim()
                             .replaceAll("\n", "");
-            final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(Import_Base.AcccountColumn.SUMMARY
+            final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnAcccount.SUMMARY
                             .getKey())]);
-            final String parentTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.PARENT.getKey())];
+            final String parentTmp = _row[_colName2Index.get(ColumnAcccount.PARENT.getKey())];
 
             if (_validateMap != null) {
                 for (final Entry<String, List<String>> entry : _validateMap.entrySet()) {
-                    final String typeConnTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_REL.getKey()
+                    final String typeConnTmp = _row[_colName2Index.get(ColumnAcccount.ACC_REL.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
-                    final String targetConnTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_TARGET.getKey()
+                    final String targetConnTmp = _row[_colName2Index.get(ColumnAcccount.ACC_TARGET.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
-                    final String numeratorTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_RELNUM.getKey()
+                    final String numeratorTmp = _row[_colName2Index.get(ColumnAcccount.ACC_RELNUM.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
-                    final String denominatorTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.ACC_RELDEN.getKey()
+                    final String denominatorTmp = _row[_colName2Index.get(ColumnAcccount.ACC_RELDEN.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
                     if (typeConnTmp != null && !typeConnTmp.isEmpty()
                                     && targetConnTmp != null && !targetConnTmp.isEmpty()) {
@@ -915,7 +801,7 @@ public abstract class Import_Base
                         this.lstDenominator.add(new BigDecimal(denominatorTmp));
                     }
                 }
-                this.order = _row[_colName2Index.get(Import_Base.AcccountColumn.KEY.getKey())]
+                this.order = _row[_colName2Index.get(ColumnAcccount.KEY.getKey())]
                                                                     .trim().replaceAll("\n", "");
             } else {
                 this.order = null;
@@ -971,6 +857,15 @@ public abstract class Import_Base
             this.instance = update.getInstance();
         }
 
+        /**
+         * @param _name
+         * @param _id
+         * @param _periode
+         * @param _cont
+         * @param _parts
+         * @return
+         * @throws EFapsException
+         */
         private Instance validateUpdate(final String _name,
                                        final Long _id,
                                        final Instance _periode,
@@ -1018,9 +913,9 @@ public abstract class Import_Base
 
         /**
          * new Constructor for import accounts of the period.
-         * @param _accountIns Instance of the account.
-         * @param _parentName name of a parent accounts.
-         * @param _name name of account.
+         *
+         * @param _colName2Index.
+         * @param _row.
          */
         public ImportAccount(final Map<String, Integer> _colName2Index,
                               final String[] _row)
@@ -1030,13 +925,13 @@ public abstract class Import_Base
             this.lstNumerator = new ArrayList<BigDecimal>();
             this.lstDenominator = new ArrayList<BigDecimal>();
 
-            this.value = _row[_colName2Index.get(Import_Base.AcccountColumn.VALUE.getKey())].trim().replaceAll("\n",
+            this.value = _row[_colName2Index.get(ColumnAcccount.VALUE.getKey())].trim().replaceAll("\n",
                             "");
-            this.description = _row[_colName2Index.get(Import_Base.AcccountColumn.NAME.getKey())].trim().replaceAll("\n",
+            this.description = _row[_colName2Index.get(ColumnAcccount.NAME.getKey())].trim().replaceAll("\n",
                             "");
-            final String parentTmp = _row[_colName2Index.get(Import_Base.AcccountColumn.PARENT.getKey())];
+            final String parentTmp = _row[_colName2Index.get(ColumnAcccount.PARENT.getKey())];
 
-            this.order = _row[_colName2Index.get(Import_Base.AcccountColumn.KEY.getKey())]
+            this.order = _row[_colName2Index.get(ColumnAcccount.KEY.getKey())]
                             .trim().replaceAll("\n", "");
             this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
             this.instance = null;
@@ -1048,6 +943,13 @@ public abstract class Import_Base
          * @param _accountIns Instance of the account.
          * @param _parentName name of a parent accounts.
          * @param _name name of account.
+         * @param _description
+         * @param _order
+         * @param _path
+         * @param _lstTypeConn
+         * @param _lstTargetConn
+         * @param _lstNumerator
+         * @param _lstDenominator
          */
         public ImportAccount(final Instance _accountIns,
                              final String _parentName,
@@ -1169,9 +1071,9 @@ public abstract class Import_Base
         /**
          * @param path the path to set
          */
-        private void setPath(final String path)
+        private void setPath(final String _path)
         {
-            this.path = path;
+            this.path = _path;
         }
     }
 
@@ -1293,13 +1195,13 @@ public abstract class Import_Base
                           final int _position)
             throws EFapsException
         {
-            final String type = _row[_colName2Index.get(Import_Base.ReportColumn.NODE_TYPE.getKey())].trim()
+            final String type = _row[_colName2Index.get(ColumnReport.NODE_TYPE.getKey())].trim()
                             .replaceAll("\n", "");
             final boolean showAllways = !"false".equalsIgnoreCase(_row[_colName2Index
-                            .get(Import_Base.ReportColumn.NODE_SHOW.getKey())].trim());
+                            .get(ColumnReport.NODE_SHOW.getKey())].trim());
             final boolean showSum = !"false".equalsIgnoreCase(_row[_colName2Index
-                            .get(Import_Base.ReportColumn.NODE_SUM.getKey())].trim());
-            final String number = _row[_colName2Index.get(Import_Base.ReportColumn.NODE_NUMBER.getKey())].trim()
+                            .get(ColumnReport.NODE_SUM.getKey())].trim());
+            final String number = _row[_colName2Index.get(ColumnReport.NODE_NUMBER.getKey())].trim()
                             .replaceAll("\n", "");
             final String value = _row[_colName2Index.get(_level)].trim().replaceAll("\n", "");
 
