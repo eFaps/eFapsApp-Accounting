@@ -143,7 +143,7 @@ public abstract class ExportCase_Base
             final Integer acc2CaseDen = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
             final Boolean acc2CaseDef = multi.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
 
-            row.put(ColumnCase.CASETYPE.getKey(), caseType);
+            row.put(ColumnCase.CASETYPE.getKey(), caseType.getUUID());
             row.put(ColumnCase.CASENAME.getKey(), caseName);
             row.put(ColumnCase.CASEDESC.getKey(), caseDesc);
             row.put(ColumnCase.A2CTYPE.getKey(), acc2CaseType);
@@ -162,8 +162,8 @@ public abstract class ExportCase_Base
                                final Map<String, Object> _o2)
             {
                 final int ret;
-                final String caseType1 = ExportCase_Base.TYPE2TYPE.get(_o1.get(ColumnCase.CASETYPE.getKey()));
-                final String caseType2 = ExportCase_Base.TYPE2TYPE.get(_o2.get(ColumnCase.CASETYPE.getKey()));
+                final String caseType1 = AbstractExport_Base.TYPE2TYPE.get(_o1.get(ColumnCase.CASETYPE.getKey()));
+                final String caseType2 = AbstractExport_Base.TYPE2TYPE.get(_o2.get(ColumnCase.CASETYPE.getKey()));
 
                 if (caseType1.equals(caseType2)) {
                     final String caseName1 = (String) _o1.get(ColumnCase.CASENAME.getKey());
@@ -178,10 +178,10 @@ public abstract class ExportCase_Base
         });
 
         for (final Map<String, Object> map : lstCols) {
-            _exporter.addRow(ExportCase_Base.TYPE2TYPE.get(map.get(ColumnCase.CASETYPE.getKey())),
+            _exporter.addRow(AbstractExport_Base.TYPE2TYPE.get(map.get(ColumnCase.CASETYPE.getKey())),
                             map.get(ColumnCase.CASENAME.getKey()),
                             map.get(ColumnCase.CASEDESC.getKey()),
-                            ExportCase_Base.TYPE2TYPE.get(map.get(ColumnCase.A2CTYPE.getKey())),
+                            AbstractExport_Base.TYPE2TYPE.get(map.get(ColumnCase.A2CTYPE.getKey())),
                             map.get(ColumnCase.A2CACC.getKey()),
                             map.get(ColumnCase.A2CCLA.getKey()),
                             map.get(ColumnCase.A2CNUM.getKey()),

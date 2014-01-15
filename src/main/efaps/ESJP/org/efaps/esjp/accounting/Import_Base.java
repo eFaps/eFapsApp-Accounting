@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -38,7 +39,6 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
 import org.efaps.db.Delete;
@@ -49,10 +49,11 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.esjp.accounting.export.ColumnAcccount;
+import org.efaps.esjp.accounting.export.AbstractExport_Base;
+import org.efaps.esjp.accounting.export.ColumnAccount;
 import org.efaps.esjp.accounting.export.ColumnCase;
-import org.efaps.esjp.accounting.export.IColumn;
 import org.efaps.esjp.accounting.export.ColumnReport;
+import org.efaps.esjp.accounting.export.IColumn;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -70,61 +71,41 @@ import au.com.bytecode.opencsv.CSVReader;
 @EFapsRevision("$Rev: 7855 $")
 public abstract class Import_Base
 {
-
+    /**
+     * Logger used in this class.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(Import_Base.class);
 
     /**
      * Mapping of types as written in the csv and the name in eFaps.
      */
-    protected static final Map<String, CIType> TYPE2TYPE = new HashMap<String, CIType>();
+    private static final Map<String, UUID> TYPE2TYPE = new HashMap<String, UUID>();
     static {
-        Import_Base.TYPE2TYPE.put("Asset", CIAccounting.AccountBalanceSheetAsset);
-        Import_Base.TYPE2TYPE.put("Liability", CIAccounting.AccountBalanceSheetLiability);
-        Import_Base.TYPE2TYPE.put("Owner's equity", CIAccounting.AccountBalanceSheetEquity);
-        Import_Base.TYPE2TYPE.put("Expense", CIAccounting.AccountIncomeStatementExpenses);
-        Import_Base.TYPE2TYPE.put("Revenue", CIAccounting.AccountIncomeStatementRevenue);
-        Import_Base.TYPE2TYPE.put("Current", CIAccounting.AccountCurrent);
-        Import_Base.TYPE2TYPE.put("Creditor", CIAccounting.AccountCurrentCreditor);
-        Import_Base.TYPE2TYPE.put("Debtor", CIAccounting.AccountCurrentDebtor);
-        Import_Base.TYPE2TYPE.put("Memo", CIAccounting.AccountMemo);
-        Import_Base.TYPE2TYPE.put("Balance", CIAccounting.ReportBalance);
-        Import_Base.TYPE2TYPE.put("ProfitLoss", CIAccounting.ReportProfitLoss);
-        Import_Base.TYPE2TYPE.put("Other", CIAccounting.ReportTransaction);
-        Import_Base.TYPE2TYPE.put("Root", CIAccounting.ReportNodeRoot);
-        Import_Base.TYPE2TYPE.put("Tree", CIAccounting.ReportNodeTree);
-        Import_Base.TYPE2TYPE.put("Account", CIAccounting.ReportNodeAccount);
-        Import_Base.TYPE2TYPE.put("ReportAccount", CIAccounting.ReportAccount);
-        Import_Base.TYPE2TYPE.put("ViewRoot", CIAccounting.ViewRoot);
-        Import_Base.TYPE2TYPE.put("ViewSum", CIAccounting.ViewSum);
-        Import_Base.TYPE2TYPE.put("CaseBankCashGain", CIAccounting.CaseBankCashGain);
-        Import_Base.TYPE2TYPE.put("CaseBankCashPay", CIAccounting.CaseBankCashPay);
-        Import_Base.TYPE2TYPE.put("CaseDocBooking", CIAccounting.CaseDocBooking);
-        Import_Base.TYPE2TYPE.put("CaseDocRegister", CIAccounting.CaseDocRegister);
-        Import_Base.TYPE2TYPE.put("CaseExternalBooking", CIAccounting.CaseExternalBooking);
-        Import_Base.TYPE2TYPE.put("CaseExternalRegister", CIAccounting.CaseExternalRegister);
-        Import_Base.TYPE2TYPE.put("CaseGeneral", CIAccounting.CaseGeneral);
-        Import_Base.TYPE2TYPE.put("CasePayroll", CIAccounting.CasePayroll);
-        Import_Base.TYPE2TYPE.put("CasePettyCash", CIAccounting.CasePettyCash);
-        Import_Base.TYPE2TYPE.put("CasePettyCashRegister", CIAccounting.CasePettyCashReceiptRegister);
-        Import_Base.TYPE2TYPE.put("CaseStockBooking", CIAccounting.CaseStockBooking);
+        for (final Entry<UUID, String> entry : AbstractExport_Base.TYPE2TYPE.entrySet()) {
+            Import_Base.TYPE2TYPE.put(entry.getValue(), entry.getKey());
+        }
+    }
+    /**
+     * Mapping of types as written in the csv and the name in eFaps.
+     */
+    private static final Map<String, UUID> ACC2ACC = new HashMap<String, UUID>();
+    static {
+        Import_Base.ACC2ACC.put("ViewSumAccount", CIAccounting.ViewSum2Account.uuid);
+        Import_Base.ACC2ACC.put("AccountCosting", CIAccounting.Account2AccountCosting.uuid);
+        Import_Base.ACC2ACC.put("AccountInverseCosting", CIAccounting.Account2AccountCostingInverse.uuid);
+        Import_Base.ACC2ACC.put("AccountAbono", CIAccounting.Account2AccountCredit.uuid);
+        Import_Base.ACC2ACC.put("AccountCargo", CIAccounting.Account2AccountDebit.uuid);
     }
 
-    protected static final Map<String, CIType> ACC2ACC = new HashMap<String, CIType>();
+    /**
+     * Mapping of types as written in the csv and the name in eFaps.
+     */
+    private static final Map<String, UUID> ACC2CASE = new HashMap<String, UUID>();
     static {
-        Import_Base.ACC2ACC.put("ViewSumAccount", CIAccounting.ViewSum2Account);
-        Import_Base.ACC2ACC.put("AccountCosting", CIAccounting.Account2AccountCosting);
-        Import_Base.ACC2ACC.put("AccountInverseCosting", CIAccounting.Account2AccountCostingInverse);
-        Import_Base.ACC2ACC.put("AccountAbono", CIAccounting.Account2AccountCredit);
-        Import_Base.ACC2ACC.put("AccountCargo", CIAccounting.Account2AccountDebit);
-    }
-
-
-    protected static final Map<String, CIType> ACC2CASE = new HashMap<String, CIType>();
-    static {
-        Import_Base.ACC2CASE.put("Credit", CIAccounting.Account2CaseCredit);
-        Import_Base.ACC2CASE.put("Debit", CIAccounting.Account2CaseDebit);
-        Import_Base.ACC2CASE.put("CreditClassification", CIAccounting.Account2CaseCredit4Classification);
-        Import_Base.ACC2CASE.put("DebitClassification", CIAccounting.Account2CaseDebit4Classification);
+        Import_Base.ACC2CASE.put("Credit", CIAccounting.Account2CaseCredit.uuid);
+        Import_Base.ACC2CASE.put("Debit", CIAccounting.Account2CaseDebit.uuid);
+        Import_Base.ACC2CASE.put("CreditClassification", CIAccounting.Account2CaseCredit4Classification.uuid);
+        Import_Base.ACC2CASE.put("DebitClassification", CIAccounting.Account2CaseDebit4Classification.uuid);
     }
 
     /**
@@ -189,8 +170,7 @@ public abstract class Import_Base
             final String parentName = multi.<String>getSelect(sel);
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
             final String desc = multi.<String>getAttribute(CIAccounting.AccountAbstract.Description);
-            ret.put(name, new ImportAccount(multi.getCurrentInstance(),
-                            parentName, name, desc, null, null, null, null, null, null));
+            ret.put(name, new ImportAccount(multi.getCurrentInstance(), parentName, name, desc));
         }
 
         return ret;
@@ -297,26 +277,27 @@ public abstract class Import_Base
             final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
             reader.close();
-            final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
-            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAcccount.values(),
-                            entries.get(0), validateMap);
+            final Map<String, List<String>> relAccountColumns = new HashMap<String, List<String>>();
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAccount.values(),
+                            entries.get(0), relAccountColumns);
             entries.remove(0);
 
             for (final String[] row : entries) {
-                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, validateMap, null);
-                accounts.put(account.getValue(), account);
+                final ImportAccount account = new ImportAccount(_periodInst, colName2Index, row, relAccountColumns,
+                                null);
+                accounts.put(account.getKey(), account);
             }
             for (final ImportAccount account : accounts.values()) {
                 if (account.getParent() != null && account.getParent().length() > 0) {
                     final ImportAccount parent = accounts.get(account.getParent());
                     if (parent != null) {
                         final Update update = new Update(account.getInstance());
-                        update.add("ParentLink", parent.getInstance().getId());
+                        update.add(CIAccounting.AccountAbstract.ParentLink, parent.getInstance());
                         update.execute();
                     }
                 }
-                if (account.getLstTypeConn() != null && !account.getLstTypeConn().isEmpty() &&
-                                account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
+                if (account.getLstTypeConn() != null && !account.getLstTypeConn().isEmpty()
+                                && account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
                     final List<Type> lstTypes = account.getLstTypeConn();
                     final List<String> lstTarget = account.getLstTargetConn();
                     final List<BigDecimal> lstNumerator = account.getLstNumerator();
@@ -326,21 +307,14 @@ public abstract class Import_Base
 
                     int cont = 0;
                     for (final Type type : lstTypes) {
-                        final String nameAcc = lstTarget.get(cont);
+                        final String targetAcc = lstTarget.get(cont);
                         final Integer numerator = lstNumerator.get(cont).intValue();
                         final Integer denominator = lstDenominator.get(cont).intValue();
-                        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
-                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
-                                        _periodInst.getId());
-                        final InstanceQuery query = queryBldr.getQuery();
-                        query.execute();
-                        if (query.next()) {
+                        final ImportAccount target = accounts.get(targetAcc);
+                        if (target != null) {
                             final Insert insert = new Insert(type);
-                            insert.add(CIAccounting.Account2AccountAbstract.FromAccountLink,
-                                            account.getInstance().getId());
-                            insert.add(CIAccounting.Account2AccountAbstract.ToAccountLink,
-                                            query.getCurrentValue().getId());
+                            insert.add(CIAccounting.Account2AccountAbstract.FromAccountLink, account.getInstance());
+                            insert.add(CIAccounting.Account2AccountAbstract.ToAccountLink, target.getInstance());
                             insert.add(CIAccounting.Account2AccountAbstract.Numerator, numerator);
                             insert.add(CIAccounting.Account2AccountAbstract.Denominator, denominator);
                             insert.execute();
@@ -356,9 +330,9 @@ public abstract class Import_Base
     }
 
     /**
-     * @param _lstTypes
-     * @param _accInstance
-     * @throws EFapsException
+     * @param _lstTypes list of types the relations will be deleted for
+     * @param _accInstance  instanc eof the account the relations will be deleted for
+     * @throws EFapsException on error
      */
     protected void deleteExistingConnections(final List<Type> _lstTypes,
                                              final Instance _accInstance)
@@ -393,13 +367,13 @@ public abstract class Import_Base
             final List<String[]> entries = reader.readAll();
             reader.close();
             final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
-            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAcccount.values(),
+            final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAccount.values(),
                             entries.get(0), validateMap);
             entries.remove(0);
 
             for (final String[] row : entries) {
                 final ImportAccount account = new ImportAccount(colName2Index, row);
-                accountsVal.put(account.getOrder(), account);
+                accountsVal.put(account.getKey(), account);
             }
 
             for (final ImportAccount account : accountsVal.values()) {
@@ -413,7 +387,7 @@ public abstract class Import_Base
             for (final String[] row : entries) {
                 final ImportAccount account = new ImportAccount(_periodInst, colName2Index,
                                                                 row, validateMap, accountsVal);
-                accounts.put(account.getOrder(), account);
+                accounts.put(account.getKey(), account);
             }
             for (final ImportAccount account : accounts.values()) {
                 if (account.getParent() != null && account.getParent().length() > 0) {
@@ -424,8 +398,8 @@ public abstract class Import_Base
                         update.execute();
                     }
                 }
-                if (account.getLstTypeConn() != null && !account.getLstTypeConn().isEmpty() &&
-                                account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
+                if (account.getLstTypeConn() != null && !account.getLstTypeConn().isEmpty()
+                                && account.getLstTargetConn() != null && !account.getLstTargetConn().isEmpty()) {
                     final List<Type> lstTypes = account.getLstTypeConn();
                     final List<String> lstTarget = account.getLstTargetConn();
 
@@ -506,13 +480,13 @@ public abstract class Import_Base
      * @param _columns columns to read (defined in the header of the file),
      *            <code>null</code> if all must be read
      * @param _headerLine string array with the header line
-     * @param _validateMap
+     * @param _relAccountColumns map of related (linked_ Account Columns
      * @return map defining for each key the related column number
      * @throws EFapsException if a column from the list of keys is not defined
      */
     protected Map<String, Integer> evaluateCSVFileHeader(final IColumn[] _columns,
                                                          final String[] _headerLine,
-                                                         final Map<String, List<String>> _validateMap)
+                                                         final Map<String, List<String>> _relAccountColumns)
         throws EFapsException
     {
         // evaluate header
@@ -528,16 +502,15 @@ public abstract class Import_Base
                         ret.put(column, idx);
                         break;
                     } else {
-                        if (_validateMap != null && column.contains(columns.getKey().replace("]", ""))) {
-                            final String numStr = column.replace(columns.getKey().replace("]", ""), "")
-                                            .replace("]", "");
-                            if (_validateMap.containsKey(numStr)) {
-                                final List<String> lst = _validateMap.get(numStr);
+                        if (_relAccountColumns != null && column.contains(columns.getKey().replace("]", ""))) {
+                            final String num = column.replace(columns.getKey().replace("]", ""), "").replace("]", "");
+                            if (_relAccountColumns.containsKey(num)) {
+                                final List<String> lst = _relAccountColumns.get(num);
                                 lst.add(column);
                             } else {
                                 final ArrayList<String> lst = new ArrayList<String>();
                                 lst.add(column);
-                                _validateMap.put(numStr, lst);
+                                _relAccountColumns.put(num, lst);
                             }
                             ret.put(column, idx);
                             break;
@@ -552,12 +525,12 @@ public abstract class Import_Base
         if (_columns != null) {
             for (final IColumn column : _columns) {
                 if (ret.get(column.getKey()) == null) {
-                    if (_validateMap != null) {
-                        for (final Entry<String, List<String>> entry : _validateMap.entrySet()) {
+                    if (_relAccountColumns != null) {
+                        for (final Entry<String, List<String>> entry : _relAccountColumns.entrySet()) {
                             if (ret.get(column.getKey().replace("]", "") + entry.getKey() + "]") == null) {
                                 throw new EFapsException(Import_Base.class, "ColumnNotDefinded", column.getKey());
                             } else {
-                                if (column instanceof ColumnAcccount && entry.getValue().size() != 4) {
+                                if (column instanceof ColumnAccount && entry.getValue().size() != 4) {
                                     throw new EFapsException(Import_Base.class, "ColumnNotDefinded",
                                                     column.getKey() + entry.getKey());
                                 }
@@ -579,8 +552,8 @@ public abstract class Import_Base
 
         private String caseName;
         private String caseDescription;
-        private CIType casetype;
-        private CIType a2cType;
+        private Type casetype;
+        private Type a2cType;
         private String a2cClass;
         private String a2cNum;
         private String a2cDenum;
@@ -606,11 +579,11 @@ public abstract class Import_Base
                                 .replaceAll("\n", "");
                 final String type = _row[_colName2Index.get(ColumnCase.CASETYPE.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.casetype = Import_Base.TYPE2TYPE.get(type);
+                this.casetype = Type.get(Import_Base.TYPE2TYPE.get(type));
                 final String a2c = _row[_colName2Index.get(ColumnCase.A2CTYPE.getKey())].trim()
                                 .replaceAll("\n", "");
 
-                this.a2cType = Import_Base.ACC2CASE.get(a2c);
+                this.a2cType = Type.get(Import_Base.ACC2CASE.get(a2c));
 
                 this.a2cNum = _row[_colName2Index.get(ColumnCase.A2CNUM.getKey())].trim()
                                 .replaceAll("\n", "");
@@ -625,8 +598,8 @@ public abstract class Import_Base
                                 .replaceAll("\n", "");
 
                 if (_colName2Index.containsKey(ColumnCase.A2CCLA.getKey())
-                    && (this.a2cType.getType().isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
-                        || this.a2cType.getType().isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
+                    && (this.a2cType.isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
+                        || this.a2cType.isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
                     this.a2cClass = _row[_colName2Index.get(ColumnCase.A2CCLA.getKey())].trim()
                                 .replaceAll("\n", "");
                 }
@@ -716,7 +689,7 @@ public abstract class Import_Base
         /**
          * Value for this account.
          */
-        private final String order;
+        private final String key;
 
         /**
          * Parent of this account.
@@ -757,15 +730,15 @@ public abstract class Import_Base
          * @param _periode periode this account belong to
          * @param _colName2Index mapping o column name to index
          * @param _row actual row
-         * @param _validateMap
-         * @param _accountVal
+         * @param _relAccountColumns map of related (linked) Account  columns
+         * @param _accounts mapping of accounts
          * @throws EFapsException on error
          */
         public ImportAccount(final Instance _periode,
                              final Map<String, Integer> _colName2Index,
                              final String[] _row,
-                             final Map<String, List<String>> _validateMap,
-                             final Map<String, ImportAccount> _accountVal)
+                             final Map<String, List<String>> _relAccountColumns,
+                             final Map<String, ImportAccount> _accounts)
             throws EFapsException
         {
             this.lstTypeConn = new ArrayList<Type>();
@@ -773,42 +746,36 @@ public abstract class Import_Base
             this.lstNumerator = new ArrayList<BigDecimal>();
             this.lstDenominator = new ArrayList<BigDecimal>();
 
-            this.value = _row[_colName2Index.get(ColumnAcccount.VALUE.getKey())].trim()
-                            .replaceAll("\n", "");
-            this.description = _row[_colName2Index.get(ColumnAcccount.NAME.getKey())].trim()
-                            .replaceAll("\n", "");
-            final String type = _row[_colName2Index.get(ColumnAcccount.TYPE.getKey())].trim()
-                            .replaceAll("\n", "");
-            final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnAcccount.SUMMARY
-                            .getKey())]);
-            final String parentTmp = _row[_colName2Index.get(ColumnAcccount.PARENT.getKey())];
+            this.value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
+            this.description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
+            final String type = _row[_colName2Index.get(ColumnAccount.TYPE.getKey())].trim().replaceAll("\n", "");
+            final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnAccount.SUMMARY.getKey())]);
+            final String parentTmp = _row[_colName2Index.get(ColumnAccount.PARENT.getKey())];
 
-            if (_validateMap != null) {
-                for (final Entry<String, List<String>> entry : _validateMap.entrySet()) {
-                    final String typeConnTmp = _row[_colName2Index.get(ColumnAcccount.ACC_REL.getKey()
+            this.key = _row[_colName2Index.get(ColumnAccount.KEY.getKey())].trim().replaceAll("\n", "");
+
+            if (_relAccountColumns != null) {
+                for (final Entry<String, List<String>> entry : _relAccountColumns.entrySet()) {
+                    final String typeConnTmp = _row[_colName2Index.get(ColumnAccount.ACC_REL.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
-                    final String targetConnTmp = _row[_colName2Index.get(ColumnAcccount.ACC_TARGET.getKey()
+                    final String targetConnTmp = _row[_colName2Index.get(ColumnAccount.ACC_TARGET.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
-                    final String numeratorTmp = _row[_colName2Index.get(ColumnAcccount.ACC_RELNUM.getKey()
+                    final String numeratorTmp = _row[_colName2Index.get(ColumnAccount.ACC_RELNUM.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
-                    final String denominatorTmp = _row[_colName2Index.get(ColumnAcccount.ACC_RELDEN.getKey()
+                    final String denominatorTmp = _row[_colName2Index.get(ColumnAccount.ACC_RELDEN.getKey()
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
                     if (typeConnTmp != null && !typeConnTmp.isEmpty()
                                     && targetConnTmp != null && !targetConnTmp.isEmpty()) {
-                        this.lstTypeConn.add(Type.get(Import_Base.ACC2ACC.get(typeConnTmp).uuid));
+                        this.lstTypeConn.add(Type.get(Import_Base.ACC2ACC.get(typeConnTmp)));
                         this.lstTargetConn.add(targetConnTmp);
                         this.lstNumerator.add(new BigDecimal(numeratorTmp));
                         this.lstDenominator.add(new BigDecimal(denominatorTmp));
                     }
                 }
-                this.order = _row[_colName2Index.get(ColumnAcccount.KEY.getKey())]
-                                                                    .trim().replaceAll("\n", "");
-            } else {
-                this.order = null;
             }
 
-            if (_accountVal != null) {
-                this.path = _accountVal.get(this.order).getPath();
+            if (_accounts != null) {
+                this.path = _accounts.get(this.key).getPath();
             } else {
                 this.path = null;
             }
@@ -816,26 +783,18 @@ public abstract class Import_Base
             this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
 
             Update update = null;
-            if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+            if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.AccountAbstract.getType())) {
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, this.value);
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selParent = new SelectBuilder().linkto(CIAccounting.AccountBaseAbstract.ParentLink)
-                                .attribute(CIAccounting.AccountBaseAbstract.Name);
-                multi.addSelect(selParent);
-                multi.execute();
-                if (multi.next()) {
-                    final String parentName = multi.<String>getSelect(selParent);
-                    if (parentName != null && parentName.equals(parentTmp)) {
-                        update = new Update(multi.getCurrentInstance());
-                    } else {
-                        update = new Insert(Import_Base.TYPE2TYPE.get(type));
-                    }
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                if (query.next()) {
+                    update = new Update(query.getCurrentValue());
                 } else {
                     update = new Insert(Import_Base.TYPE2TYPE.get(type));
                 }
-            } else if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.ViewAbstract.getType())) {
+            } else if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.ViewAbstract.getType())) {
                 final String[] parts = this.path.split("_");
                 final Instance updateInst = validateUpdate(this.value, null, _periode, 0, parts);
 
@@ -846,7 +805,7 @@ public abstract class Import_Base
                 }
             }
 
-            if (Import_Base.TYPE2TYPE.get(type).getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+            if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.AccountAbstract.getType())) {
                 update.add("Summary", summary);
             }
 
@@ -855,6 +814,156 @@ public abstract class Import_Base
             update.add(CIAccounting.AccountBaseAbstract.Description, this.description);
             update.execute();
             this.instance = update.getInstance();
+        }
+
+        /**
+         * new Constructor for import accounts of the period.
+         *
+         * @param _colName2Index column name to index mapping
+         * @param _row current row
+         */
+        public ImportAccount(final Map<String, Integer> _colName2Index,
+                              final String[] _row)
+        {
+            this.lstTypeConn = new ArrayList<Type>();
+            this.lstTargetConn = new ArrayList<String>();
+            this.lstNumerator = new ArrayList<BigDecimal>();
+            this.lstDenominator = new ArrayList<BigDecimal>();
+
+            this.value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
+            this.description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
+            this.key = _row[_colName2Index.get(ColumnAccount.KEY.getKey())].trim().replaceAll("\n", "");
+
+            final String parentTmp = _row[_colName2Index.get(ColumnAccount.PARENT.getKey())];
+            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
+            this.instance = null;
+            this.path = this.value;
+        }
+
+        /**
+         * new Constructor for import accounts of the period.
+         * @param _accountIns Instance of the account.
+         * @param _parentName name of a parent accounts.
+         * @param _name name of account.
+         * @param _description description
+         */
+        public ImportAccount(final Instance _accountIns,
+                             final String _parentName,
+                             final String _name,
+                             final String _description)
+        {
+            this.instance = _accountIns;
+            this.parent = _parentName;
+            this.value = _name;
+            this.description = _description;
+            this.lstTypeConn = null;
+            this.lstTargetConn = null;
+            this.lstNumerator = null;
+            this.lstDenominator = null;
+            this.key = null;
+            this.path = null;
+        }
+
+        /**
+         * Getter method for instance variable {@link #value}.
+         *
+         * @return value of instance variable {@link #value}
+         */
+        public String getValue()
+        {
+            return this.value;
+        }
+
+        /**
+         * Getter method for instance variable {@link #description}.
+         *
+         * @return description of instance variable {@link #description}
+         */
+        public String getDescription()
+        {
+            return this.description;
+        }
+
+        /**
+         * Getter method for instance variable {@link #parent}.
+         *
+         * @return value of instance variable {@link #parent}
+         */
+        public String getParent()
+        {
+            return this.parent;
+        }
+
+        /**
+         * Getter method for instance variable {@link #order}.
+         *
+         * @return value of instance variable {@link #order}
+         */
+        public String getKey()
+        {
+            return this.key;
+        }
+
+        /**
+         * Getter method for instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * Getter method for instance variable {@link #lstTypeConn}.
+         *
+         * @return the lstTypeConn
+         */
+        private List<Type> getLstTypeConn()
+        {
+            return this.lstTypeConn;
+        }
+
+        /**
+         * Getter method for instance variable {@link #lstTargetConn}.
+         *
+         * @return the lstTargetConn
+         */
+        private List<String> getLstTargetConn()
+        {
+            return this.lstTargetConn;
+        }
+
+        /**
+         * @return the lstNumerator
+         */
+        private List<BigDecimal> getLstNumerator()
+        {
+            return this.lstNumerator;
+        }
+
+        /**
+         * @return the lstDenominator
+         */
+        private List<BigDecimal> getLstDenominator()
+        {
+            return this.lstDenominator;
+        }
+
+        /**
+         * @return the path
+         */
+        private String getPath()
+        {
+            return this.path;
+        }
+
+        /**
+         * @param _path the path to set
+         */
+        private void setPath(final String _path)
+        {
+            this.path = _path;
         }
 
         /**
@@ -909,171 +1018,6 @@ public abstract class Import_Base
                 ret = instCur;
             }
             return ret;
-        }
-
-        /**
-         * new Constructor for import accounts of the period.
-         *
-         * @param _colName2Index.
-         * @param _row.
-         */
-        public ImportAccount(final Map<String, Integer> _colName2Index,
-                              final String[] _row)
-        {
-            this.lstTypeConn = new ArrayList<Type>();
-            this.lstTargetConn = new ArrayList<String>();
-            this.lstNumerator = new ArrayList<BigDecimal>();
-            this.lstDenominator = new ArrayList<BigDecimal>();
-
-            this.value = _row[_colName2Index.get(ColumnAcccount.VALUE.getKey())].trim().replaceAll("\n",
-                            "");
-            this.description = _row[_colName2Index.get(ColumnAcccount.NAME.getKey())].trim().replaceAll("\n",
-                            "");
-            final String parentTmp = _row[_colName2Index.get(ColumnAcccount.PARENT.getKey())];
-
-            this.order = _row[_colName2Index.get(ColumnAcccount.KEY.getKey())]
-                            .trim().replaceAll("\n", "");
-            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
-            this.instance = null;
-            this.path = this.value;
-        }
-
-        /**
-         * new Constructor for import accounts of the period.
-         * @param _accountIns Instance of the account.
-         * @param _parentName name of a parent accounts.
-         * @param _name name of account.
-         * @param _description
-         * @param _order
-         * @param _path
-         * @param _lstTypeConn
-         * @param _lstTargetConn
-         * @param _lstNumerator
-         * @param _lstDenominator
-         */
-        public ImportAccount(final Instance _accountIns,
-                             final String _parentName,
-                             final String _name,
-                             final String _description,
-                             final String _order,
-                             final String _path,
-                             final List<Type> _lstTypeConn,
-                             final List<String> _lstTargetConn,
-                             final List<BigDecimal> _lstNumerator,
-                             final List<BigDecimal> _lstDenominator)
-        {
-            this.instance = _accountIns;
-            this.parent = _parentName;
-            this.value = _name;
-            this.description = _description;
-            this.lstTypeConn = _lstTypeConn;
-            this.lstTargetConn = _lstTargetConn;
-            this.lstNumerator = _lstNumerator;
-            this.lstDenominator = _lstDenominator;
-            this.order = _order;
-            this.path = _path;
-        }
-
-        /**
-         * Getter method for instance variable {@link #value}.
-         *
-         * @return value of instance variable {@link #value}
-         */
-        public String getValue()
-        {
-            return this.value;
-        }
-
-        /**
-         * Getter method for instance variable {@link #description}.
-         *
-         * @return description of instance variable {@link #description}
-         */
-        public String getDescription()
-        {
-            return this.description;
-        }
-
-        /**
-         * Getter method for instance variable {@link #parent}.
-         *
-         * @return value of instance variable {@link #parent}
-         */
-        public String getParent()
-        {
-            return this.parent;
-        }
-
-        /**
-         * Getter method for instance variable {@link #order}.
-         *
-         * @return value of instance variable {@link #order}
-         */
-        public String getOrder()
-        {
-            return this.order;
-        }
-
-        /**
-         * Getter method for instance variable {@link #instance}.
-         *
-         * @return value of instance variable {@link #instance}
-         */
-        public Instance getInstance()
-        {
-            return this.instance;
-        }
-
-        /**
-         * Getter method for instance variable {@link #lstTypeConn}.
-         *
-         * @return the lstTypeConn
-         */
-        private List<Type> getLstTypeConn()
-        {
-            return this.lstTypeConn;
-        }
-
-        /**
-         * Getter method for instance variable {@link #lstTargetConn}.
-         *
-         * @return the lstTargetConn
-         */
-        private List<String> getLstTargetConn()
-        {
-            return this.lstTargetConn;
-        }
-
-        /**
-         * @return the lstNumerator
-         */
-        private List<BigDecimal> getLstNumerator()
-        {
-            return lstNumerator;
-        }
-
-        /**
-         * @return the lstDenominator
-         */
-        private List<BigDecimal> getLstDenominator()
-        {
-            return lstDenominator;
-        }
-
-        /**
-         * @return the path
-         */
-        private String getPath()
-        {
-            return this.path;
-        }
-
-        /**
-         * @param path the path to set
-         */
-        private void setPath(final String _path)
-        {
-            this.path = _path;
         }
     }
 

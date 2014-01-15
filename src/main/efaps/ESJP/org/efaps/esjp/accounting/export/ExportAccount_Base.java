@@ -122,7 +122,7 @@ public abstract class ExportAccount_Base
             lstColData.add(name);
             lstColData.add(parentId);
             lstColData.add(description);
-            lstColData.add(ExportAccount_Base.TYPE2TYPE.get(type));
+            lstColData.add(AbstractExport_Base.TYPE2TYPE.get(type.getUUID()));
             lstColData.add(summary ? "YES" : "NO");
 
 
@@ -147,7 +147,7 @@ public abstract class ExportAccount_Base
                 final Integer accNum = multi2.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
                 final Integer accDen = multi2.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
 
-                lstColData.add(ExportAccount_Base.TYPE2TYPE.get(accRel));
+                lstColData.add(AbstractExport_Base.TYPE2TYPE.get(accRel.getUUID()));
                 lstColData.add(accTarget);
                 lstColData.add(accNum);
                 lstColData.add(accDen);
