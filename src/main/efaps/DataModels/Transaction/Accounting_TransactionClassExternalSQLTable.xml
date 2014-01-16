@@ -38,7 +38,6 @@
             <!-- columns -->
             <column name="TRANSID"    type="INTEGER"  not-null="true" />
             <column name="DOCID"      type="INTEGER"  not-null="true" />
-            <column name="EXTYPEID"   type="INTEGER" />
             <foreign name="T_ACCTRANSACTIONCLASSEX_FK_TRANSID"    key="TRANSID"    reference="T_ACCTRANSACTION(ID)" />
             <foreign name="T_ACCTRANSACTIONCLASSEX_FK_DOCID"      key="DOCID"      reference="T_ERPDOC(ID)"/>
         </database>

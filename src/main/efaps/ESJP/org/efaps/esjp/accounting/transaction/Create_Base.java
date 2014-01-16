@@ -439,7 +439,6 @@ public abstract class Create_Base
 
             final Insert classInsert = new Insert(classification);
             classInsert.add(classification.getLinkAttributeName(), instance.getId());
-            classInsert.add(CIAccounting.TransactionClassExternal.TypeLink, _parameter.getParameterValue("typeLink"));
             classInsert.add(CIAccounting.TransactionClassExternal.DocumentLink, docInst.getId());
             classInsert.execute();
 

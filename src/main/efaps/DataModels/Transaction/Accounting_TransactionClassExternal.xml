@@ -63,12 +63,5 @@
             <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
-        <attribute>
-            <name>TypeLink</name>
-            <type>Link</type>
-            <typelink>ERP_DocumentType</typelink>
-            <sqltable>Accounting_TransactionClassExternalSQLTable</sqltable>
-            <sqlcolumn>EXTYPEID</sqlcolumn>
-        </attribute>
     </definition>
 </datamodel-type>
