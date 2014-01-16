@@ -146,7 +146,7 @@ public abstract class ExportCase_Base
             row.put(ColumnCase.CASETYPE.getKey(), caseType.getUUID());
             row.put(ColumnCase.CASENAME.getKey(), caseName);
             row.put(ColumnCase.CASEDESC.getKey(), caseDesc);
-            row.put(ColumnCase.A2CTYPE.getKey(), acc2CaseType);
+            row.put(ColumnCase.A2CTYPE.getKey(), acc2CaseType.getUUID());
             row.put(ColumnCase.A2CACC.getKey(), acc2CaseAcc);
             row.put(ColumnCase.A2CNUM.getKey(), acc2CaseNum);
             row.put(ColumnCase.A2CDENUM.getKey(), acc2CaseDen);
