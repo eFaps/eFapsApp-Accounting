@@ -41,7 +41,9 @@
             <menu>Accounting_DocumentMyDesk_Menu</menu>
             <table>Sales_IncomingInvoiceTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingInvoice;Accounting_ExternalVoucher</property>
+                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="Type02">Accounting_ExternalVoucher</property>
+                <property name="Type03">Sales_IncomingReceipt</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
