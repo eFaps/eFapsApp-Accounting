@@ -38,7 +38,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_ExternalVoucherTree_Menu_Action_Edit</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumetType</child>
+            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
         </childs>
     </definition>
 
