@@ -125,7 +125,6 @@ public abstract class ExportAccount_Base
             lstColData.add(AbstractExport_Base.TYPE2TYPE.get(type.getUUID()));
             lstColData.add(summary ? "YES" : "NO");
 
-
             final QueryBuilder queryBldr2 = new QueryBuilder(CIAccounting.Account2AccountAbstract);
             queryBldr2.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink,
                             multi.getCurrentInstance());
@@ -136,7 +135,7 @@ public abstract class ExportAccount_Base
                             .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).id();
             multi2.addSelect(selAccountId);
             multi2.execute();
-            final int cont = 1;
+            int cont = 1;
             while (multi2.next()) {
                 if (cont > addGrpCols) {
                     addAdditionalGroupCols(_parameter, _exporter, cont - 1);
@@ -151,7 +150,7 @@ public abstract class ExportAccount_Base
                 lstColData.add(accTarget);
                 lstColData.add(accNum);
                 lstColData.add(accDen);
-
+                cont++;
             }
 
             lstRowsData.add(lstColData);
