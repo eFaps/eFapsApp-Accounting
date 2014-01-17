@@ -35,22 +35,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionClassExternalForm</name>
         <type>Accounting_TransactionClassExternal</type>
-        <field name="typeLink">
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="Phrase">$&lt;linkto[TypeLink].attribute[Name]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
-            <property name="Label">Accounting_TransactionClassExternal/TypeLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="typeLink4Edit">
-            <property name="ModeCreate">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">TypeLink</property>
-            <property name="Label">Accounting_TransactionClassExternal/TypeLink.Label</property>
-        </field>
-       <field name="documentLink">
+        <field name="documentLink">
             <property name="ModeCreate">NONE</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="SelectAlternateOID">linkto[DocumentLink].oid</property>
