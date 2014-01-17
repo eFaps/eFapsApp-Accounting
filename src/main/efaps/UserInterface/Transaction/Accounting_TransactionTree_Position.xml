@@ -35,7 +35,7 @@
         <name>Accounting_TransactionTree_Position</name>
         <target>
             <menu>Accounting_TransactionTree_Position_Menu</menu>
-            <table>Accounting_TransactionPositionTable</table>
+            <table>Accounting_TransactionPositionTableNoFilter</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Accounting_TransactionPositionAbstract</property>
                 <property name="LinkFroms">TransactionLink</property>
