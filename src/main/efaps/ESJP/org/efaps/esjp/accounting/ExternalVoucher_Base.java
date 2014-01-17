@@ -391,14 +391,13 @@ public abstract class ExternalVoucher_Base
                                         final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Long docTypeId = Long.parseLong(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_TransactionClassExternalForm.typeLink.name));
+        final Long docTypeId = Long.parseLong(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.typeLink.name));
         if (docTypeId != null && _createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.Document2DocumentType);
             insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
             insert.add(CISales.Document2DocumentType.DocumentTypeLink, docTypeId);
             insert.execute();
-
         }
     }
     /**

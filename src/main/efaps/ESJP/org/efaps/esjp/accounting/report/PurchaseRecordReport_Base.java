@@ -420,13 +420,13 @@ public abstract class PurchaseRecordReport_Base
                 final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
                 final BigDecimal net = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
-                final Instance taxInst = multi.<Instance>getSelect(selTaxInst);
+                final Instance taxCatInst = multi.<Instance>getSelect(selTaxInst);
                 if (!ret.containsKey(docInst)) {
                     ret.put(docInst, getPosSum4Doc(_parameter));
                 }
                 final PosSum4Doc posSum = ret.get(docInst);
-                posSum.addCross(cross, taxInst);
-                posSum.addNet(net, taxInst);
+                posSum.addCross(cross, taxCatInst);
+                posSum.addNet(net, taxCatInst);
             }
         }
         return ret;
@@ -549,9 +549,9 @@ public abstract class PurchaseRecordReport_Base
     public static class PosSum4Doc
     {
 
-        private final Map<Instance, BigDecimal> tax2cross = new HashMap<Instance, BigDecimal>();
+        private final Map<Instance, BigDecimal> taxCat2cross = new HashMap<Instance, BigDecimal>();
 
-        private final Map<Instance, BigDecimal> tax2net = new HashMap<Instance, BigDecimal>();
+        private final Map<Instance, BigDecimal> taxCat2net = new HashMap<Instance, BigDecimal>();
 
         /**
          * @param _cross
@@ -560,10 +560,10 @@ public abstract class PurchaseRecordReport_Base
         public void addCross(final BigDecimal _cross,
                              final Instance _taxInst)
         {
-            if (!this.tax2cross.containsKey(_taxInst)) {
-                this.tax2cross.put(_taxInst, BigDecimal.ZERO);
+            if (!this.taxCat2cross.containsKey(_taxInst)) {
+                this.taxCat2cross.put(_taxInst, BigDecimal.ZERO);
             }
-            this.tax2cross.put(_taxInst,this.tax2cross.get(_taxInst).add(_cross));
+            this.taxCat2cross.put(_taxInst, this.taxCat2cross.get(_taxInst).add(_cross));
         }
 
         /**
@@ -573,10 +573,10 @@ public abstract class PurchaseRecordReport_Base
         public void addNet(final BigDecimal _net,
                            final Instance _taxInst)
         {
-            if (!this.tax2net.containsKey(_taxInst)) {
-                this.tax2net.put(_taxInst, BigDecimal.ZERO);
+            if (!this.taxCat2net.containsKey(_taxInst)) {
+                this.taxCat2net.put(_taxInst, BigDecimal.ZERO);
             }
-            this.tax2net.put(_taxInst,this.tax2net.get(_taxInst).add(_net));
+            this.taxCat2net.put(_taxInst, this.taxCat2net.get(_taxInst).add(_net));
         }
 
         /**
@@ -588,15 +588,12 @@ public abstract class PurchaseRecordReport_Base
             BigDecimal ret = BigDecimal.ZERO;
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.TaxCategory);
             attrQueryBldr.addWhereAttrEqValue(CISales.TaxCategory.UUID, "25267a7d-84a9-428f-990e-9d99b133faf4");
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.TaxCategory.ID);
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
-            queryBldr.addWhereAttrInQuery(CISales.Tax.TaxCategory, attrQuery);
-            final InstanceQuery query = queryBldr.getCachedQuery(PurchaseRecordReport_Base.CACHEDQUERYKEY);
+            final InstanceQuery query = attrQueryBldr.getCachedQuery(PurchaseRecordReport_Base.CACHEDQUERYKEY);
             query.execute();
             while (query.next()) {
                 final Instance taxFreeInst = query.getCurrentValue();
-                if (this.tax2net.containsKey(taxFreeInst)) {
-                    ret = ret.add(this.tax2net.get(taxFreeInst));
+                if (this.taxCat2net.containsKey(taxFreeInst)) {
+                    ret = ret.add(this.taxCat2net.get(taxFreeInst));
                 }
             }
             return ret;
