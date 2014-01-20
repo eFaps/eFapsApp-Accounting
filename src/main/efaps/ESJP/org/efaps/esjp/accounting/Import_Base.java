@@ -553,6 +553,7 @@ public abstract class Import_Base
         private String caseName;
         private String caseDescription;
         private Type casetype;
+        private boolean caseIsCross;
         private Type a2cType;
         private String a2cClass;
         private String a2cNum;
@@ -580,6 +581,9 @@ public abstract class Import_Base
                 final String type = _row[_colName2Index.get(ColumnCase.CASETYPE.getKey())].trim()
                                 .replaceAll("\n", "");
                 this.casetype = Type.get(Import_Base.TYPE2TYPE.get(type));
+                this.caseIsCross = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())])
+                                || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())]);
+
                 final String a2c = _row[_colName2Index.get(ColumnCase.A2CTYPE.getKey())].trim()
                                 .replaceAll("\n", "");
 
@@ -646,6 +650,7 @@ public abstract class Import_Base
                 insert.add(CIAccounting.CaseAbstract.Name, this.caseName);
                 insert.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
                 insert.add(CIAccounting.CaseAbstract.PeriodeAbstractLink, this.periodeInst.getId());
+                insert.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
                 insert.execute();
                 caseInst = insert.getInstance();
             }

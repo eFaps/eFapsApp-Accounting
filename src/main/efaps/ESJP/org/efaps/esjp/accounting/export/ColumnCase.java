@@ -47,7 +47,9 @@ public enum ColumnCase
     /** */
     CASENAME("[Case_Name]"),
     /** */
-    CASEDESC("[Case_Description]");
+    CASEDESC("[Case_Description]"),
+    /** */
+    CASEISCROSS("[Case_IsCross]");
 
     /** Key. */
     private final String key;

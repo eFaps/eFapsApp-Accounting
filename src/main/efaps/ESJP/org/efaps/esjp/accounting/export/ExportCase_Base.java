@@ -81,6 +81,7 @@ public abstract class ExportCase_Base
         _exporter.addColumns(new FrmtColumn(ColumnCase.CASETYPE.getKey(), 30));
         _exporter.addColumns(new FrmtColumn(ColumnCase.CASENAME.getKey(), 40));
         _exporter.addColumns(new FrmtColumn(ColumnCase.CASEDESC.getKey()).setMaxWidth(80));
+        _exporter.addColumns(new FrmtColumn(ColumnCase.CASEISCROSS.getKey(), 5));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CTYPE.getKey(), 30));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CACC.getKey(), 12));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CCLA.getKey(), 80));
@@ -110,12 +111,15 @@ public abstract class ExportCase_Base
         final SelectBuilder selCaseDesc = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                         .attribute(CIAccounting.CaseAbstract.Description);
+        final SelectBuilder selCaseIsCross = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
+                        .attribute(CIAccounting.CaseAbstract.IsCross);
         final SelectBuilder selCaseType = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink).type();
         final SelectBuilder selAccountName = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
                         .attribute(CIAccounting.AccountAbstract.Name);
-        multi.addSelect(selAccountName, selCaseDesc, selCaseName, selCaseType);
+        multi.addSelect(selAccountName, selCaseDesc, selCaseName, selCaseType, selCaseIsCross);
         multi.execute();
         final List<Map<String, Object>> lstCols = new ArrayList<Map<String, Object>>();
         while (multi.next()) {
@@ -123,6 +127,7 @@ public abstract class ExportCase_Base
             final Type caseType = multi.<Type>getSelect(selCaseType);
             final String caseName = multi.<String>getSelect(selCaseName);
             final String caseDesc = multi.<String>getSelect(selCaseDesc);
+            final Boolean caseIsCross = multi.<Boolean>getSelect(selCaseIsCross);
             final Type acc2CaseType = multi.getCurrentInstance().getType();
             final String acc2CaseAcc = multi.<String>getSelect(selAccountName);
 
@@ -146,6 +151,7 @@ public abstract class ExportCase_Base
             row.put(ColumnCase.CASETYPE.getKey(), caseType.getUUID());
             row.put(ColumnCase.CASENAME.getKey(), caseName);
             row.put(ColumnCase.CASEDESC.getKey(), caseDesc);
+            row.put(ColumnCase.CASEISCROSS.getKey(), caseIsCross);
             row.put(ColumnCase.A2CTYPE.getKey(), acc2CaseType.getUUID());
             row.put(ColumnCase.A2CACC.getKey(), acc2CaseAcc);
             row.put(ColumnCase.A2CNUM.getKey(), acc2CaseNum);
@@ -182,6 +188,7 @@ public abstract class ExportCase_Base
                             map.get(ColumnCase.CASENAME.getKey()),
                             map.get(ColumnCase.CASEDESC.getKey()),
                             AbstractExport_Base.TYPE2TYPE.get(map.get(ColumnCase.A2CTYPE.getKey())),
+                            map.get(ColumnCase.CASEISCROSS.getKey()),
                             map.get(ColumnCase.A2CACC.getKey()),
                             map.get(ColumnCase.A2CCLA.getKey()),
                             map.get(ColumnCase.A2CNUM.getKey()),
