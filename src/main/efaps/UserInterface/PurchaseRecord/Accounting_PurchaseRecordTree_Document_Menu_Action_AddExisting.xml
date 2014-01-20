@@ -36,6 +36,12 @@
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectType">Accounting_PurchaseRecord2Document</property>
             </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PurchaseRecordTree_Document_Menu_Action_AddExisting.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Stati">Open</property>
+            </trigger>
         </target>
 
         <!-- properties -->
