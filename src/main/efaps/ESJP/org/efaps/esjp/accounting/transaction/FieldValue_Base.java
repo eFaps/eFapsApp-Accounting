@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -117,39 +118,45 @@ public abstract class FieldValue_Base
     public Return getCaseFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
+        Return ret = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String type = (String) properties.get("Type");
         if (type != null) {
             final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
                             Transaction_Base.PERIODE_SESSIONKEY);
-            final Map<String, String> values = new TreeMap<String, String>();
+            _parameter.put(ParameterValues.INSTANCE, periodeInstance);
+            final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
+            {
 
-            final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
-            queryBldr.addWhereAttrEqValue("PeriodeAbstractLink", periodeInstance.getId());
-            queryBldr.addWhereAttrEqValue("Active", true);
-            final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute("Name");
-            print.execute();
-            while (print.next()) {
-                final String name = print.<String>getAttribute("Name");
-                values.put(name, print.getCurrentInstance().getOid());
-            }
-            final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-            final StringBuilder html = new StringBuilder();
-            html.append("<select name=\"").append(fieldvalue.getField().getName()).append("\" ")
-                            .append(UIInterface.EFAPSTMPTAG).append(" >");
-            boolean first = true;
-            for (final Entry<String, String> entry : values.entrySet()) {
-                if (first) {
-                    Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY, entry.getValue());
-                    first = false;
-                }
-                html.append("<option value=\"").append(entry.getValue());
-                html.append("\">").append(entry.getKey()).append("</option>");
-            }
-            html.append("</select>");
-            ret.put(ReturnValues.SNIPLETT, html.toString());
+                @Override
+                protected void updatePositionList(final Parameter _parameter,
+                                                  final List<DropDownPosition> _values)
+                    throws EFapsException
+                {
+                    final String trueStr = DBProperties.getProperty("Accounting_CaseAbstract/IsCross.true");
+                    final String falseStr = DBProperties.getProperty("Accounting_CaseAbstract/IsCross.false");
+
+                    final String cross = DBProperties
+                                    .getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Cross");
+                    final String net = DBProperties.getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Net");
+
+                    boolean first = true;
+                    for (final DropDownPosition pos : _values) {
+                        if (first) {
+                            Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY,
+                                            pos.getValue());
+                            first = false;
+                        }
+                        final String strTmp = pos.getOption().toString();
+                        if (StringUtils.endsWith(strTmp, trueStr)) {
+                            pos.setOption(StringUtils.substringBeforeLast(strTmp, trueStr) + cross);
+                        } else {
+                            pos.setOption(StringUtils.substringBeforeLast(strTmp, falseStr) + net);
+                        }
+                    }
+                };
+            };
+            ret = field.dropDownFieldValue(_parameter);
         }
         return ret;
     }
