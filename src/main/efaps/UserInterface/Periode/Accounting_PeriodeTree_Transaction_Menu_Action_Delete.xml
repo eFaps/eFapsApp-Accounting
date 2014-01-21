@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,9 +23,8 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>4fb093c4-ded8-4d6e-8481-1666e05c40a1</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -38,10 +37,15 @@
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodeTree_Transaction_Menu_Action_Delete.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
     </definition>
-
 </ui-command>

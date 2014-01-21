@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,9 +23,8 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>3d861b9e-3753-45bf-9e60-dacb0dd50db8</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -40,8 +39,15 @@
             <form>Accounting_TransactionForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
                 method="create" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
+            <validate
+                program="org.efaps.esjp.accounting.transaction.Transaction"
                 method="validate" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodeTree_Transaction_Menu_Action_Create.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
@@ -51,5 +57,4 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
     </definition>
-
 </ui-command>
