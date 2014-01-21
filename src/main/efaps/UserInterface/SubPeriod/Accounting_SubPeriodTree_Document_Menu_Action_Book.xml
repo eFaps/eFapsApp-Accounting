@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,36 +23,43 @@
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>21459dc5-ab5e-4d06-b426-8c479ed3bcf1</uuid>
+    <uuid>b7909ca3-534a-4abf-84bb-488cbdd0f845</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_Menu_Action_Edit</name>
-
-        <access>
-            <role>Accounting_Admin</role>
-        </access>
+        <name>Accounting_SubPeriodTree_Document_Menu_Action_Book</name>
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_SubPeriodForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Create.UI_ACCESSCHECK.1"
-                event="UI_ACCESSCHECK">
+            <form>Accounting_TransactionCreate4DocForm</form>
+            <execute method="create4Doc"
+                program="org.efaps.esjp.accounting.transaction.Create" />
+            <validate method="validate"
+                program="org.efaps.esjp.accounting.transaction.Transaction" />
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Accounting_SubPeriodTree_Document_Menu_Action_Book.UI_ACCESSCHECK.1"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                index="1">
                 <property name="Status">Open</property>
                 <property name="Select4Instance">linkto[PeriodLink].instance</property>
             </trigger>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Accounting_SubPeriodTree_Document_Menu_Action_Book.UI_ACCESSCHECK.2"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                index="2">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
-
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="Submit">true</property>
     </definition>
 
 </ui-command>

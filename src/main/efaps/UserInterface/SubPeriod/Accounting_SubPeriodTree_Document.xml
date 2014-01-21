@@ -30,7 +30,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_Document</name>
         <target>
-            <menu>Accounting_PeriodeTree_Document_Menu</menu>
+            <menu>Accounting_SubPeriodTree_Document_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getDocuments" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">Sales_DocumentSumAbstract</property>

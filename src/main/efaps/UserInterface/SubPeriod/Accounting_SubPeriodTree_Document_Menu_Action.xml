@@ -20,28 +20,20 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>4780ab04-98f3-4f09-ae60-e07e707fadd2</uuid>
+    <uuid>7be6cff8-8f50-45d4-8f59-27ab19d3fae7</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete</name>
-        <!-- target definitions -->
-        <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <property name="Status">Open</property>
-            </trigger>
-        </target>
-        <!-- properties -->
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <name>Accounting_SubPeriodTree_Document_Menu_Action</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_SubPeriodTree_Document_Menu_Action_Book</child>
+            <child>Accounting_SubPeriodTree_Document_Menu_Action_MassiveRegister</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

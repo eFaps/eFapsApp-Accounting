@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,36 +19,33 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>46512945-b5b1-4210-a441-05ac532ec677</uuid>
+    <uuid>749a6181-9d3a-42f1-99cb-a2d6fca59eb0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</name>
+        <name>Accounting_SubPeriodTree_Document_Menu_Action_MassiveRegister</name>
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_SubPeriodForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" >
-                <property name="StatusGroup">Accounting_SubPeriodStatus</property>
-                <property name="Status">Open</property>
+            <form>Accounting_MassiveRegister4DocumentForm</form>
+            <execute method="createDoc4Massive" program="org.efaps.esjp.accounting.transaction.Create">
+                <property name="Classification">Accounting_TransactionClassDocument</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Create.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <property name="Status">Open</property>
-            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_SubPeriod</property>
-        <property name="TargetConnectAttribute">Accounting_SubPeriod/PeriodLink</property>
+        <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">800</property>
+        <property name="Submit">true</property>
+        <property name="AskUser">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
+
 </ui-command>
