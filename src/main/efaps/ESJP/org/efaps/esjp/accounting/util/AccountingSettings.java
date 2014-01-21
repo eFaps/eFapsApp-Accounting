@@ -105,4 +105,9 @@ public interface AccountingSettings
      */
     String PERIOD_ACTIVATEEXCHANGE = "ActivateExchange";
 
+    /**
+     * Activate the Exchange mechanism.
+     */
+    String PERIOD_ACTIVATEVIEWS = "ActivateViews";
+
 }
