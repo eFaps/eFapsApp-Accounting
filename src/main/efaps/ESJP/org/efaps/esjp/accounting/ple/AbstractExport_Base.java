@@ -152,6 +152,12 @@ public abstract class AbstractExport_Base
                         println();
                     }
                 }
+
+                @Override
+                public void afterRow(final RowDetails _rowDetails)
+                {
+                    print(_options.getDelimiter());
+                }
             });
         }
     }

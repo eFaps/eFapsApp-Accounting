@@ -81,6 +81,56 @@ public abstract class PurchaseRecordReport_Base
      */
     protected static final Logger LOG = LoggerFactory.getLogger(PurchaseRecordReport_Base.class);
 
+    public enum DocState
+    {
+        /**
+         * Registrar '1' cuando se anota el Comprobante de Pago o documento en
+         * el periodo que se emitió o que se pagó el impuesto, según
+         * corresponda.
+         */
+        NORMAL("1"),
+        /**
+         * Registrar '6' cuando la fecha de emisión del Comprobante de Pago o de
+         * pago del impuesto es anterior al periodo de anotación y esta se
+         * produce dentro de los doce meses siguientes a la emisión o pago del
+         * impuesto, según corresponda.
+         */
+        INSIDE("6"),
+        /**
+         * Registrar '7' cuando la fecha de emisión del Comprobante de Pago o
+         * pago del impuesto es anterior al periodo de anotación y esta se
+         * produce luego de los doce meses siguientes a la emisión o pago del
+         * impuesto, según corresponda.
+         */
+        OUSIDE("7"),
+        /**
+         * Registrar '9' cuando se realice un ajuste en la anotación de la
+         * información de una operación registrada en un periodo anterior.
+         */
+        CORRECTION("9");
+
+        private final String key;
+
+        /**
+         * @param _key key
+         */
+        private DocState(final String _key)
+        {
+            this.key = _key;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #key}.
+         *
+         * @return value of instance variable {@link #key}
+         */
+        public String getKey()
+        {
+            return this.key;
+        }
+    }
+
+
     /**
      * Enum used to define the keys for the map.
      */
@@ -92,6 +142,8 @@ public abstract class PurchaseRecordReport_Base
         DOC_REVISION("docRevision"),
         /** */
         DOC_DATE("date"),
+        /** */
+        DOC_STATE("docState"),
         /** */
         DOC_DUEDATE("dueDate"),
         /** */
@@ -106,6 +158,8 @@ public abstract class PurchaseRecordReport_Base
         DOC_TAXNUM("taxNumber"),
         /** */
         DOC_CONTACT("contact"),
+        /**Tipo de Documento de Identidad del proveedor. */
+        DOC_CONTACTDOI("contactDOI"),
         /** */
         DOC_CROSSTOTAL("crossTotal"),
         /** */
@@ -129,7 +183,13 @@ public abstract class PurchaseRecordReport_Base
         /** */
         DETRACTION_AMOUNT("detractionAmount"),
         /** */
-        DETRACTION_DATE("detractionDate");
+        DETRACTION_DATE("detractionDate"),
+        /** Año de emisión de la DUA o DSI. LE Column 7*/
+        DUA_YEAR("duaYear"),
+        /** Marca del comprobante de pago sujeto a retención. LE Column 31*/
+        RETENCION_APPLIES("retencionApplies"),
+        /** Número del comprobante de pago emitido por sujeto no domiciliado. */
+        DOC_FOREIGNNAME("docForeignName");
 
         /**
          * key.
@@ -293,7 +353,8 @@ public abstract class PurchaseRecordReport_Base
                 map.put(PurchaseRecordReport_Base.Field.DOC_REVISION.getKey(), docRevision);
                 map.put(PurchaseRecordReport_Base.Field.DETRACTION_NAME.getKey(), detractionName);
                 map.put(PurchaseRecordReport_Base.Field.DETRACTION_AMOUNT.getKey(), detractionAmount);
-                map.put(PurchaseRecordReport_Base.Field.DETRACTION_DATE.getKey(), detractionDate);
+                map.put(PurchaseRecordReport_Base.Field.DETRACTION_DATE.getKey(), detractionAmount == null ? null
+                                : detractionDate);
 
                 if (docDerivatedRel != null && docDerivatedRel.isValid()) {
                     final SelectBuilder selLinkName = new SelectBuilder()
@@ -318,6 +379,23 @@ public abstract class PurchaseRecordReport_Base
                     map.put(PurchaseRecordReport_Base.Field.DOCREL_TYPE.getKey(),
                                     printDocRel.<String>getSelect(selLinkName));
                 }
+
+                // TODO falta implementar
+                map.put(PurchaseRecordReport_Base.Field.DUA_YEAR.getKey(), "0");
+                map.put(PurchaseRecordReport_Base.Field.RETENCION_APPLIES.getKey(), false);
+                map.put(PurchaseRecordReport_Base.Field.DOC_CONTACTDOI.getKey(), null);
+
+                final DateTime purchaseDate = getDate4Purchase(_parameter);
+                final Integer diff = purchaseDate.getMonthOfYear() - docDate.getMonthOfYear();
+
+                if (Math.abs(diff) > 12) {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_STATE.getKey(), DocState.OUSIDE.getKey());
+                } else if (Math.abs(diff) > 0) {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_STATE.getKey(), DocState.INSIDE.getKey());
+                } else {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_STATE.getKey(), DocState.NORMAL.getKey());
+                }
+
                 values.add(map);
             }
         }
