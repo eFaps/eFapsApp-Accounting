@@ -29,7 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_DocsToBook</name>
         <target>
-            <menu>Accounting_PeriodeTree_DocsToBook_Menu</menu>
+            <menu>Accounting_SubPeriodTree_DocsToBook_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getDocumentsToBook" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">Sales_DocumentSumAbstract</property>
@@ -54,5 +54,6 @@
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
+        <property name="Label">Accounting_PeriodeTree_DocsToBook.Label</property>
     </definition>
 </ui-command>
