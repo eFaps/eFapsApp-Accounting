@@ -23,32 +23,25 @@
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>46512945-b5b1-4210-a441-05ac532ec677</uuid>
+    <uuid>4780ab04-98f3-4f09-ae60-e07e707fadd2</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</name>
-
+        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete</name>
         <!-- target definitions -->
         <target>
-            <form>Accounting_SubPeriodForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" >
-                <property name="StatusGroup">Accounting_SubPeriodStatus</property>
-                <property name="Status">Open</property>
-            </execute>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Create.UI_ACCESSCHECK"
+                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Stati">Open</property>
             </trigger>
         </target>
         <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_SubPeriod</property>
-        <property name="TargetConnectAttribute">Accounting_SubPeriod/PeriodLink</property>
-        <property name="TargetMode">create</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 </ui-command>

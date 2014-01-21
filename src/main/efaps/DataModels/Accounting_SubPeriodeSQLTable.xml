@@ -29,7 +29,7 @@
     <uuid>fd9eaf7c-d2b3-495a-b446-0e0931d253b0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-    
+
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodSQLTable</name>
@@ -38,7 +38,7 @@
             <!-- columns -->
             <column name="COMPANYID"    type="INTEGER"      not-null="true" />
             <column name="PERIODID"     type="INTEGER"      not-null="true" />
-            <column name="STATUS"       type="INTEGER"         not-null="true"/>
+            <column name="STATUS"       type="INTEGER"      not-null="true"/>
             <column name="NAME"         type="STRING_SHORT" not-null="true" length="128" />
             <column name="FROMDATE"     type="DATETIME"     not-null="true" />
             <column name="TODATE"       type="DATETIME"     not-null="true" />

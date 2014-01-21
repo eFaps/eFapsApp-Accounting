@@ -20,19 +20,24 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>a183fa41-f345-4ddf-a40b-466d0455e0f0</uuid>
+    <uuid>96a768c5-ef69-4498-b4ae-af03ef53d147</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</child>
-            <child>Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete</child>
-        </childs>
+        <name>Accounting_PeriodStatus</name>
+        <parent>Admin_DataModel_StatusAbstract</parent>
+        <status key="Open">
+            <description>Open.</description>
+        </status>
+        <status key="Closed">
+            <description>Closed.</description>
+        </status>
+        <status key="Booked">
+            <description>Booked.</description>
+        </status>
     </definition>
-</ui-menu>
+</datamodel-statusgroup>
