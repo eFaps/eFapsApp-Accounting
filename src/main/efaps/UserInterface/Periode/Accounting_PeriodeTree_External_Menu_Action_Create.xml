@@ -42,6 +42,12 @@
             <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodeTree_External_Menu_Action_Create.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
             <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
         <!-- properties -->

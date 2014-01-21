@@ -42,6 +42,12 @@
                 method="create4Doc" />
             <validate program="org.efaps.esjp.accounting.transaction.Transaction"
                 method="validate" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodeTree_ExternalToBook_Menu_Action_Book.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

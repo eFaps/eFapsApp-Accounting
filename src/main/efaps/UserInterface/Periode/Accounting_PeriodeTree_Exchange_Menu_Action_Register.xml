@@ -36,6 +36,12 @@
             <form>Accounting_TransactionCreate4ExchangeForm</form>
             <execute method="create4Exchange" program="org.efaps.esjp.accounting.transaction.Create" />
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodeTree_Exchange_Menu_Action_Register.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

@@ -35,6 +35,12 @@
             <execute method="createDoc4Massive" program="org.efaps.esjp.accounting.transaction.Create">
                 <property name="Classification">Accounting_TransactionClassExternal</property>
             </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodeTree_ExternalToBook_Menu_Action_MassiveBook.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
