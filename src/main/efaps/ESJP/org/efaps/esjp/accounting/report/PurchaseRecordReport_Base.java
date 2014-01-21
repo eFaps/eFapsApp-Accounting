@@ -262,6 +262,11 @@ public abstract class PurchaseRecordReport_Base
                             .attribute(CIContacts.Contact.Name);
             final SelectBuilder selRelDocContactTax = new SelectBuilder(selRelDocContact)
                             .clazz(CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
+            final SelectBuilder selRelDocContactIdenityCard = new SelectBuilder(selRelDocContact)
+                    .clazz(CIContacts.ClassPerson).attribute(CIContacts.ClassPerson.IdentityCard);
+            final SelectBuilder selRelDocContactDOIType = new SelectBuilder(selRelDocContact)
+                    .clazz(CIContacts.ClassPerson).linkto(CIContacts.ClassPerson.DOITypeLink)
+                    .attribute(CIContacts.AttributeDefinitionDOIType.MappingKey);
 
             final SelectBuilder selRelTypeLink = new SelectBuilder()
                             .linkto(CIAccounting.PurchaseRecord2Document.TypeLink);
@@ -273,7 +278,7 @@ public abstract class PurchaseRecordReport_Base
                             selRelDocDueDate,
                             selRelDocNTotal, selRelDocCTotal, selRelDocRNTotal, selRelDocRCTotal, selRelDocRateLabel,
                             selRelDocCurInst, selRelDocRCurInst, selRelDocContactName, selRelDocContactTax,
-                            selRelTypeLinkName);
+                            selRelTypeLinkName, selRelDocContactIdenityCard, selRelDocContactDOIType);
             multi.addAttribute(CIAccounting.PurchaseRecord2Document.DetractionDate,
                             CIAccounting.PurchaseRecord2Document.DetractionName,
                             CIAccounting.PurchaseRecord2Document.DetractionAmount);
@@ -291,6 +296,9 @@ public abstract class PurchaseRecordReport_Base
                 final BigDecimal rateTmp = multi.<BigDecimal>getSelect(selRelDocRateLabel);
                 final String typeLinkName = multi.<String>getSelect(selRelTypeLinkName);
                 final String docRevision = multi.<String>getSelect(selRelDocRevision);
+                final String docContactIdenityCard = multi.<String>getSelect(selRelDocContactIdenityCard);
+                final String docContactDOIType = multi.<String>getSelect(selRelDocContactDOIType);
+
                 final String detractionName = multi
                                 .<String>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionName);
                 final BigDecimal detractionAmount = multi
@@ -333,7 +341,15 @@ public abstract class PurchaseRecordReport_Base
                 map.put(PurchaseRecordReport_Base.Field.DOC_DUEDATE.getKey(), docDueDate);
                 map.put(PurchaseRecordReport_Base.Field.DOC_NAME.getKey(), docName);
                 map.put(PurchaseRecordReport_Base.Field.DOC_CONTACT.getKey(), contactName);
-                map.put(PurchaseRecordReport_Base.Field.DOC_TAXNUM.getKey(), contactTaxNum);
+                Boolean isDOI = false;
+                String taxNum = contactTaxNum;
+                if (taxNum == null || (taxNum != null && taxNum.isEmpty())) {
+                    if (docContactIdenityCard != null && !docContactIdenityCard.isEmpty()) {
+                        taxNum = docContactIdenityCard;
+                        isDOI =true;
+                    }
+                }
+                map.put(PurchaseRecordReport_Base.Field.DOC_TAXNUM.getKey(), taxNum);
                 map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTAL.getKey(), netTotal);
                 map.put(PurchaseRecordReport_Base.Field.DOC_CROSSTOTAL.getKey(), crossTotal);
                 map.put(PurchaseRecordReport_Base.Field.DOC_IGV.getKey(), igv);
@@ -383,7 +399,14 @@ public abstract class PurchaseRecordReport_Base
                 // TODO falta implementar
                 map.put(PurchaseRecordReport_Base.Field.DUA_YEAR.getKey(), "0");
                 map.put(PurchaseRecordReport_Base.Field.RETENCION_APPLIES.getKey(), false);
-                map.put(PurchaseRecordReport_Base.Field.DOC_CONTACTDOI.getKey(), null);
+
+                if (isDOI) {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_CONTACTDOI.getKey(), docContactDOIType);
+                } else if (contactTaxNum.length() == 11) {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_CONTACTDOI.getKey(), "6");
+                } else {
+                    map.put(PurchaseRecordReport_Base.Field.DOC_CONTACTDOI.getKey(), "0");
+                }
 
                 final DateTime purchaseDate = getDate4Purchase(_parameter);
                 final Integer diff = purchaseDate.getMonthOfYear() - docDate.getMonthOfYear();
