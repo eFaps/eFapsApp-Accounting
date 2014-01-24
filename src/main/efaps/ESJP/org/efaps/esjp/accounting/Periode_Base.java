@@ -119,6 +119,7 @@ public abstract class Periode_Base
                         _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.toDate.name));
         insert.add(CIAccounting.Periode.CurrencyLink,
                         _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.currencyLink.name));
+        insert.add(CIAccounting.Periode.Status, Status.find(CIAccounting.PeriodStatus.Open));
         insert.execute();
         final Instance periodInst = insert.getInstance();
         final StringBuilder props = new StringBuilder();
