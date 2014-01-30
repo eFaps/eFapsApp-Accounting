@@ -39,7 +39,7 @@
         <target>
             <form>ERP_CurrencyRateForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />
-            <trigger program=" org.efaps.esjp.admin.access.AccessCheck4UI"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Accounting_ERP_CurrencyTree_Rate_Menu_Action_Create.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
