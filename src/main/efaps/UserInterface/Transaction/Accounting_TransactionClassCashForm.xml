@@ -47,6 +47,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
                 method="autoComplete4Contact"
                 name="Accounting_TransactionClassCashForm.contact.UI_FIELD_AUTOCOMPLETE"

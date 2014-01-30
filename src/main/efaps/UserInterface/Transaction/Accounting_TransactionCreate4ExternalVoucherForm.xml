@@ -203,6 +203,7 @@
             <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="accessCheck4FieldPicker"
                 name="Accounting_TransactionCreate4ExternalForm.contact.UI_ACCESSCHECK"

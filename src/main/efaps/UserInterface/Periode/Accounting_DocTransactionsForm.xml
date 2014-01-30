@@ -71,6 +71,7 @@
             <property name="Label">Accounting_DocTransactionsForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_DocTransactionsForm.contact.UI_FIELD_AUTOCOMPLETE"
