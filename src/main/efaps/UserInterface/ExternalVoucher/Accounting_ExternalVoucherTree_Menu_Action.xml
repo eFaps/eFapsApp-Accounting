@@ -38,6 +38,8 @@
         <!-- childs -->
         <childs>
             <child>Accounting_ExternalVoucherTree_Menu_Action_Edit</child>
+            <child>Accounting_ExternalVoucherTree_Menu_Action_SetPaid</child>
+            <child>Accounting_ExternalVoucherTree_Menu_Action_SetReplaced</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
