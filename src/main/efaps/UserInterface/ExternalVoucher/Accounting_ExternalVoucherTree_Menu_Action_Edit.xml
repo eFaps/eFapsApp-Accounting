@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -42,14 +42,21 @@
         <!-- target definitions -->
         <target>
             <form>Accounting_ExternalVoucherForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.accounting.ExternalVoucher" method="edit" >
+                <property name="PositionType">Accounting_ExternalVoucherPosition</property>
+            </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_ExternalVoucherTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
 
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
     </definition>
-
 </ui-command>

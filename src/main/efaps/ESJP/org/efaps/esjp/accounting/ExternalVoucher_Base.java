@@ -109,8 +109,15 @@ public abstract class ExternalVoucher_Base
             purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, createdDoc.getInstance().getId());
             purInsert.execute();
         }
+        return new Return();
+    }
 
 
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
         return new Return();
     }
 

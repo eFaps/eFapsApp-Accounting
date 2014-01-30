@@ -33,32 +33,38 @@
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_InvoicePosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Quantity"
-                name="Accounting_ExternalVoucherPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.Invoice" />
+                name="Accounting_ExternalVoucherPositionTable.quantity.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.accounting.ExternalVoucher" />
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_InvoicePosition/Product.Label</property>
+            <property name="Label">Sales_IncomingInvoicePosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
+                method="autoComplete4Product"
                 name="Accounting_ExternalVoucherPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.Invoice" />
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Product"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
+                method="updateFields4Product"
                 name="Accounting_ExternalVoucherPositionTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.Invoice" />
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_InvoicePosition/ProductDesc.Label</property>
             <property name="Width">10</property>
         </field>
         <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_InvoicePosition/UoM.Label</property>
@@ -66,35 +72,29 @@
         <field name="uom4View">
             <property name="Width">1</property>
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_InvoicePosition/UoM.Label</property>
         </field>
         <field name="netUnitPrice">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">NetUnitPrice</property>
-            <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4NetUnitPrice"
+            <property name="Label">Sales_IncomingInvoicePosition/NetUnitPrice.Label</property>
+            <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
+                method="updateFields4NetUnitPrice"
                 name="Accounting_ExternalVoucherPositionTable.netUnitPrice.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.Invoice" />
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4NetUnitPrice"
-                name="Accounting_ExternalVoucherPositionTable.netUnitPrice.UI_ACCESSCHECK"
-                program="org.efaps.esjp.sales.document.Invoice" />
-        </field>
-        <field name="netUnitPrice4Read">
-            <property name="ModeCreate">READONLY</property>
-            <property name="Attribute">NetUnitPrice</property>
-            <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4NetUnitPrice"
-                name="Accounting_ExternalVoucherPositionTable.netUnitPrice.UI_ACCESSCHECK"
-                program="org.efaps.esjp.sales.document.Invoice" />
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="discount">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Discount</property>
-            <property name="Label">Sales_InvoicePosition/Discount.Label</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Discount"
-                name="Accounting_ExternalVoucherPositionTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.Invoice" />
+            <property name="Label">Sales_IncomingInvoicePosition/Discount.Label</property>
+            <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
+                method="updateFields4Discount"
+                name="Accounting_ExternalVoucherPositionTable.discount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="discountNetUnitPrice">
             <property name="ModeCreate">READONLY</property>
@@ -104,7 +104,7 @@
         <field name="netPrice">
             <property name="ModeCreate">READONLY</property>
             <property name="Attribute">NetPrice</property>
-            <property name="Label">Sales_InvoicePosition/NetPrice.Label</property>
+            <property name="Label">Sales_IncomingInvoicePosition/NetPrice.Label</property>
         </field>
     </definition>
 </ui-table>
