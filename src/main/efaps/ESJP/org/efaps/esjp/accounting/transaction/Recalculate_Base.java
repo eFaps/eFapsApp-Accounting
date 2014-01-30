@@ -22,9 +22,6 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +61,7 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.DocumentSum;
@@ -219,19 +217,26 @@ public abstract class Recalculate_Base
         final Return retVal = new Return();
         final Instance docInst = Instance.get(_parameter.getParameterValue("docInst"));
         if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-            final BigDecimal rate = getCurrencyRate(_parameter, docInst);
 
-            final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(
-                            Context.getThreadContext().getLocale());
-            formater.applyPattern("#,##0.############");
-            formater.setRoundingMode(RoundingMode.HALF_UP);
-            final String rateStr = formater.format(rate);
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.Rate);
+            print.execute();
+
+            final Object[] rateObj = print.getAttribute(CISales.DocumentSumAbstract.Rate);
+
+            final Currency currency = getCurrency(_parameter);
+            final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, rateObj);
+
+            final RateFormatter frmt = getRateFormatter(_parameter);
+
+            final String rateStr = frmt.getFrmt4Rate().format(rateInfo.getRate());
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Map<String, String> map = new HashMap<String, String>();
             map.put("rate", rateStr);
             final StringBuilder js = new StringBuilder();
             js.append("document.getElementsByName('transactions')[0].innerHTML='")
-                .append(StringEscapeUtils.escapeEcmaScript(getRecalculateInfo(_parameter, docInst))).append("';");
+                .append(StringEscapeUtils.escapeEcmaScript(getRecalculateInfo(_parameter, docInst)))
+                .append("';");
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);

@@ -37,10 +37,11 @@ public interface AccountingSettings
 {
 
     /**
-     * Rate currency type used for calculate debit and credit positions for a
-     * transaction (ERP_CurrencyRateClient, Accounting_ERP_CurrencyRateAccounting).
+     * Boolean: true/false
+     * The CurrencyRate for Accounting is the same as the one for sales.
+     * Means only one CurrencyRate for the system is used.
      */
-    String RATECURTYPE4DOCS = "org.efaps.accounting.RateCurrencyType4Documents";
+    String CURRATEEQ = "org.efaps.accounting.CurrencyRate4AccountingEqualsSales";
 
     /**
      * Link to a Products_ProductCostTextPosition used for creating Positions

@@ -21,12 +21,10 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +85,6 @@ import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -316,18 +313,8 @@ public abstract class Transaction_Base
                                         final Integer _maxFrac)
         throws EFapsException
     {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (_maxFrac != null) {
-            formater.setMaximumFractionDigits(_maxFrac);
-        }
-        if (_minFrac != null) {
-            formater.setMinimumFractionDigits(_minFrac);
-        }
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setParseBigDecimal(true);
-        return formater;
+        return NumberFormatter.get().getFormatter(_minFrac, _maxFrac);
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -373,20 +360,39 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return a Currency Instance
+     * @throws EFapsException on error
+     */
     protected Currency getCurrency(final Parameter _parameter)
+        throws EFapsException
     {
         final Currency ret = new Currency()
         {
             @Override
             protected Type getType4ExchangeRate(final Parameter _parameter)
+                throws EFapsException
             {
-                return CIAccounting.ERP_CurrencyRateAccounting.getType();
+                Type typeRet;
+                if (Accounting.getSysConfig().getAttributeValueAsBoolean(AccountingSettings.CURRATEEQ)) {
+                    typeRet = super.getType4ExchangeRate(_parameter);
+                } else {
+                    typeRet = CIAccounting.ERP_CurrencyRateAccounting.getType();
+                }
+                return typeRet;
             }
         };
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return a RateFormatter Instance
+     * @throws EFapsException on error
+     */
     protected RateFormatter getRateFormatter(final Parameter _parameter)
+        throws EFapsException
     {
         return new RateFormatter();
     }
@@ -405,27 +411,6 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         return getCurrency(_parameter).evaluateRateInfo(_parameter, _date, _currentCurrencyInst);
-    }
-
-
-    /**
-     * Method to get the rate currency type to use for the document register or booked.
-     *
-     * @param _parameter as passed from eFaps API
-     * @return type for currency rate
-     * @throws EFapsException on errpr
-     */
-    protected Type getType4RateCurrency(final Parameter _parameter)
-        throws EFapsException
-    {
-        Type type = CIAccounting.ERP_CurrencyRateAccounting.getType();
-        final SystemConfiguration config = Accounting.getSysConfig();
-        final String uuidStr = config.getAttributeValue(AccountingSettings.RATECURTYPE4DOCS);
-        if (uuidStr != null) {
-            final UUID uuid = UUID.fromString(uuidStr);
-            type = Type.get(uuid);
-        }
-        return type;
     }
 
     /**
@@ -572,8 +557,7 @@ public abstract class Transaction_Base
             final BigDecimal debit = getSum(_parameter, "Debit", null, null, null);
             final BigDecimal credit = getSum(_parameter, "Credit", null, null, null);
             if (credit.compareTo(BigDecimal.ZERO) == 0 && debit.compareTo(BigDecimal.ZERO) == 0) {
-                html.append(DBProperties
-                                .getProperty("org.efaps.esjp.accounting.transaction.Transaction.noCreateWithZeroTotal"));
+                html.append(DBProperties.getProperty(Transaction.class.getName() + ".noCreateWithZeroTotal"));
                 ret.put(ReturnValues.SNIPLETT, html.toString());
             } else if (credit.subtract(debit).compareTo(BigDecimal.ZERO) == 0) {
                 if (html.length() == 0) {
@@ -637,9 +621,11 @@ public abstract class Transaction_Base
      * @param _parameter Parameter as passed from the eFaps API
      * @param _postFix postfix
      * @return true
+     * @throws EFapsException on error
      */
     protected boolean evalValues(final Parameter _parameter,
-                                 final String _postFix) throws EFapsException
+                                 final String _postFix)
+        throws EFapsException
     {
         boolean ret = true;
         final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
@@ -665,52 +651,6 @@ public abstract class Transaction_Base
             Transaction_Base.LOG.error("Catched ParserException", e);
         }
         return ret;
-    }
-
-    /**
-     * Method to show rate of the document.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return BigDecimal
-     * @throws EFapsException on error
-     */
-    public Return setCurrencyRate(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Instance docInst = Instance.get(_parameter.getParameterValue("selectedRow"));
-        final DecimalFormat formater = NumberFormatter.get().getFormatter(4, 4);
-        final String rate = formater.format(getCurrencyRate(_parameter, docInst));
-        ret.put(ReturnValues.VALUES, rate);
-        return ret;
-    }
-
-    /**
-     * Method to get the target currency rate.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @param _docInst Instance from the document.
-     * @return BigDecimal.
-     * @throws EFapsException on error.
-     */
-    protected BigDecimal getCurrencyRate(final Parameter _parameter,
-                                         final Instance _docInst)
-        throws EFapsException
-    {
-        BigDecimal rate = BigDecimal.ZERO;
-        if (_docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-            final PrintQuery print = new PrintQuery(_docInst);
-            print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId, CISales.DocumentSumAbstract.CurrencyId);
-            print.execute();
-            final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
-            final Instance currentInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-            final PriceUtil priceUtil = new PriceUtil();
-            final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
-            rate = rates[3];
-        }
-        return rate;
     }
 
     /**
@@ -1133,6 +1073,7 @@ public abstract class Transaction_Base
 
         return ret;
     }
+
     /**
      * Method to show the tree transaction in periode.
      *
@@ -1154,6 +1095,11 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API
+     * @return Return conting validation result
+     * @throws EFapsException on error
+     */
     public Return validateEdit4CheckAmount(final Parameter _parameter)
         throws EFapsException
     {
@@ -1174,10 +1120,16 @@ public abstract class Transaction_Base
                 ret.put(ReturnValues.TRUE, true);
             }
         }
-
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API
+     * @param _instance insatcne to be checked
+     * @param _amounts  amounts to be checked
+     * @return true if valid else false
+     * @throws EFapsException on error
+     */
     protected boolean validateAmounts4EditTransactionPos(final Parameter _parameter,
                                                          final Instance _instance,
                                                          final String... _amounts)
@@ -1211,18 +1163,27 @@ public abstract class Transaction_Base
 
         return ret;
     }
-
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return containing snipplet
+     * @throws EFapsException on error
+     */
     public Return getHtml4InvalidTransactions(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = new TransactionInvalid();
-        dyRp.setFileName("PurchaseSaleReport");
+        dyRp.setFileName("NO LO");
         final String html = dyRp.getHtmlSnipplet(_parameter);
         ret.put(ReturnValues.SNIPLETT, html);
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return containing report
+     * @throws EFapsException on error
+     */
     public Return printReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -1509,8 +1470,10 @@ public abstract class Transaction_Base
          * Getter method for the instance variable {@link #currSymbol}.
          *
          * @return value of instance variable {@link #currSymbol}
+         * @throws EFapsException on error
          */
-        public String getCurrSymbol() throws EFapsException
+        public String getCurrSymbol()
+            throws EFapsException
         {
             return this.rateInfo.getCurrencyInst().getSymbol();
         }
@@ -1829,7 +1792,7 @@ public abstract class Transaction_Base
         /**
          * Setter method for instance variable {@link #currInstance}.
          *
-         * @param _amount value for instance variable {@link #currInstance}
+         * @param _currInstance value for instance variable {@link #currInstance}
          */
 
         public void setCurrInstance(final Instance _currInstance)
@@ -1913,7 +1876,7 @@ public abstract class Transaction_Base
     }
 
     public class TransactionInvalid
-    extends AbstractDynamicReport
+        extends AbstractDynamicReport
     {
 
         @Override
@@ -1968,6 +1931,7 @@ public abstract class Transaction_Base
 
             Collections.sort(lst, new Comparator<Map<String, Object>>()
             {
+
                 @Override
                 public int compare(final Map<String, Object> _o1,
                                    final Map<String, Object> _o2)
@@ -1976,9 +1940,9 @@ public abstract class Transaction_Base
                     final Date date2 = (Date) _o2.get("date");
                     final int ret;
                     if (date1.equals(date2)) {
-                            final String txn1 = (String) _o1.get("transaction");
-                            final String txn2 = (String) _o2.get("transaction");
-                            ret = txn1.compareTo(txn2);
+                        final String txn1 = (String) _o1.get("transaction");
+                        final String txn2 = (String) _o2.get("transaction");
+                        ret = txn1.compareTo(txn2);
                     } else {
                         ret = date1.compareTo(date2);
                     }
