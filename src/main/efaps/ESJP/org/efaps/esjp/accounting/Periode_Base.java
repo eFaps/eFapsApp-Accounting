@@ -64,6 +64,7 @@ import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 
 /**
@@ -76,6 +77,10 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsRevision("$Rev$")
 public abstract class Periode_Base
 {
+    /**
+     * CacheKey for Periods.
+     */
+    public static final String CACHEKEY = Period.class.getName() + ".CacheKey";
 
     /**
      * Key used to store the currency in the session.
