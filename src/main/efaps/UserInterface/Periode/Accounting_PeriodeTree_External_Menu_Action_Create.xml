@@ -38,7 +38,10 @@
         <!-- target definitions -->
         <target>
             <form>Accounting_TransactionCreate4ExternalVoucherForm</form>
-            <execute program="org.efaps.esjp.accounting.ExternalVoucher" method="create" />
+            <execute program="org.efaps.esjp.accounting.ExternalVoucher" method="create" >
+                <property name="StatusGroup">Accounting_ExternalVoucherStatus</property>
+                <property name="Status">Open</property>
+            </execute>
             <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>

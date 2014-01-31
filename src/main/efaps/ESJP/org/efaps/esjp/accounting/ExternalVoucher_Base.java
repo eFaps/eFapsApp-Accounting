@@ -21,10 +21,13 @@
 
 package org.efaps.esjp.accounting;
 
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
@@ -33,7 +36,6 @@ import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -41,6 +43,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -60,13 +63,15 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.ContactsPicker;
-import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.sales.Tax_Base;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.DocumentSum;
+import org.efaps.esjp.sales.document.DocumentSum_Base;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 
 /**
@@ -80,11 +85,6 @@ import org.joda.time.DateTime;
 public abstract class ExternalVoucher_Base
     extends DocumentSum
 {
-    /**
-     * Used as key for passing values.
-     */
-    private static final String AMOUNTSKEY = ExternalVoucher.class.getName() + ".Key4Amounts";
-
     /**
      * Called from event for creation of a transaction for a External Document.
      *
@@ -112,7 +112,11 @@ public abstract class ExternalVoucher_Base
         return new Return();
     }
 
-
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
@@ -126,31 +130,24 @@ public abstract class ExternalVoucher_Base
         throws EFapsException
     {
         final CreatedDoc createdDoc = new CreatedDoc();
+        //create a list of calculators
+        final List<Calculator> calcList = analyseAmountsFromUI(_parameter);
+        createdDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
         Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
         if (!contactInst.isValid()) {
             contactInst = Instance.get(_parameter.getParameterValue("contactPicker"));
         }
 
-        final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
-        final CurrencyInst curr = new Periode().getCurrency(periodeInst);
-
-        final Object[] rateObj = new Transaction().getRateObject(_parameter, "_Debit", 0);
+        final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("currencyExternal"));
-        final BigDecimal[] amounts = evalAmounts(_parameter);
-        BigDecimal netTotal = amounts[0];
-        BigDecimal crossTotal = amounts[1];
-        final BigDecimal taxfree = amounts[2];
 
-        netTotal = netTotal.add(taxfree);
-        crossTotal = crossTotal.add(taxfree);
-
-        createdDoc.addValue(ExternalVoucher_Base.AMOUNTSKEY, amounts);
-
-        final Insert docInsert = new Insert(CIAccounting.ExternalVoucher);
+        final Insert docInsert = new Insert(getType4DocCreate(_parameter));
         if (contactInst != null && contactInst.isValid()) {
             docInsert.add(CIAccounting.ExternalVoucher.Contact, contactInst.getId());
             createdDoc.addValue(getFieldName4Attribute(_parameter,
@@ -185,67 +182,120 @@ public abstract class ExternalVoucher_Base
                             CIAccounting.ExternalVoucher.Note.name), note);
         }
 
-        if (amounts != null) {
-            docInsert.add(CIAccounting.ExternalVoucher.RateCrossTotal, crossTotal);
-            createdDoc.addValue(getFieldName4Attribute(_parameter,
-                            CIAccounting.ExternalVoucher.RateCrossTotal.name), crossTotal);
 
-            docInsert.add(CIAccounting.ExternalVoucher.RateNetTotal, netTotal);
-            createdDoc.addValue(getFieldName4Attribute(_parameter,
-                            CIAccounting.ExternalVoucher.RateNetTotal.name), netTotal);
+        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final int scale = frmt.getMaximumFractionDigits();
+        final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList)
+                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
+        docInsert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
 
-            docInsert.add(CIAccounting.ExternalVoucher.CrossTotal,
-                            crossTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.CrossTotal.name),
-                            crossTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
+        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
+        docInsert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
-            docInsert.add(CIAccounting.ExternalVoucher.NetTotal,
-                            netTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.NetTotal.name),
-                            netTotal.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP));
-        }
-        docInsert.add(CIAccounting.ExternalVoucher.RateDiscountTotal, BigDecimal.ZERO);
-        docInsert.add(CIAccounting.ExternalVoucher.DiscountTotal, BigDecimal.ZERO);
+        docInsert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+        docInsert.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList, rateCurrInst));
+        docInsert.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
 
-        if (curr != null && curr.getInstance().isValid()) {
-            docInsert.add(CIAccounting.ExternalVoucher.CurrencyId, curr.getInstance().getId());
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.CurrencyId.name),
-                            curr.getInstance().getId());
-        }
+        final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
+        docInsert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
 
-        if (rateCurrInst != null && rateCurrInst.isValid()) {
-            docInsert.add(CIAccounting.ExternalVoucher.RateCurrencyId, rateCurrInst.getId());
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.CurrencyId.name),
-                            rateCurrInst.getId());
-        }
+        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
+        docInsert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
 
-        if (rateObj != null) {
-            docInsert.add(CIAccounting.ExternalVoucher.Rate, rateObj);
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Rate.name), rateObj);
-        }
+        docInsert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 
-        final long statusId = Status.find(CIAccounting.ExternalVoucherStatus.uuid, "Open").getId();
-        if (statusId > 0) {
-            docInsert.add(CIAccounting.ExternalVoucher.Status, statusId);
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Status.name), statusId);
-        }
+        docInsert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
+        docInsert.add(CISales.DocumentSumAbstract.Rate, rateObj);
+        docInsert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, baseCurrInst);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, rateCurrInst);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, rateObj);
 
         docInsert.add(CIAccounting.ExternalVoucher.Salesperson, Context.getThreadContext().getPersonId());
         createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Salesperson.name),
                         Context.getThreadContext().getPersonId());
+        addStatus2DocCreate(_parameter, docInsert, createdDoc);
+        add2DocCreate(_parameter, docInsert, createdDoc);
+        docInsert.execute();
 
-        //Sales_IncomingInvoiceSequence
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
+        createdDoc.setInstance(docInsert.getInstance());
+        return createdDoc;
+    }
+
+    @Override
+    protected Object[] getRateObject(final Parameter _parameter)
+        throws EFapsException
+    {
+        Object[] ret;
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            ret = super.getRateObject(_parameter);
+        } else {
+            ret = new Transaction().getRateObject(_parameter, "_Debit", 0);
+        }
+        return ret;
+    }
+
+    @Override
+    protected Instance getRateCurrencyInstance(final Parameter _parameter,
+                                               final CreatedDoc _createdDoc)
+        throws CacheReloadException, EFapsException
+    {
+        Instance ret;
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            ret = super.getRateCurrencyInstance(_parameter, _createdDoc);
+        } else {
+            ret = Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue(
+                            CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.currencyExternal.name));
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2PositionInsert(final Parameter _parameter,
+                                      final Calculator _calc,
+                                      final Insert _posIns,
+                                      final int _idx)
+        throws EFapsException
+    {
+        final Instance prodInst = Instance.get(_calc.getOid());
+
+        _posIns.add(CISales.PositionAbstract.Product, prodInst);
+        final String productDesc = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.description.name);
+        _posIns.add(CISales.PositionAbstract.ProductDesc, productDesc);
+
+        final PrintQuery print = new PrintQuery(prodInst);
+        print.addAttribute(CIProducts.ProductAbstract.Dimension);
+        print.executeWithoutAccessCheck();
+        final Long dimId = print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension);
+        _posIns.add(CISales.PositionAbstract.UoM, Dimension.get(dimId).getBaseUoM());
+
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final SystemConfiguration config = Sales.getSysConfig();
+        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGINVOICESEQUENCE);
+
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
-            docInsert.add(CIAccounting.ExternalVoucher.Revision, revision);
-            createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Revision.name), revision);
+            _insert.add(CIAccounting.ExternalVoucher.Revision, revision);
+            _createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Revision.name),
+                            revision);
         }
-
-        docInsert.execute();
-        createdDoc.setInstance(docInsert.getInstance());
-        return createdDoc;
     }
 
     @Override
@@ -255,93 +305,18 @@ public abstract class ExternalVoucher_Base
         return CIAccounting.ExternalVoucherPosition.getType();
     }
 
-    protected void insertPosition(final Parameter _parameter,
-                                  final CreatedDoc _createdDoc,
-                                  final Instance _productInst,
-                                  final int _idx,
-                                  final BigDecimal _netTotal,
-                                  final BigDecimal _crossTotal)
-        throws EFapsException
-    {
-        final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
-        new Periode().getCurrency(periodeInst);
-
-        final Object[] rateObj = new Transaction().getRateObject(_parameter, "_Debit", 0);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
-        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("currencyExternal"));
-
-        final Insert posIns = new Insert(getType4PositionCreate(_parameter));
-        posIns.add(CISales.PositionAbstract.Quantity, 1);
-        posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance());
-        posIns.add(CISales.PositionAbstract.PositionNumber, _idx);
-        posIns.add(CISales.PositionAbstract.ProductDesc, _parameter.getParameterValue(
-                        CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.description.name));
-
-        final PrintQuery print = new PrintQuery(_productInst);
-        print.addAttribute(CIProducts.ProductAbstract.Dimension, CIProducts.ProductAbstract.TaxCategory);
-        print.executeWithoutAccessCheck();
-        final Long dimId = print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension);
-        final Long taxId = print.<Long>getAttribute(CIProducts.ProductAbstract.TaxCategory);
-
-        posIns.add(CISales.PositionAbstract.Product, _productInst);
-        posIns.add(CISales.PositionAbstract.UoM, Dimension.get(dimId).getBaseUoM());
-        posIns.add(CISales.PositionSumAbstract.Discount, BigDecimal.ZERO);
-
-        final String dateStr = (String) _createdDoc.getValue(getFieldName4Attribute(_parameter,
-                        CIAccounting.ExternalVoucher.Date.name));
-        DateTime date;
-        if (dateStr == null) {
-            date = new DateTime();
-        } else {
-            date = new DateTime(dateStr);
-        }
-        posIns.add(CISales.PositionSumAbstract.Tax, Tax_Base.get(taxId).getTaxRate(date.toLocalDate()).getId());
-
-        posIns.add(CISales.PositionSumAbstract.CrossUnitPrice, _crossTotal.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(rate, BigDecimal.ROUND_HALF_UP));
-        posIns.add(CISales.PositionSumAbstract.NetUnitPrice, _netTotal.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(rate, BigDecimal.ROUND_HALF_UP));
-        posIns.add(CISales.PositionSumAbstract.CrossPrice, _crossTotal.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(rate, BigDecimal.ROUND_HALF_UP));
-        posIns.add(CISales.PositionSumAbstract.NetPrice, _netTotal.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(rate, BigDecimal.ROUND_HALF_UP));
-
-        posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, _netTotal.setScale(12, BigDecimal.ROUND_HALF_UP)
-                        .divide(rate, BigDecimal.ROUND_HALF_UP));
-        posIns.add(CISales.PositionSumAbstract.CurrencyId, Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE));
-        posIns.add(CISales.PositionSumAbstract.Rate, rateObj);
-        posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
-        posIns.add(CISales.PositionSumAbstract.RateNetUnitPrice, _netTotal);
-        posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice, _crossTotal);
-        posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice, _netTotal);
-        posIns.add(CISales.PositionSumAbstract.RateNetPrice, _netTotal);
-        posIns.add(CISales.PositionSumAbstract.RateCrossPrice, _crossTotal);
-        posIns.execute();
-        _createdDoc.addPosition(posIns.getInstance());
-    }
-
     @Override
-    protected void createPositions(final Parameter _parameter,
-                                   final CreatedDoc _createdDoc)
+    protected Type getType4DocCreate(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
-        final BigDecimal[] amounts = (BigDecimal[]) _createdDoc.getValue(ExternalVoucher_Base.AMOUNTSKEY);
-        final BigDecimal netTotal = amounts[0];
-        final BigDecimal crossTotal = amounts[1];
-        final BigDecimal taxfree = amounts[2];
-
-        insertPosition(_parameter, _createdDoc, vatProdInst, 1, netTotal, crossTotal);
-        if (taxfree.compareTo(BigDecimal.ZERO) > 0) {
-            final Instance freeProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4FREE);
-            insertPosition(_parameter, _createdDoc, freeProdInst, 2, taxfree, taxfree);
-        }
+        return CIAccounting.ExternalVoucher.getType();
     }
 
-
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return create4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
@@ -407,6 +382,37 @@ public abstract class ExternalVoucher_Base
             insert.execute();
         }
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return List of Calcualtors
+     * @throws EFapsException on error
+     */
+    protected List<Calculator> analyseAmountsFromUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Calculator> ret = new ArrayList<Calculator>();
+        final BigDecimal[] amounts = evalAmountsFromUI(_parameter);
+        final BigDecimal net = amounts[0];
+        final BigDecimal cross = amounts[1];
+        final BigDecimal taxfree = amounts[2];
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final boolean prodPriceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
+
+        final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
+        final Calculator cals = getCalculator(_parameter, null, vatProdInst.getOid(), "1",
+                            prodPriceIsNet ? unitFrmt.format(net) : unitFrmt.format(cross), "0", false);
+        ret.add(cals);
+
+        if (taxfree.compareTo(BigDecimal.ZERO) > 0) {
+            final Instance freeProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4FREE);
+            final Calculator calsTmp = getCalculator(_parameter, null, freeProdInst.getOid(), "1",
+                            unitFrmt.format(taxfree), "0", false);
+            ret.add(calsTmp);
+        }
+        return ret;
+    }
+
     /**
      * Get the Amounts for Net, Cross Total and TaxFree.
      *
@@ -414,7 +420,7 @@ public abstract class ExternalVoucher_Base
      * @return BigDecimal Array { NET, CROSS, TAXFREE}
      * @throws EFapsException on error
      */
-    protected BigDecimal[] evalAmounts(final Parameter _parameter)
+    protected BigDecimal[] evalAmountsFromUI(final Parameter _parameter)
         throws EFapsException
     {
         final Instance caseInst = Instance.get(_parameter.getParameterValue(CIFormAccounting
@@ -423,7 +429,7 @@ public abstract class ExternalVoucher_Base
         print.addAttribute(CIAccounting.CaseAbstract.IsCross);
         print.execute();
         final boolean isCross = print.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-        return evalAmounts(_parameter, isCross);
+        return evalAmountsFromUI(_parameter, isCross);
     }
 
     /**
@@ -434,8 +440,8 @@ public abstract class ExternalVoucher_Base
      * @return BigDecimal Array { NET, CROSS, TAXFREE}
      * @throws EFapsException on error
      */
-    protected BigDecimal[] evalAmounts(final Parameter _parameter,
-                                       final boolean _isCross)
+    protected BigDecimal[] evalAmountsFromUI(final Parameter _parameter,
+                                             final boolean _isCross)
         throws EFapsException
     {
         final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
