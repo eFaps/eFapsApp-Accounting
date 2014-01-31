@@ -68,6 +68,7 @@
             <property name="Label">Accounting_AccountAbstract/ParentLink.Label</property>
         </field>
         <field name="summary">
+            <property name="ModeSearch">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Summary</property>
