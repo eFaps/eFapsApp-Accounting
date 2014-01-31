@@ -47,7 +47,7 @@
                 method="check4Status"
                 name="Accounting_TransactionTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <property name="Stati">Open</property>
+                <property name="Status">Open</property>
             </trigger>
         </target>
 

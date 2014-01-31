@@ -49,6 +49,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
@@ -981,29 +982,44 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final String selected = Context.getThreadContext().getParameter("selectedRow");
-        final Instance docInst = Instance.get(selected);
-        DateTime date = new DateTime();
-        if (docInst.isValid()) {
-            final PrintQuery print = new PrintQuery(docInst);
-            print.addAttribute(CISales.DocumentAbstract.Date);
-            print.executeWithoutAccessCheck();
-            date = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-        }
-        final DateTime[] dates = getDateMaxMin(_parameter);
-        final DateTime fromDate = dates[0];
-        final DateTime toDate = dates[1];
-        if (fromDate != null && toDate != null) {
-            if (date.isBefore(fromDate)) {
-                date = fromDate;
-            } else if (date.isAfter(toDate)) {
-                date = toDate;
+        // only for edit or create the date is set
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
+                        || TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final String selected = Context.getThreadContext().getParameter("selectedRow");
+            final Instance docInst = Instance.get(selected);
+            DateTime date = new DateTime();
+            if (docInst.isValid()) {
+                final PrintQuery print = new PrintQuery(docInst);
+                print.addAttribute(CISales.DocumentAbstract.Date);
+                print.executeWithoutAccessCheck();
+                date = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+            } else if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                final Object objTmp = fieldValue.getValue();
+                if (objTmp != null && objTmp instanceof DateTime) {
+                    date = (DateTime) objTmp;
+                }
             }
+            final DateTime[] dates = getDateMaxMin(_parameter);
+            final DateTime fromDate = dates[0];
+            final DateTime toDate = dates[1];
+            if (fromDate != null && toDate != null) {
+                if (date.isBefore(fromDate)) {
+                    date = fromDate;
+                } else if (date.isAfter(toDate)) {
+                    date = toDate;
+                }
+            }
+            ret.put(ReturnValues.VALUES, date);
         }
-        ret.put(ReturnValues.VALUES, date);
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return  value for date on opening the form
+     * @throws EFapsException on error
+     */
     public Return getSalesAccountFieldValue(final Parameter _parameter)
         throws EFapsException
     {

@@ -1037,6 +1037,17 @@ public abstract class Transaction_Base
             fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
             toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
             periodInst = print.getSelect(selPeriod);
+        } else if (periodInst.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
+            final PrintQuery print = new CachedPrintQuery(periodInst, Periode_Base.CACHEKEY);
+            final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodeLink);
+            final SelectBuilder selInst = new SelectBuilder(selPeriod).instance();;
+            final SelectBuilder selDateFrom = new SelectBuilder(selPeriod).attribute(CIAccounting.Periode.FromDate);
+            final SelectBuilder selDateTo = new SelectBuilder(selPeriod).attribute(CIAccounting.Periode.ToDate);
+            print.addSelect(selInst, selDateFrom, selDateTo);
+            print.execute();
+            periodInst = print.getSelect(selInst);
+            fromDate = print.getSelect(selDateFrom);
+            toDate = print.getSelect(selDateTo);
         }
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction);
         queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, periodInst);
