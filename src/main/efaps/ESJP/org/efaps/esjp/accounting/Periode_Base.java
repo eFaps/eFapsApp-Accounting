@@ -88,7 +88,6 @@ public abstract class Periode_Base
     public static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<String, String>();
     {
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_NAME, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXVATACCOUNT, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGDEBIT, null);
         Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGEGAIN, null);

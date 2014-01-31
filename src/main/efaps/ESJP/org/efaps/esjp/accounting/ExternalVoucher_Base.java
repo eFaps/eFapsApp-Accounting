@@ -27,6 +27,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -44,10 +45,11 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -68,8 +70,11 @@ import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.DocumentSum;
 import org.efaps.esjp.sales.document.DocumentSum_Base;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
+import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -181,7 +186,6 @@ public abstract class ExternalVoucher_Base
             createdDoc.addValue(getFieldName4Attribute(_parameter,
                             CIAccounting.ExternalVoucher.Note.name), note);
         }
-
 
         final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = frmt.getMaximumFractionDigits();
@@ -395,14 +399,18 @@ public abstract class ExternalVoucher_Base
         final BigDecimal[] amounts = evalAmountsFromUI(_parameter);
         final BigDecimal net = amounts[0];
         final BigDecimal cross = amounts[1];
-        final BigDecimal taxfree = amounts[2];
+        BigDecimal taxfree = amounts[2];
         final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
         final boolean prodPriceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
 
-        final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
-        final Calculator cals = getCalculator(_parameter, null, vatProdInst.getOid(), "1",
-                            prodPriceIsNet ? unitFrmt.format(net) : unitFrmt.format(cross), "0", false);
-        ret.add(cals);
+        if (net.compareTo(cross) == 0) {
+            taxfree = taxfree.add(net);
+        } else {
+            final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
+            final Calculator cals = getCalculator(_parameter, null, vatProdInst.getOid(), "1",
+                                prodPriceIsNet ? unitFrmt.format(net) : unitFrmt.format(cross), "0", false);
+            ret.add(cals);
+        }
 
         if (taxfree.compareTo(BigDecimal.ZERO) > 0) {
             final Instance freeProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4FREE);
@@ -454,25 +462,41 @@ public abstract class ExternalVoucher_Base
         BigDecimal net = BigDecimal.ZERO;
         BigDecimal taxfree = BigDecimal.ZERO;
         try {
-            final BigDecimal amount = (BigDecimal) formater.parse(_parameter.getParameterValue("amountExternal"));
-            final String taxFreeStr = _parameter.getParameterValue("amountExternalWithoutTax");
+            final BigDecimal amount = (BigDecimal) formater.parse(_parameter.getParameterValue(
+                            CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.amountExternal.name));
+            final String taxFreeStr = _parameter.getParameterValue(
+                       CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.amountExternalWithoutTax.name);
             if (taxFreeStr != null && !taxFreeStr.isEmpty()) {
                 taxfree =  (BigDecimal) formater.parse(taxFreeStr);
             }
-            //Accounting-Configuration
-            final SystemConfiguration config = Accounting.getSysConfig();
-            if (config != null) {
-                final Properties props = config.getObjectAttributeValueAsProperties(periodeInst);
-                final String vatAcc = props.getProperty(AccountingSettings.PERIOD_EXVATACCOUNT);
-                if (vatAcc != null && !vatAcc.isEmpty()) {
-                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                    queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
-                                    periodeInst.getId());
-                    queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, vatAcc);
-                    final InstanceQuery query = queryBldr.getQuery();
-                    query.execute();
-                    if (query.next()) {
-                        final Instance accInst = query.getCurrentValue();
+            final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
+
+            final PrintQuery print = new PrintQuery(vatProdInst);
+            print.addAttribute(CISales.ProductAbstract.TaxCategory);
+            print.execute();
+            final Long taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
+            final TaxCat taxcat = TaxCat.get(taxCatId);
+            final String dateStr = _parameter.getParameterValue(
+                            CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.extDate.name
+                            + "_eFapsDate");
+            final Collection<? extends Tax> taxes = taxcat.getTaxes(dateStr != null && !dateStr.isEmpty() ? DateUtil
+                            .getDateFromParameter(dateStr) : new DateTime());
+
+            if (!taxes.isEmpty()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodeInst);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.AccountAbstract.ID);
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountBalanceSheetLiability2Tax);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBalanceSheetLiability2Tax.ToTaxLink,
+                                taxes.iterator().next().getInstance());
+                queryBldr.addWhereAttrInQuery(CIAccounting.AccountBalanceSheetLiability2Tax.FromAccountLink, attrQuery);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder sel = SelectBuilder.get()
+                                .linkto(CIAccounting.AccountBalanceSheetLiability2Tax.FromAccountLink).instance();
+                multi.addSelect(sel);
+                if (multi.execute()) {
+                    while (multi.next()) {
+                        final Instance accInst = multi.<Instance>getSelect(sel);
                         BigDecimal vat = getAmount(_parameter, accInst, "Debit", formater);
                         vat = vat.add(getAmount(_parameter, accInst, "Credit", formater));
                         vat = vat.abs();
@@ -483,12 +507,11 @@ public abstract class ExternalVoucher_Base
                             net = amount;
                             cross = net.add(vat);
                         }
-                    } else {
-                        cross = amount;
-                        net = amount;
                     }
+                } else {
+                    cross = amount;
+                    net = amount;
                 }
-
             }
         } catch (final ParseException e) {
             throw new EFapsException(ExternalVoucher_Base.class, "ParseException", e);

@@ -91,11 +91,6 @@ public interface AccountingSettings
     String PERIOD_ROUNDINGMAXAMOUNT = "RoundingMaxAmount";
 
     /**
-     * Account name for debit to round when the difference between credit and debit is minimum.
-     */
-    String PERIOD_EXVATACCOUNT = "ExternalVATAccount";
-
-    /**
      * Account name for credit or debit to complete the total credit or debit amount, when the
      * difference between credit and debit is bigger than the minimum.
      */

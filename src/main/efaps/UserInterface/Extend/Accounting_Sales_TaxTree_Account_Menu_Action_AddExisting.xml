@@ -41,6 +41,7 @@
                 <property name="ConnectChildAttribute">FromAccountLink</property>
                 <property name="ConnectParentAttribute">ToTaxLink</property>
                 <property name="ConnectType">Accounting_AccountBalanceSheetLiability2Tax</property>
+                <property name="AllowMultiple">false</property>
             </execute>
         </target>
 
