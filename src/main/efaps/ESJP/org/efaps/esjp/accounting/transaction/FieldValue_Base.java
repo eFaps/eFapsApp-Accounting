@@ -52,7 +52,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
-import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -61,7 +60,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Periode;
-import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
@@ -991,28 +989,15 @@ public abstract class FieldValue_Base
             print.addAttribute(CISales.DocumentAbstract.Date);
             print.executeWithoutAccessCheck();
             date = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-        } else if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-            DateTime fromDate = null;
-            DateTime toDate = null;
-            if (_parameter.getInstance().getType().isKindOf(CIAccounting.Periode.getType())) {
-                final PrintQuery print = new PrintQuery(_parameter.getInstance());
-                print.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate);
-                print.execute();
-                fromDate = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-                toDate = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
-            } else if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-                final PrintQuery print = new CachedPrintQuery(_parameter.getInstance(), SubPeriod_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
-                print.execute();
-                fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
-                toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
-            }
-            if (fromDate != null && toDate != null) {
-                if (date.isBefore(fromDate)) {
-                    date = fromDate;
-                } else if (date.isAfter(toDate)) {
-                    date = toDate;
-                }
+        }
+        final DateTime[] dates = getDateMaxMin(_parameter);
+        final DateTime fromDate = dates[0];
+        final DateTime toDate = dates[1];
+        if (fromDate != null && toDate != null) {
+            if (date.isBefore(fromDate)) {
+                date = fromDate;
+            } else if (date.isAfter(toDate)) {
+                date = toDate;
             }
         }
         ret.put(ReturnValues.VALUES, date);

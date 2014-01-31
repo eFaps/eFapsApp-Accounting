@@ -61,6 +61,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -68,6 +69,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.Periode_Base;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -1008,6 +1010,54 @@ public abstract class Transaction_Base
             accounts.put(instance.getOid(), account);
         }
     }
+
+    /**
+     * @param _parameter Parameter as passed  by the eFaps API
+     * @return array containing { fromDate, toDate }
+     * @throws EFapsException on error
+     */
+    protected DateTime[] getDateMaxMin(final Parameter _parameter)
+        throws EFapsException
+    {
+        Instance periodInst = _parameter.getInstance();
+        DateTime fromDate = null;
+        DateTime toDate = null;
+        if (periodInst.getType().isKindOf(CIAccounting.Periode.getType())) {
+            final PrintQuery print = new CachedPrintQuery(periodInst, Periode_Base.CACHEKEY);
+            print.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate);
+            print.execute();
+            fromDate = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+            toDate = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+        } else if (periodInst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(periodInst, SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink).instance();
+            print.addSelect(selPeriod);
+            print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
+            print.execute();
+            fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+            toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
+            periodInst = print.getSelect(selPeriod);
+        }
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, periodInst);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.Status,
+                        Status.find(CIAccounting.TransactionStatus.Booked));
+        queryBldr.addOrderByAttributeDesc(CIAccounting.Transaction.Date);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.setLimit(1);
+        final MultiPrintQuery multi = new MultiPrintQuery(query.executeWithoutAccessCheck());
+        multi.addAttribute(CIAccounting.Transaction.Date);
+        if (multi.executeWithoutAccessCheck()) {
+            final DateTime fromDate2 = multi.getAttribute(CIAccounting.Transaction.Date);
+            if (fromDate == null) {
+                fromDate = fromDate2;
+            } else if (fromDate.isBefore(fromDate2)) {
+                fromDate = fromDate2;
+            }
+        }
+        return new DateTime[] { fromDate, toDate };
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API

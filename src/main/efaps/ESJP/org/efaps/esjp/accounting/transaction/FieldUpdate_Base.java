@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -38,18 +37,9 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Periode;
-import org.efaps.esjp.accounting.Periode_Base;
-import org.efaps.esjp.accounting.SubPeriod_Base;
-import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
@@ -277,48 +267,16 @@ public abstract class FieldUpdate_Base
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-        final DateTime date = DateUtil.getDateFromParameter(dateStr);
+
         final Map<String, String> map = new HashMap<String, String>();
 
-        Instance periodInst = _parameter.getInstance();
+        final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+        final DateTime date = DateUtil.getDateFromParameter(dateStr);
 
         // validate and correct the date, put it in _parameter so that other methods use the correct date
-        DateTime fromDate = null;
-        DateTime toDate = null;
-        if (periodInst.getType().isKindOf(CIAccounting.Periode.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, Periode_Base.CACHEKEY);
-            print.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate);
-            print.execute();
-            fromDate = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-            toDate = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
-        } else if (periodInst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, SubPeriod_Base.CACHEKEY);
-            final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink).instance();
-            print.addSelect(selPeriod);
-            print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
-            print.execute();
-            fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
-            toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
-            periodInst = print.getSelect(selPeriod);
-        }
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, periodInst);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.Status,
-                        Status.find(CIAccounting.TransactionStatus.Booked));
-        queryBldr.addOrderByAttributeDesc(CIAccounting.Transaction.Date);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.setLimit(1);
-        final MultiPrintQuery multi = new  MultiPrintQuery(query.executeWithoutAccessCheck());
-        multi.addAttribute(CIAccounting.Transaction.Date);
-        if (multi.executeWithoutAccessCheck()) {
-            final DateTime fromDate2 = multi.getAttribute(CIAccounting.Transaction.Date);
-            if (fromDate == null) {
-                fromDate = fromDate2;
-            } else if (fromDate.isBefore(fromDate2)) {
-                fromDate = fromDate2;
-            }
-        }
+        final DateTime[] dates = getDateMaxMin(_parameter);
+        final DateTime fromDate = dates[0];
+        final DateTime toDate = dates[1];
         final StringBuilder js = new StringBuilder();
         if (fromDate != null && toDate != null) {
             DateTime newDate = null;
