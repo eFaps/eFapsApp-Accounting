@@ -42,6 +42,13 @@
             <form>Accounting_TransactionPositionForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
             <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validateEdit4CheckAmount"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_TransactionPositionTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+                <property name="Select4Instance">linkto[TransactionLink].instance</property>
+            </trigger>
         </target>
 
         <!-- properties -->
