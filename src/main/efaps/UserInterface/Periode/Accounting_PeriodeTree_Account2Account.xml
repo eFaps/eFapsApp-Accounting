@@ -31,7 +31,7 @@
         <name>Accounting_PeriodeTree_Account2Account</name>
         <target>
             <table>Accounting_Account2AccountAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+            <evaluate program="org.efaps.esjp.accounting.Periode" method="getAcc2AccMultiPrint">
                 <property name="Type">Accounting_Account2AccountAbstract</property>
             </evaluate>
         </target>

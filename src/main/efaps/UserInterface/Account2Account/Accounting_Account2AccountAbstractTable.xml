@@ -34,6 +34,7 @@
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_Account2AccountAbstract/Type.Label</property>
             <property name="HRef">TREE</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="fromAccountLink">
             <property name="SelectAlternateOID">linkto[FromAccountLink].oid</property>

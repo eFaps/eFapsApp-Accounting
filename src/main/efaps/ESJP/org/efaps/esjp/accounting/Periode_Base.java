@@ -719,6 +719,34 @@ public abstract class Periode_Base
         return statuses.toArray();
     }
 
+    /**
+     * Called from a tree menu command to present the Account2Account relations
+     * for the current period.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getAcc2AccMultiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                _parameter.getInstance());
+                final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CIAccounting.AccountAbstract.ID);
+                _queryBldr.addWhereAttrInQuery(CIAccounting.Account2AccountAbstract.FromAccountLink, attrQuery);
+                _queryBldr.addWhereAttrInQuery(CIAccounting.Account2AccountAbstract.ToAccountLink, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
 
     /**
      * Recursive method to get a Type with his children and children children
