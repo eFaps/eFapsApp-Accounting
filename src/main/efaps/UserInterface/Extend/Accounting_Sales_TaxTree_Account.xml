@@ -35,7 +35,7 @@
         <name>Accounting_Sales_TaxTree_Account</name>
         <target>
             <menu>Accounting_Sales_TaxTree_Account_Menu</menu>
-            <table>Accounting_AccountBalanceSheetLiability2TaxTable</table>
+            <table>Accounting_Sales_TaxTree_Account2TaxTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Accounting_AccountBalanceSheetLiability2Tax</property>
                 <property name="LinkFroms">ToTaxLink</property>
