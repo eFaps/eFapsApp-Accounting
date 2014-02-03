@@ -106,4 +106,8 @@ public interface AccountingSettings
      */
     String PERIOD_ACTIVATEVIEWS = "ActivateViews";
 
+    /**
+     * Activate the Stock mechanism.
+     */
+    String PERIOD_ACTIVATESTOCK = "ActivateStock";
 }
