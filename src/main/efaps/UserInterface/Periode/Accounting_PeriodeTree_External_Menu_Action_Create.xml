@@ -42,8 +42,11 @@
                 <property name="StatusGroup">Accounting_ExternalVoucherStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate">
+            <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate" >
                 <property name="Types">Accounting_ExternalVoucher</property>
+            </validate>
+            <validate program="org.efaps.esjp.accounting.ExternalVoucher" method="validateName" index="1">
+                <property name="FieldName">extName</property>
             </validate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
