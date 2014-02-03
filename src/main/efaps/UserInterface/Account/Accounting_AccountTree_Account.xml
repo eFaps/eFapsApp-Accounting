@@ -41,6 +41,10 @@
                 <property name="LinkFroms">FromAccountLink</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.accounting.Account"
+                name="Accounting_AccountTree_TransactionPosition.UI_ACCESSCHECK"
+                method="accessCheckOnSummary" event="UI_ACCESSCHECK">
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

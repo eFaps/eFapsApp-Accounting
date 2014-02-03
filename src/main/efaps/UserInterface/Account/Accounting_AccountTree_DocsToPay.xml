@@ -38,7 +38,7 @@
             <evaluate program="org.efaps.esjp.accounting.Account" method="getDocumentsToBook">
                 <property name="Types">ERP_DocumentAbstract</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.accounting.Account" method="accessCheck"
+            <trigger program="org.efaps.esjp.accounting.Account" method="accessCheck4ValidAccount"
                 name="Accounting_AccountTree_DocsToPay.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </target>
         <!-- properties -->

@@ -56,6 +56,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -69,6 +70,7 @@ import org.efaps.util.cache.CacheReloadException;
 @EFapsUUID("e9b8eabd-7122-4b30-a78b-891d1cec1a90")
 @EFapsRevision("$Rev$")
 public abstract class Account_Base
+    extends AbstractCommon
 {
     /**
      * Method to show the tree transaction in periode.
@@ -77,22 +79,46 @@ public abstract class Account_Base
      * @return ret Return
      * @throws EFapsException on error
      */
-    public Return accessCheck(final Parameter _parameter)
+    public Return accessCheck4ValidAccount(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode2Account);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.FromLink, _parameter.getInstance().getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.FromLink, _parameter.getInstance());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selOid = new SelectBuilder().linkto(CIAccounting.Periode2Account.ToLink).oid();
-        multi.addSelect(selOid);
+        final SelectBuilder selInst = new SelectBuilder().linkto(CIAccounting.Periode2Account.ToLink).instance();
+        multi.addSelect(selInst);
         multi.execute();
-        final String summary = multi.<String>getSelect(selOid);
-        if (Instance.get(summary).isValid()) {
+        final Instance accInst = multi.<Instance>getSelect(selInst);
+        if (accInst.isValid()) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
     }
+
+    /**
+     * Method to manage access to subtreemenus.
+     *
+     * @param _parameter Parameter as passed from eFaps API
+     * @return Return containing access
+     * @throws EFapsException on error
+     */
+    public Return accessCheckOnSummary(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CIAccounting.AccountAbstract.Summary);
+        print.execute();
+        final Boolean summary = print.<Boolean>getAttribute(CIAccounting.AccountAbstract.Summary);
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        if ((summary != null && !summary && !inverse)
+                        || (summary != null && summary && inverse)) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
 
     /**
      * Called from a tree menu command to present the documents that are with status
@@ -605,7 +631,7 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?,?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final BigDecimal value = (BigDecimal) fieldvalue.getValue();
         if (value != null && !Display.NONE.equals(fieldvalue.getDisplay())) {
@@ -613,7 +639,7 @@ public abstract class Account_Base
             fieldvalue.setValue(null);
             if (("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1)
                             || (!"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1)) {
-                    retValue = value.abs();
+                retValue = value.abs();
             }
             ret.put(ReturnValues.VALUES, retValue);
         }
@@ -627,19 +653,21 @@ public abstract class Account_Base
      * @return new Return
      * @throws EFapsException on error
      */
-    public Return updateAccount(final Parameter _parameter) throws EFapsException {
-    	final Return ret = new Return();
-    	final String param = _parameter.getParameterValue("account");
-    	if(param.length() > 0) {
-	    	final Instance instance = _parameter.getInstance();
-	    	final Update update = new Update(instance);
-	    	update.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, param);
-	    	update.execute();
-	    	ret.put(ReturnValues.TRUE, "true");
-    	} else {
-    		ret.put(ReturnValues.VALUES, "Accounting_Account2Case4EditAccountForm/Account.updateAccount.NoRight");
-    	}
-    	return ret;
+    public Return updateAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String param = _parameter.getParameterValue("account");
+        if (param.length() > 0) {
+            final Instance instance = _parameter.getInstance();
+            final Update update = new Update(instance);
+            update.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, param);
+            update.execute();
+            ret.put(ReturnValues.TRUE, "true");
+        } else {
+            ret.put(ReturnValues.VALUES, "Accounting_Account2Case4EditAccountForm/Account.updateAccount.NoRight");
+        }
+        return ret;
     }
 
 }

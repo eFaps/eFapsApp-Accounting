@@ -40,13 +40,11 @@
                 <property name="Types">Accounting_TransactionPositionAbstract</property>
                 <property name="LinkFroms">AccountLink</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
-                     name="Accounting_AccountTree_TransactionPosition.UI_ACCESSCHECK"
-                     method="accessCheck"
-                     event="UI_ACCESSCHECK">
+            <trigger program="org.efaps.esjp.accounting.Account"
+                name="Accounting_AccountTree_TransactionPosition.UI_ACCESSCHECK"
+                method="accessCheckOnSummary" event="UI_ACCESSCHECK">
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

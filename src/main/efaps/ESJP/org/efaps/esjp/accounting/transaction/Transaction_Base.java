@@ -78,6 +78,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.Currency;
@@ -109,6 +110,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("803f24bc-7c4f-4168-97bc-a9cb01872f76")
 @EFapsRevision("$Rev$")
 public abstract class Transaction_Base
+    extends AbstractCommon
 {
 
     /**
@@ -1132,27 +1134,6 @@ public abstract class Transaction_Base
                             .append(_account.getLink().toString().replaceAll("'", "\\\\\\'")).append("';");
         }
 
-        return ret;
-    }
-
-    /**
-     * Method to show the tree transaction in periode.
-     *
-     * @param _parameter Parameter as passed from eFaps API
-     * @return ret Return
-     * @throws EFapsException on error
-     */
-    public Return accessCheck(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute("Summary");
-        print.execute();
-        final Boolean summary = print.<Boolean>getAttribute("Summary");
-        if (summary != null && !summary) {
-            ret.put(ReturnValues.TRUE, true);
-        }
         return ret;
     }
 

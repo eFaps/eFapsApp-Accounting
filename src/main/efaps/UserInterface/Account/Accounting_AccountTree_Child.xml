@@ -23,9 +23,8 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>4427165a-e493-4487-a875-214667e59a0e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -41,6 +40,11 @@
                 <property name="LinkFroms">ParentLink</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.accounting.Account"
+                name="Accounting_AccountTree_Child.UI_ACCESSCHECK"
+                method="accessCheckOnSummary" event="UI_ACCESSCHECK">
+                <property name="Inverse">true</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

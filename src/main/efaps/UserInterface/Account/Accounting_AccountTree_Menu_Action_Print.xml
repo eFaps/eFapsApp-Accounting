@@ -38,10 +38,10 @@
                 <property name="JasperReport">Accounting_Account</property>
                 <property name="DataSourceClass">org.efaps.esjp.accounting.report.AccountDataSource</property>
             </execute>
-            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
-                     name="Accounting_AccountTree_Menu_Action_Print.UI_ACCESSCHECK"
-                     method="accessCheck"
-                     event="UI_ACCESSCHECK"/>
+            <trigger program="org.efaps.esjp.accounting.Account"
+                name="Accounting_AccountTree_Menu_Action_Print.UI_ACCESSCHECK"
+                method="accessCheckOnSummary" event="UI_ACCESSCHECK">
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
