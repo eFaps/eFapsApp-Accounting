@@ -90,7 +90,7 @@ public abstract class Account_Base
         multi.addSelect(selInst);
         multi.execute();
         final Instance accInst = multi.<Instance>getSelect(selInst);
-        if (accInst.isValid()) {
+        if (accInst!= null && accInst.isValid()) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
