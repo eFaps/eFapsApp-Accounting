@@ -610,17 +610,7 @@ public abstract class ExternalVoucher_Base
                 classInsert1.add(classification.getLinkAttributeName(), _contactInst.getId());
                 addClassInsert(_parameter, classInsert1);
                 classInsert1.execute();
-
-                final Classification classification2 = classification.getParentClassification();
-                final Insert relInsert2 = new Insert(classification2.getClassifyRelationType());
-                relInsert2.add(classification.getRelLinkAttributeName(), _contactInst.getId());
-                relInsert2.add(classification.getRelTypeAttributeName(), classification2.getId());
-                relInsert2.execute();
-
-                final Insert classInsert2 = new Insert(classification2);
-                classInsert2.add(classification.getLinkAttributeName(), _contactInst.getId());
-                classInsert2.execute();
-            }
+           }
         };
         return contactsPicker.picker4NewContact(_parameter);
     }
