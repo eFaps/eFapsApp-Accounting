@@ -408,14 +408,14 @@ public abstract class ExternalVoucher_Base
         } else {
             final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
             final Calculator cals = getCalculator(_parameter, null, vatProdInst.getOid(), "1",
-                                prodPriceIsNet ? unitFrmt.format(net) : unitFrmt.format(cross), "0", false);
+                                prodPriceIsNet ? unitFrmt.format(net) : unitFrmt.format(cross), "0", false, 0);
             ret.add(cals);
         }
 
         if (taxfree.compareTo(BigDecimal.ZERO) > 0) {
             final Instance freeProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4FREE);
             final Calculator calsTmp = getCalculator(_parameter, null, freeProdInst.getOid(), "1",
-                            unitFrmt.format(taxfree), "0", false);
+                            unitFrmt.format(taxfree), "0", false, 0);
             ret.add(calsTmp);
         }
         return ret;
