@@ -38,7 +38,7 @@
         <target>
             <form>Accounting_AccountForm</form>
             <table>Accounting_AccountSearchTable</table>
-            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+            <evaluate program="org.efaps.esjp.accounting.Account" method="searchAccount">
                 <property name="Type">Accounting_AccountAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>

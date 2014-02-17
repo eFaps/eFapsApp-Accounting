@@ -57,6 +57,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -90,7 +91,7 @@ public abstract class Account_Base
         multi.addSelect(selInst);
         multi.execute();
         final Instance accInst = multi.<Instance>getSelect(selInst);
-        if (accInst!= null && accInst.isValid()) {
+        if (accInst != null && accInst.isValid()) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -668,6 +669,44 @@ public abstract class Account_Base
             ret.put(ReturnValues.VALUES, "Accounting_Account2Case4EditAccountForm/Account.updateAccount.NoRight");
         }
         return ret;
+    }
+
+    /**
+     * Search that ensures that only accounts of the same period are searched.
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return new Return containing search result
+     * @throws EFapsException on error
+     */
+    public Return searchAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Search search = new Search()
+        {
+            @Override
+            protected void add2QueryBuilder(final Parameter _parameter,
+                                            final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                super.add2QueryBuilder(_parameter, _queryBldr);
+                final Instance accInst = _parameter.getInstance();
+                if (accInst != null && accInst.isValid()) {
+                    if (accInst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                        final PrintQuery print = new PrintQuery(accInst);
+                        print.addAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink);
+                        print.executeWithoutAccessCheck();
+                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                    print.getAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink));
+                    } else if (accInst.getType().isKindOf(CIAccounting.CaseAbstract.getType())) {
+                        final PrintQuery print = new PrintQuery(accInst);
+                        print.addAttribute(CIAccounting.CaseAbstract.PeriodeAbstractLink);
+                        print.executeWithoutAccessCheck();
+                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                                        print.getAttribute(CIAccounting.CaseAbstract.PeriodeAbstractLink));
+                    }
+                }
+            }
+        };
+        return search.execute(_parameter);
     }
 
 }
