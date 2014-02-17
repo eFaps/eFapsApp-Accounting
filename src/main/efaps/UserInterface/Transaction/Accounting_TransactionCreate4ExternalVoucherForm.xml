@@ -193,8 +193,6 @@
                 name="Accounting_TransactionCreate4ExternalToBookForm.date.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
-
-
          <field name="contactGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>
