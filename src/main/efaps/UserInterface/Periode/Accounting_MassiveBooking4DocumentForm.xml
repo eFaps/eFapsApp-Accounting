@@ -19,7 +19,9 @@
   Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (Mon, 16 Aug 2010) $
   Last Changed By: $Author: miguel.a.aranya $
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>c8fb32c6-3557-4bf2-a37f-bd72d4f943ab</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -38,9 +40,9 @@
         <field name="storeOIDS">
             <property name="ModeCreate">HIDDEN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                    method="getStoreOIDsFieldValue"
-                    name="Accounting_MassiveRegister4DocumentForm.storeOIDS.UI_FIELD_VALUE"
-                    event="UI_FIELD_VALUE"/>
+                method="getStoreOIDsFieldValue"
+                name="Accounting_MassiveRegister4DocumentForm.storeOIDS.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="date">
             <property name="Label">Accounting_MassiveBooking4DocumentForm.date.Label</property>
@@ -53,7 +55,7 @@
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
-                event="UI_FIELD_VALUE" >
+                event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
             </trigger>
         </field>
@@ -63,7 +65,7 @@
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
-                event="UI_FIELD_VALUE" >
+                event="UI_FIELD_VALUE">
                 <property name="checked">true</property>
             </trigger>
         </field>
@@ -76,6 +78,11 @@
                 name="Accounting_TransactionCreate4DocForm.case.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_CaseDocBooking</property>
+                <property name="LinkFrom">PeriodeAbstractLink</property>
+                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="ValueSelect">oid</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
             </trigger>
         </field>
     </definition>
