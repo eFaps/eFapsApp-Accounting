@@ -31,7 +31,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateDocument</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_GainLoss4DocumentAccountForm</form>
             <execute method="createGainLoss4DocumentAccount"

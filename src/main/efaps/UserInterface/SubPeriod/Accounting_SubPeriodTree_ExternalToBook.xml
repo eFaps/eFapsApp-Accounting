@@ -31,6 +31,7 @@
         <name>Accounting_SubPeriodTree_ExternalToBook</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <menu>Accounting_SubPeriodTree_ExternalToBook_Menu</menu>

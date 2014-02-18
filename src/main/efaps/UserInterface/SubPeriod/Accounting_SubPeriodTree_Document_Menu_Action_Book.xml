@@ -31,7 +31,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_Document_Menu_Action_Book</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4DocForm</form>
             <execute method="create4Doc"

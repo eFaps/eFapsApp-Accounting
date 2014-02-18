@@ -31,7 +31,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_DocsToBook_Menu_Action_MassiveBook</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_MassiveBooking4DocumentForm</form>
             <execute method="createDoc4Massive"

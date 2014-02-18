@@ -29,7 +29,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_Document_Menu_Action_MassiveRegister</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_MassiveRegister4DocumentForm</form>
             <execute method="createDoc4Massive" program="org.efaps.esjp.accounting.transaction.Create">
