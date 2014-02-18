@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>ddf931d1-b36f-40bf-a19d-a828108c7831</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -28,7 +30,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseTree_Report_Menu_Action_AddExisting</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <search>Accounting_CaseTree_Report_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">

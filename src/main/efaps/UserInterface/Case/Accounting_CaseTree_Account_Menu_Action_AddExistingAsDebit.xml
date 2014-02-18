@@ -34,7 +34,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseTree_Account_Menu_Action_AddExistingAsDebit</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <search>Accounting_CaseTree_Account_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">

@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>6e6e8c6b-1187-4403-9e6c-041b880bbfa7</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -29,9 +31,11 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseTree_Report_Menu_Action_Disconnect</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
         <!-- properties -->
         <property name="AskUser">true</property>

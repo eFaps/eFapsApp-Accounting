@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>6912f942-c8e0-4928-8143-ecce9cdca60e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -36,7 +38,8 @@
         <!-- target definitions -->
         <target>
             <form>Accounting_Account2Case4EditAccountForm</form>
-            <execute program="org.efaps.esjp.accounting.Account" method="updateAccount" />
+            <execute program="org.efaps.esjp.accounting.Account"
+                method="updateAccount" />
         </target>
 
         <!-- properties -->
