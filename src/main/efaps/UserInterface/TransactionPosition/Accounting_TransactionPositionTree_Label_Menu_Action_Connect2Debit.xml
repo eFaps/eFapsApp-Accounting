@@ -34,7 +34,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPositionTree_Label_Menu_Action_Connect2Debit</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <search>Accounting_TransactionPositionTree_Label_Menu_Action_Connect_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
