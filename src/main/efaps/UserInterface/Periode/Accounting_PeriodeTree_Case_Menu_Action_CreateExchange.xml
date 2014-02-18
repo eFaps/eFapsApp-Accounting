@@ -31,12 +31,15 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Case_Menu_Action_CreateExchange</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_CaseForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />
-             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" 
-                method="configObjectCheck" 
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configObjectCheck"
                 name="Accounting_PeriodeTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateExchange</property>

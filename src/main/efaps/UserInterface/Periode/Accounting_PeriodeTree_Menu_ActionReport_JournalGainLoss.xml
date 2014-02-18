@@ -34,6 +34,7 @@
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
+            <role>Accounting_Executive</role>
         </access>
         <target>
             <form>Accounting_Journal_CreateForm</form>

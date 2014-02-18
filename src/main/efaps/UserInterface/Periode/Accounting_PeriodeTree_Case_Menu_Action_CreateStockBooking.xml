@@ -35,7 +35,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Case_Menu_Action_CreateStockBooking</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_CaseForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />
