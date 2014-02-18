@@ -34,6 +34,7 @@
         <name>Accounting_AccountTree_Child_Menu_Action_Create</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_AccountForm</form>

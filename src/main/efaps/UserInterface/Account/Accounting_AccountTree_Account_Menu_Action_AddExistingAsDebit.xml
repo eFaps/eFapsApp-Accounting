@@ -36,6 +36,7 @@
         <name>Accounting_AccountTree_Account_Menu_Action_AddExistingAsDebit</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <search>Accounting_AccountTree_Account_Menu_Action_AddExistingAccount_Search</search>

@@ -36,6 +36,7 @@
         <name>Accounting_AccountBalanceSheetAssetTree_ProductClass_Menu_Action_Disconnect</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />

@@ -38,6 +38,7 @@
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_Account2AccountAbstract/Type.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="numerator">
             <property name="Attribute">Numerator</property>

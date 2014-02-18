@@ -39,6 +39,7 @@
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_CaseAbstract/Type.Label</property>
             <property name="ModeSearch">READONLY</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>

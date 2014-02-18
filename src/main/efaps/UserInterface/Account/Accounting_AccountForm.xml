@@ -60,6 +60,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
+            <property name="Columns">80</property>
         </field>
         <field name="parentLink">
             <property name="SelectAlternateOID">linkto[ParentLink].oid</property>

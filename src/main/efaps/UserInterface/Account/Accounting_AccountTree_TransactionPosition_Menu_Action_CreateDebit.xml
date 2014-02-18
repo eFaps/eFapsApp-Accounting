@@ -35,6 +35,7 @@
 
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_TransactionCreateDebit4AccountForm</form>
