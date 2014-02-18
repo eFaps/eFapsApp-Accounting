@@ -28,6 +28,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_DocsToBook</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_SubPeriodTree_DocsToBook_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>

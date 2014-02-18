@@ -33,6 +33,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_External</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_PeriodeTree_External_Menu</menu>
             <table>Sales_IncomingInvoiceTable</table>

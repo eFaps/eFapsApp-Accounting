@@ -32,6 +32,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_BankCash</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_PeriodeTree_BankCash_Menu</menu>
             <table>Accounting_Periode2AccountTable</table>

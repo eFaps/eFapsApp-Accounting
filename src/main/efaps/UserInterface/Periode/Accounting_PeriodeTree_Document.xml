@@ -33,6 +33,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Document</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_PeriodeTree_Document_Menu</menu>
             <table>Accounting_PeriodeDocumentSumTable</table>

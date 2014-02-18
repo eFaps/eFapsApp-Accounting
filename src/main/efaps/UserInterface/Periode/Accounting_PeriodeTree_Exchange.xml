@@ -29,6 +29,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Exchange</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_PeriodeTree_Exchange_Menu</menu>
             <table>Accounting_PeriodeExchangeTable</table>
@@ -40,8 +43,8 @@
                 <property name="StatusGrp02">Sales_IncomingExchangeStatus</property>
                 <property name="Status02">Open</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" 
-                method="configObjectCheck" 
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configObjectCheck"
                 name="Accounting_PeriodeTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateExchange</property>

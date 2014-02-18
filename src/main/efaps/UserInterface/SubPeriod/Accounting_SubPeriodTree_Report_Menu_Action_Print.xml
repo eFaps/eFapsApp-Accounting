@@ -30,8 +30,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_Report_Menu_Action_Print</name>
-
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Executive</role>
+        </access>
         <target>
             <form>Accounting_SubPeriodReportPrintForm</form>
             <execute method="printReport" program="org.efaps.esjp.accounting.SubPeriod">

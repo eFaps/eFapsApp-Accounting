@@ -27,6 +27,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Payment</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_PeriodeTree_Payment_Menu</menu>
             <table>Sales_PaymentDocumentAbstractTable</table>

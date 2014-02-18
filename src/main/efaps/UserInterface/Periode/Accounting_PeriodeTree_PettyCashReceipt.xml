@@ -27,6 +27,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_PettyCashReceipt</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <menu>Accounting_PeriodeTree_PettyCashReceipt_Menu</menu>
             <table>Accounting_Sales_PettyCashReceiptTable</table>

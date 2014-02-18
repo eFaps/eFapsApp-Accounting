@@ -119,6 +119,11 @@
                 <!-- Accounting-Configuration -->
                 <property name="SystemConfigurationUUID">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
             </trigger>
+            <trigger name="Accounting_PeriodeForm.reports.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="roleCheck" >
+                <property name="Roles">Accounting_Admin</property>
+            </trigger>
         </field>
 
     </definition>
