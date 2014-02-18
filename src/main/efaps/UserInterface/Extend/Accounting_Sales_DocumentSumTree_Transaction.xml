@@ -36,7 +36,7 @@
         <name>Accounting_Sales_DocumentSumTree_Transaction</name>
         <access>
             <role>Accounting_Admin</role>
-            <role>Accounting_Modifier</role>
+            
             <role>Accounting_Reader</role>
         </access>
         <target>

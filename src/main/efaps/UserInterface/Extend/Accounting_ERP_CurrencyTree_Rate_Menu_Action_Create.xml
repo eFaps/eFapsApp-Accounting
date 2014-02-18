@@ -35,7 +35,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ERP_CurrencyTree_Rate_Menu_Action_Create</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>ERP_CurrencyRateForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />

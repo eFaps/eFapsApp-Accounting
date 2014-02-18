@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8505bbb2-e9d0-45f6-afff-56d2dd2c45b9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -28,12 +30,13 @@
         <name>Accounting_Payroll_PayslipMyDesk_Menu_Action_CreateTransaction</name>
         <access>
             <role>Accounting_Admin</role>
-            <role>Accounting_Modifier</role>
+            
         </access>
         <!-- target definitions -->
-         <target>
+        <target>
             <form>Accounting_Payroll_CreateTransactionForm</form>
-            <execute program="org.efaps.esjp.accounting.transaction.Payroll" method="createTransaction4PaySlips"/>
+            <execute program="org.efaps.esjp.accounting.transaction.Payroll"
+                method="createTransaction4PaySlips" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
