@@ -34,8 +34,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_DocsToBook_Menu_Action_Book</name>
-
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4DocToBookForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"

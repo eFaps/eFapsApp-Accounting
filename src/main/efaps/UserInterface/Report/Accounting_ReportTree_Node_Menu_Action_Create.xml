@@ -34,7 +34,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportTree_Node_Menu_Action_Create</name>
-
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <!-- target definitions -->
         <target>
             <form>Accounting_ReportNodeForm</form>

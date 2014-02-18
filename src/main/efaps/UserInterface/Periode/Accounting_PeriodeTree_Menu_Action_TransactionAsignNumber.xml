@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>0817accc-c752-4939-bb1b-1066241c5b0b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -29,9 +31,11 @@
         <name>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
-            <execute method="asignNumber" program="org.efaps.esjp.accounting.transaction.Transaction"/>
+            <execute method="asignNumber"
+                program="org.efaps.esjp.accounting.transaction.Transaction" />
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>

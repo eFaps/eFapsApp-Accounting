@@ -19,7 +19,9 @@
  Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
  Last Changed By: $Author: miguel.a.aranya $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>8071a2f1-1238-4a33-8dce-1ab87d8e8cd8</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -31,11 +33,12 @@
 
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
 
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.accounting.export.ExportAccount"/>
+            <execute program="org.efaps.esjp.accounting.export.ExportAccount" />
         </target>
 
         <!-- properties -->

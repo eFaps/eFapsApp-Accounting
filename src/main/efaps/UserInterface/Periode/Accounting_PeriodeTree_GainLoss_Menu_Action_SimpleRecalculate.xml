@@ -30,13 +30,16 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_GainLoss_Menu_Action_SimpleRecalculate</name>
-        <!-- target definition -->
+         <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_GainLoss4SimpleAccountForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Recalculate"
                 method="createGainLoss4SimpleAccount" />
-            <validate program="org.efaps.esjp.accounting.transaction.Recalculate" 
-                method="validate4SimpleAccount"/>    
+            <validate program="org.efaps.esjp.accounting.transaction.Recalculate"
+                method="validate4SimpleAccount"/>
         </target>
 
         <!-- properties -->

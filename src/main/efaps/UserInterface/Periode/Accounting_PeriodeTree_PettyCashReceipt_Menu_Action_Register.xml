@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>b02e6973-0c75-4b58-b3ba-afd22a661713</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -29,11 +31,17 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_PettyCashReceipt_Menu_Action_Register</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4PettyCashReceiptForm</form>
-            <execute program="org.efaps.esjp.accounting.ExternalVoucher" method="create4PettyCashReceipt" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate">
+            <execute program="org.efaps.esjp.accounting.ExternalVoucher"
+                method="create4PettyCashReceipt" />
+            <validate
+                program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="validate">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
             <command>Sales_IncomingInvoice_ShowRevision</command>
@@ -47,5 +55,4 @@
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
     </definition>
-
 </ui-command>

@@ -35,7 +35,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportNodeTree_NodeAccount_Menu_Action_Create</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+         </access>
+
         <target>
             <form>Accounting_ReportNodeAccountForm</form>
             <execute program="org.efaps.esjp.accounting.report.Report"

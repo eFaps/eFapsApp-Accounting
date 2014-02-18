@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>4899e0b3-f4ac-49f1-8854-03c4a5483092</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -31,7 +33,8 @@
             <role>Accounting_Admin</role>
         </access>
         <target>
-            <execute method="renumber" program="org.efaps.esjp.accounting.transaction.Transaction"/>
+            <execute method="renumber"
+                program="org.efaps.esjp.accounting.transaction.Transaction" />
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>

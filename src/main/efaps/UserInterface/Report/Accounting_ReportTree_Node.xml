@@ -33,6 +33,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportTree_Node</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Executive</role>
+        </access>
         <target>
             <menu>Accounting_ReportTree_Node_Menu</menu>
             <table>Accounting_ReportNodeTable</table>

@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>4446e2a0-4ad3-445f-9494-2b4d14a8a511</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -29,10 +31,14 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Payment_Menu_Action_Book</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4PaymentForm</form>
-            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create"/>
+            <execute method="create4Payment"
+                program="org.efaps.esjp.accounting.transaction.Create" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

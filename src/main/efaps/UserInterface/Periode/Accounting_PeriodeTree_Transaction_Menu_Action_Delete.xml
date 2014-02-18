@@ -34,7 +34,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Transaction_Menu_Action_Delete</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"

@@ -31,7 +31,7 @@
         <access>
             <role>Accounting_Admin</role>
             
-            <role>Accounting_Reader</role>
+            
         </access>
         <target>
             <menu>Accounting_PurchaseRecordMyDesk_Menu</menu>

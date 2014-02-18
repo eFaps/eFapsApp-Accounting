@@ -35,7 +35,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportNodeTree_NodeTree_Menu_Action_Delete</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+         </access>
+
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>

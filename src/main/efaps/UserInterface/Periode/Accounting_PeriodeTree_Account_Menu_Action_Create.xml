@@ -34,13 +34,14 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Account_Menu_Action_Create</name>
-
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_AccountForm</form>
             <execute program="org.efaps.esjp.accounting.Account" method="create" />
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>

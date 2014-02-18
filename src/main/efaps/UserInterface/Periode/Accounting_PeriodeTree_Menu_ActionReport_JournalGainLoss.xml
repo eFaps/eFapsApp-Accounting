@@ -19,7 +19,9 @@
   Last Changed:    $Date: 2012-12-18 14:15:06 -0500 (mar, 18 dic 2012) $
   Last Changed By: $Author: jan@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>752840a8-a0a5-4c5e-9bc1-6a1e44a7c408</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -31,8 +33,7 @@
 
         <access>
             <role>Accounting_Admin</role>
-            
-            <role>Accounting_Reader</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_Journal_CreateForm</form>

@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>4a80e703-3af9-4024-a724-ccbba6c52f93</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -29,13 +31,15 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_View_Menu_Action_Delete</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
         <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
     </definition>
-
 </ui-command>

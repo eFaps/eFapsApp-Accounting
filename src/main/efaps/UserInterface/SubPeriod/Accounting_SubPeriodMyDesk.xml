@@ -31,7 +31,7 @@
         <access>
             <role>Accounting_Admin</role>
             
-            <role>Accounting_Reader</role>
+            
         </access>
         <target>
             <table>Accounting_SubPeriodTable</table>

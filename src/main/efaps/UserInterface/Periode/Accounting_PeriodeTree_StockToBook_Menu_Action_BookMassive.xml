@@ -35,7 +35,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_StockToBook_Menu_Action_BookMassive</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_BookMassivForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"

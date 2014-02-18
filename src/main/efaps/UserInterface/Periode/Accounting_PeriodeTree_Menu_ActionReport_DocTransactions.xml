@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>048204e7-a97e-4bc5-913e-e75152a390aa</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -31,8 +33,7 @@
 
         <access>
             <role>Accounting_Admin</role>
-            
-            <role>Accounting_Reader</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_DocTransactionsForm</form>

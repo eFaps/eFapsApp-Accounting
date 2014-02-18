@@ -28,6 +28,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_AccountStructurBrowser_Menu_Action_Expand</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <execute program="org.efaps.esjp.accounting.StructurBrowser" method="expand">
                 <!-- Accounting_PeriodeTree_AccountStructurBrowser -->

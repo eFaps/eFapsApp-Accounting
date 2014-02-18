@@ -28,6 +28,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportSubJournalTree_Menu_Action_Print</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Executive</role>
+        </access>
         <target>
             <form>Accounting_Journal_CreateForm</form>
             <execute program="org.efaps.esjp.accounting.report.SubJournal" method="createReport" >

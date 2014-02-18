@@ -30,8 +30,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Exchange_Menu_Action_Register</name>
-
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4ExchangeForm</form>
             <execute method="create4Exchange" program="org.efaps.esjp.accounting.transaction.Create" />

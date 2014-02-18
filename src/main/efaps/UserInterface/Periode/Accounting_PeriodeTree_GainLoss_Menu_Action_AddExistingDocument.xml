@@ -19,7 +19,9 @@
  Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
  Last Changed By: $Author: miguel.a.aranya $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>9024398b-d558-4bcc-be51-36529f227475</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -28,7 +30,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_GainLoss_Menu_Action_AddExistingDocument</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <search>Accounting_AccountTree_Account_Menu_Action_AddExistingAccount_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
@@ -37,9 +42,6 @@
                 <property name="ConnectType">Accounting_AccountConfigDocument2Periode</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
     </definition>
-
 </ui-command>

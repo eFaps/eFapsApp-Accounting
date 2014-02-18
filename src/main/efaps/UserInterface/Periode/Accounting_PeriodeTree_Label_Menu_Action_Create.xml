@@ -35,7 +35,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Label_Menu_Action_Create</name>
 
-        <!-- target definitions -->
+         <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_LabelForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />

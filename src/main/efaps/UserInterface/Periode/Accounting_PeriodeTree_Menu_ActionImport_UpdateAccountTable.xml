@@ -19,7 +19,9 @@
  Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
  Last Changed By: $Author: miguel.a.aranya $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>7d082573-568f-40a6-ae00-3b7dbc480805</uuid>
     <file-application>eFapsApp-Accounting</file-application>
@@ -31,12 +33,14 @@
 
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
 
         <!-- target definitions -->
         <target>
             <form>Accounting_PeriodeAccountTableForm</form>
-            <execute program="org.efaps.esjp.accounting.Periode" method="updateTableAccount"/>
+            <execute program="org.efaps.esjp.accounting.Periode"
+                method="updateTableAccount" />
         </target>
 
         <!-- properties -->

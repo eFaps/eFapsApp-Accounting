@@ -34,7 +34,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_Transaction_Menu_Action_Create</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
         <target>
             <form>Accounting_TransactionForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
