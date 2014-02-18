@@ -35,6 +35,7 @@
         <name>Accounting_PeriodeTree_StockToBook</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <menu>Accounting_PeriodeTree_StockToBook_Menu</menu>

@@ -34,6 +34,7 @@
         <name>Accounting_PeriodeTree_DocsToBook</name>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
         </access>
         <target>
             <menu>Accounting_PeriodeTree_DocsToBook_Menu</menu>
