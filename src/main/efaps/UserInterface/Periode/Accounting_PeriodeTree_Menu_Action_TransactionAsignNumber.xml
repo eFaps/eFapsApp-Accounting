@@ -34,12 +34,11 @@
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <execute method="asignNumber"
-                program="org.efaps.esjp.accounting.transaction.Transaction" />
+            <form>Accounting_TransactionAsignNumberForm</form>
+            <execute method="asignNumber" program="org.efaps.esjp.accounting.transaction.Transaction" />
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="TargetMode">edit</property>
+        <property name="Target">modal</property>
         <property name="SuccessDialog">true</property>
     </definition>
 </ui-command>

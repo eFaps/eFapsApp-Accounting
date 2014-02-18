@@ -141,7 +141,8 @@ public abstract class Transaction_Base
     {
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.StatusAbstract,
-                        Status.find(CIAccounting.TransactionStatus.uuid, "Booked").getId());
+                        Status.find(CIAccounting.TransactionStatus.Booked));
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, _parameter.getInstance());
         queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
         queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -167,10 +168,13 @@ public abstract class Transaction_Base
     public Return asignNumber(final Parameter _parameter)
         throws EFapsException
     {
-
+        final DateTime date = new DateTime(
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_TransactionAsignNumberForm.date.name));
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.StatusAbstract,
-                        Status.find(CIAccounting.TransactionStatus.uuid, "Closed").getId());
+                        Status.find(CIAccounting.TransactionStatus.Closed));
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, _parameter.getInstance());
+        queryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, date.withTimeAtStartOfDay().plusDays(1));
         queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Date);
         queryBldr.addOrderByAttributeAsc(CIAccounting.TransactionAbstract.Name);
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -198,7 +202,8 @@ public abstract class Transaction_Base
         final String ret;
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.StatusAbstract,
-                        Status.find(CIAccounting.TransactionStatus.uuid, "Booked").getId());
+                        Status.find(CIAccounting.TransactionStatus.Booked));
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, _parameter.getInstance());
         queryBldr.addOrderByAttributeDesc(CIAccounting.TransactionAbstract.Name);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.TransactionAbstract.Name);
@@ -1042,7 +1047,7 @@ public abstract class Transaction_Base
         } else if (periodInst.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
             final PrintQuery print = new CachedPrintQuery(periodInst, Periode_Base.CACHEKEY);
             final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodeLink);
-            final SelectBuilder selInst = new SelectBuilder(selPeriod).instance();;
+            final SelectBuilder selInst = new SelectBuilder(selPeriod).instance();
             final SelectBuilder selDateFrom = new SelectBuilder(selPeriod).attribute(CIAccounting.Periode.FromDate);
             final SelectBuilder selDateTo = new SelectBuilder(selPeriod).attribute(CIAccounting.Periode.ToDate);
             print.addSelect(selInst, selDateFrom, selDateTo);
