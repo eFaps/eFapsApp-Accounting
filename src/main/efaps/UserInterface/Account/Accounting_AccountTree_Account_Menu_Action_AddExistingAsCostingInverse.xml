@@ -34,7 +34,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_Account_Menu_Action_AddExistingAsCostingInverse</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <search>Accounting_AccountTree_Account_Menu_Action_AddExistingAccount_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
@@ -43,9 +45,6 @@
                 <property name="ConnectType">Accounting_Account2AccountCostingInverse</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
     </definition>
-
 </ui-command>

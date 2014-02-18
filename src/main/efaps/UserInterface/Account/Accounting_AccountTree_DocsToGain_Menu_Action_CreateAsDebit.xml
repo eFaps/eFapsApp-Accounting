@@ -35,7 +35,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_DocsToGain_Menu_Action_CreateAsDebit</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4DocBankCashDebitForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"

@@ -33,7 +33,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_TransactionPosition_Menu_Action_CreateCredit</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreateCredit4AccountForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create" method="create4Account">

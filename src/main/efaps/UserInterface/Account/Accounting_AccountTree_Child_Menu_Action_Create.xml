@@ -32,8 +32,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_Child_Menu_Action_Create</name>
-
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_AccountForm</form>
              <execute program="org.efaps.esjp.accounting.Account" method="create"/>

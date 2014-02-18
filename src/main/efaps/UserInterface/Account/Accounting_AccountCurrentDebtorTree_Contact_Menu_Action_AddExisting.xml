@@ -34,7 +34,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountCurrentDebtorTree_Contact_Menu_Action_AddExisting</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <search>Accounting_AccountCurrentDebtorTree_Contact_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
@@ -43,9 +45,6 @@
                 <property name="ConnectType">Accounting_AccountCurrentDebtor2ContactClassClient</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
     </definition>
-
 </ui-command>

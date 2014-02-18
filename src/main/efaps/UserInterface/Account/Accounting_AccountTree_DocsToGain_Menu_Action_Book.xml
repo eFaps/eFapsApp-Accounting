@@ -35,7 +35,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_DocsToGain_Menu_Action_Book</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4DocBankCashForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
@@ -43,7 +45,6 @@
             <validate program="org.efaps.esjp.accounting.transaction.Transaction"
                 method="validate" />
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
@@ -52,5 +53,4 @@
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
     </definition>
-
 </ui-command>

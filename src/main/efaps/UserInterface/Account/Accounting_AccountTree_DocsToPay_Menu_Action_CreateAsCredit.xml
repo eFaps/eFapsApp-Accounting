@@ -35,7 +35,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_DocsToPay_Menu_Action_CreateAsCredit</name>
 
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_TransactionCreate4DocBankCashCreditForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"

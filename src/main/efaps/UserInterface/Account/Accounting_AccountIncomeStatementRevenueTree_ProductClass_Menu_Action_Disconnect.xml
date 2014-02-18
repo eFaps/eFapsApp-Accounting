@@ -34,14 +34,13 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountIncomeStatementRevenueTree_ProductClass_Menu_Action_Disconnect</name>
-        <!-- target definitions -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-
-        <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
     </definition>
-
 </ui-command>

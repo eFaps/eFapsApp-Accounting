@@ -32,7 +32,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountIncomeStatementExpensesTree_ProductClass_Menu_Action_Create</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_Account2ProductClassCreateForm</form>
             <execute program="org.efaps.esjp.accounting.Account"

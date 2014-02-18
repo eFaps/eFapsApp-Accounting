@@ -32,7 +32,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountIncomeStatementRevenueTree_ProductClass_Menu_Action_Create</name>
-        <!-- target definition -->
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <form>Accounting_Account2ProductClassCreateForm</form>
             <execute program="org.efaps.esjp.accounting.Account"
@@ -40,7 +42,6 @@
                 <property name="Type">Accounting_AccountIncomeStatementRevenue2ProductClass</property>
             </execute>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
     </definition>
