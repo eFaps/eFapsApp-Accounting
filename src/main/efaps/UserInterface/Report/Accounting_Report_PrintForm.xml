@@ -54,6 +54,7 @@
             <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateFromFieldValue"
                 name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"
@@ -63,6 +64,7 @@
             <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateToFieldValue"
                 name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"

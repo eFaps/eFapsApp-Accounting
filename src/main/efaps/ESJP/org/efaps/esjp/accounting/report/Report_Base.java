@@ -151,7 +151,6 @@ public abstract class Report_Base
         return ret;
     }
 
-
     /**
      * Called from a field value event to get the value for the date from field.
      * @param _parameter    Parameter as passed from the eFaps API
@@ -166,6 +165,39 @@ public abstract class Report_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return  new Return containing value
+     * @throws EFapsException on error
+     */
+    public Return validateDates(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String dateFromStr = _parameter.getParameterValue("dateFrom");
+        final String dateToStr = _parameter.getParameterValue("dateTo");
+        final StringBuilder html = new StringBuilder();
+        if (dateFromStr != null && !dateFromStr.isEmpty()) {
+            final DateTime dateFromTmp = new DateTime(dateFromStr);
+            final DateTime fromDate = getDate(_parameter, true);
+            if (dateFromTmp.isBefore(fromDate)) {
+                html.append(DBProperties.getProperty(Report.class.getName() + ".ValidateDates.From"));
+            }
+        }
+        if (dateToStr != null && !dateToStr.isEmpty()) {
+            final DateTime dateToTmp = new DateTime(dateToStr);
+            final DateTime toDate = getDate(_parameter, false);
+            if (dateToTmp.isAfter(toDate)) {
+                html.append(DBProperties.getProperty(Report.class.getName() + ".ValidateDates.To"));
+            }
+        }
+        if (html.length() > 0) {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        } else {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFaps Date

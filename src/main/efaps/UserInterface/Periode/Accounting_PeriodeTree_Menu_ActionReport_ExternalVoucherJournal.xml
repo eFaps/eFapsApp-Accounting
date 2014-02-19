@@ -47,6 +47,7 @@
                 <property name="DataSourceClass">org.efaps.esjp.accounting.report.JournalDataSource</property>
                 <property name="Classifications">Accounting_TransactionClassExternal</property>
             </execute>
+            <validate program="org.efaps.esjp.accounting.report.Report" method="validateDates"/>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
