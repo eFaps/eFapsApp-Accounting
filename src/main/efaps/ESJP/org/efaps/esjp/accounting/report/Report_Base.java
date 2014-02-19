@@ -185,11 +185,7 @@ public abstract class Report_Base
             if (_parameter.getInstance().getType().isKindOf(CIAccounting.Periode.getType())) {
                 sel.attribute(_from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
             } else if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-                if (_from) {
-                    sel.linkto(CIAccounting.SubPeriod.PeriodLink).attribute(CIAccounting.Periode.FromDate);
-                } else {
-                    sel.attribute(CIAccounting.SubPeriod.ToDate);
-                }
+                sel.attribute(_from ? CIAccounting.SubPeriod.FromDate : CIAccounting.SubPeriod.ToDate);
             } else {
                 sel.linkto(CIAccounting.ReportAbstract.PeriodeLink).attribute(
                                 _from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);

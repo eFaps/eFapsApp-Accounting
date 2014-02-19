@@ -39,6 +39,7 @@
         <type>Accounting_SubPeriod</type>
 
         <childs>
+            <child>Accounting_SubPeriodTree_AccountStructurBrowser</child>
             <child>Accounting_SubPeriodTree_Document</child>
             <child>Accounting_SubPeriodTree_External</child>
             <child>Accounting_SubPeriodTree_DocsToBook</child>

@@ -24,7 +24,11 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
 import org.efaps.util.EFapsException;
@@ -53,6 +57,15 @@ public abstract class StructurBrowser_Base
         throws EFapsException
     {
         _queryBldr.addWhereAttrIsNull(CIAccounting.AccountAbstract.ParentLink);
+        if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(_parameter.getInstance(), SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            final Instance instance = print.<Instance>getSelect(selPeriodInst);
+            _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, instance);
+        }
     }
 
     /**
