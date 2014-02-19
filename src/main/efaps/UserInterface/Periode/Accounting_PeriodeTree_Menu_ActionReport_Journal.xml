@@ -44,7 +44,7 @@
             <form>Accounting_Journal_CreateForm</form>
             <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
                 <property name="JasperReport">Accounting_Journal</property>
-                <property name="DataSourceClass">org.efaps.esjp.accounting.JournalDataSource </property>
+                <property name="DataSourceClass">org.efaps.esjp.accounting.report.JournalDataSource </property>
             </execute>
         </target>
         <property name="Target">modal</property>

@@ -44,18 +44,22 @@
                 event="UI_FIELD_VALUE"/>
         </field>
         <field name="dateFrom">
-            <property name="Label">Accounting_Journal_CreateForm.dateFrom.Label</property>
+            <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
-            <trigger program="org.efaps.esjp.accounting.JournalDataSource"
+            <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateFromFieldValue"
                 name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"></trigger>
         </field>
         <field name="dateTo">
-            <property name="Label">Accounting_Journal_CreateForm.dateTo.Label</property>
+            <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <trigger program="org.efaps.esjp.accounting.report.Report"
+                method="getDateToFieldValue"
+                name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
         </field>
     </definition>
 </ui-form>

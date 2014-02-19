@@ -19,7 +19,7 @@
  */
 
 
-package org.efaps.esjp.accounting;
+package org.efaps.esjp.accounting.report;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;

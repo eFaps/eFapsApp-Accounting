@@ -19,7 +19,7 @@
  */
 
 
-package org.efaps.esjp.accounting;
+package org.efaps.esjp.accounting.report;
 
 import java.util.Map;
 
@@ -32,14 +32,11 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.esjp.erp.util.ERP;
@@ -59,38 +56,6 @@ import org.joda.time.DateTime;
 public abstract class JournalDataSource_Base
     extends EFapsDataSource
 {
-
-    /**
-     * Called from a field value event to get the value for the date from field.
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @return  new Return containing value
-     * @throws EFapsException on error
-     */
-    public Return getDateFromFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.ReportSubJournal.PeriodeLink)
-                        .attribute(CIAccounting.Periode.FromDate);
-        if (_parameter.getInstance().getType().isKindOf(CIAccounting.ReportSubJournal.getType())) {
-            print.addSelect(sel);
-        } else {
-            print.addAttribute(CIAccounting.Periode.FromDate);
-        }
-
-        DateTime date;
-        if (print.execute()) {
-            date = print.getAttribute(CIAccounting.Periode.FromDate) == null
-                            ? print.<DateTime>getSelect(sel)
-                                            : print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-        } else {
-            date = new DateTime();
-        }
-
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, date);
-        return ret;
-    }
 
     @Override
     public void init(final JasperReport _jasperReport,
