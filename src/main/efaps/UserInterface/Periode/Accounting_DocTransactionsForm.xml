@@ -41,10 +41,10 @@
             <property name="Label">Accounting_Journal_CreateForm.dateFrom.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
-            <trigger event="UI_FIELD_VALUE"
+            <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateFromFieldValue"
                 name="Accounting_DocTransactionsForm.dateFrom.UI_FIELD_VALUE"
-                program="org.efaps.esjp.accounting.JournalDataSource"/>
+                event="UI_FIELD_VALUE"></trigger>
         </field>
         <field name="dateTo">
             <property name="Label">Accounting_Journal_CreateForm.dateTo.Label</property>
