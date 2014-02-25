@@ -56,6 +56,7 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.common.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
@@ -515,6 +516,10 @@ public abstract class Periode_Base
         final AttributeQuery attrQueryDoc = attrQueryBldr.getAttributeQuery(
                         CIAccounting.ExternalVoucher2Document.ToLink);
 
+        final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+        final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                        CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
+
         final QueryBuilder queryBldr3 = new QueryBuilder(CISales.PettyCashReceipt);
         if (properties.containsKey("PettyCashReceiptStatus")) {
             final String status = (String) properties.get("PettyCashReceiptStatus");
@@ -533,6 +538,7 @@ public abstract class Periode_Base
         queryBldr3.addWhereAttrGreaterValue(CISales.PettyCashReceipt.Date, from.minusMinutes(1));
         queryBldr3.addWhereAttrLessValue(CISales.PettyCashReceipt.Date, to.plusDays(1));
         queryBldr3.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery2);
+        queryBldr3.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, docTypeAttrQuery);
         queryBldr3.addWhereAttrNotInQuery(CISales.PettyCashReceipt.ID, attrQueryDoc);
         final MultiPrintQuery multi = queryBldr3.getPrint();
         multi.addAttribute(CISales.PettyCashReceipt.Name,
