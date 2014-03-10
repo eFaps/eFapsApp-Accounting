@@ -814,8 +814,7 @@ public abstract class Transaction_Base
                 buildDoc4ExecuteButton(_parameter, doc);
 
                 if (doc.getInstance() != null) {
-                    doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType())
-                                    || doc.getInstance().getType().isKindOf(CISales.CreditNote.getType()));
+                    doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
                     addAccount4BankCash(_parameter, doc);
                 }
 
@@ -1395,7 +1394,6 @@ public abstract class Transaction_Base
             return this.invert;
         }
 
-
         /**
          * Setter method for instance variable {@link #invert}.
          *
@@ -1406,7 +1404,6 @@ public abstract class Transaction_Base
         {
             this.invert = _invert;
         }
-
 
         /**
          * Getter method for the instance variable {@link #costValidated}.
