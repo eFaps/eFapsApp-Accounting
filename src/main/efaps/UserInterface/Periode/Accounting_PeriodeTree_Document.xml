@@ -54,10 +54,10 @@
                 <property name="Status05">Open</property>
                 <property name="StatusGrp06">Sales_CreditNoteStatus</property>
                 <property name="Status06">Paid</property>
-                <property name="StatusGrp05">Sales_ReminderStatus</property>
-                <property name="Status05">Open</property>
-                <property name="StatusGrp06">Sales_ReminderStatus</property>
-                <property name="Status06">Paid</property>
+                <property name="StatusGrp07">Sales_ReminderStatus</property>
+                <property name="Status07">Open</property>
+                <property name="StatusGrp08">Sales_ReminderStatus</property>
+                <property name="Status08">Paid</property>
             </evaluate>
         </target>
         <!-- properties -->
