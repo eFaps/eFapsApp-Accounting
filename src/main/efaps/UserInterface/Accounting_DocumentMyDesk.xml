@@ -37,7 +37,7 @@
         </access>
         <target>
             <menu>Accounting_DocumentMyDesk_Menu</menu>
-            <table>Sales_IncomingInvoiceTable</table>
+            <table>Accounting_IncomingDocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="Type02">Accounting_ExternalVoucher</property>
