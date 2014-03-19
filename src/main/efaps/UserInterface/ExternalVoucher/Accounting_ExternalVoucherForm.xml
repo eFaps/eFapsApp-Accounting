@@ -55,7 +55,7 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
-                method="updateFields4RateCurrencyFromDate"
+                method="updateFields4Date"
                 name="Accounting_ExternalVoucherForm.date.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
