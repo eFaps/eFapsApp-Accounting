@@ -49,5 +49,10 @@
             <value>3fecbf3a-4454-40ef-a182-713b211a283f</value>
             <description>Rate currency type UUID used for calculate debit and credit positions for a transaction (ERP_CurrencyRateClient: 86f8af65-5996-4481-b92a-17605d9281ba), (Accounting_ERP_CurrencyRateAccounting: 3fecbf3a-4454-40ef-a182-713b211a283f).</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.accounting.CurrencyRate4AccountingEqualsSales</key>
+            <value>true</value>
+            <description>(true/false) Using a Currency Rate for Sales.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>
