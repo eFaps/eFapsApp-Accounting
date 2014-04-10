@@ -49,6 +49,10 @@
             </validate>
             <validate program="org.efaps.esjp.accounting.ExternalVoucher" method="validateName" index="1">
                 <property name="FieldName">extName</property>
+                <property name="ValidateContact">true</property>
+                <property name="QueryType">Sales_IncomingInvoice</property>
+                <property name="QueryType01">Sales_IncomingReceipt</property>
+                <property name="QueryType02">Accounting_ExternalVoucher</property>
             </validate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
