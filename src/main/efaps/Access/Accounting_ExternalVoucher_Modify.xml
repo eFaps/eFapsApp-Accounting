@@ -52,7 +52,10 @@
             <key>Replaced</key>
         </status>
 
-        <role>Accounting_Modifier</role>
+        <role>Accounting_Accountant</role>
+        <role>Accounting_Executive</role>
+        <role>Accounting_Clerk</role>
+        <role>Accounting_Manager</role>
     </definition>
 </access-set>
 
