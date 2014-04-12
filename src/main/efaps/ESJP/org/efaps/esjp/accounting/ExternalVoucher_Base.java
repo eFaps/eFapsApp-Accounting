@@ -327,14 +327,11 @@ public abstract class ExternalVoucher_Base
         final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
         if (docInst.isValid()) {
             final SelectBuilder selContactOid = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact).oid();
-            final SelectBuilder selActDefName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
-                            .linkto(CIAccounting.PettyCashReceipt_Class.ActionDefinitionLink)
-                            .attribute(CIAccounting.ActionDefinitionPettyCash.Name);
             final PrintQuery print = new PrintQuery(docInst);
             print.addAttribute(CISales.PettyCashReceipt.Date,
                             CISales.PettyCashReceipt.RateCurrencyId,
                             CISales.PettyCashReceipt.RateCrossTotal);
-            print.addSelect(selContactOid, selActDefName);
+            print.addSelect(selContactOid);
             print.execute();
             _parameter.getParameters().put("currencyExternal",
                                             new String[] { print.<Long>getAttribute(
@@ -350,8 +347,6 @@ public abstract class ExternalVoucher_Base
             _parameter.getParameters().put("amountExternal",
                             new String[] { print.<BigDecimal>getAttribute(CISales.PettyCashReceipt.RateCrossTotal)
                                             .toString() });
-            _parameter.getParameters().put("note",
-                            new String[] { print.<String>getSelect(selActDefName) });
 
             final CreatedDoc createdDoc = createDoc(_parameter);
 
