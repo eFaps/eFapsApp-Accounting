@@ -220,81 +220,73 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Instance instance = (Instance) Context.getThreadContext()
-                                                    .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                        .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
 
         final String caseOid = (String) Context.getThreadContext()
-                                                    .getSessionAttribute(Transaction_Base.CASE_SESSIONKEY);
+                        .getSessionAttribute(Transaction_Base.CASE_SESSIONKEY);
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final boolean caseFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Account"));
+
         final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
-        final QueryBuilder queryBuilder;
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
         boolean showSumAccount = true;
         String postfix = "";
-        if (properties != null && properties.containsKey("TypePostfix")) {
-            postfix = (String) properties.get("TypePostfix");
-            showSumAccount = !"false".equalsIgnoreCase((String) properties.get("ShowSumAccount"));
+        if (containsProperty(_parameter, "TypePostfix")) {
+            postfix = getProperty(_parameter, "TypePostfix");
+            showSumAccount = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowSumAccount"));
         }
-        final String oidStr;
-        final String nameStr;
-        final String descStr;
-        String periodStr = "";
-        if (caseOid == null) {
-            oidStr = "oid";
-            nameStr = "attribute[Name]";
-            descStr = "attribute[Description]";
-            queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
-            queryBuilder.addWhereAttrMatchValue("Name", input + "*").setIgnoreCase(true);
+        final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBuilder.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Name, input + "*").setIgnoreCase(true);
+        if (!showSumAccount) {
+            queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Summary, false);
+        }
+        boolean showPeriod = false;
+        if (!caseFilter || caseOid == null) {
             // if we do not filter for period we must show it
             if (instance != null && instance.getType().isKindOf(CIAccounting.Periode.getType())) {
-                queryBuilder.addWhereAttrEqValue("PeriodeAbstractLink", instance.getId());
+                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, instance);
             } else {
-                periodStr = "linkto[PeriodeAbstractLink].attribute[Name]";
+                showPeriod = true;
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Company,
                                 Context.getThreadContext().getPerson().getCompanies().toArray());
             }
-            if (!showSumAccount) {
-                queryBuilder.addWhereAttrEqValue("Summary", false);
-            }
         } else {
-            oidStr = "linkto[FromAccountAbstractLink].oid";
-            nameStr = "linkto[FromAccountAbstractLink].attribute[Name]";
-            descStr = "linkto[FromAccountAbstractLink].attribute[Description]";
+            QueryBuilder attrQueryBldr;
             if (postfix.equalsIgnoreCase("debit")) {
-                queryBuilder = new QueryBuilder(CIAccounting.Account2CaseDebit);
+                attrQueryBldr = new QueryBuilder(CIAccounting.Account2CaseDebit);
             } else {
-                queryBuilder = new QueryBuilder(CIAccounting.Account2CaseCredit);
+                attrQueryBldr = new QueryBuilder(CIAccounting.Account2CaseCredit);
             }
-            queryBuilder.addWhereAttrEqValue("ToCaseAbstractLink", Instance.get(caseOid).getId());
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
+                            Instance.get(caseOid));
+            queryBuilder.addWhereAttrInQuery(CIAccounting.AccountAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink));
         }
         final InstanceQuery query = queryBuilder.getQuery();
         if (instance.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
             query.setCompanyDepended(false);
         }
-        final MultiPrintQuery print = new MultiPrintQuery(query.execute());
-        print.addSelect(oidStr, nameStr, descStr);
-        if (!periodStr.isEmpty()) {
-            print.addSelect(periodStr);
-            print.addAttribute(CIAccounting.AccountAbstract.Company);
-        }
-        print.execute();
-        while (print.next()) {
-            final String name = print.<String>getSelect(nameStr);
-            if (caseOid == null || ((input.length() < 2) || (input.length() > 1 && name.startsWith(input)))) {
-                String description = print.<String>getSelect(descStr);
-                final String oid = print.<String>getSelect(oidStr);
-                if (!periodStr.isEmpty()) {
-                    final Company company = print.<Company>getAttribute(CIAccounting.AccountAbstract.Company);
-                    description = description + " - " + print.<String>getSelect(periodStr)
-                                     + (company == null ? "" : (" - " + company.getName()));
-                }
-                final String choice = name + " - " + description;
-                final Map<String, String> map = new HashMap<String, String>();
-                map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey() , oid);
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
-                map.put("description" + (postfix.equals("") ? "" : "_" + postfix), description);
-                orderMap.put(choice, map);
+        final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
+        multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description,
+                        CIAccounting.AccountAbstract.Company);
+        final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
+                        .attribute(CIAccounting.Periode.Name);
+        multi.addSelect(selPeriod);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
+            String description = multi.getAttribute(CIAccounting.AccountAbstract.Description);
+            if (showPeriod) {
+                final Company company = multi.<Company>getAttribute(CIAccounting.AccountAbstract.Company);
+                description = description + " - " + multi.<String>getSelect(selPeriod)
+                                + (company == null ? "" : (" - " + company.getName()));
             }
+            final String choice = name + " - " + description;
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            orderMap.put(choice, map);
         }
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();

@@ -114,6 +114,7 @@
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="TypePostfix">Debit</property>
                 <property name="ShowSumAccount">false</property>
+                <property name="ExtraParameter">checkbox4Account</property>
             </trigger>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Account"

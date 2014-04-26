@@ -39,8 +39,11 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -109,18 +112,24 @@ public abstract class FieldUpdate_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String postfix = (String) properties.get("TypePostfix");
         final String[] accountOIDs = _parameter.getParameterValues("accountLink_" + postfix);
-        final String selected = _parameter.getParameterValue("eFapsRowSelectedRow");
-        final int pos = Integer.parseInt(selected);
-        final String accountOID = accountOIDs[pos];
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
+        final int pos = getSelectedRow(_parameter);
+        final String accountOID = accountOIDs[pos];
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+        final PrintQuery print = new PrintQuery(accountOID);
+        print.addAttribute(CIAccounting.AccountAbstract.Description);
+        print.execute();
         final StringBuilder inner = new Transaction().getLinkString(accountOID, "_" + postfix);
 
-        final Map<String, String> map = new HashMap<String, String>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+
+        map.put("description" + (postfix.equals("") ? "" : "_" + postfix),
+                        print.getAttribute(CIAccounting.AccountAbstract.Description));
         final StringBuilder js = new StringBuilder();
         js.append("var rv = \"").append(inner).append("\";").append("document.getElementsByName('account2account_")
                         .append(postfix).append("')[").append(pos).append("].innerHTML=rv;");
-        map.put("eFapsFieldUpdateJS", js.toString());
+        InterfaceUtils.appendScript4FieldUpdate(map, js);
         list.add(map);
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
