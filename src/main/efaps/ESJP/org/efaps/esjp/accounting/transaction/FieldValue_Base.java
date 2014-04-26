@@ -682,34 +682,15 @@ public abstract class FieldValue_Base
             if (_doc.isSumsDoc()) {
                 getPriceInformation(_parameter, _doc);
             }
-            ret .append("function setDebit() {\n");
-            int index = 0;
+
             for (final TargetAccount account : _doc.getDebitAccounts().values()) {
                 account.setLink(getLinkString(account.getOid(), "_Debit"));
-                ret.append(getScriptLine(account, "_Debit", index));
-                index++;
             }
-            ret.append("}\n")
-                .append("function setCredit(){");
-            index = 0;
             for (final TargetAccount account : _doc.getCreditAccounts().values()) {
                 account.setLink(getLinkString(account.getOid(), "_Credit"));
-                ret.append(getScriptLine(account, "_Credit", index));
-                index++;
             }
-            ret.append("}\n")
-                .append("function removeRows(elName){\n")
-                .append("e = document.getElementsByName(elName);")
-                .append("zz = e.length;")
-                .append("for (var i=0; i <zz;i++) {\n")
-                .append("x = e[0].parentNode.parentNode;")
-                .append("var p = x.parentNode;p.removeChild(x);")
-                .append("}}\n")
-                .append("Wicket.Event.add(window, \"domready\", function(event) {")
-                .append("removeRows('amount_Debit');")
-                .append("removeRows('amount_Credit');")
-                .append(getScriptValues(_parameter, _doc))
-                .append(" });");
+            ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts().values()))
+                .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts().values()));
         }
         return ret;
     }

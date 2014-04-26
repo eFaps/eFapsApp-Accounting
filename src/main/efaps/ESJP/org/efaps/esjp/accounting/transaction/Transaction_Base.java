@@ -27,6 +27,7 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -78,11 +79,10 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
-import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -110,7 +110,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("803f24bc-7c4f-4168-97bc-a9cb01872f76")
 @EFapsRevision("$Rev$")
 public abstract class Transaction_Base
-    extends AbstractCommon
+    extends CommonDocument
 {
 
     /**
@@ -917,35 +917,48 @@ public abstract class Transaction_Base
                                                     final Document _doc)
         throws EFapsException
     {
-        final StringBuilder js = new StringBuilder();
-        js.append("function removeRows(elName){")
-            .append("var e = document.getElementsByName(elName);")
-            .append("var zz = e.length;")
-            .append("for (var i=0; i <zz;i++) {")
-            .append("var x = e[0].parentNode.parentNode;")
-            .append("var p = x.parentNode;p.removeChild(x);")
-            .append("}}\n")
-            .append("removeRows('amount_Debit');")
-            .append("removeRows('amount_Credit');\n");
-
-        js.append("function setDebit(){");
-        int index = 0;
-        for (final TargetAccount account : _doc.getDebitAccounts().values()) {
-            js.append(getScriptLine(account, "_Debit", index));
-            index++;
-        }
-        js.append("}\n");
-
-        js.append("function setCredit(){");
-        index = 0;
-        for (final TargetAccount account : _doc.getCreditAccounts().values()) {
-            js.append(getScriptLine(account, "_Credit", index));
-            index++;
-        }
-        js.append("}\n").append(getScriptValues(_parameter, _doc));
-
-        js.append(getSetSubJournalScript(_parameter, _doc));
+        final StringBuilder js = new StringBuilder()
+            .append(getSetFieldValue(0, "sumDebit", _doc.getDebitSumFormated()))
+            .append(getSetFieldValue(0, "sumCredit", _doc.getCreditSumFormated()))
+            .append(getSetFieldValue(0, "sumTotal", _doc.getDifferenceFormated()))
+            .append(getSetSubJournalScript(_parameter, _doc))
+            .append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts().values()))
+            .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts().values()));
         return js;
+    }
+
+
+    protected StringBuilder getTableJS(final Parameter _parameter,
+                                       final String _postFix,
+                                       final Collection<TargetAccount> _accounts)
+        throws EFapsException
+    {
+        final String tableName = "transactionPosition" + _postFix + "Table";
+        final StringBuilder ret = new StringBuilder()
+                        .append(getTableRemoveScript(_parameter, tableName));
+        final StringBuilder onJs = new StringBuilder();
+        final Collection<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final int i = 0;
+        for (final TargetAccount account : _accounts) {
+            final Map<String, Object> map = new HashMap<String, Object>();
+            values.add(map);
+
+            map.put("amount_" + _postFix, account.getAmountFormated());
+            map.put("rateCurrencyLink_" + _postFix, account.getRateInfo().getCurrencyInst().getInstance().getId());
+            map.put("rate_" + _postFix, account.getRateInfo().getRateUIFrmt());
+            map.put("rate_" + _postFix + RateUI.INVERTEDSUFFIX, account.getRateInfo().getCurrencyInst().isInvert());
+            map.put("amountRate_" + _postFix, account.getAmountRateFormated());
+            map.put("accountLink_" + _postFix, new String[] { account.getOid(), account.getName() });
+            map.put("description_" + _postFix, account.getDescription());
+
+            if (account.getLink() != null && account.getLink().length() > 0) {
+                onJs.append("document.getElementsByName('account2account_")
+                                .append(_postFix).append("')[").append(i).append("].innerHTML='")
+                                .append(account.getLink().toString().replaceAll("'", "\\\\\\'")).append("';");
+            }
+        }
+        ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs));
+        return ret;
     }
 
     /**
@@ -961,7 +974,6 @@ public abstract class Transaction_Base
         // check if the field is existing
         final StringBuilder ret = new StringBuilder();
         if (_parameter.getParameterValue("subJournal") != null) {
-
             final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
             if (caseInst.isValid()) {
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Report2Case);
@@ -971,8 +983,7 @@ public abstract class Transaction_Base
                 multi.addSelect(sel);
                 multi.execute();
                 if (multi.next()) {
-                    ret.append("document.getElementsByName('subJournal')[0].value='")
-                    .append(multi.getSelect(sel)).append("';");
+                    ret.append(getSetFieldValue(0, "subJournal", multi.<String>getSelect(sel)));
                 }
             }
         }
@@ -1075,71 +1086,6 @@ public abstract class Transaction_Base
         return new DateTime[] { fromDate, toDate };
     }
 
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @param _doc  Document
-     * @return StringBuilder
-     */
-    protected StringBuilder getScriptValues(final Parameter _parameter,
-                                            final Document _doc)
-    {
-        final StringBuilder ret = new StringBuilder();
-        ret.append(" addNewRows_transactionPositionDebitTable(").append(_doc.getDebitAccounts().size())
-            .append(", setDebit, null);")
-            .append(" addNewRows_transactionPositionCreditTable(").append(_doc.getCreditAccounts().size())
-            .append(", setCredit, null);")
-            .append("eFapsSetFieldValue(document.getElementsByName('sumDebit')[0].id,'sumDebit','")
-            .append(_doc.getDebitSumFormated()).append("');")
-            .append("eFapsSetFieldValue(document.getElementsByName('sumCredit')[0].id,'sumCredit','")
-            .append(_doc.getCreditSumFormated()).append("');")
-            .append("eFapsSetFieldValue(document.getElementsByName('sumTotal')[0].id,'sumTotal','")
-            .append(_doc.getDifferenceFormated()).append("');");
-        return ret;
-    }
-
-    /**
-     * @param _account  TargetAccount
-     * @param _suffix   suffix
-     * @param _index    index
-     * @return StringBuilder
-     * @throws EFapsException on error
-     */
-    protected StringBuilder getScriptLine(final TargetAccount _account,
-                                          final String _suffix,
-                                          final Integer _index)
-        throws EFapsException
-    {
-        final StringBuilder ret = new StringBuilder();
-        final CurrencyInst curInst = _account.getRateInfo().getCurrencyInst();
-        ret.append("document.getElementsByName('amount").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(StringEscapeUtils.escapeEcmaScript(_account.getAmountFormated())).append("';")
-            .append("document.getElementsByName('rateCurrencyLink").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(curInst.getInstance().getId()).append("';")
-            .append("document.getElementsByName('rate").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(_account.getRateInfo().getRateUIFrmt()).append("';")
-            .append("document.getElementsByName('rate").append(_suffix).append("").append(RateUI.INVERTEDSUFFIX)
-            .append("')[").append(_index).append("].value ='")
-            .append(curInst.isInvert()).append("';")
-            .append("document.getElementsByName('amountRate").append(_suffix)
-            .append("')[").append(_index).append("].appendChild(document.createTextNode('")
-            .append(StringEscapeUtils.escapeEcmaScript(_account.getAmountRateFormated())).append("'));")
-            .append("document.getElementsByName('accountLink").append(_suffix).append("')[").append(_index)
-            .append("].value = '").append(_account.getOid()).append("';")
-            .append("document.getElementsByName('accountLink").append(_suffix).append("AutoComplete')[").append(_index)
-            .append("].value = '").append(_account.getName()).append("';")
-            .append("document.getElementsByName('description").append(_suffix).append("')[").append(_index)
-            .append("].appendChild(document.createTextNode('")
-            .append(StringEscapeUtils.escapeEcmaScript(_account.getDescription())).append("'));");
-
-        if (_account.getLink() != null &&  _account.getLink().length() > 0) {
-            ret.append("document.getElementsByName('account2account")
-                            .append(_suffix).append("')[").append(_index).append("].innerHTML='")
-                            .append(_account.getLink().toString().replaceAll("'", "\\\\\\'")).append("';");
-        }
-
-        return ret;
-    }
 
     /**
      * @param _parameter Parameter as passed from eFaps API
