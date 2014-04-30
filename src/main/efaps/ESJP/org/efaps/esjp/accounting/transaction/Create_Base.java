@@ -1186,9 +1186,9 @@ public abstract class Create_Base
     }
 
     /**
-     * @param _key
-     * @return
-     * @throws EFapsException
+     * @param _key  key the account is wanted for
+     * @return target acccount
+     * @throws EFapsException on error
      */
     protected TargetAccount getRoundingAccount(final String _key)
         throws EFapsException
@@ -1208,6 +1208,9 @@ public abstract class Create_Base
             ret = new Transaction().new TargetAccount(multi.getCurrentInstance().getOid(),
                             multi.<String>getAttribute(CIAccounting.AccountAbstract.Name),
                             multi.<String>getAttribute(CIAccounting.AccountAbstract.Description), BigDecimal.ZERO);
+        }
+        if (ret == null) {
+            Create_Base.LOG.warn("Cannot find Account for: '{}'", _key);
         }
         return ret;
     }
