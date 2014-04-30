@@ -43,6 +43,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
 import org.efaps.db.Insert;
@@ -51,6 +52,7 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Import_Base.ImportAccount;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -82,11 +84,6 @@ public abstract class Periode_Base
      * CacheKey for Periods.
      */
     public static final String CACHEKEY = Period.class.getName() + ".CacheKey";
-
-    /**
-     * Key used to store the currency in the session.
-     */
-    public static final String PERIODECURRENCYKEY = Periode.class.getName() + ".PeriodeCurrencySessionKey";
 
     /**
      * Default setting to be added on creation of a period.
@@ -164,50 +161,24 @@ public abstract class Periode_Base
      * @return Instance of the periode the currency is wanted for
      * @throws EFapsException on error
      */
-    @SuppressWarnings("unchecked")
     public CurrencyInst getCurrency(final Instance _instance)
         throws EFapsException
     {
-        Map<Instance, CurrencyInst> inst2curr = (Map<Instance, CurrencyInst>) Context.getThreadContext()
-                        .getSessionAttribute(Periode_Base.PERIODECURRENCYKEY);
-        if (inst2curr == null || (inst2curr != null && inst2curr.get(_instance) != null)) {
-            inst2curr = new HashMap<Instance, CurrencyInst>();
-            Context.getThreadContext().setSessionAttribute(Periode_Base.PERIODECURRENCYKEY, inst2curr);
-            final PrintQuery print = new PrintQuery(_instance);
-            if (_instance.getType().isKindOf(CIAccounting.Account2AccountAbstract.getType())
-                            || _instance.getType().isKindOf(CIAccounting.Transaction.getType())) {
-                print.addSelect("linkto[PeriodeLink].linkto[CurrencyLink].oid");
-                print.execute();
-                inst2curr.put(_instance, new CurrencyInst(Instance.get(print
-                                .<String> getSelect("linkto[PeriodeLink].linkto[CurrencyLink].oid"))));
-            } else if (_instance.getType().isKindOf(CIAccounting.Account2AccountAbstract.getType())
-                            || _instance.getType().isKindOf(CIAccounting.Transaction.getType())) {
-                print.addSelect("linkto[PeriodeAbstractLink].linkto[CurrencyLink].oid");
-                print.execute();
-                inst2curr.put(_instance,
-                                new CurrencyInst(Instance.get(print.<String> getSelect("linkto[PeriodeAbstractLink]"
-                                                + ".linkto[CurrencyLink].oid"))));
-            } else {
-                print.addSelect("linkto[CurrencyLink].oid");
-                print.execute();
-                inst2curr.put(_instance,
-                                new CurrencyInst(Instance.get(print.<String> getSelect("linkto[CurrencyLink].oid"))));
-            }
+        CurrencyInst ret;
+        if (_instance.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
+            final PrintQuery print = new CachedPrintQuery(_instance, Periode_Base.CACHEKEY);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodeLink)
+                            .linkto(CIAccounting.Periode.CurrencyLink).instance();
+            print.addSelect(sel);
+            print.execute();
+            ret = new CurrencyInst(print.<Instance>getSelect(sel));
+        } else {
+            final PrintQuery print = new CachedPrintQuery(_instance, Periode_Base.CACHEKEY);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Periode.CurrencyLink).instance();
+            print.addSelect(sel);
+            print.execute();
+            ret = new CurrencyInst(print.<Instance>getSelect(sel));
         }
-        return inst2curr.get(_instance);
-    }
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return cleanPeriode(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        Context.getThreadContext().removeSessionAttribute(Periode_Base.PERIODECURRENCYKEY);
-        ret.put(ReturnValues.TRUE, true);
         return ret;
     }
 

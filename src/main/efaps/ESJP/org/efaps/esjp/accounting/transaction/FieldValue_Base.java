@@ -90,6 +90,11 @@ public abstract class FieldValue_Base
      */
     public static final String SALESACC_REQKEY = "org.efaps.esjp.accounting.transaction.FieldValue.reqMap4SalesAccount";
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return values for dropdown
+     * @throws EFapsException on error
+     */
     public Return getSubJournalFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -107,6 +112,57 @@ public abstract class FieldValue_Base
         };
         return field.dropDownFieldValue(_parameter);
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return values for dropdown
+     * @throws EFapsException on error
+     */
+    public Return getPurchaseRecordFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field()
+        {
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final DateTime[] dates = getDateMaxMin(_parameter);
+                _queryBldr.addWhereAttrGreaterValue(CIAccounting.PurchaseRecord.Date, dates[0].minusDays(1));
+            }
+
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                super.updatePositionList(_parameter, _values);
+
+                final DateTime date = new DateTime();
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord);
+                queryBldr.addWhereAttrLessValue(CIAccounting.PurchaseRecord.Date, date.plusDays(1));
+                queryBldr.addWhereAttrGreaterValue(CIAccounting.PurchaseRecord.DueDate, date.minusDays(1));
+                queryBldr.addOrderByAttributeAsc(CIAccounting.PurchaseRecord.Date);
+                final InstanceQuery query = queryBldr.getQuery();
+                boolean selected = false;
+                for (final Instance inst : query.executeWithoutAccessCheck()) {
+                    for (final DropDownPosition dd : _values) {
+                        if (inst.getOid().equals(dd.getValue())) {
+                            dd.setSelected(true);
+                            selected = true;
+                            break;
+                        }
+                    }
+                    if (selected) {
+                        break;
+                    }
+                }
+            }
+        };
+        return field.dropDownFieldValue(_parameter);
+    }
+
     /**
      * Called from field for the case.
      *
@@ -247,31 +303,27 @@ public abstract class FieldValue_Base
             inst = (Instance) Context.getThreadContext().getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
         }
         final Instance baseCur = new Periode().getCurrency(inst).getInstance();
-        final QueryBuilder queryBldr = new QueryBuilder(CIERP.Currency);
-        final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute("ID", "Name");
-        print.execute();
-        final Map<String, Long> values = new TreeMap<String, Long>();
-        while (print.next()) {
-            values.put(print.<String>getAttribute("Name"), print.<Long>getAttribute("ID"));
-        }
-
-        final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-
-        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
-        for (final Entry<String, Long> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue());
-            if (entry.getValue() == baseCur.getId()) {
-                html.append("\" selected=\"selected");
+        final Field field = new Field()
+        {
+            @Override
+            public DropDownPosition getDropDownPosition(final Parameter _parameter,
+                                                        final Object _value,
+                                                        final Object _option)
+                throws EFapsException
+            {
+                final DropDownPosition position = super.getDropDownPosition(_parameter, _value, _option);
+                if (baseCur.isValid()) {
+                    // check if the value is long, and assume that it is the id
+                    if (position.getValue() instanceof Long) {
+                        position.setSelected(baseCur.getId() == (Long) position.getValue());
+                    } else {
+                        position.setSelected(baseCur.getOid().equals(String.valueOf(position.getValue())));
+                    }
+                }
+                return position;
             }
-            html.append("\">").append(entry.getKey()).append("</option>");
-        }
-        html.append("</select>");
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
+        };
+        return field.dropDownFieldValue(_parameter);
     }
 
     /**

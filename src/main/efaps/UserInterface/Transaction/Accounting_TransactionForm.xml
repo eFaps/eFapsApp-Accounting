@@ -140,10 +140,14 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.currencyExternal.Label</property>
-             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionForm.case.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
+                event="UI_FIELD_VALUE">
+                <property name="Type">ERP_Currency</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="OrderSelect">attribute[Name]</property>
+            </trigger>
         </field>
         <field name="date">
             <property name="Columns">12</property>

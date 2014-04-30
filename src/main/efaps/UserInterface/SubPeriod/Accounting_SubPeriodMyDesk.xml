@@ -38,11 +38,7 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Accounting_SubPeriod</property>
             </evaluate>
-            <trigger event="UI_ACCESSCHECK" method="cleanPeriode"
-                name="Accounting_PeriodeMyDesk.UI_ACCESSCHECK" program="org.efaps.esjp.accounting.Periode" />
         </target>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

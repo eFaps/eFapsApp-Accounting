@@ -101,7 +101,11 @@
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Debit.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <property name="Type">ERP_Currency</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="OrderSelect">attribute[Name]</property>
+            </trigger>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Currency"
                 name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Debit.UI_FIELD_UPDATE"
