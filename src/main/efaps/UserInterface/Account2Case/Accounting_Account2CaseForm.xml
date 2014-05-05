@@ -67,7 +67,7 @@
                 method="getClassificationDropDownFieldValue"
                 name="Accounting_Account2CaseTable.classificationLink.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="Classification">Products_Class</property>
+                <property name="Type">Products_ProductAbstract</property>
              </trigger>
              <trigger program="org.efaps.esjp.accounting.Case"
                 method="classificationLinkAccessCheck"
