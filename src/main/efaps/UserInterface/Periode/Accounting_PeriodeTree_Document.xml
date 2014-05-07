@@ -42,21 +42,21 @@
             <table>Accounting_PeriodeDocumentSumTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode" method="getDocuments" >
                 <property name="Type">Sales_DocumentSumAbstract</property>
-                <property name="StatusGrp01">Sales_InvoiceStatus</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
                 <property name="Status01">Open</property>
-                <property name="StatusGrp02">Sales_InvoiceStatus</property>
+                <property name="StatusGroup02">Sales_InvoiceStatus</property>
                 <property name="Status02">Paid</property>
-                <property name="StatusGrp03">Sales_ReceiptStatus</property>
+                <property name="StatusGroup03">Sales_ReceiptStatus</property>
                 <property name="Status03">Open</property>
-                <property name="StatusGrp04">Sales_ReceiptStatus</property>
+                <property name="StatusGroup04">Sales_ReceiptStatus</property>
                 <property name="Status04">Paid</property>
-                <property name="StatusGrp05">Sales_CreditNoteStatus</property>
+                <property name="StatusGroup05">Sales_CreditNoteStatus</property>
                 <property name="Status05">Open</property>
-                <property name="StatusGrp06">Sales_CreditNoteStatus</property>
+                <property name="StatusGroup06">Sales_CreditNoteStatus</property>
                 <property name="Status06">Paid</property>
-                <property name="StatusGrp07">Sales_ReminderStatus</property>
+                <property name="StatusGroup07">Sales_ReminderStatus</property>
                 <property name="Status07">Open</property>
-                <property name="StatusGrp08">Sales_ReminderStatus</property>
+                <property name="StatusGroup08">Sales_ReminderStatus</property>
                 <property name="Status08">Paid</property>
             </evaluate>
         </target>

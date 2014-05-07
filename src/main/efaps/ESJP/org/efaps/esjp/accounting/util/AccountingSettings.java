@@ -110,4 +110,9 @@ public interface AccountingSettings
      * Activate the Stock mechanism.
      */
     String PERIOD_ACTIVATESTOCK = "ActivateStock";
+
+    /**
+     * Activate the mechanism for Retention and Perception.
+     */
+    String PERIOD_ACTIVATERETPER = "ActivateRetentionPerception";
 }

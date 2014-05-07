@@ -55,6 +55,7 @@
             <child>Accounting_PeriodeTree_StockToBook</child>
             <child>Accounting_PeriodeTree_PettyCashReceipt</child>
             <child>Accounting_PeriodeTree_Exchange</child>
+            <child>Accounting_PeriodeTree_RetPer</child>
             <child>Accounting_PeriodeTree_Transaction</child>
             <child>Accounting_PeriodeTree_GainLoss</child>
             <child>Accounting_PeriodeTree_BankCash</child>

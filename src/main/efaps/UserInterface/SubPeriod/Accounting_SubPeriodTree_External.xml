@@ -38,15 +38,15 @@
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getExternals" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">ERP_DocumentAbstract</property>
-                <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
+                <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Open</property>
-                <property name="StatusGrp02">Sales_IncomingInvoiceStatus</property>
+                <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
                 <property name="Status02">Paid</property>
-                <property name="StatusGrp03">Sales_PaymentOrderStatus</property>
+                <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
                 <property name="Status03">Open</property>
-                <property name="StatusGrp04">Accounting_ExternalVoucherStatus</property>
+                <property name="StatusGroup04">Accounting_ExternalVoucherStatus</property>
                 <property name="Status04">Open</property>
-                <property name="StatusGrp05">Accounting_ExternalVoucherStatus</property>
+                <property name="StatusGroup05">Accounting_ExternalVoucherStatus</property>
                 <property name="Status05">Paid</property>
             </evaluate>
         </target>

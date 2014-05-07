@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,37 +22,34 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>12070d24-bd35-4914-be36-a97be9b652df</uuid>
+    <uuid>f26ca6ac-17d2-4f36-9b1a-314f5b254529</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Exchange</name>
+        <name>Accounting_PeriodeTree_RetPer_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_Exchange_Menu</menu>
-            <table>Accounting_PeriodeExchangeTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">Sales_Exchange</property>
-                <property name="StatusGroup01">Sales_ExchangeStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_IncomingExchange</property>
-                <property name="StatusGroup02">Sales_IncomingExchangeStatus</property>
-                <property name="Status02">Open</property>
-            </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configObjectCheck"
-                name="Accounting_PeriodeTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="SystemConfig">Accounting-Configuration</property>
-                <property name="Key">ActivateExchange</property>
+            <form>Accounting_TransactionCreate4ExchangeForm</form>
+            <execute method="create4Exchange" program="org.efaps.esjp.accounting.transaction.Create" />
+            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction" />
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Accounting_PeriodeTree_RetPer_Menu_Action_Register.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
             </trigger>
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">1</property>
     </definition>
 </ui-command>
