@@ -49,6 +49,7 @@
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreatePettyCash</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateExchange</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_CreateRetPer</child>
+            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateSecurities</child>
             <child>Accounting_PeriodeTree_Case_Menu_Action_Delete</child>
         </childs>
     </definition>

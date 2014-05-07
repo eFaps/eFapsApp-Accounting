@@ -115,4 +115,9 @@ public interface AccountingSettings
      * Activate the mechanism for Retention and Perception.
      */
     String PERIOD_ACTIVATERETPER = "ActivateRetentionPerception";
+
+    /**
+     * Activate the mechanism for Retention and Perception.
+     */
+    String PERIOD_ACTIVATESECURITIES = "ActivateSecurities";
 }
