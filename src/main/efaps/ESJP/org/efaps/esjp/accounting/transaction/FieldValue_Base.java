@@ -61,11 +61,13 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.report.DocumentDetailsReport;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.EFapsException;
@@ -414,6 +416,47 @@ public abstract class FieldValue_Base
     }
 
     /**
+     * Renders a field containing information about the selected document.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return html snipplet
+     * @throws EFapsException on error
+     */
+    public Return getDocDetailFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final String selected = Context.getThreadContext().getParameter("selectedRow");
+        final org.efaps.admin.datamodel.ui.FieldValue fieldValue = (FieldValue) _parameter
+                        .get(ParameterValues.UIOBJECT);
+        final Instance docInst = Instance.get(selected);
+        if (docInst.isValid()) {
+            html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">")
+                            .append(getDocDetail(_parameter, docInst))
+                            .append("</span>");
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _doc
+     * @return
+     */
+    protected String getDocDetail(final Parameter _parameter,
+                                  final Instance _docInst)
+        throws EFapsException
+    {
+        final DocumentDetailsReport report = new DocumentDetailsReport();
+        final Parameter parameter = new Parameter();
+        parameter.put(ParameterValues.INSTANCE, _docInst);
+        final AbstractDynamicReport dyRp = report.getReport(parameter);
+        return dyRp.getHtmlSnipplet(parameter);
+    }
+
+    /**
      * Internal method for {@link #getDocumentFieldValue(Parameter)}.
      * @param _parameter    Parameter as passed from eFaps to an esjp
      * @param _doc          Document
@@ -566,7 +609,7 @@ public abstract class FieldValue_Base
             final Instance periodInst = (Instance) Context.getThreadContext()
                                     .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
             final RateInfo rate = evaluateRate(_parameter, periodInst, _date == null ? new DateTime() : _date, null);
-             _doc.setRateInfo(rate);
+            _doc.setRateInfo(rate);
 
             html.append("<table>");
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);

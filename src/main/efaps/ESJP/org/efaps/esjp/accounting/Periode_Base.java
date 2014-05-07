@@ -574,9 +574,9 @@ public abstract class Periode_Base
         final DateTime from = print.<DateTime> getAttribute(CIAccounting.Periode.FromDate);
         final DateTime to = print.<DateTime> getAttribute(CIAccounting.Periode.ToDate);
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
         final AttributeQuery attrQuery
-            = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassExternal.DocumentLink);
+            = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassDocument.DocumentLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
@@ -632,10 +632,10 @@ public abstract class Periode_Base
         transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
         final AttributeQuery transAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
-        attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassExternal.TransactionLink, transAttrQuery);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+        attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassDocument.TransactionLink, transAttrQuery);
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                        CIAccounting.TransactionClassExternal.DocumentLink);
+                        CIAccounting.TransactionClassDocument.DocumentLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,

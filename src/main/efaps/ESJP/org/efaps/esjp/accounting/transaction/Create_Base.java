@@ -55,7 +55,9 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.TargetAccount;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
+import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -143,11 +145,7 @@ public abstract class Create_Base
                     insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
                     insert.execute();
 
-                    if (incoming) {
-                        createDocClass(_parameter, insert.getInstance(), docInst);
-                    } else {
-                        createExternalClass(_parameter, insert.getInstance(), docInst);
-                    }
+                    createDocClass(_parameter, insert.getInstance(), docInst);
                     createPaymentClass(_parameter, insert.getInstance(), payDocInst);
 
                     final RateInfo rate = new Transaction().evaluateRate(_parameter, periodeInst, dateTmp, rateCurInst);
@@ -310,16 +308,11 @@ public abstract class Create_Base
     {
         Instance ret = Instance.get("");
         if (_docInst.isValid()) {
-            final AttributeQuery attrQuery;
-            if (_incoming) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-                attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
-                attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
-            } else {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassExternal);
-                attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassExternal.DocumentLink, _docInst.getId());
-                attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassExternal.TransactionLink);
-            }
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
             final QueryBuilder posQueryBldr = new QueryBuilder(_incoming ? CIAccounting.TransactionPositionDebit
                             : CIAccounting.TransactionPositionCredit);
             posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
@@ -429,7 +422,7 @@ public abstract class Create_Base
             classInsert1.add(classification1.getLinkAttributeName(), instance.getId());
             classInsert1.execute();
 
-            final Classification classification = (Classification) CIAccounting.TransactionClassExternal.getType();
+            final Classification classification = (Classification) CIAccounting.TransactionClassDocument.getType();
             final Insert relInsert = new Insert(classification.getClassifyRelationType());
             relInsert.add(classification.getRelLinkAttributeName(), instance.getId());
             relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
@@ -437,7 +430,7 @@ public abstract class Create_Base
 
             final Insert classInsert = new Insert(classification);
             classInsert.add(classification.getLinkAttributeName(), instance.getId());
-            classInsert.add(CIAccounting.TransactionClassExternal.DocumentLink, docInst.getId());
+            classInsert.add(CIAccounting.TransactionClassDocument.DocumentLink, docInst.getId());
             classInsert.execute();
 
             final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
@@ -450,41 +443,6 @@ public abstract class Create_Base
             }
         }
         return new Return();
-    }
-
-    /**
-     * Create the classifcation.
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _transInst    Transaction Instance
-     * @param _docInst      Document instance
-     * @throws EFapsException on error
-     */
-    protected void createExternalClass(final Parameter _parameter,
-                                       final Instance _transInst,
-                                       final Instance _exdocInst)
-        throws EFapsException
-    {
-     // create classifications
-        final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-        final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
-        relInsert1.add(classification1.getRelLinkAttributeName(), _transInst.getId());
-        relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
-        relInsert1.execute();
-
-        final Insert classInsert1 = new Insert(classification1);
-        classInsert1.add(classification1.getLinkAttributeName(), _transInst.getId());
-        classInsert1.execute();
-
-        final Classification classification = (Classification) CIAccounting.TransactionClassExternal.getType();
-        final Insert relInsert = new Insert(classification.getClassifyRelationType());
-        relInsert.add(classification.getRelLinkAttributeName(), _transInst.getId());
-        relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
-        relInsert.execute();
-
-        final Insert classInsert = new Insert(CIAccounting.TransactionClassExternal);
-        classInsert.add(classification.getLinkAttributeName(), _transInst.getId());
-        classInsert.add(CIAccounting.TransactionClassExternal.DocumentLink, _exdocInst.getId());
-        classInsert.execute();
     }
 
     /**

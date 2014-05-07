@@ -36,14 +36,14 @@
         <name>Accounting_ExternalVoucherTree_Transaction</name>
         <access>
             <role>Accounting_Admin</role>
-            
-            
+
+
         </access>
         <target>
             <table>Accounting_TransactionTable</table>
             <evaluate program="org.efaps.esjp.accounting.transaction.Transaction" method="getTransaction4Doc">
-                <!-- Accounting_TransactionClassExternal and Accounting_TransactionClassDocument -->
-                <property name="typeUUID">4e1ccb8a-c71c-47eb-b4c9-3612aeade5f0;1241cf0b-bc6c-4a07-a63f-8a81f000410a</property>
+                <!-- ccounting_TransactionClassDocument -->
+                <property name="typeUUID">1241cf0b-bc6c-4a07-a63f-8a81f000410a</property>
             </evaluate>
         </target>
 

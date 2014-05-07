@@ -75,7 +75,7 @@ public abstract class ExpenseReport_Base
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
-        queryBldr.addWhereClassification((Classification) CIAccounting.TransactionClassExternal.getType());
+        queryBldr.addWhereClassification((Classification) CIAccounting.TransactionClassDocument.getType());
         queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, _from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, _to.plusDays(1));
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, _parameter.getInstance().getId());

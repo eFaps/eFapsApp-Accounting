@@ -75,12 +75,12 @@ import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -93,7 +93,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -741,25 +740,8 @@ public abstract class Transaction_Base
     public Return autoComplete4Contact(final Parameter _parameter)
         throws EFapsException
     {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
-        queryBldr.addWhereAttrMatchValue(CIContacts.Contact.Name, input + "*").setIgnoreCase(true);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIContacts.Contact.ID, CIContacts.Contact.Name);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String>getAttribute(CIContacts.Contact.Name);
-            final Long id = multi.<Long>getAttribute(CIContacts.Contact.ID);
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), id.toString());
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name);
-            list.add(map);
-        }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
+        final Contacts contacts = new Contacts();
+        return contacts.autoComplete4Contact(_parameter);
     }
 
     /**

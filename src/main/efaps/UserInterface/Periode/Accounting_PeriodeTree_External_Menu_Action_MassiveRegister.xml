@@ -39,7 +39,7 @@
             <form>Accounting_MassiveRegister4ExternalForm</form>
             <execute method="createDoc4Massive"
                 program="org.efaps.esjp.accounting.transaction.Create">
-                <property name="Classification">Accounting_TransactionClassExternal</property>
+                <property name="Classification">Accounting_TransactionClassDocument</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"

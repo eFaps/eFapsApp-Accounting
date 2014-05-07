@@ -39,7 +39,7 @@
             <form>Accounting_MassiveBooking4ExternalForm</form>
             <execute method="createDoc4Massive"
                 program="org.efaps.esjp.accounting.transaction.Create">
-                <property name="Classification">Accounting_TransactionClassExternal</property>
+                <property name="Classification">Accounting_TransactionClassDocument</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_SubPeriodTree_ExternalToBook_Menu_Action_MassiveBook.UI_ACCESSCHECK.1"
