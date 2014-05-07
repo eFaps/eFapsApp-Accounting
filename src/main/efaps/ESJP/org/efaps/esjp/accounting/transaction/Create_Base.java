@@ -55,9 +55,7 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base.Document;
 import org.efaps.esjp.accounting.transaction.Transaction_Base.TargetAccount;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
-import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -635,6 +633,13 @@ public abstract class Create_Base
     {
         return create4Doc(_parameter);
     }
+
+    public Return create4Securities(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4Doc(_parameter);
+    }
+
 
     /**
      * Method called to create a transaction including its positions.

@@ -37,26 +37,20 @@
             <menu>Accounting_PeriodeTree_Securities_Menu</menu>
             <table>Accounting_PeriodeSecuritiesTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">Sales_PerceptionCertificate</property>
-                <property name="Type02">Sales_RetentionCertificate</property>
-                <property name="Type03">Sales_IncomingPerceptionCertificate</property>
-                <property name="Type04">Sales_IncomingRetentionCertificate</property>
-                <property name="StatusGroup01">Sales_PerceptionCertificateStatus</property>
+                <property name="Type01">Sales_IncomingCredit</property>
+                <property name="Type02">Sales_Credit</property>
+                <property name="StatusGroup01">Sales_IncomingCreditStatus</property>
                 <property name="Status01">Open</property>
-                <property name="StatusGroup02">Sales_PerceptionCertificateStatus</property>
-                <property name="Status02">Paid</property>
-                <property name="StatusGroup03">Sales_RetentionCertificateStatus</property>
-                <property name="Status03">Open</property>
-                <property name="StatusGroup04">Sales_RetentionCertificateStatus</property>
-                <property name="Status04">Closed</property>
-                <property name="StatusGroup05">Sales_IncomingPerceptionCertificateStatus</property>
-                <property name="Status05">Open</property>
-                <property name="StatusGroup06">Sales_IncomingPerceptionCertificateStatus</property>
-                <property name="Status06">Paid</property>
-                <property name="StatusGroup07">Sales_IncomingRetentionCertificateStatus</property>
-                <property name="Status07">Open</property>
-                <property name="StatusGroup08">Sales_IncomingRetentionCertificateStatus</property>
-                <property name="Status08">Paid</property>
+                <property name="StatusGroup02">Sales_IncomingCreditStatus</property>
+                <property name="Status02">Closed</property>
+                <property name="StatusGroup03">Sales_IncomingCreditStatus</property>
+                <property name="Status03">Canceled</property>
+                <property name="StatusGroup04">Sales_CreditStatus</property>
+                <property name="Status04">Open</property>
+                <property name="StatusGroup05">Sales_CreditStatus</property>
+                <property name="Status05">Closed</property>
+                <property name="StatusGroup06">Sales_CreditStatus</property>
+                <property name="Status06">Canceled</property>
             </evaluate>
             <trigger event="UI_ACCESSCHECK" method="configObjectCheck"
                 name="Accounting_PeriodeTree_Securities.UI_ACCESSCHECK"

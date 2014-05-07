@@ -35,7 +35,7 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4SecuritiesForm</form>
-            <execute method="create4RetPer" program="org.efaps.esjp.accounting.transaction.Create" />
+            <execute method="create4Securities" program="org.efaps.esjp.accounting.transaction.Create" />
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_PeriodeTree_Securities_Menu_Action_Register.UI_ACCESSCHECK"
