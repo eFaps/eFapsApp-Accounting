@@ -54,6 +54,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Import_Base.ImportAccount;
+import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.common.SystemConf;
@@ -285,6 +286,34 @@ public abstract class Periode_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
+
+    public Instance evaluateCurrentPeriod(final Parameter _parameter)
+        throws EFapsException
+    {
+        Instance ret = (Instance) Context.getThreadContext()
+                        .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+        if (ret == null && _parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            final Instance inst = _parameter.getInstance();
+            if (inst.getType().isKindOf(CIAccounting.Account2ObjectAbstract.getType())) {
+                final PrintQuery print = new PrintQuery(inst);
+                final SelectBuilder sel = SelectBuilder.get()
+                                .linkto(CIAccounting.Account2ObjectAbstract.FromAccountAbstractLink)
+                                .linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).instance();
+                print.addSelect(sel);
+                print.execute();
+                ret = print.<Instance>getSelect(sel);
+            } else  if (inst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                final PrintQuery print = new PrintQuery(inst);
+                final SelectBuilder sel = SelectBuilder.get()
+                                .linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).instance();
+                print.addSelect(sel);
+                print.execute();
+                ret = print.<Instance>getSelect(sel);
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * Called from a tree menu command to present the documents that are not

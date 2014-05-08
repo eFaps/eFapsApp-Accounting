@@ -26,19 +26,14 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>4f032cf8-4552-4b92-b229-c585eb3589bd</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2CaseTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Accounting_Account2CaseTree_Menu_Action_Edit</child>
-            <child>Accounting_Account2CaseTree_Menu_Action_EditAccount</child>
         </childs>
     </definition>
-
 </ui-menu>

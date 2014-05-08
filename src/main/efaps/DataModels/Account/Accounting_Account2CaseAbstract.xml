@@ -36,14 +36,6 @@
         <name>Accounting_Account2CaseAbstract</name>
         <parent>Accounting_Account2ObjectAbstract</parent>
         <purpose abstract="true"/>
-
-        <attribute>
-            <name>FromAccountAbstractLink</name>
-            <type>Link</type>
-            <typelink>Accounting_AccountAbstract</typelink>
-            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
         <attribute>
             <name>ToCaseAbstractLink</name>
             <type>Link</type>

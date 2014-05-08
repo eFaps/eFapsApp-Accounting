@@ -55,6 +55,13 @@
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>FromAccountAbstractLink</name>
+            <type>Link</type>
+            <typelink>Accounting_AccountAbstract</typelink>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>

@@ -45,6 +45,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.admin.user.Company;
+import org.efaps.ci.CIAttribute;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -54,7 +55,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uisearch.Search;
@@ -220,8 +220,7 @@ public abstract class Account_Base
     public Return autoComplete4Account(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance instance = (Instance) Context.getThreadContext()
-                        .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance instance = new Periode().evaluateCurrentPeriod(_parameter);
 
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final boolean caseFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Account"));
@@ -229,11 +228,10 @@ public abstract class Account_Base
 
         final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
 
-        boolean showSumAccount = true;
+        final boolean showSumAccount = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowSumAccount"));
         String postfix = "";
         if (containsProperty(_parameter, "TypePostfix")) {
             postfix = getProperty(_parameter, "TypePostfix");
-            showSumAccount = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowSumAccount"));
         }
         final boolean nameSearch = Character.isDigit(input.charAt(0)) || input.equals("*");
 
@@ -265,7 +263,7 @@ public abstract class Account_Base
             } else {
                 attrQueryBldr = new QueryBuilder(CIAccounting.Account2CaseCredit);
             }
-            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink ,caseInst);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
             queryBuilder.addWhereAttrInQuery(CIAccounting.AccountAbstract.ID,
                             attrQueryBldr.getAttributeQuery(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink));
         }
@@ -469,9 +467,9 @@ public abstract class Account_Base
         // only if this attributes where changed
         for (final Object obj : values.keySet()) {
             if (((Attribute) obj).getName().equals("SumReport")) {
-                sumerize(_parameter, "SumReport");
+                sumerize(_parameter, CIAccounting.AccountAbstract.SumReport);
             } else if (((Attribute) obj).getName().equals("SumBooked")) {
-                sumerize(_parameter, "SumBooked");
+                sumerize(_parameter, CIAccounting.AccountAbstract.SumBooked);
             }
         }
         return new Return();
@@ -479,37 +477,38 @@ public abstract class Account_Base
 
     /**
      *
-     * @param _parameter    Parameter as passed from the efaps API
-     * @param _attrName     name of tghe Attribute
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _attr         Attribute
      * @throws EFapsException on error
      */
     protected void sumerize(final Parameter _parameter,
-                            final String _attrName)
+                            final CIAttribute _attr)
         throws EFapsException
     {
         BigDecimal sum = BigDecimal.ZERO;
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addSelect("linkto[ParentLink].oid");
-        print.addSelect("linkto[ParentLink].attribute[Summary]");
+        final SelectBuilder selInst = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.ParentLink).instance();
+        final SelectBuilder selSummary = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.ParentLink)
+                        .attribute(CIAccounting.AccountAbstract.Summary);
+        print.addSelect(selInst, selSummary);
         print.execute();
-        final Boolean parentSum = print.<Boolean> getSelect("linkto[ParentLink].attribute[Summary]");
+        final Boolean parentSum = print.<Boolean>getSelect(selSummary);
         if (parentSum != null && parentSum) {
-            final Instance parentInst = Instance.get(print.<String> getSelect("linkto[ParentLink].oid"));
-
+            final Instance parentInst = print.<Instance>getSelect(selInst);
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-            queryBldr.addWhereAttrEqValue("ParentLink", parentInst.getId());
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.ParentLink, parentInst);
             final MultiPrintQuery multi = new MultiPrintQuery(queryBldr.getQuery().executeWithoutAccessCheck());
-            multi.addAttribute(_attrName);
+            multi.addAttribute(_attr);
             multi.executeWithoutAccessCheck();
 
             while (multi.next()) {
-                final BigDecimal tmpsum = multi.<BigDecimal>getAttribute(_attrName);
+                final BigDecimal tmpsum = multi.<BigDecimal>getAttribute(_attr);
                 if (tmpsum != null) {
                     sum = sum.add(tmpsum);
                 }
             }
             final Update update = new Update(parentInst);
-            update.add(_attrName, sum);
+            update.add(_attr, sum);
             update.executeWithoutAccessCheck();
         }
     }
@@ -551,7 +550,7 @@ public abstract class Account_Base
                 } else {
                     acc2sumReport.put(accInst, amount);
                 }
-                if (statusId.equals(Status.find(CIAccounting.TransactionStatus.uuid, "Booked"))) {
+                if (statusId.equals(Status.find(CIAccounting.TransactionStatus.Booked))) {
                     if (acc2sumBooked.containsKey(accInst)) {
                         acc2sumBooked.put(accInst, acc2sumBooked.get(accInst).add(amount));
                     } else {
@@ -653,30 +652,6 @@ public abstract class Account_Base
                 retValue = value.abs();
             }
             ret.put(ReturnValues.VALUES, retValue);
-        }
-        return ret;
-    }
-
-
-    /**
-     *
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return updateAccount(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String param = _parameter.getParameterValue("account");
-        if (param.length() > 0) {
-            final Instance instance = _parameter.getInstance();
-            final Update update = new Update(instance);
-            update.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, param);
-            update.execute();
-            ret.put(ReturnValues.TRUE, "true");
-        } else {
-            ret.put(ReturnValues.VALUES, "Accounting_Account2Case4EditAccountForm/Account.updateAccount.NoRight");
         }
         return ret;
     }

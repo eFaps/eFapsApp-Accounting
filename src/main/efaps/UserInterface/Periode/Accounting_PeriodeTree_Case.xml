@@ -44,10 +44,6 @@
                 <property name="Type">Accounting_CaseAbstract</property>
                 <property name="LinkFrom">PeriodeAbstractLink</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.accounting.Case"
-                method="accessCheck4Case"
-                name="Accounting_PeriodeTree_Case.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK"/>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

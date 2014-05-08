@@ -30,26 +30,19 @@
     <uuid>d3e7177a-8be7-48b7-a4ee-54859f4bfaa9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2CaseTree_Menu_Action_Edit</name>
-
         <access>
             <role>Accounting_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Accounting_Account2CaseForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.accounting.Case" method="edit" />
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>
-
 </ui-command>

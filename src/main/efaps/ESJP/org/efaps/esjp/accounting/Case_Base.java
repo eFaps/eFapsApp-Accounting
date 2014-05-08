@@ -21,14 +21,6 @@
 
 package org.efaps.esjp.accounting;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
-
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -38,13 +30,12 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.InstanceQuery;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.QueryBuilder;
+import org.efaps.db.Instance;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.ui.wicket.util.EFapsKey;
+import org.efaps.esjp.ci.CIFormAccounting;
+import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 
 /**
@@ -57,24 +48,28 @@ import org.joda.time.DateTime;
 @EFapsRevision("$Rev$")
 public abstract class Case_Base
 {
+
     /**
-     * Check access to label.
-     *
      * @param _parameter Paremeter as passed from the eFaPS API
-     * @return Return
+     * @return Return SNIPPLET
      * @throws EFapsException on error
      */
-    public Return accessCheck4Case(final Parameter _parameter)
+    public Return edit(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
-        // Accounting-Configuration
-        final SystemConfiguration sysconf = SystemConfiguration.get(
-                        UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
-        if (!sysconf.getAttributeValueAsBoolean("DeactivateCase")) {
-            ret.put(ReturnValues.TRUE, true);
-        }
-        return ret;
+        final Edit edit = new Edit()
+        {
+            @Override
+            protected void add2MainUpdate(final Parameter _parameter,
+                                          final Update _update)
+                throws EFapsException
+            {
+                super.add2MainUpdate(_parameter, _update);
+                _update.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, Instance.get(_parameter
+                                .getParameterValue(CIFormAccounting.Accounting_Account2CaseForm.account.name)));
+            }
+        };
+        return edit.execute(_parameter);
     }
 
     /**
@@ -127,61 +122,5 @@ public abstract class Case_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
-    }
-
-    /**
-     * AutoComplete for Accounts.
-     * @param _parameter Paremeter as passed from the eFaPS API
-     * @return return
-     * @throws EFapsException on error
-     */
-    public Return autoComplete4Account(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
-        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-        if (input.length() > 0) {
-            final QueryBuilder queryBldrPer = new QueryBuilder(CIAccounting.Periode);
-            queryBldrPer.addWhereAttrGreaterValue(CIAccounting.Periode.ToDate, new DateTime());
-            queryBldrPer.addWhereAttrLessValue(CIAccounting.Periode.FromDate, new DateTime());
-            final InstanceQuery query = queryBldrPer.getQuery();
-            query.execute();
-            if (query.next()) {
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
-                                query.getCurrentValue().getId());
-                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Summary, false);
-                final boolean nameSearch = Character.isDigit(input.charAt(0));
-                if (nameSearch) {
-                    queryBldr.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Name, input + "*")
-                                    .setIgnoreCase(true);
-                } else {
-                    queryBldr.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Description, input + "*")
-                                    .setIgnoreCase(true);
-                }
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
-                multi.addAttribute(key);
-                multi.execute();
-                while (multi.next()) {
-                    final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
-                    final String descr = multi.<String>getAttribute(CIAccounting.AccountAbstract.Description);
-                    final String keyVal = multi.getAttribute(key).toString();
-                    final Map<String, String> map = new HashMap<String, String>();
-                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), keyVal);
-                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + " - " + descr);
-                    tmpMap.put(name, map);
-                }
-            }
-        }
-        final Return retVal = new Return();
-        list.addAll(tmpMap.values());
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
     }
 }
