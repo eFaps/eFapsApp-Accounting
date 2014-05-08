@@ -72,10 +72,6 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
             </trigger>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="update4Case"
-                name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="updateButton" character="Command">
             <property name="ModeCreate">READONLY</property>
@@ -100,10 +96,6 @@
                 event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
             </trigger>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="update4checkbox4Account"
-                name="Accounting_TransactionForm.checkbox4Account.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="subJournal">
             <property name="ModeCreate">EDITABLE</property>

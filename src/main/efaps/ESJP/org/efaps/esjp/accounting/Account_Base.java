@@ -58,6 +58,7 @@ import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uisearch.Search;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -222,10 +223,9 @@ public abstract class Account_Base
         final Instance instance = (Instance) Context.getThreadContext()
                         .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
 
-        final String caseOid = (String) Context.getThreadContext()
-                        .getSessionAttribute(Transaction_Base.CASE_SESSIONKEY);
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final boolean caseFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Account"));
+        final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
 
         final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
 
@@ -235,13 +235,21 @@ public abstract class Account_Base
             postfix = getProperty(_parameter, "TypePostfix");
             showSumAccount = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowSumAccount"));
         }
+        final boolean nameSearch = Character.isDigit(input.charAt(0)) || input.equals("*");
+
         final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
-        queryBuilder.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Name, input + "*").setIgnoreCase(true);
+        if (nameSearch) {
+            queryBuilder.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Name, input + "*").setIgnoreCase(true);
+        } else {
+            queryBuilder.addWhereAttrMatchValue(CIAccounting.AccountAbstract.Description, input + "*").setIgnoreCase(
+                            true);
+        }
+
         if (!showSumAccount) {
             queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Summary, false);
         }
         boolean showPeriod = false;
-        if (!caseFilter || caseOid == null) {
+        if (!caseFilter || !caseInst.isValid()) {
             // if we do not filter for period we must show it
             if (instance != null && instance.getType().isKindOf(CIAccounting.Periode.getType())) {
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, instance);
@@ -257,21 +265,26 @@ public abstract class Account_Base
             } else {
                 attrQueryBldr = new QueryBuilder(CIAccounting.Account2CaseCredit);
             }
-            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
-                            Instance.get(caseOid));
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink ,caseInst);
             queryBuilder.addWhereAttrInQuery(CIAccounting.AccountAbstract.ID,
                             attrQueryBldr.getAttributeQuery(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink));
         }
+        InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBuilder);
+
         final InstanceQuery query = queryBuilder.getQuery();
         if (instance.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
             query.setCompanyDepended(false);
         }
+
         final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
         multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description,
                         CIAccounting.AccountAbstract.Company);
-        final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
+        SelectBuilder selPeriod = null;
+        if (showPeriod) {
+            selPeriod = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
                         .attribute(CIAccounting.Periode.Name);
-        multi.addSelect(selPeriod);
+            multi.addSelect(selPeriod);
+        }
         multi.execute();
         while (multi.next()) {
             final String name = multi.<String>getAttribute(CIAccounting.AccountAbstract.Name);
@@ -281,7 +294,12 @@ public abstract class Account_Base
                 description = description + " - " + multi.<String>getSelect(selPeriod)
                                 + (company == null ? "" : (" - " + company.getName()));
             }
-            final String choice = name + " - " + description;
+            final String choice;
+            if (nameSearch) {
+                choice = name + " - " + description;
+            } else {
+                choice = description + " - " + name;
+            }
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);

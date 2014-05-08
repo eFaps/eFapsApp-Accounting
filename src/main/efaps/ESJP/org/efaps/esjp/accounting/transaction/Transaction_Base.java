@@ -111,22 +111,15 @@ import org.slf4j.LoggerFactory;
 public abstract class Transaction_Base
     extends CommonDocument
 {
-
     /**
      * Key for the active Periode to store it in the session.
      */
     public static final String PERIODE_SESSIONKEY = Transaction.class.getName() + ".ActiveAccountingPeriod";
 
     /**
-     * Key for the selected case to store it in the session.
-     */
-    public static final String CASE_SESSIONKEY = Transaction.class.getName() + ".SelectedAccountingCase";
-
-    /**
      * Logger for this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(Transaction.class);
-
 
     /**
      * Numbering of the transaction.
@@ -301,11 +294,6 @@ public abstract class Transaction_Base
             print.execute();
             instance = print.<Instance>getSelect(selPeriodInst);
 
-        }
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        if (!props.containsKey("case")
-                        || (props.containsKey("case") && !((String) props.get("case")).equalsIgnoreCase("true"))) {
-            Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY, null);
         }
         Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY, instance);
         return new Return();

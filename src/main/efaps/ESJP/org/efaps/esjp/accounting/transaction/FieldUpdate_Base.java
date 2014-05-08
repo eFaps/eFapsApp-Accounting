@@ -63,40 +63,6 @@ import org.joda.time.DateTime;
 public abstract class FieldUpdate_Base
     extends Transaction
 {
-    /**
-     * Executed as update event form the case field.
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return update4Case(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String caseOid = _parameter.getParameterValue("case");
-        Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY, caseOid);
-        return ret;
-    }
-
-    /**
-     * Activate/deactivate the filter for the accounts.
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return update4checkbox4Account(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String caseOid = _parameter.getParameterValue("case");
-        final String check = _parameter.getParameterValue("checkbox4Account");
-        if (check != null && !check.isEmpty() && "true".equalsIgnoreCase(check)) {
-            Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY, caseOid);
-        } else {
-            Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY, null);
-        }
-        return ret;
-    }
 
     /**
      * Method is executed on update trigger for the account field in the debit

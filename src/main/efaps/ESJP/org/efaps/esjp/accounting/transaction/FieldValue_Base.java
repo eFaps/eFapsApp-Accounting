@@ -197,13 +197,7 @@ public abstract class FieldValue_Base
                                     .getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Cross");
                     final String net = DBProperties.getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Net");
 
-                    boolean first = true;
                     for (final DropDownPosition pos : _values) {
-                        if (first) {
-                            Context.getThreadContext().setSessionAttribute(Transaction_Base.CASE_SESSIONKEY,
-                                            pos.getValue());
-                            first = false;
-                        }
                         final String strTmp = pos.getOption().toString();
                         if (StringUtils.endsWith(strTmp, trueStr)) {
                             pos.setOption(StringUtils.substringBeforeLast(strTmp, trueStr) + cross);

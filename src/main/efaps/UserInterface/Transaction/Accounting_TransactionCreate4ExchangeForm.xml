@@ -65,9 +65,6 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="update4Case"
-                name="Accounting_TransactionCreate4ExchangeForm.case.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.accounting.transaction.FieldUpdate" />
         </field>
         <field character="Command" name="updateButton">
             <property name="ModeCreate">READONLY</property>
@@ -124,9 +121,6 @@
                 program="org.efaps.esjp.common.uiform.Field">
                 <property name="checked">true</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="update4checkbox4Account"
-                name="Accounting_TransactionCreate4ExchangeForm.checkbox4Account.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.accounting.transaction.FieldUpdate" />
         </field>
         <field character="Group" name="descriptionGroup">
             <property name="ModeCreate">READONLY</property>

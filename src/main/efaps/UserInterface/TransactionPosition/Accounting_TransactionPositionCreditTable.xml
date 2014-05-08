@@ -117,6 +117,7 @@
                 <property name="TypePostfix">Credit</property>
                 <property name="ShowSumAccount">false</property>
                 <property name="ExtraParameter">checkbox4Account</property>
+                <property name="ExtraParameter01">case</property>
             </trigger>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Account"
