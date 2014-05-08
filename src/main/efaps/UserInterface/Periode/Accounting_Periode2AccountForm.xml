@@ -36,7 +36,7 @@
             <property name="Label">Accounting_Periode2Account/SalesAccountLink.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Accounting_Periode2AccountForm.salesAccountLink4Edit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Sales_AccountAbstract</property>
+                <property name="Type">Sales_AccountCashDesk</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
              </trigger>
         </field>
