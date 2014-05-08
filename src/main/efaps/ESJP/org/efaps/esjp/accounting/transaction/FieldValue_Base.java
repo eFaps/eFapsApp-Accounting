@@ -107,8 +107,7 @@ public abstract class FieldValue_Base
                                                  final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance periodInst = (Instance) Context.getThreadContext()
-                                .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
                 _queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodeLink, periodInst.getId());
             }
         };
@@ -179,8 +178,7 @@ public abstract class FieldValue_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String type = (String) properties.get("Type");
         if (type != null) {
-            final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                            Transaction_Base.PERIODE_SESSIONKEY);
+            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
             _parameter.put(ParameterValues.INSTANCE, periodeInstance);
             final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
             {
@@ -224,7 +222,7 @@ public abstract class FieldValue_Base
         final Return ret = new Return();
         Instance inst = _parameter.getCallInstance();
         if (!inst.getType().getUUID().equals(CIAccounting.Periode)) {
-            inst = (Instance) Context.getThreadContext().getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+            inst = new Periode().evaluateCurrentPeriod(_parameter);
         }
         final String baseCurName = new Periode().getCurrency(inst).getName();
         ret.put(ReturnValues.VALUES, baseCurName);
@@ -296,7 +294,7 @@ public abstract class FieldValue_Base
     {
         Instance inst = _parameter.getCallInstance();
         if (!inst.getType().getUUID().equals(CIAccounting.Periode.uuid)) {
-            inst = (Instance) Context.getThreadContext().getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+            inst = new Periode().evaluateCurrentPeriod(_parameter);
         }
         final Instance baseCur = new Periode().getCurrency(inst).getInstance();
         final Field field = new Field()
@@ -600,8 +598,7 @@ public abstract class FieldValue_Base
             boolean costValidated = true;
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final boolean script = !"true".equalsIgnoreCase((String) props.get("noScript"));
-            final Instance periodInst = (Instance) Context.getThreadContext()
-                                    .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+            final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
             final RateInfo rate = evaluateRate(_parameter, periodInst, _date == null ? new DateTime() : _date, null);
             _doc.setRateInfo(rate);
 
@@ -731,8 +728,7 @@ public abstract class FieldValue_Base
                            CISales.PositionSumAbstract.CrossPrice,
                            CISales.PositionSumAbstract.Rate);
         multi.execute();
-        final Instance periode = (Instance) Context.getThreadContext()
-            .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance periode = new Periode().evaluateCurrentPeriod(_parameter);
         while (multi.next()) {
             final BigDecimal net = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
             final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);

@@ -661,8 +661,7 @@ public abstract class Create_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String postfix = (String) properties.get("TypePostfix");
 
-        final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance periodeInst = new Periode().evaluateCurrentPeriod(_parameter);
         final Insert insert = new Insert(CIAccounting.Transaction);
         insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
         insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
@@ -703,7 +702,7 @@ public abstract class Create_Base
         try {
             Instance inst = _parameter.getCallInstance();
             if (!inst.getType().isKindOf(CIAccounting.Periode.getType())) {
-                inst = (Instance) Context.getThreadContext().getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                inst = new Periode().evaluateCurrentPeriod(_parameter);
             }
             final Instance curInstance = new Periode().getCurrency(inst).getInstance();
             if (amounts != null) {
@@ -1122,7 +1121,7 @@ public abstract class Create_Base
                                     && debit.subtract(credit).abs().compareTo(diffMin) < 0) {
                         final TargetAccount acc = doc.getDebitAccounts().values().iterator().next();
                         if (checkCrossTotal.compareTo(debit) > 0) {
-                            final TargetAccount account = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGDEBIT);
+                            final TargetAccount account = getRoundingAccount(_parameter, AccountingSettings.PERIOD_ROUNDINGDEBIT);
                             account.setAmount(checkCrossTotal.subtract(debit));
                             account.setRateInfo(acc.getRateInfo());
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
@@ -1132,7 +1131,7 @@ public abstract class Create_Base
                             debit = debit.add(checkCrossTotal.subtract(debit));
                         }
                         if (checkCrossTotal.compareTo(credit) > 0) {
-                            final TargetAccount account = getRoundingAccount(AccountingSettings.PERIOD_ROUNDINGCREDIT);
+                            final TargetAccount account = getRoundingAccount(_parameter, AccountingSettings.PERIOD_ROUNDINGCREDIT);
                             doc.getCreditAccounts().put(account.getOid(), account);
                             account.setAmount(checkCrossTotal.subtract(credit));
                             account.setRateInfo(acc.getRateInfo());
@@ -1158,11 +1157,11 @@ public abstract class Create_Base
      * @return target acccount
      * @throws EFapsException on error
      */
-    protected TargetAccount getRoundingAccount(final String _key)
+    protected TargetAccount getRoundingAccount(final Parameter _parameter,
+                                               final String _key)
         throws EFapsException
     {
-        final Instance periodInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
         TargetAccount ret = null;
         final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
         final String name = props.getProperty(_key);

@@ -565,8 +565,7 @@ public abstract class Transaction_Base
             } else {
                 Instance inst = _parameter.getCallInstance();
                 if (!inst.getType().getUUID().equals(CIAccounting.Periode.uuid)) {
-                    inst = (Instance) Context.getThreadContext()
-                                    .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                    inst = new Periode().evaluateCurrentPeriod(_parameter);
                 }
                 final Instance currinst = new Periode().getCurrency(inst).getInstance();
                 final PrintQuery query = new PrintQuery(currinst);

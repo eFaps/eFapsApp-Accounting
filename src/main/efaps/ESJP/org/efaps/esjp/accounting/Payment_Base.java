@@ -575,8 +575,7 @@ public abstract class Payment_Base
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
 
         final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodeInstance.getId());

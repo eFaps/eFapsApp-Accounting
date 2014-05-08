@@ -55,7 +55,6 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
-import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -447,8 +446,7 @@ public abstract class ExternalVoucher_Base
                                              final boolean _isCross)
         throws EFapsException
     {
-        final Instance periodeInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance periodeInst = new Periode().evaluateCurrentPeriod(_parameter);
 
         final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
         formater.setParseBigDecimal(true);

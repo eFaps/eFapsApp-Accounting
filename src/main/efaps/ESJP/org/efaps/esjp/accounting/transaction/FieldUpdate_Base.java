@@ -37,7 +37,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Periode;
@@ -133,8 +132,7 @@ public abstract class FieldUpdate_Base
                 rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
             }
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                            Transaction_Base.PERIODE_SESSIONKEY);
+            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
 
             final BigDecimal sum = getSum(_parameter, postfix, null, null, null);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
@@ -177,8 +175,7 @@ public abstract class FieldUpdate_Base
             final int pos = getSelectedRow(_parameter);
             final String dateStr = _parameter.getParameterValue("date_eFapsDate");
             final DateTime date = DateUtil.getDateFromParameter(dateStr);
-            final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                            Transaction_Base.PERIODE_SESSIONKEY);
+            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
 
             final RateInfo rate = evaluateRate(_parameter, periodeInstance, date,
                             Instance.get(CIERP.Currency.getType(), currIds[pos]));
@@ -337,8 +334,7 @@ public abstract class FieldUpdate_Base
                 rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
             }
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                            Transaction_Base.PERIODE_SESSIONKEY);
+            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
 
             final BigDecimal sum = getSum(_parameter, postfix, null, null, null);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
@@ -396,8 +392,7 @@ public abstract class FieldUpdate_Base
         final StringBuilder ret = new StringBuilder();
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
         final DateTime date = DateUtil.getDateFromParameter(dateStr);
-        final Instance periodeInstance = (Instance) Context.getThreadContext().getSessionAttribute(
-                        Transaction_Base.PERIODE_SESSIONKEY);
+        final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
         if (currIds != null) {
             for (int i = 0; i < currIds.length; i++) {
                 final RateInfo rate = evaluateRate(_parameter, periodeInstance, date,
