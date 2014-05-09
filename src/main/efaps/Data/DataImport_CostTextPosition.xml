@@ -28,7 +28,7 @@
 <data-import xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    
+
     <definition name="Import_CostTextPosition" file="Import_CostTextPosition.csv">
         <type name="Products_ProductCostTextPosition">
             <attribute name="Name" column="Name" validate="false"/>
@@ -37,6 +37,11 @@
             <attribute name="TaxCategory" fixedValue="1"/>
             <attribute name="Dimension" class="org.efaps.esjp.data.columns.DimensionColumn" validateClass="org.efaps.esjp.data.columns.DimensionColumn">
                 <property name="Column">Dimension</property>
+            </attribute>
+            <attribute name="DefaultUoM" class="org.efaps.esjp.data.columns.DefaultUoMColumn"
+                validateClass="org.efaps.esjp.data.columns.DefaultUoMColumn">
+                <property name="DimensionColumn">Dimension</property>
+                <property name="ValueColumn">DefaultUoM</property>
             </attribute>
         </type>
     </definition>
@@ -59,5 +64,5 @@
             </attribute>
         </type>
     </definition>
-    
+
 </data-import>

@@ -1,3 +1,3 @@
-Name,Description,Dimension
-99914C,"CostTextPosition with VAT",c8a4933f-4d7c-42f5-9269-ad04d6e50b6f
-99924C,"CostTextPosition without TAX",c8a4933f-4d7c-42f5-9269-ad04d6e50b6f
+Name,Description,Dimension,DefaultUoM
+99914C,"CostTextPosition with VAT",c8a4933f-4d7c-42f5-9269-ad04d6e50b6f,item
+99924C,"CostTextPosition without TAX",c8a4933f-4d7c-42f5-9269-ad04d6e50b6f,item
