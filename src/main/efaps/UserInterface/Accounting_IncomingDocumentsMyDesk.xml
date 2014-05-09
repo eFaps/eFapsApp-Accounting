@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -22,27 +20,19 @@
  Last Changed By: $Author$
 
 -->
-
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>250c6cd3-f4c4-4dd2-aa12-6f497260afce</uuid>
+    <uuid>6eb87ed0-663e-4c3b-9833-3ef5143f94c7</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_MyDesk</name>
+        <name>Accounting_IncomingDocumentsMyDesk</name>
         <childs>
-            <child>Accounting_PeriodeMyDesk</child>
-            <child>Accounting_SubPeriodMyDesk</child>
-            <child>Accounting_ConfigurationMyDesk</child>
-            <child>Accounting_ReportMyDesk</child>
-            <child>Accounting_DocumentMyDesk</child>
-            <child>Accounting_IncomingDocumentsMyDesk</child>
-            <!-- <child>Accounting_PaymentMyDesk</child> -->
-            <child>Accounting_PurchaseRecordMyDesk</child>
-            <child>Sales_Document_ReportMyDesk</child>
-            <child>Sales_PaymentRetention_Report</child>
-            <child>Products_KardexMyDesk</child>
+            <child>Sales_IncomingInvoiceMyDesk</child>
+            <child>Sales_IncomingReceiptMyDesk</child>
+            <child>Sales_IncomingCreditNoteMyDesk</child>
+            <child>Sales_IncomingReminderMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
