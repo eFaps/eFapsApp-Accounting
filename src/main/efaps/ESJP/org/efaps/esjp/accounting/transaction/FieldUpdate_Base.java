@@ -359,23 +359,6 @@ public abstract class FieldUpdate_Base
     }
 
     /**
-     * Method to evaluate the selected row.
-     *
-     * @param _parameter paaremter
-     * @return number of selected row.
-     */
-    protected int getSelectedRow(final Parameter _parameter)
-    {
-        int ret = 0;
-        final String value = _parameter.getParameterValue("eFapsRowSelectedRow");
-        if (value != null && value.length() > 0) {
-            ret = Integer.parseInt(value);
-        }
-        return ret;
-    }
-
-
-    /**
      * Get a javascript to set the rate fields.
      * @param _parameter        Parameter from the eFaps API
      * @param _fieldName        name of the fields containing the currency
