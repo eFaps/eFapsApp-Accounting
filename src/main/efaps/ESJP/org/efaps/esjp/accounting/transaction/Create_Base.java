@@ -403,12 +403,10 @@ public abstract class Create_Base
             if (revision != null) {
                 descr = revision + " - ";
             }
-
         }
         descr = descr  + _parameter.getParameterValue("description");
 
         final Instance instance = createBaseTrans(_parameter, descr);
-
 
         if (docInst != null && docInst.isValid()) {
             // create classifications
@@ -437,9 +435,22 @@ public abstract class Create_Base
 
             if (setStatus) {
                 final Update update = new Update(docInst);
-                update.add("Status",
-                             Status.find(docInst.getType().getStatusAttribute().getLink().getName(), "Booked").getId());
+                update.add(CIERP.DocumentAbstract.StatusAbstract,
+                                Status.find(docInst.getType().getStatusAttribute().getLink().getUUID(), "Booked"));
                 update.execute();
+            } else {
+                final PrintQuery print = new PrintQuery(docInst);
+                print.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
+                print.executeWithoutAccessCheck();
+                final Status status = Status.get(print.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
+                if ("Digitized".equals(status.getKey())) {
+                   final Status newStatus = Status.find(status.getStatusGroup().getUUID(), "Open");
+                   if (newStatus != null) {
+                       final Update update = new Update(docInst);
+                       update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
+                       update.execute();
+                   }
+                }
             }
         }
         return new Return();
