@@ -39,9 +39,8 @@
         </access>
         <target>
             <menu>Accounting_PeriodeTree_ExternalToBook_Menu</menu>
-            <table>Sales_IncomingInvoiceTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Periode"
-                method="getExternalsToBook" >
+            <table>Accounting_IncomingDocumentTable</table>
+            <evaluate program="org.efaps.esjp.accounting.Periode" method="getExternalsToBook" >
                     <property name="Type">ERP_DocumentAbstract</property>
             </evaluate>
         </target>

@@ -46,6 +46,7 @@
         <field name="documentType">
             <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
             <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
@@ -96,6 +97,7 @@
         <field name="status">
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
@@ -125,6 +127,7 @@
         <field name="documentType">
             <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
             <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
@@ -175,12 +178,13 @@
         <field name="status">
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="project">
             <property name="SelectAlternateOID">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
             <property name="Select">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_DocumentAbstract.project.Label</property>
+            <property name="Label">Accounting_IncomingDocumentTable.project.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
