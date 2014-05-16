@@ -111,19 +111,17 @@ public abstract class Create_Base
                 queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink,
                                 payDocInst.getId());
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder sel = new SelectBuilder().linkto(
-                                CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
-                                .oid();
-                final SelectBuilder selCur = new SelectBuilder().linkto(
-                                CIERP.Document2PaymentDocumentAbstract.CurrencyLink)
-                                .oid();
-                multi.addSelect(sel, selCur);
+                final SelectBuilder selDocInst = new SelectBuilder().linkto(
+                                CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).instance();
+                final SelectBuilder selCurInst = new SelectBuilder().linkto(
+                                CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
+                multi.addSelect(selDocInst, selCurInst);
                 multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Amount,
                                 CIERP.Document2PaymentDocumentAbstract.Date);
                 multi.execute();
                 while (multi.next()) {
-                    final Instance docInst = Instance.get(multi.<String>getSelect(sel));
-                    final Instance rateCurInst = Instance.get(multi.<String>getSelect(selCur));
+                    final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                    final Instance rateCurInst = multi.<Instance>getSelect(selCurInst);
                     final BigDecimal amount = multi
                                     .<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
                     final DateTime d2payDate = multi
@@ -131,8 +129,8 @@ public abstract class Create_Base
 
                     final boolean incoming = payDocInst.getType().isKindOf(CISales.PaymentDocumentAbstract.getType());
 
-                    final Instance salesAccInst = getSalesAcccountInst4Payment(_parameter, multi.getCurrentInstance());
-                    final Instance targetAccInst = getTargetAcccountInst4Payment(_parameter, salesAccInst);
+                    final Instance targetAccInst = getTargetAcccountInst4Payment(_parameter,
+                                    getSalesAcccountInst4Payment(_parameter, multi.getCurrentInstance()));
 
                     final Instance sourceAccInst = getSourceAcccountInst4Payment(_parameter, docInst, incoming);
                     final DateTime dateTmp = useDateForm ? date : d2payDate;
@@ -220,7 +218,7 @@ public abstract class Create_Base
 
 
     /**
-     * Set the Status to booked for a PaymentDocument
+     * Set the Status to booked for a PaymentDocument.
      * @param _parameter    Parameter as passe by the eFaps API
      * @param _payDocInst   Instance of the PaymentDocument the Status willl be set
      * @throws EFapsException on error
@@ -308,7 +306,6 @@ public abstract class Create_Base
     {
         Instance ret = Instance.get("");
         if (_docInst.isValid()) {
-
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
             attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
             final AttributeQuery attrQuery = attrQueryBldr
