@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,29 +22,32 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>4446e2a0-4ad3-445f-9494-2b4d14a8a511</uuid>
+    <uuid>6bfd5112-2535-4900-abd4-912ebc591f7d</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Payment_Menu_Action_Book</name>
-
+        <name>Accounting_PeriodeTree_Payment_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_TransactionCreate4PaymentForm</form>
-            <execute method="create4Payment"
-                program="org.efaps.esjp.accounting.transaction.Create" />
+            <execute method="create4PettyCashReceipt" program="org.efaps.esjp.accounting.ExternalVoucher" />
+            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction"/>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Accounting_PeriodeTree_Securities_Menu_Action_Register.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
     </definition>
 </ui-command>

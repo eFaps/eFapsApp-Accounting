@@ -59,6 +59,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -743,27 +744,39 @@ public abstract class Transaction_Base
     {
         final Return ret = new Return();
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-        if (caseInst.isValid()) {
+        final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
+        final Document doc = new Document();
+
+        if (caseInst.isValid()
+                        || (docInst.isValid() && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType()))) {
             try {
                 final String curr = _parameter.getParameterValue("currencyExternal");
                 final String amountStr = _parameter.getParameterValue("amountExternal");
 
-                final Document doc = new Document();
                 doc.setFormater(NumberFormatter.get().getFormatter(2, 2));
                 final Instance currInst;
                 if (curr == null && amountStr == null) {
-                    final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
                     doc.setInstance(docInst);
-
-                    final PrintQuery printCase = new PrintQuery(caseInst);
-                    printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
-                    printCase.execute();
-                    final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-                    final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                    : CISales.DocumentSumAbstract.RateNetTotal.name;
+                    boolean isCross = false;
+                    if (caseInst.isValid()) {
+                        final PrintQuery printCase = new PrintQuery(caseInst);
+                        printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
+                        printCase.execute();
+                        isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
+                    }
                     final PrintQuery print = new PrintQuery(docInst);
-                    final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                                    .instance();
+                    final SelectBuilder sel;
+                    final String attrName;
+                    if (doc.isPaymentDoc()) {
+                        sel = SelectBuilder.get().linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
+                                        .instance();
+                        attrName = CISales.PaymentDocumentAbstract.Amount.name;
+                    } else {
+                        sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                        .instance();
+                        attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
+                                            : CISales.DocumentSumAbstract.RateNetTotal.name;
+                    }
                     print.addSelect(sel);
                     print.addAttribute(attrName);
                     print.execute();
@@ -787,8 +800,11 @@ public abstract class Transaction_Base
                     addAccount4BankCash(_parameter, doc);
                 }
 
+                addAccount4SalesTransaction(_parameter, doc);
+
                 final StringBuilder js = buildHtml4ExecuteButton(_parameter, doc);
                 ret.put(ReturnValues.SNIPLETT, js.toString());
+
             } catch (final ParseException e) {
                 throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
             }
@@ -806,70 +822,71 @@ public abstract class Transaction_Base
                                              final Document _doc)
         throws EFapsException
     {
-        final String caseOid = _parameter.getParameterValue("case");
-        final RateInfo rateInfo = _doc.getRateInfo();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink,
-                        Instance.get(caseOid).getId());
-        final MultiPrintQuery print = queryBldr.getPrint();
+        final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+        if (caseInst.isValid()) {
+            final RateInfo rateInfo = _doc.getRateInfo();
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
+            final MultiPrintQuery print = queryBldr.getPrint();
 
-        final SelectBuilder oidSel = new SelectBuilder()
-            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
-        final SelectBuilder nameSel = new SelectBuilder()
-                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
-                        .attribute(CIAccounting.AccountAbstract.Name);
-        final SelectBuilder descSel = new SelectBuilder()
-                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
-                        .attribute(CIAccounting.AccountAbstract.Description);
-        print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
-                        CIAccounting.Account2CaseAbstract.Denominator,
-                        CIAccounting.Account2CaseAbstract.LinkValue,
-                        CIAccounting.Account2CaseAbstract.Default);
-        print.addSelect(oidSel, nameSel, descSel);
-        print.execute();
-        while (print.next()) {
-            final Type type = print.getCurrentInstance().getType();
-            final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
-                            || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
-            final Boolean isDefault = print.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
-            // classRel or default selected will be added
-            boolean add = classRel || isDefault;
-            if (add) {
-                final String oid = print.<String>getSelect(oidSel);
-                final String name = print.<String>getSelect(nameSel);
-                final String desc = print.<String>getSelect(descSel);
-                final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
-                final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
-                final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
-                final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
-                                BigDecimal.ROUND_HALF_UP);
-                final BigDecimal accAmount;
-
-                if (classRel) {
-                    accAmount = mul.multiply(_doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
-                    add = isDefault || accAmount.compareTo(BigDecimal.ZERO) != 0;
-                } else {
-                    accAmount = mul.multiply(_doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
-                }
-
-                final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
-                String postFix;
-                Map<String, TargetAccount> acounts;
-                if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
-                                || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
-                    postFix = "_Credit";
-                    acounts = _doc.getCreditAccounts();
-                } else {
-                    postFix = "_Debit";
-                    acounts = _doc.getDebitAccounts();
-                }
+            final SelectBuilder oidSel = new SelectBuilder()
+                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
+            final SelectBuilder nameSel = new SelectBuilder()
+                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
+                            .attribute(CIAccounting.AccountAbstract.Name);
+            final SelectBuilder descSel = new SelectBuilder()
+                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
+                            .attribute(CIAccounting.AccountAbstract.Description);
+            print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
+                            CIAccounting.Account2CaseAbstract.Denominator,
+                            CIAccounting.Account2CaseAbstract.LinkValue,
+                            CIAccounting.Account2CaseAbstract.Default);
+            print.addSelect(oidSel, nameSel, descSel);
+            print.execute();
+            while (print.next()) {
+                final Type type = print.getCurrentInstance().getType();
+                final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
+                                || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
+                final Boolean isDefault = print.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
+                // classRel or default selected will be added
+                boolean add = classRel || isDefault;
                 if (add) {
-                    final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
-                    account.setAmountRate(accAmountRate);
-                    account.setLink(getLinkString(oid, postFix));
-                    account.setRateInfo(rateInfo);
-                    acounts.put(oid, account);
+                    final String oid = print.<String>getSelect(oidSel);
+                    final String name = print.<String>getSelect(nameSel);
+                    final String desc = print.<String>getSelect(descSel);
+                    final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
+                    final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
+                    final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
+                    final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
+                                    BigDecimal.ROUND_HALF_UP);
+                    final BigDecimal accAmount;
+
+                    if (classRel) {
+                        accAmount = mul.multiply(_doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        add = isDefault || accAmount.compareTo(BigDecimal.ZERO) != 0;
+                    } else {
+                        accAmount = mul.multiply(_doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    }
+
+                    final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
+                                    .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
+                    String postFix;
+                    Map<String, TargetAccount> acounts;
+                    if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
+                                    || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
+                        postFix = "_Credit";
+                        acounts = _doc.getCreditAccounts();
+                    } else {
+                        postFix = "_Debit";
+                        acounts = _doc.getDebitAccounts();
+                    }
+                    if (add) {
+                        final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
+                        account.setAmountRate(accAmountRate);
+                        account.setLink(getLinkString(oid, postFix));
+                        account.setRateInfo(rateInfo);
+                        acounts.put(oid, account);
+                    }
                 }
             }
         }
@@ -959,6 +976,65 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * method for add account bank cash in case existing document instance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _doc Document.
+     * @throws EFapsException on error.
+     */
+    protected void addAccount4SalesTransaction(final Parameter _parameter,
+                                               final Document _doc)
+        throws EFapsException
+    {
+        if (_doc.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId)
+                            .instance();
+            final SelectBuilder selSalesAccInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
+                            .instance();
+            multi.addSelect(selCurInst, selSalesAccInst);
+            multi.addAttribute(CISales.TransactionAbstract.Amount);
+            multi.execute();
+            final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
+            while (multi.next()) {
+                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+                Map<String, TargetAccount> accounts;
+                if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
+                    accounts = _doc.getDebitAccounts();
+                } else {
+                    accounts = _doc.getCreditAccounts();
+                }
+                final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
+                final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.Periode2Account);
+                accQueryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.SalesAccountLink, salesAccInst);
+                accQueryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.ToLink, periodInst);
+                final MultiPrintQuery accMulti = accQueryBldr.getPrint();
+                final SelectBuilder selAcc = SelectBuilder.get().linkto(
+                                CIAccounting.Periode2Account.FromAccountAbstractLink);
+                final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
+                final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
+                final SelectBuilder selAccDesc = new SelectBuilder(selAcc)
+                                .attribute(CIAccounting.AccountAbstract.Description);
+                accMulti.addSelect(selAccInst, selAccName, selAccDesc);
+                accMulti.execute();
+                if (accMulti.next()) {
+                    final TargetAccount account = new TargetAccount(accMulti.<Instance>getSelect(selAccInst),
+                                    accMulti.<String>getSelect(selAccName),
+                                    accMulti.<String>getSelect(selAccDesc), amount);
+                    account.setRateInfo(_doc.getRateInfo());
+                    accounts.put(accMulti.getCurrentInstance().getOid(), account);
+                }
+            }
+        }
+    }
 
     /**
      * method for add account bank cash in case existing document instance.
@@ -1185,11 +1261,15 @@ public abstract class Transaction_Base
          */
         private boolean costValidated;
 
-
         /**
          * Is this a document containing sums.
          */
         private boolean sumsDoc;
+
+        /**
+         * Is this a document containing sums.
+         */
+        private boolean paymentDoc;
 
         /**
          * Date of this Document.
@@ -1347,7 +1427,11 @@ public abstract class Transaction_Base
          * @return value of instance variable {@link #formater}
          */
         public DecimalFormat getFormater()
+            throws EFapsException
         {
+            if (this.formater == null) {
+                this.formater = NumberFormatter.get().getTwoDigitsFormatter();
+            }
             return this.formater;
         }
 
@@ -1514,8 +1598,9 @@ public abstract class Transaction_Base
         public void setInstance(final Instance _instance)
         {
             this.instance = _instance;
-            this.sumsDoc = _instance.getType().isKindOf(CISales.DocumentSumAbstract.getType());
-            this.stockDoc = _instance.getType().isKindOf(CISales.DocumentStockAbstract.getType());
+            setSumsDoc(_instance.getType().isKindOf(CISales.DocumentSumAbstract.getType()));
+            setPaymentDoc(_instance.getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType()));
+            setStockDoc(_instance.getType().isKindOf(CISales.DocumentStockAbstract.getType()));
         }
 
         /**
@@ -1534,6 +1619,7 @@ public abstract class Transaction_Base
          * @return the sum of credit accounts formated
          */
         public String getCreditSumFormated()
+            throws EFapsException
         {
             return getFormater().format(getCreditSum());
         }
@@ -1554,13 +1640,14 @@ public abstract class Transaction_Base
          * @return the sum of all debit accounts formated
          */
         public String getDebitSumFormated()
+            throws EFapsException
         {
             return getFormater().format(getDebitSum());
         }
 
         /**
-         * @return the difference between the sum of debit accounts
-         *          and the sum of credit accounts
+         * @return the difference between the sum of debit accounts and the sum
+         *         of credit accounts
          */
         public BigDecimal getDifference()
         {
@@ -1568,14 +1655,14 @@ public abstract class Transaction_Base
         }
 
         /**
-         * @return the difference between the sum of debit accounts
-         *          and the sum of credit accounts formated
+         * @return the difference between the sum of debit accounts and the sum
+         *         of credit accounts formated
          */
         public String getDifferenceFormated()
+            throws EFapsException
         {
-            return  getFormater().format(getDifference());
+            return getFormater().format(getDifference());
         }
-
 
         /**
          * Getter method for the instance variable {@link #rateInfo}.
@@ -1596,6 +1683,50 @@ public abstract class Transaction_Base
         public void setRateInfo(final RateInfo _rateInfo)
         {
             this.rateInfo = _rateInfo;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #paymentDoc}.
+         *
+         * @return value of instance variable {@link #paymentDoc}
+         */
+        public boolean isPaymentDoc()
+        {
+            return this.paymentDoc;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #paymentDoc}.
+         *
+         * @param _paymentDoc value for instance variable {@link #paymentDoc}
+         */
+        public void setPaymentDoc(final boolean _paymentDoc)
+        {
+            this.paymentDoc = _paymentDoc;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #stockDoc}.
+         *
+         * @param _stockDoc value for instance variable {@link #stockDoc}
+         */
+        public void setStockDoc(final boolean _stockDoc)
+        {
+            this.stockDoc = _stockDoc;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #sumsDoc}.
+         *
+         * @param _sumsDoc value for instance variable {@link #sumsDoc}
+         */
+        public void setSumsDoc(final boolean _sumsDoc)
+        {
+            this.sumsDoc = _sumsDoc;
         }
     }
 
@@ -1660,6 +1791,25 @@ public abstract class Transaction_Base
                              final BigDecimal _amount)
         {
             this.oid = _oid;
+            this.name = _name;
+            this.description = _description;
+            this.amount = _amount;
+        }
+
+        /**
+         * new TargetAccount.
+         *
+         * @param _instance Instance.
+         * @param _name name.
+         * @param _description description.
+         * @param _amount amount.
+         */
+        public TargetAccount(final Instance _instance,
+                             final String _name,
+                             final String _description,
+                             final BigDecimal _amount)
+        {
+            this.oid = _instance == null ? "" : _instance.getOid();
             this.name = _name;
             this.description = _description;
             this.amount = _amount;

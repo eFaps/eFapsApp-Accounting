@@ -70,6 +70,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -459,20 +460,17 @@ public abstract class FieldValue_Base
                                                   final Document _doc)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final boolean showNetTotal = !"true".equalsIgnoreCase((String) props.get("noNetTotal"));
+        final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "noNetTotal"));
+        _doc.setFormater(getFormater(2, 2));
 
         final StringBuilder html = new StringBuilder();
-
-        _doc.setFormater(getFormater(2, 2));
         //Selects
-        final SelectBuilder accSel = new SelectBuilder()
-                        .linkto(CISales.DocumentSumAbstract.Contact)
+        final SelectBuilder accSel = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
                         .clazz(CIContacts.ClassClient)
                         .linkfrom(CIAccounting.AccountCurrentDebtor2ContactClassClient,
                                         CIAccounting.AccountCurrentDebtor2ContactClassClient.ToClassClientLink)
                         .linkto(CIAccounting.AccountCurrentDebtor2ContactClassClient.FromAccountLink);
-        final SelectBuilder accOidSel = new SelectBuilder(accSel).oid();
+        final SelectBuilder accInstSel = new SelectBuilder(accSel).instance();
         final SelectBuilder accNameSel = new SelectBuilder(accSel).attribute(CIAccounting.AccountAbstract.Name);
         final SelectBuilder accDescSel = new SelectBuilder(accSel)
                         .attribute(CIAccounting.AccountAbstract.Description);
@@ -480,13 +478,15 @@ public abstract class FieldValue_Base
                         .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
         final SelectBuilder rateCurrSymbSel = new SelectBuilder()
                         .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
-        final SelectBuilder rateCurrOidSel = new SelectBuilder()
-                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).oid();
-
         final SelectBuilder contNameSel = new SelectBuilder()
                         .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
         final SelectBuilder rateLabelSel = new SelectBuilder()
                         .attribute(CISales.DocumentSumAbstract.Rate).label();
+
+        final SelectBuilder currSymbSel4Pay = new SelectBuilder()
+            .linkto(CISales.PaymentDocumentAbstract.CurrencyLink).attribute(CIERP.Currency.Symbol);
+        final SelectBuilder rateCurrSymbSel4Pay = new SelectBuilder()
+            .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink).attribute(CIERP.Currency.Symbol);
 
         final PrintQuery print = new PrintQuery(_doc.getInstance());
         if (_doc.isSumsDoc()) {
@@ -494,12 +494,17 @@ public abstract class FieldValue_Base
                                CISales.DocumentSumAbstract.NetTotal,
                                CISales.DocumentSumAbstract.RateCrossTotal,
                                CISales.DocumentSumAbstract.RateNetTotal);
-            print.addSelect(rateLabelSel, currSymbSel, rateCurrSymbSel, rateCurrOidSel);
+            print.addSelect(rateLabelSel, currSymbSel, rateCurrSymbSel);
         }
+        if (_doc.isPaymentDoc()) {
+            print.addAttribute(CISales.PaymentDocumentAbstract.Note, CISales.PaymentDocumentAbstract.Amount);
+            print.addSelect(rateLabelSel, currSymbSel4Pay, rateCurrSymbSel4Pay);
+        }
+
         print.addAttribute(CISales.DocumentAbstract.Name,
                            CISales.DocumentAbstract.Date,
                            CISales.DocumentAbstract.StatusAbstract);
-        print.addSelect(accDescSel, accNameSel, accOidSel, contNameSel);
+        print.addSelect(accDescSel, accNameSel, accInstSel, contNameSel);
         print.execute();
 
         final DateTime datetime = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
@@ -509,7 +514,7 @@ public abstract class FieldValue_Base
         final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
         final String contactName = print.<String>getSelect(contNameSel);
         final Long statusId = print.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract);
-        final TargetAccount account = new TargetAccount(print.<String>getSelect(accOidSel),
+        final TargetAccount account = new TargetAccount(print.<Instance>getSelect(accInstSel),
                                                         print.<String>getSelect(accNameSel),
                                                         print.<String>getSelect(accDescSel),
                                                         BigDecimal.ZERO);
@@ -528,25 +533,28 @@ public abstract class FieldValue_Base
             .append("</td>").append("<td>").append(_doc.getDateString()).append("</td>")
             .append("</tr><tr>")
             .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Contact))
-            .append("</td>").append("<td colspan=\"3\">").append(contactName).append(" -> ")
+            .append("</td>")
+            .append("<td colspan=\"3\">").append(contactName);
+
+        if (_doc.getDebtorAccount() != null) {
+            html.append(" -> ")
             .append(CIAccounting.AccountCurrentDebtor.getType().getLabel())
-            .append(": ").append(_doc.getDebtorAccount() == null ? "" : _doc.getDebtorAccount().getName())
-                .append("</td>")
+            .append(": ").append(_doc.getDebtorAccount().getName());
+        }
+
+        html.append("</td>")
             .append("</tr><tr>")
             .append("<td>").append(getLabel(_doc.getInstance(), "Status"))
-            .append("</td><td colspan=\"").append(_doc.isSumsDoc() ? 1 : 3).append("\">")
+            .append("</td><td colspan=\"").append(_doc.isSumsDoc() || _doc.isPaymentDoc() ? 1 : 3).append("\">")
             .append(Status.get(statusId).getLabel()).append("</td>");
 
         if (_doc.isSumsDoc()) {
             final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
             final BigDecimal netTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
-            final BigDecimal rateCrossTot = print.<BigDecimal>getAttribute(
-                            CISales.DocumentSumAbstract.RateCrossTotal);
-            final BigDecimal rateNetTotal = print.<BigDecimal>getAttribute(
-                            CISales.DocumentSumAbstract.RateNetTotal);
-            final String currSymbol = print.<String>getSelect(currSymbSel);
-            final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel);
-
+            final BigDecimal rateCrossTot = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final BigDecimal rateNetTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+            final String currSymbol= print.<String>getSelect(currSymbSel);
+            final String rateCurrSymbol= print.<String>getSelect(rateCurrSymbSel);
             final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
 
             html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
@@ -573,6 +581,24 @@ public abstract class FieldValue_Base
                 .append("</td>").append("<td>")
                 .append(getFormater(2, 2).format(rateCrossTot)).append(" ").append(rateCurrSymbol).append("</td>")
                 .append("</tr>");
+        }if ( _doc.isPaymentDoc()) {
+            final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PaymentDocumentAbstract.Amount);
+            final String rateCurrSymbol= print.<String>getSelect(rateCurrSymbSel4Pay);
+            final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
+
+            html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
+                .append("</td><td>").append(rate).append("</td>")
+                .append("</tr>").append("<tr>").append("<td>")
+                .append(getLabel(_doc.getInstance(), CISales.PaymentDocumentAbstract.Amount))
+                .append("</td>").append("<td colspan=\"3\">")
+                .append(getFormater(2, 2).format(amount)).append(" ").append(rateCurrSymbol).append("</td>")
+                .append("<tr>").append("<td>")
+                .append(getLabel(_doc.getInstance(), CISales.PaymentDocumentAbstract.Note))
+                .append("</td>").append("<td colspan=\"3\">")
+                .append(print.getAttribute(CISales.PaymentDocumentAbstract.Note)).append("</td>")
+                .append("</tr><tr><td colspan=\"4\">")
+                .append(AbstractPaymentDocument.getTransactionHtml(_parameter, _doc.getInstance()))
+                .append("</td></tr>");
         }
         html.append(getDocInformation(_parameter, _doc))
             .append("</table>");
@@ -656,7 +682,8 @@ public abstract class FieldValue_Base
                 if (query.next()) {
                     final PrintQuery print = new PrintQuery(query.getCurrentValue());
                     print.addAttribute(CIProducts.ProductCost.Price);
-                    final SelectBuilder currSel = new SelectBuilder().linkto(CIProducts.ProductCost.CurrencyLink).instance();
+                    final SelectBuilder currSel = new SelectBuilder().linkto(CIProducts.ProductCost.CurrencyLink)
+                                    .instance();
                     print.addSelect(currSel);
                     print.executeWithoutAccessCheck();
                     final BigDecimal price = print.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
@@ -711,7 +738,6 @@ public abstract class FieldValue_Base
      *
      * @param _parameter        Parameter as passed from the eFaps API
      * @param _doc              Instance of the Document the form was opened for
-     * @param _rates            map with rates
      * @throws EFapsException on error
      */
     protected void getPriceInformation(final Parameter _parameter,
@@ -751,7 +777,6 @@ public abstract class FieldValue_Base
      *
      * @param _parameter        Parameter as passed from the eFaps API
      * @param _doc              Instance of the Document the form was opened for
-     * @param _rates            map with rates
      * @return StringBuilder
      * @throws EFapsException on error
      */

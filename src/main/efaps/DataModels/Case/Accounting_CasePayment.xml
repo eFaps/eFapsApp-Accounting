@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,17 +20,14 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ee0feaa7-dfb5-420d-8df3-1c7072ec4ce8</uuid>
+    <uuid>a0c2bab8-0b87-4735-8e3e-3cff64d710db</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Payment_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodeTree_Payment_Menu_Action_Register</child>
-            <child>Accounting_PeriodeTree_Payment_Menu_Action_MassiveRegister</child>
-        </childs>
+        <name>Accounting_CasePayment</name>
+        <parent>Accounting_CaseAbstract</parent>
     </definition>
-</ui-menu>
+</datamodel-type>

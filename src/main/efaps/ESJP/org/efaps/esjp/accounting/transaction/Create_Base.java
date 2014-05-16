@@ -97,12 +97,12 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Instance periodeInst = _parameter.getCallInstance();
-        final DateTime date = new DateTime(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.date.name));
-        final boolean useDateForm = Boolean.parseBoolean(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.useDate.name));
-        final String[] oidsPay = (String[]) Context.getThreadContext()
-                        .getSessionAttribute(CIFormAccounting.Accounting_TransactionCreate4PaymentForm.document.name);
+        final DateTime date = new DateTime(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.date.name));
+        final boolean useDateForm = Boolean.parseBoolean(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.useDate.name));
+        final String[] oidsPay = (String[]) Context.getThreadContext().getSessionAttribute(
+                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.document.name);
         final CurrencyInst curInstance = new Periode().getCurrency(periodeInst);
         for (final String oid : oidsPay) {
             final Instance payDocInst = Instance.get(oid);
