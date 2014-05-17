@@ -117,6 +117,63 @@
             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_IncomingExchangeTree menu -->
             update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "d3586d4f-7b25-49b6-9319-2ba4e6cf68af", -1);
 
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCashOutTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "d5bd0a02-56e8-4cf7-bf04-1c5e179856a2", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCashTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "0197b949-72ef-4077-b8d0-5e47c819508e", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCheckOutTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "a8b7dedb-0a6a-474b-b4c0-c1e0079e0110", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCheckTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "1ef1687d-8cb0-46dd-9192-eecc84b4a4f6", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCreditCardTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "3cbeda1d-1d9a-49e5-9572-9dcc18ec4491", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentDebitCardTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "ea76d9e4-a84b-45c8-a1e7-fc761dc3dfa3", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentDepositOutTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "ea81d977-e671-42a1-a967-76f5c3c9b3f8", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentDepositTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "e766d398-6cf3-484b-b1a7-0d2ac720ee59", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentDetractionOutTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "2165ee99-2602-42eb-8dc3-8e9f2c02cfa2", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentDetractionTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "06f05925-1937-42ed-a9ed-faa852cd0def", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentExchangeOutTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "074f00b3-5dd8-429b-845c-78a703ef978e", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentExchangeTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "e145df4d-6301-4eda-a6f0-00a701ca4818", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentInternalTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "7de80742-8c3f-4850-af69-1578f3fb5709", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentOrderTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "9f8cb115-6abf-4d06-ac0d-6f98a6364234", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentRetentionOutTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "6cd29990-ca8c-4556-8e90-65263deb4525", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentRetentionTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "9ea19998-7cb9-49fb-a5f8-ae0b3cbe0b5f", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentScheduleTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "60732b90-3b07-4ca4-af15-6fb0712c8670", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentSupplierOutTree -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "9e1ea83a-7670-47ee-9a73-134f07ef3585", -1);
+
+            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentTree  -->
+            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "218694a8-9617-4458-ba3d-4524efdb2e44", -1);
+
             <!-- connect the Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing to Sales_IncomingInvoiceTree menu -->
             update.add2Menu("56cd1287-922e-487c-84a2-07350d757473", "0370fa3a-6733-4481-841a-645d0e78e54f", -1);
 

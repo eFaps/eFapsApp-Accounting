@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -79,6 +78,7 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
@@ -686,31 +686,34 @@ public abstract class Transaction_Base
      * @return list of instances
      * @throws EFapsException on error
      */
-    public Return getTransaction4Doc(final Parameter _parameter)
+    public Return getTransaction4DocMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typeUUID = (String) properties.get("typeUUID");
-        final List<Instance> instances = new ArrayList<Instance>();
-
-        if (typeUUID != null) {
-            final String[] uuid2Type = typeUUID.split(";");
-            for (int x = 0; x < uuid2Type.length; x++) {
-                final UUID uuid = UUID.fromString(uuid2Type[x]);
-                final QueryBuilder queryBuilder = new QueryBuilder(uuid);
-                queryBuilder.addWhereAttrEqValue("DocumentLink", _parameter.getInstance().getId());
-                final MultiPrintQuery multi = queryBuilder.getPrint();
-                final SelectBuilder sel = new SelectBuilder().linkto("TransactionLink").oid();
-                multi.addSelect(sel);
-                multi.execute();
-                while (multi.next()) {
-                    instances.add(Instance.get(multi.<String>getSelect(sel)));
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                super.add2QueryBldr(_parameter, _queryBldr);
+                if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+                    if (_parameter.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+                        final QueryBuilder attrQuery = new QueryBuilder(CIAccounting.TransactionClassPayDoc);
+                        attrQuery.addWhereAttrEqValue(CIAccounting.TransactionClassPayDoc.PayDocLink,
+                                        _parameter.getInstance());
+                        _queryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery
+                                        .getAttributeQuery(CIAccounting.TransactionClassPayDoc.TransactionLink));
+                    } else {
+                        final QueryBuilder attrQuery = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                        attrQuery.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink,
+                                        _parameter.getInstance());
+                        _queryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery
+                                        .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink));
+                    }
                 }
             }
-        }
-        ret.put(ReturnValues.VALUES, instances);
-        return ret;
+        } .execute(_parameter);
     }
 
     /**
