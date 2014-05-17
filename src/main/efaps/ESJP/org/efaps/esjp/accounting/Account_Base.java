@@ -75,6 +75,11 @@ public abstract class Account_Base
     extends AbstractCommon
 {
     /**
+     * Key used for Caching.
+     */
+    public static final String CACHEKEY = Account.class.getName() + ".CacheKey";
+
+    /**
      * Method to show the tree transaction in periode.
      *
      * @param _parameter Parameter as passed from eFaps API

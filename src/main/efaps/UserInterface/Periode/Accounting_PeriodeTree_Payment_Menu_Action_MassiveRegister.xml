@@ -37,7 +37,7 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4PaymentMassiveForm</form>
-            <execute method="create4Payment"
+            <execute method="create4PaymentMassive"
                 program="org.efaps.esjp.accounting.transaction.Create" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_PeriodeTree_Payment_Menu_Action_MassiveRegister.UI_ACCESSCHECK"

@@ -81,11 +81,11 @@ public abstract class FieldUpdate_Base
         final int pos = getSelectedRow(_parameter);
         final String accountOID = accountOIDs[pos];
         final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-
-        final PrintQuery print = new PrintQuery(accountOID);
+        final Instance accInst = Instance.get(accountOID);
+        final PrintQuery print = new PrintQuery(accInst);
         print.addAttribute(CIAccounting.AccountAbstract.Description);
         print.execute();
-        final StringBuilder inner = new Transaction().getLinkString(accountOID, "_" + postfix);
+        final StringBuilder inner = new Transaction().getLinkString(accInst, "_" + postfix);
 
         final Map<String, Object> map = new HashMap<String, Object>();
 
@@ -280,7 +280,7 @@ public abstract class FieldUpdate_Base
             final String docOid = _parameter.getParameterValue("document");
             final Instance docInst = Instance.get(docOid);
             if (docInst.isValid()) {
-                final Document doc = new Document(docInst);
+                final DocumentInfo doc = new DocumentInfo(docInst);
                 final FieldValue fielValue = new FieldValue();
                 js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
                     .append(StringEscapeUtils.escapeEcmaScript(

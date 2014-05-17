@@ -23,6 +23,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -332,25 +333,43 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final String selected = Context.getThreadContext().getParameter("selectedRow");
-
         if (selected != null) {
-            final Instance docInst = Instance.get(selected);
-            final PrintQuery print = new PrintQuery(docInst);
-            print.addAttribute(CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.Date);
-            print.execute();
-            final DateTime datetime = print.<DateTime> getAttribute(CISales.DocumentSumAbstract.Date);
-            final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
-            final String dateStr = datetime.withChronology(Context.getThreadContext().getChronology()).toString(
-                            formatter.withLocale(Context.getThreadContext().getLocale()));
-            final String name = print.<String> getAttribute(CISales.DocumentSumAbstract.Name);
-            final StringBuilder val = new StringBuilder();
-            val.append(DBProperties.getProperty(docInst.getType().getName() + ".Label")).append(" ")
-                            .append(name).append(" ").append(dateStr);
-            ret.put(ReturnValues.VALUES, val.toString());
+            ret.put(ReturnValues.VALUES, getDescription(_parameter, Instance.get(selected)));
         }
         return ret;
     }
 
+    /**
+     * Get the value for the description field for transaction for documents.
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instance instance of the document
+     * @return description
+     * @throws EFapsException on error
+     */
+    public String getDescription(final Parameter _parameter,
+                                 final Instance _instance)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        if (_instance.isValid()) {
+            final PrintQuery print = new PrintQuery(_instance);
+            print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
+            print.execute();
+            final DateTime datetime = print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date);
+            final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
+            final String dateStr = datetime.withChronology(Context.getThreadContext().getChronology()).toString(
+                            formatter.withLocale(Context.getThreadContext().getLocale()));
+            final String name = print.<String>getAttribute(CIERP.DocumentAbstract.Name);
+            ret.append(_instance.getType().getLabel()).append(" ").append(name).append(" ").append(dateStr);
+        }
+        return ret.toString();
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return value for field
+     * @throws EFapsException on error
+     */
     public Return getPettyCashReceiptClazzNameFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -392,7 +411,7 @@ public abstract class FieldValue_Base
                         ParameterValues.UIOBJECT);
         final Instance docInst = Instance.get(selected);
         if (docInst.isValid()) {
-            final Document doc = new Document(docInst);
+            final DocumentInfo doc = new DocumentInfo(docInst);
             final DateTime date = _parameter.getParameterValue("date") != null
                 ? new DateTime(_parameter.getParameterValue("date"))
                 : new DateTime().withTime(0, 0, 0, 0);
@@ -434,9 +453,10 @@ public abstract class FieldValue_Base
     }
 
     /**
-     * @param _parameter
-     * @param _doc
-     * @return
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return document detail
+     * @param _docInst instance of the document
+     * @throws EFapsException on error
      */
     protected String getDocDetail(final Parameter _parameter,
                                   final Instance _docInst)
@@ -457,7 +477,7 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected StringBuilder getDocumentFieldValue(final Parameter _parameter,
-                                                  final Document _doc)
+                                                  final DocumentInfo _doc)
         throws EFapsException
     {
         final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "noNetTotal"));
@@ -514,11 +534,8 @@ public abstract class FieldValue_Base
         final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
         final String contactName = print.<String>getSelect(contNameSel);
         final Long statusId = print.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract);
-        final TargetAccount account = new TargetAccount(print.<Instance>getSelect(accInstSel),
-                                                        print.<String>getSelect(accNameSel),
-                                                        print.<String>getSelect(accDescSel),
-                                                        BigDecimal.ZERO);
-        if (account.getOid() == null) {
+        final AccountInfo account = new AccountInfo(print.<Instance>getSelect(accInstSel));
+        if (account.getInstance() == null) {
             setAccounts4Debit(_parameter, _doc);
         }
 
@@ -553,8 +570,8 @@ public abstract class FieldValue_Base
             final BigDecimal netTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
             final BigDecimal rateCrossTot = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             final BigDecimal rateNetTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
-            final String currSymbol= print.<String>getSelect(currSymbSel);
-            final String rateCurrSymbol= print.<String>getSelect(rateCurrSymbSel);
+            final String currSymbol = print.<String>getSelect(currSymbSel);
+            final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel);
             final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
 
             html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
@@ -581,9 +598,10 @@ public abstract class FieldValue_Base
                 .append("</td>").append("<td>")
                 .append(getFormater(2, 2).format(rateCrossTot)).append(" ").append(rateCurrSymbol).append("</td>")
                 .append("</tr>");
-        }if ( _doc.isPaymentDoc()) {
+        }
+        if (_doc.isPaymentDoc()) {
             final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PaymentDocumentAbstract.Amount);
-            final String rateCurrSymbol= print.<String>getSelect(rateCurrSymbSel4Pay);
+            final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel4Pay);
             final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
 
             html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
@@ -616,7 +634,7 @@ public abstract class FieldValue_Base
      */
     protected StringBuilder getCostInformation(final Parameter _parameter,
                                                final DateTime _date,
-                                               final Document _doc)
+                                               final DocumentInfo _doc)
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
@@ -741,7 +759,7 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected void getPriceInformation(final Parameter _parameter,
-                                       final Document _doc)
+                                       final DocumentInfo _doc)
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
@@ -781,7 +799,7 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected StringBuilder getScript(final Parameter _parameter,
-                                      final Document _doc)
+                                      final DocumentInfo _doc)
         throws EFapsException
     {
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -793,11 +811,11 @@ public abstract class FieldValue_Base
                 getPriceInformation(_parameter, _doc);
             }
 
-            for (final TargetAccount account : _doc.getDebitAccounts().values()) {
-                account.setLink(getLinkString(account.getOid(), "_Debit"));
+            for (final AccountInfo account : _doc.getDebitAccounts().values()) {
+                account.setLink(getLinkString(account.getInstance(), "_Debit"));
             }
-            for (final TargetAccount account : _doc.getCreditAccounts().values()) {
-                account.setLink(getLinkString(account.getOid(), "_Credit"));
+            for (final AccountInfo account : _doc.getCreditAccounts().values()) {
+                account.setLink(getLinkString(account.getInstance(), "_Credit"));
             }
             ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts().values()))
                 .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts().values()));
@@ -817,8 +835,8 @@ public abstract class FieldValue_Base
      * @param _acountType   CIType for the account
      * @throws EFapsException on error
      */
-    protected void analyzeProduct(final Document _doc,
-                                  final Map<String, TargetAccount> _account2Amount,
+    protected void analyzeProduct(final DocumentInfo _doc,
+                                  final Map<Instance, AccountInfo> _account2Amount,
                                   final String _productOid,
                                   final BigDecimal _amount,
                                   final RateInfo _rate,
@@ -849,15 +867,10 @@ public abstract class FieldValue_Base
                     current = current.getParentClassification();
                 }
                 if (id != null) {
-                    final PrintQuery print2 = new PrintQuery(Instance.get(_acountType.getType(), id));
-                    print2.addAttribute(CIAccounting.AccountAbstract.OID,
-                                        CIAccounting.AccountAbstract.Name,
-                                        CIAccounting.AccountAbstract.Description);
-                    print2.execute();
-                    final String accountOID = print2.<String>getAttribute(CIAccounting.AccountAbstract.OID);
-                    if (accountOID != null) {
-                        if (_account2Amount.containsKey(accountOID)) {
-                            final TargetAccount account = _account2Amount.get(accountOID);
+                    final Instance accInst = Instance.get(_acountType.getType(), id);
+                    if (accInst.isValid()) {
+                        if (_account2Amount.containsKey(accInst)) {
+                            final AccountInfo account = _account2Amount.get(accInst);
                             if (_rate.getInstance4Currency().equals(account.getRateInfo().getInstance4Currency())) {
                                 account.add(_amount);
                             } else {
@@ -868,11 +881,8 @@ public abstract class FieldValue_Base
                                 account.setAmountRate(null);
                             }
                         } else {
-                            final TargetAccount account = new TargetAccount(accountOID,
-                                            print2.<String>getAttribute(CIAccounting.AccountAbstract.Name),
-                                            print2.<String>getAttribute(CIAccounting.AccountAbstract.Description),
-                                            _amount);
-                            _account2Amount.put(accountOID, account);
+                            final AccountInfo account = new AccountInfo().setInstance(accInst).add(_amount);
+                            _account2Amount.put(accInst, account);
                             account.setRateInfo(_rate);
                         }
                     }
@@ -890,7 +900,7 @@ public abstract class FieldValue_Base
      * @param _tax contains amount of the Tax.
      * @throws EFapsException on error.
      */
-    protected void analyzeTax(final Map<String, TargetAccount> _account2Amount,
+    protected void analyzeTax(final Map<Instance, AccountInfo> _account2Amount,
                               final String _taxOid,
                               final BigDecimal _tax)
         throws EFapsException
@@ -900,23 +910,17 @@ public abstract class FieldValue_Base
                             CIAccounting.AccountBalanceSheetLiability2Tax.ToTaxLink)
             .linkto(CIAccounting.AccountBalanceSheetLiability2Tax.FromAccountLink);
 
-        final SelectBuilder oidSel = new SelectBuilder(sel).oid();
-        final SelectBuilder nameSel = new SelectBuilder(sel).attribute(CIAccounting.AccountAbstract.Name);
-        final SelectBuilder descrSel = new SelectBuilder(sel).attribute(CIAccounting.AccountAbstract.Description);
+        final SelectBuilder selInst = new SelectBuilder(sel).instance();
 
         final PrintQuery print = new PrintQuery(Instance.get(_taxOid));
-        print.addSelect(oidSel);
-        print.addSelect(nameSel, descrSel);
+        print.addSelect(selInst);
         print.execute();
-        final String accountOID = print.<String>getSelect(oidSel);
-        if (accountOID != null) {
-            if (_account2Amount.containsKey(accountOID)) {
-                _account2Amount.put(accountOID, _account2Amount.get(accountOID).add(_tax));
+        final Instance accountInst = print.<Instance>getSelect(selInst);
+        if (accountInst != null) {
+            if (_account2Amount.containsKey(accountInst)) {
+                _account2Amount.put(accountInst, _account2Amount.get(accountInst).add(_tax));
             } else {
-                _account2Amount.put(accountOID, new TargetAccount(accountOID,
-                                print.<String>getSelect(nameSel),
-                                print.<String>getSelect(descrSel),
-                                _tax));
+                _account2Amount.put(accountInst, new AccountInfo(accountInst, _tax));
             }
         }
     }
@@ -927,23 +931,14 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected void setAccounts4Debit(final Parameter _parameter,
-                                     final Document _doc)
+                                     final DocumentInfo _doc)
         throws EFapsException
     {
         // Accounting-Configuration
         final Instance accInst = SystemConfiguration.get(UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"))
                         .getLink("DefaultAccount4DocClient");
         if (accInst.isValid()) {
-            final PrintQuery print = new PrintQuery(accInst);
-            print.addAttribute(CIAccounting.AccountAbstract.OID,
-                               CIAccounting.AccountAbstract.Name,
-                               CIAccounting.AccountAbstract.Description);
-            print.execute();
-            final TargetAccount account = new TargetAccount(
-                                                print.<String>getAttribute(CIAccounting.AccountAbstract.OID),
-                                                print.<String>getAttribute(CIAccounting.AccountAbstract.Name),
-                                                print.<String>getAttribute(CIAccounting.AccountAbstract.Description),
-                                                BigDecimal.ZERO);
+            final AccountInfo account = new AccountInfo().setInstance(accInst);
             _doc.setDebtorAccount(account);
         }
     }
@@ -1035,8 +1030,11 @@ public abstract class FieldValue_Base
      * @return Collection to be added as additional information to the doc table
      * @throws EFapsException on error
      */
-    protected abstract Collection<String> getSelectedLabel(final Parameter _parameter)
-        throws EFapsException;
+    protected Collection<String> getSelectedLabel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return Collections.<String>emptyList();
+    }
 
     /**
      * To be overwritten from implementation.
@@ -1047,9 +1045,12 @@ public abstract class FieldValue_Base
      *         table
      * @throws EFapsException on error
      */
-    protected abstract CharSequence getDocInformation(final Parameter _parameter,
-                                                      final Document _document)
-        throws EFapsException;
+    protected CharSequence getDocInformation(final Parameter _parameter,
+                                                      final DocumentInfo _document)
+        throws EFapsException
+    {
+        return "";
+    }
 
     /**
      * @param _parameter Parameter as passed from the eFaps API

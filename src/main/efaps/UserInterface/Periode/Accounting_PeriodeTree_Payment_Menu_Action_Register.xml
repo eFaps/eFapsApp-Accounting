@@ -34,7 +34,7 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4PaymentForm</form>
-            <execute method="create4PettyCashReceipt" program="org.efaps.esjp.accounting.ExternalVoucher" />
+            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create" />
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction"/>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_PeriodeTree_Securities_Menu_Action_Register.UI_ACCESSCHECK"

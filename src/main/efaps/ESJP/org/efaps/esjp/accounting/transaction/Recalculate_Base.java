@@ -685,7 +685,7 @@ public abstract class Recalculate_Base
                             .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).oid();
             multi.addSelect(selAcc);
             multi.execute();
-            final Map<String, TargetAccount> map = new HashMap<String, TargetAccount>();
+            final Map<String, AccountInfo> map = new HashMap<String, AccountInfo>();
             while (multi.next()) {
                 final Instance accountInst = Instance.get(multi.<String>getSelect(selAcc));
                 if (setAccounts.contains(accountInst.getOid())) {
@@ -710,10 +710,10 @@ public abstract class Recalculate_Base
                         gainloss = newAmount;
                     }
                     if (map.containsKey(accountInst.getOid())) {
-                        final TargetAccount tarAcc = map.get(accountInst.getOid());
+                        final AccountInfo tarAcc = map.get(accountInst.getOid());
                         tarAcc.add(gainloss);
                     } else {
-                        final TargetAccount tarAcc = new TargetAccount(accountInst.getOid(), "", "", gainloss);
+                        final AccountInfo tarAcc = new AccountInfo(accountInst, gainloss);
                         tarAcc.setAmountRate(gainloss);
                         tarAcc.setCurrInstance(currentInst);
                         map.put(accountInst.getOid(), tarAcc);
@@ -725,8 +725,8 @@ public abstract class Recalculate_Base
                 Insert insert = null;
                 CurrencyInst curr = null;
                 BigDecimal gainlossSum = BigDecimal.ZERO;
-                for (final Entry<String, TargetAccount> entry : map.entrySet()) {
-                    final TargetAccount tarAcc = entry.getValue();
+                for (final Entry<String, AccountInfo> entry : map.entrySet()) {
+                    final AccountInfo tarAcc = entry.getValue();
                     final Instance instAcc = Instance.get(entry.getKey());
                     final BigDecimal gainloss = tarAcc.getAmount();
                     gainlossSum = gainlossSum.add(gainloss);

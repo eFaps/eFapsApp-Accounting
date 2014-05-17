@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -48,7 +47,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -96,8 +94,6 @@ import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -413,19 +409,18 @@ public abstract class Transaction_Base
     /**
      * Make a string for the link of account2account.
      *
-     * @param _accountOid oid of the account
+     * @param _accountInst instance of the account
      * @param _postFix postfix
      * @return StringBuilder
      * @throws EFapsException on error
      */
-    protected StringBuilder getLinkString(final String _accountOid,
+    protected StringBuilder getLinkString(final Instance _accountInst,
                                           final String _postFix)
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink,
-                        Instance.get(_accountOid).getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, _accountInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                         CIAccounting.Account2AccountAbstract.Denominator,
@@ -743,9 +738,22 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        final StringBuilder js = getScript4ExecuteButton(_parameter, evalDocument(_parameter));
+        ret.put(ReturnValues.SNIPLETT, js.toString());
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Document
+     * @throws EFapsException on error
+     */
+    public DocumentInfo evalDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final DocumentInfo ret = new DocumentInfo();
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
         final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-        final Document doc = new Document();
 
         if (caseInst.isValid()
                         || (docInst.isValid() && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType()))) {
@@ -753,10 +761,10 @@ public abstract class Transaction_Base
                 final String curr = _parameter.getParameterValue("currencyExternal");
                 final String amountStr = _parameter.getParameterValue("amountExternal");
 
-                doc.setFormater(NumberFormatter.get().getFormatter(2, 2));
+                ret.setFormater(NumberFormatter.get().getFormatter(2, 2));
                 final Instance currInst;
                 if (curr == null && amountStr == null) {
-                    doc.setInstance(docInst);
+                    ret.setInstance(docInst);
                     boolean isCross = false;
                     if (caseInst.isValid()) {
                         final PrintQuery printCase = new PrintQuery(caseInst);
@@ -767,7 +775,7 @@ public abstract class Transaction_Base
                     final PrintQuery print = new PrintQuery(docInst);
                     final SelectBuilder sel;
                     final String attrName;
-                    if (doc.isPaymentDoc()) {
+                    if (ret.isPaymentDoc()) {
                         sel = SelectBuilder.get().linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
                                         .instance();
                         attrName = CISales.PaymentDocumentAbstract.Amount.name;
@@ -775,36 +783,33 @@ public abstract class Transaction_Base
                         sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                                         .instance();
                         attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                            : CISales.DocumentSumAbstract.RateNetTotal.name;
+                                        : CISales.DocumentSumAbstract.RateNetTotal.name;
                     }
                     print.addSelect(sel);
                     print.addAttribute(attrName);
                     print.execute();
                     currInst = print.<Instance>getSelect(sel);
-                    doc.setAmount(print.<BigDecimal>getAttribute(attrName));
+                    ret.setAmount(print.<BigDecimal>getAttribute(attrName));
                 } else {
-                    doc.setAmount((BigDecimal) doc.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
+                    ret.setAmount((BigDecimal) ret.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
                     currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
                 }
 
                 final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                doc.setDate(DateUtil.getDateFromParameter(dateStr));
+                ret.setDate(DateUtil.getDateFromParameter(dateStr));
 
-                final RateInfo rateInfo = evaluateRate(_parameter, doc.getDate(), currInst);
-                doc.setRateInfo(rateInfo);
+                final RateInfo rateInfo = evaluateRate(_parameter, ret.getDate(), currInst);
+                ret.setRateInfo(rateInfo);
 
-                buildDoc4ExecuteButton(_parameter, doc);
+                add2Doc4Case(_parameter, ret);
 
-                if (doc.getInstance() != null) {
-                    doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
-                    addAccount4BankCash(_parameter, doc);
+                if (ret.getInstance() != null) {
+                    ret.setInvert(ret.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
+                    add2Doc4BankCash(_parameter, ret);
                 }
 
-                addAccount4SalesTransaction(_parameter, doc);
-
-                final StringBuilder js = buildHtml4ExecuteButton(_parameter, doc);
-                ret.put(ReturnValues.SNIPLETT, js.toString());
-
+                add2Doc4SalesTransaction(_parameter, ret);
+                add2Doc4Payment(_parameter, ret);
             } catch (final ParseException e) {
                 throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
             }
@@ -815,11 +820,10 @@ public abstract class Transaction_Base
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _doc          Document the calculation must be done for
-     * @return true
      * @throws EFapsException on error
      */
-    protected Boolean buildDoc4ExecuteButton(final Parameter _parameter,
-                                             final Document _doc)
+    protected void add2Doc4Case(final Parameter _parameter,
+                                final DocumentInfo _doc)
         throws EFapsException
     {
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
@@ -829,19 +833,13 @@ public abstract class Transaction_Base
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
             final MultiPrintQuery print = queryBldr.getPrint();
 
-            final SelectBuilder oidSel = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).oid();
-            final SelectBuilder nameSel = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
-                            .attribute(CIAccounting.AccountAbstract.Name);
-            final SelectBuilder descSel = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
-                            .attribute(CIAccounting.AccountAbstract.Description);
+            final SelectBuilder selInst = new SelectBuilder()
+                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
             print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                             CIAccounting.Account2CaseAbstract.Denominator,
                             CIAccounting.Account2CaseAbstract.LinkValue,
                             CIAccounting.Account2CaseAbstract.Default);
-            print.addSelect(oidSel, nameSel, descSel);
+            print.addSelect(selInst);
             print.execute();
             while (print.next()) {
                 final Type type = print.getCurrentInstance().getType();
@@ -851,9 +849,7 @@ public abstract class Transaction_Base
                 // classRel or default selected will be added
                 boolean add = classRel || isDefault;
                 if (add) {
-                    final String oid = print.<String>getSelect(oidSel);
-                    final String name = print.<String>getSelect(nameSel);
-                    final String desc = print.<String>getSelect(descSel);
+                    final Instance inst = print.<Instance>getSelect(selInst);
                     final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
                     final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
                     final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
@@ -871,7 +867,7 @@ public abstract class Transaction_Base
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                     .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
                     String postFix;
-                    Map<String, TargetAccount> acounts;
+                    Map<Instance, AccountInfo> acounts;
                     if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
                                     || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
                         postFix = "_Credit";
@@ -881,16 +877,187 @@ public abstract class Transaction_Base
                         acounts = _doc.getDebitAccounts();
                     }
                     if (add) {
-                        final TargetAccount account = new TargetAccount(oid, name, desc, accAmount);
+                        final AccountInfo account = new AccountInfo(inst, accAmount);
                         account.setAmountRate(accAmountRate);
-                        account.setLink(getLinkString(oid, postFix));
+                        account.setLink(getLinkString(inst, postFix));
                         account.setRateInfo(rateInfo);
-                        acounts.put(oid, account);
+                        acounts.put(inst, account);
                     }
                 }
             }
         }
-        return true;
+    }
+
+    /**
+     * method for add account bank cash in case existing DocumentInfo instance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _doc Document.
+     * @throws EFapsException on error.
+     */
+    protected void add2Doc4SalesTransaction(final Parameter _parameter,
+                                            final DocumentInfo _doc)
+        throws EFapsException
+    {
+        if (_doc.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId)
+                            .instance();
+            final SelectBuilder selSalesAccInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
+                            .instance();
+            multi.addSelect(selCurInst, selSalesAccInst);
+            multi.addAttribute(CISales.TransactionAbstract.Amount);
+            multi.execute();
+            new Periode().evaluateCurrentPeriod(_parameter);
+            while (multi.next()) {
+                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+                Map<Instance, AccountInfo> accounts;
+                if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
+                    accounts = _doc.getDebitAccounts();
+                } else {
+                    accounts = _doc.getCreditAccounts();
+                }
+                final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
+                final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).add(amount);
+                account.setRateInfo(_doc.getRateInfo());
+                accounts.put(account.getInstance(), account);
+            }
+        }
+    }
+
+    /**
+     * Get the Source account for a Transaction with PaymentDocument.
+     *
+     * @param _parameter Parameter as passe by the eFaps API
+     * @param _doc Doc to add to
+     * @throws EFapsException on error
+     */
+    protected void add2Doc4Payment(final Parameter _parameter,
+                                   final DocumentInfo _doc)
+        throws EFapsException
+    {
+        if (_doc.getInstance().isValid()
+                        && _doc.getInstance().getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
+            queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, _doc.getInstance());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocInst = new SelectBuilder().linkto(
+                            CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).instance();
+            final SelectBuilder selCurInst = new SelectBuilder().linkto(
+                            CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
+            multi.addSelect(selDocInst, selCurInst);
+            multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Amount,
+                            CIERP.Document2PaymentDocumentAbstract.Date);
+            multi.execute();
+            while (multi.next()) {
+                final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                if (docInst.isValid()) {
+
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, docInst);
+                    final AttributeQuery attrQuery = attrQueryBldr
+                                    .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+                    final boolean outDoc = _doc.getInstance().getType().isKindOf(
+                                    CISales.PaymentDocumentOutAbstract.getType());
+                    final QueryBuilder posQueryBldr = new QueryBuilder(outDoc
+                                    ? CIAccounting.TransactionPositionCredit
+                                    : CIAccounting.TransactionPositionDebit);
+                    posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                                    attrQuery);
+                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                    final SelectBuilder selAccInst = new SelectBuilder().linkto(
+                                    CIAccounting.TransactionPositionAbstract.AccountLink).instance();
+                    final SelectBuilder dateSel = new SelectBuilder().linkto(
+                                    CIAccounting.TransactionPositionAbstract.TransactionLink)
+                                    .attribute(CIAccounting.Transaction.Date);
+                    posMulti.addSelect(selAccInst, dateSel);
+                    posMulti.execute();
+                    DateTime dateTmp = new DateTime().plusYears(100);
+                    while (posMulti.next()) {
+                        final DateTime date = posMulti.<DateTime>getSelect(dateSel);
+                        if (date != null && date.isBefore(dateTmp)) {
+                            dateTmp = date;
+                            final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
+                            final AccountInfo acc = new AccountInfo().setInstance(accInst)
+                                            .add(_doc.getAmount()).setRateInfo(_doc.getRateInfo());
+                            if (outDoc) {
+                                _doc.getDebitAccounts().put(acc.getInstance(), acc);
+                            } else {
+                                _doc.getCreditAccounts().put(acc.getInstance(), acc);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * method for add account bank cash in case existing document instance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _doc Document.
+     * @throws EFapsException on error.
+     */
+    protected void add2Doc4BankCash(final Parameter _parameter,
+                                    final DocumentInfo _doc)
+        throws EFapsException
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String addAccount = (String) properties.get("addAccount");
+        if (addAccount != null && addAccount.length() > 0) {
+            final UIFormCell uiform = (UIFormCell) _parameter.get(ParameterValues.CLASS);
+            final Instance instance = Instance.get(uiform.getParent().getInstanceKey());
+            BigDecimal amount = _doc.getAmount();
+
+            Map<Instance, AccountInfo> accounts;
+            if ("Credit".equals(addAccount)) {
+                accounts = _doc.getCreditAccounts();
+                amount = amount.subtract(_doc.getCreditSum());
+            } else {
+                accounts = _doc.getDebitAccounts();
+                amount = amount.subtract(_doc.getDebitSum());
+            }
+            final AccountInfo account = new AccountInfo(instance, amount);
+            account.setRateInfo(_doc.getRateInfo());
+            accounts.put(instance, account);
+        }
+    }
+
+    /**
+     * Get the Target account for a Transaction with PaymentDocument.
+     * @param _parameter        Parameter as passe by the eFaps API
+     * @param _salesAccInst     Instance of the Account from sales the account is searched for
+     * @return Instance of the target account
+     * @throws EFapsException on error
+     */
+    protected AccountInfo getTargetAccount4SalesAccount(final Parameter _parameter,
+                                                          final Instance _salesAccInst)
+        throws EFapsException
+    {
+        final AccountInfo ret = new AccountInfo();
+        if (_salesAccInst.isValid()) {
+            final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
+            final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.Periode2Account);
+            accQueryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.SalesAccountLink, _salesAccInst);
+            accQueryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.ToLink, periodInst);
+            final MultiPrintQuery accMulti = accQueryBldr.getPrint();
+            final SelectBuilder selAccInst = SelectBuilder.get().linkto(
+                            CIAccounting.Periode2Account.FromAccountAbstractLink).instance();
+            accMulti.addSelect(selAccInst);
+            accMulti.execute();
+            if (accMulti.next()) {
+                ret.setInstance(accMulti.<Instance>getSelect(selAccInst));
+            }
+        }
+        return ret;
     }
 
     /**
@@ -899,8 +1066,8 @@ public abstract class Transaction_Base
      * @return StringBuilder
      * @throws EFapsException on error
      */
-    protected StringBuilder buildHtml4ExecuteButton(final Parameter _parameter,
-                                                    final Document _doc)
+    protected StringBuilder getScript4ExecuteButton(final Parameter _parameter,
+                                                    final DocumentInfo _doc)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder()
@@ -914,9 +1081,16 @@ public abstract class Transaction_Base
     }
 
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _postFix      postFix
+     * @param _accounts     accounts the script will be created for
+     * @return javascript
+     * @throws EFapsException on error
+     */
     protected StringBuilder getTableJS(final Parameter _parameter,
                                        final String _postFix,
-                                       final Collection<TargetAccount> _accounts)
+                                       final Collection<AccountInfo> _accounts)
         throws EFapsException
     {
         final String tableName = "transactionPosition" + _postFix + "Table";
@@ -925,7 +1099,7 @@ public abstract class Transaction_Base
         final StringBuilder onJs = new StringBuilder();
         final Collection<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         final int i = 0;
-        for (final TargetAccount account : _accounts) {
+        for (final AccountInfo account : _accounts) {
             final Map<String, Object> map = new HashMap<String, Object>();
             values.add(map);
 
@@ -934,7 +1108,7 @@ public abstract class Transaction_Base
             map.put("rate_" + _postFix, account.getRateInfo().getRateUIFrmt());
             map.put("rate_" + _postFix + RateUI.INVERTEDSUFFIX, account.getRateInfo().getCurrencyInst().isInvert());
             map.put("amountRate_" + _postFix, account.getAmountRateFormated());
-            map.put("accountLink_" + _postFix, new String[] { account.getOid(), account.getName() });
+            map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());
 
             if (account.getLink() != null && account.getLink().length() > 0) {
@@ -954,7 +1128,7 @@ public abstract class Transaction_Base
      * @throws EFapsException on error
      */
     protected StringBuilder getSetSubJournalScript(final Parameter _parameter,
-                                                   final Document _doc)
+                                                   final DocumentInfo _doc)
         throws EFapsException
     {
         // check if the field is existing
@@ -974,103 +1148,6 @@ public abstract class Transaction_Base
             }
         }
         return ret;
-    }
-
-    /**
-     * method for add account bank cash in case existing document instance.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @param _doc Document.
-     * @throws EFapsException on error.
-     */
-    protected void addAccount4SalesTransaction(final Parameter _parameter,
-                                               final Document _doc)
-        throws EFapsException
-    {
-        if (_doc.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
-
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
-            queryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId)
-                            .instance();
-            final SelectBuilder selSalesAccInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
-                            .instance();
-            multi.addSelect(selCurInst, selSalesAccInst);
-            multi.addAttribute(CISales.TransactionAbstract.Amount);
-            multi.execute();
-            final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
-            while (multi.next()) {
-                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                Map<String, TargetAccount> accounts;
-                if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
-                    accounts = _doc.getDebitAccounts();
-                } else {
-                    accounts = _doc.getCreditAccounts();
-                }
-                final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
-                final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.Periode2Account);
-                accQueryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.SalesAccountLink, salesAccInst);
-                accQueryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.ToLink, periodInst);
-                final MultiPrintQuery accMulti = accQueryBldr.getPrint();
-                final SelectBuilder selAcc = SelectBuilder.get().linkto(
-                                CIAccounting.Periode2Account.FromAccountAbstractLink);
-                final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
-                final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
-                final SelectBuilder selAccDesc = new SelectBuilder(selAcc)
-                                .attribute(CIAccounting.AccountAbstract.Description);
-                accMulti.addSelect(selAccInst, selAccName, selAccDesc);
-                accMulti.execute();
-                if (accMulti.next()) {
-                    final TargetAccount account = new TargetAccount(accMulti.<Instance>getSelect(selAccInst),
-                                    accMulti.<String>getSelect(selAccName),
-                                    accMulti.<String>getSelect(selAccDesc), amount);
-                    account.setRateInfo(_doc.getRateInfo());
-                    accounts.put(accMulti.getCurrentInstance().getOid(), account);
-                }
-            }
-        }
-    }
-
-    /**
-     * method for add account bank cash in case existing document instance.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @param _doc Document.
-     * @throws EFapsException on error.
-     */
-    protected void addAccount4BankCash(final Parameter _parameter,
-                                       final Document _doc)
-        throws EFapsException
-    {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String addAccount = (String) properties.get("addAccount");
-        if (addAccount != null && addAccount.length() > 0) {
-            final UIFormCell uiform = (UIFormCell) _parameter.get(ParameterValues.CLASS);
-            final Instance instance = Instance.get(uiform.getParent().getInstanceKey());
-            final PrintQuery print = new PrintQuery(instance);
-            print.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
-            print.execute();
-            BigDecimal amount = _doc.getAmount();
-
-            Map<String, TargetAccount> accounts;
-            if ("Credit".equals(addAccount)) {
-                accounts = _doc.getCreditAccounts();
-                amount = amount.subtract(_doc.getCreditSum());
-            } else {
-                accounts = _doc.getDebitAccounts();
-                amount = amount.subtract(_doc.getDebitSum());
-            }
-            final TargetAccount account = new TargetAccount(instance.getOid(),
-                            print.<String>getAttribute(CIAccounting.AccountAbstract.Name),
-                            print.<String>getAttribute(CIAccounting.AccountAbstract.Description), amount);
-            account.setRateInfo(_doc.getRateInfo());
-            accounts.put(instance.getOid(), account);
-        }
     }
 
     /**
@@ -1241,749 +1318,8 @@ public abstract class Transaction_Base
     }
 
     /**
-     * Used to hold necessary informations about a document.
+     *
      */
-    public class Document
-    {
-        /**
-         * Instance of this Document.
-         */
-        private Instance instance;
-
-        /**
-         * Is this a Stock moving Document.
-         */
-        private boolean stockDoc;
-
-        /**
-         * Did the Document pass the validation of the cost.
-         * (Every product has its cost assigned)
-         */
-        private boolean costValidated;
-
-        /**
-         * Is this a document containing sums.
-         */
-        private boolean sumsDoc;
-
-        /**
-         * Is this a document containing sums.
-         */
-        private boolean paymentDoc;
-
-        /**
-         * Date of this Document.
-         */
-        private DateTime date;
-
-        /**
-         * List of TargetAccounts for debit.
-         */
-        private final Map<String, TargetAccount> debitAccounts = new LinkedHashMap<String, TargetAccount>();
-
-        /**
-         * List of TargetAccounts for credit.
-         */
-        private final Map<String, TargetAccount> creditAccounts = new LinkedHashMap<String, TargetAccount>();
-
-        /**
-         * Amount of this Account.
-         */
-        private BigDecimal amount;
-
-        /**
-         * Formater.
-         */
-        private DecimalFormat formater;
-
-        /**
-         * Account for the Debtor.
-         */
-        private TargetAccount debtorAccount;
-
-        /**
-         * RateInfo of the Document.
-         */
-        private RateInfo rateInfo;
-
-        /**
-         * Invert this document. (Means change the map for debit and credit).
-         */
-        private boolean invert;
-
-        /**
-         * Mapping of classification id 2 amount.
-         */
-        private HashMap<Long, BigDecimal> clazz2Amount;
-
-        /**
-         * Constructor.
-         */
-        public Document()
-        {
-        }
-
-        /**
-         * @param _instance Instance of the Document
-         */
-        public Document(final Instance _instance)
-        {
-            setInstance(_instance);
-        }
-
-        /**
-         * @param _linkId   id of the Classification the amount is wanted for
-         * @return Amount
-         * @throws EFapsException on error
-         */
-        public BigDecimal getAmount4Class(final Long _linkId)
-            throws EFapsException
-        {
-            BigDecimal ret;
-            if (isSumsDoc()) {
-                if (this.clazz2Amount == null) {
-                    this.clazz2Amount = new HashMap<Long, BigDecimal>();
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-                    queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance.getId());
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    final SelectBuilder sel = new SelectBuilder()
-                                    .linkto(CISales.PositionAbstract.Product).clazz().type();
-                    multi.addSelect(sel);
-                    multi.addAttribute(CISales.PositionSumAbstract.NetPrice);
-                    multi.execute();
-                    while (multi.next()) {
-                        final BigDecimal posamount = multi
-                                        .<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
-                        final List<Classification> clazzes = multi.getSelect(sel);
-                        if (clazzes != null) {
-                            for (final Classification clazz : clazzes) {
-                                Classification classTmp = clazz;
-                                while (classTmp != null) {
-                                    BigDecimal currAmount;
-                                    if (this.clazz2Amount.containsKey(classTmp.getId())) {
-                                        currAmount = this.clazz2Amount.get(classTmp.getId());
-                                    } else {
-                                        currAmount = BigDecimal.ZERO;
-                                    }
-                                    this.clazz2Amount.put(classTmp.getId(), currAmount.add(posamount));
-                                    classTmp = classTmp.getParentClassification();
-                                }
-                            }
-                        }
-                    }
-                }
-                ret = this.clazz2Amount.containsKey(_linkId) ? this.clazz2Amount.get(_linkId) : BigDecimal.ZERO;
-            } else {
-                ret = BigDecimal.ZERO;
-            }
-            return ret;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #invert}.
-         *
-         * @return value of instance variable {@link #invert}
-         */
-        public boolean isInvert()
-        {
-            return this.invert;
-        }
-
-        /**
-         * Setter method for instance variable {@link #invert}.
-         *
-         * @param _invert value for instance variable {@link #invert}
-         */
-
-        public void setInvert(final boolean _invert)
-        {
-            this.invert = _invert;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #costValidated}.
-         *
-         * @return value of instance variable {@link #costValidated}
-         */
-        public boolean isCostValidated()
-        {
-            return this.costValidated;
-        }
-
-        /**
-         * Setter method for instance variable {@link #costValidated}.
-         *
-         * @param _costValidated value for instance variable {@link #costValidated}
-         */
-
-        public void setCostValidated(final boolean _costValidated)
-        {
-            this.costValidated = _costValidated;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #formater}.
-         *
-         * @return value of instance variable {@link #formater}
-         */
-        public DecimalFormat getFormater()
-            throws EFapsException
-        {
-            if (this.formater == null) {
-                this.formater = NumberFormatter.get().getTwoDigitsFormatter();
-            }
-            return this.formater;
-        }
-
-        /**
-         * Setter method for instance variable {@link #formater}.
-         *
-         * @param _formater value for instance variable {@link #formater}
-         */
-
-        public void setFormater(final DecimalFormat _formater)
-        {
-            this.formater = _formater;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #amount}.
-         *
-         * @return value of instance variable {@link #amount}
-         */
-        public BigDecimal getAmount()
-        {
-            return this.amount;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #amount}.
-         *
-         * @param _amount value for instance variable {@link #amount}
-         */
-
-        public void setAmount(final BigDecimal _amount)
-        {
-            this.amount = _amount;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #debitAccounts}.
-         *
-         * @return value of instance variable {@link #debitAccounts}
-         */
-        public Map<String, TargetAccount> getDebitAccounts()
-        {
-            return this.invert ?  this.creditAccounts : this.debitAccounts;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #creditAccounts}.
-         *
-         * @return value of instance variable {@link #creditAccounts}
-         */
-        public Map<String, TargetAccount> getCreditAccounts()
-        {
-            return this.invert ? this.debitAccounts : this.creditAccounts;
-        }
-
-        /**
-         * Setter method for instance variable {@link #debtorAccount}.
-         *
-         * @param _debtorAccount value for instance variable {@link #debtorAccount}
-         */
-
-        public void setDebtorAccount(final TargetAccount _debtorAccount)
-        {
-            this.debtorAccount = _debtorAccount;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #debtorAccount}.
-         *
-         * @return value of instance variable {@link #debtorAccount}
-         */
-        public TargetAccount getDebtorAccount()
-        {
-            return this.debtorAccount;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #currSymbol}.
-         *
-         * @return value of instance variable {@link #currSymbol}
-         * @throws EFapsException on error
-         */
-        public String getCurrSymbol()
-            throws EFapsException
-        {
-            return this.rateInfo.getCurrencyInst().getSymbol();
-        }
-
-        /**
-         * Getter method for the instance variable {@link #date}.
-         *
-         * @return value of instance variable {@link #date}
-         */
-        public DateTime getDate()
-        {
-            return this.date;
-        }
-
-        /**
-         * @param _date date for this document
-         */
-        public void setDate(final DateTime _date)
-        {
-            this.date = _date;
-        }
-
-        /**
-         * @return Date as String
-         * @throws EFapsException on error
-         */
-        public String getDateString()
-            throws EFapsException
-        {
-            final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
-            return this.date.withChronology(Context.getThreadContext().getChronology()).toString(
-                            formatter.withLocale(Context.getThreadContext().getLocale()));
-        }
-
-        /**
-         * @return Instance of the Rate Currency
-         */
-        public Instance getRateCurrInst()
-        {
-            return this.rateInfo.getInstance4Currency();
-        }
-
-        /**
-         * Getter method for the instance variable {@link #stockDoc}.
-         *
-         * @return value of instance variable {@link #stockDoc}
-         */
-        public boolean isStockDoc()
-        {
-            return this.stockDoc;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #sumsDoc}.
-         *
-         * @return value of instance variable {@link #sumsDoc}
-         */
-        public boolean isSumsDoc()
-        {
-            return this.sumsDoc;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #instance}.
-         *
-         * @return value of instance variable {@link #instance}
-         */
-        public Instance getInstance()
-        {
-            return this.instance;
-        }
-
-        /**
-         * Setter method for instance variable {@link #instance}.
-         *
-         * @param _instance value for instance variable {@link #instance}
-         */
-
-        public void setInstance(final Instance _instance)
-        {
-            this.instance = _instance;
-            setSumsDoc(_instance.getType().isKindOf(CISales.DocumentSumAbstract.getType()));
-            setPaymentDoc(_instance.getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType()));
-            setStockDoc(_instance.getType().isKindOf(CISales.DocumentStockAbstract.getType()));
-        }
-
-        /**
-         * @return the sum of credit accounts
-         */
-        public BigDecimal getCreditSum()
-        {
-            BigDecimal ret = BigDecimal.ZERO;
-            for (final TargetAccount account : getCreditAccounts().values()) {
-                ret = ret.add(account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP));
-            }
-            return ret;
-        }
-
-        /**
-         * @return the sum of credit accounts formated
-         */
-        public String getCreditSumFormated()
-            throws EFapsException
-        {
-            return getFormater().format(getCreditSum());
-        }
-
-        /**
-         * @return the sum of all debit accounts
-         */
-        public BigDecimal getDebitSum()
-        {
-            BigDecimal ret = BigDecimal.ZERO;
-            for (final TargetAccount account : getDebitAccounts().values()) {
-                ret = ret.add(account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP));
-            }
-            return ret;
-        }
-
-        /**
-         * @return the sum of all debit accounts formated
-         */
-        public String getDebitSumFormated()
-            throws EFapsException
-        {
-            return getFormater().format(getDebitSum());
-        }
-
-        /**
-         * @return the difference between the sum of debit accounts and the sum
-         *         of credit accounts
-         */
-        public BigDecimal getDifference()
-        {
-            return getDebitSum().subtract(getCreditSum()).abs();
-        }
-
-        /**
-         * @return the difference between the sum of debit accounts and the sum
-         *         of credit accounts formated
-         */
-        public String getDifferenceFormated()
-            throws EFapsException
-        {
-            return getFormater().format(getDifference());
-        }
-
-        /**
-         * Getter method for the instance variable {@link #rateInfo}.
-         *
-         * @return value of instance variable {@link #rateInfo}
-         */
-        public RateInfo getRateInfo()
-        {
-            return this.rateInfo;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #rateInfo}.
-         *
-         * @param _rateInfo value for instance variable {@link #rateInfo}
-         */
-        public void setRateInfo(final RateInfo _rateInfo)
-        {
-            this.rateInfo = _rateInfo;
-        }
-
-
-        /**
-         * Getter method for the instance variable {@link #paymentDoc}.
-         *
-         * @return value of instance variable {@link #paymentDoc}
-         */
-        public boolean isPaymentDoc()
-        {
-            return this.paymentDoc;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #paymentDoc}.
-         *
-         * @param _paymentDoc value for instance variable {@link #paymentDoc}
-         */
-        public void setPaymentDoc(final boolean _paymentDoc)
-        {
-            this.paymentDoc = _paymentDoc;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #stockDoc}.
-         *
-         * @param _stockDoc value for instance variable {@link #stockDoc}
-         */
-        public void setStockDoc(final boolean _stockDoc)
-        {
-            this.stockDoc = _stockDoc;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #sumsDoc}.
-         *
-         * @param _sumsDoc value for instance variable {@link #sumsDoc}
-         */
-        public void setSumsDoc(final boolean _sumsDoc)
-        {
-            this.sumsDoc = _sumsDoc;
-        }
-    }
-
-
-    /**
-     * Used to store information about an account temporarily.
-     */
-    public class TargetAccount
-    {
-
-        /**
-         * OID of this account.
-         */
-        private final String oid;
-
-        /**
-         * Name of this account.
-         */
-        private final String name;
-
-        /**
-         * Description for this account.
-         */
-        private final String description;
-
-        /**
-         * Amount of this account.
-         */
-        private BigDecimal amount;
-
-        /**
-         * Rate.
-         */
-        private Instance currInstance;
-
-        /**
-         * RateInfo.
-         */
-        private RateInfo rateInfo;
-
-        /**
-         * Amount of this account.
-         */
-        private BigDecimal amountRate;
-
-        /**
-         * Link string.
-         */
-        private StringBuilder link;
-
-        /**
-         * new TargetAccount.
-         *
-         * @param _oid oid.
-         * @param _name name.
-         * @param _description description.
-         * @param _amount amount.
-         */
-        public TargetAccount(final String _oid,
-                             final String _name,
-                             final String _description,
-                             final BigDecimal _amount)
-        {
-            this.oid = _oid;
-            this.name = _name;
-            this.description = _description;
-            this.amount = _amount;
-        }
-
-        /**
-         * new TargetAccount.
-         *
-         * @param _instance Instance.
-         * @param _name name.
-         * @param _description description.
-         * @param _amount amount.
-         */
-        public TargetAccount(final Instance _instance,
-                             final String _name,
-                             final String _description,
-                             final BigDecimal _amount)
-        {
-            this.oid = _instance == null ? "" : _instance.getOid();
-            this.name = _name;
-            this.description = _description;
-            this.amount = _amount;
-        }
-
-        /**
-         * add amount for constructor TargetAccount.
-         *
-         * @param _amount amount.
-         * @return this.
-         */
-        public TargetAccount add(final BigDecimal _amount)
-        {
-            this.amount = this.amount.add(_amount);
-            return this;
-        }
-
-        /**
-         * Getter method for instance variable {@link #oid}.
-         *
-         * @return value of instance variable {@link #oid}
-         */
-        public String getOid()
-        {
-            return this.oid;
-        }
-
-        /**
-         * Getter method for instance variable {@link #name}.
-         *
-         * @return value of instance variable {@link #name}
-         */
-        public String getName()
-        {
-            return this.name;
-        }
-
-        /**
-         * Getter method for instance variable {@link #description}.
-         *
-         * @return value of instance variable {@link #description}
-         */
-        public String getDescription()
-        {
-            return this.description;
-        }
-
-        /**
-         * Getter method for instance variable {@link #amount}.
-         *
-         * @return value of instance variable {@link #amount}
-         */
-        public BigDecimal getAmount()
-        {
-            return this.amount;
-        }
-
-        /**
-         * Getter method for instance variable {@link #currInstance}.
-         *
-         * @return value of instance variable {@link #currInstance}
-         */
-        public Instance getCurrInstance()
-        {
-            return this.currInstance;
-        }
-
-        /**
-         * @return the amount formated
-         * @throws EFapsException on error
-         */
-        public String getAmountFormated()
-            throws EFapsException
-        {
-            return NumberFormatter.get().getFormatter(2, 2).format(getAmount());
-        }
-
-        /**
-         * Setter method for instance variable {@link #amount}.
-         *
-         * @param _amount value for instance variable {@link #amount}
-         */
-
-        public void setAmount(final BigDecimal _amount)
-        {
-            this.amount = _amount;
-        }
-
-        /**
-         * Setter method for instance variable {@link #currInstance}.
-         *
-         * @param _currInstance value for instance variable {@link #currInstance}
-         */
-
-        public void setCurrInstance(final Instance _currInstance)
-        {
-            this.currInstance = _currInstance;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #amountRate}.
-         *
-         * @return value of instance variable {@link #amountRate}
-         */
-        public BigDecimal getAmountRate()
-        {
-            if (this.amountRate == null && this.amount != null && this.rateInfo != null) {
-                this.amountRate = this.amount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                    .divide(getRateInfo().getRate(), BigDecimal.ROUND_HALF_UP);
-            }
-            return this.amountRate;
-        }
-
-        /**
-         * Setter method for instance variable {@link #amountRate}.
-         *
-         * @param _amountRate value for instance variable {@link #amountRate}
-         */
-        public void setAmountRate(final BigDecimal _amountRate)
-        {
-            this.amountRate = _amountRate;
-        }
-
-        /**
-         * @return amunt rate formated
-         * @throws EFapsException on error
-         */
-        public String getAmountRateFormated()
-            throws EFapsException
-        {
-            return NumberFormatter.get().getFormatter(2, 2).format(getAmountRate());
-        }
-
-        /**
-         * Getter method for the instance variable {@link #link}.
-         *
-         * @return value of instance variable {@link #link}
-         */
-        public StringBuilder getLink()
-        {
-            return this.link;
-        }
-
-        /**
-         * Setter method for instance variable {@link #link}.
-         *
-         * @param _link value for instance variable {@link #link}
-         */
-        public void setLink(final StringBuilder _link)
-        {
-            this.link = _link;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #rateInfo}.
-         *
-         * @return value of instance variable {@link #rateInfo}
-         */
-        public RateInfo getRateInfo()
-        {
-            return this.rateInfo;
-        }
-
-        /**
-         * Setter method for instance variable {@link #rateInfo}.
-         *
-         * @param _rateInfo value for instance variable {@link #rateInfo}
-         */
-        public void setRateInfo(final RateInfo _rateInfo)
-        {
-            this.rateInfo = _rateInfo;
-        }
-    }
-
     public class TransactionInvalid
         extends AbstractDynamicReport
     {

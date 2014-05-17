@@ -287,6 +287,11 @@ public abstract class Periode_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return the instance of the Period
+     * @throws EFapsException on error
+     */
     public Instance evaluateCurrentPeriod(final Parameter _parameter)
         throws EFapsException
     {
@@ -309,6 +314,15 @@ public abstract class Periode_Base
                 print.addSelect(sel);
                 print.execute();
                 ret = print.<Instance>getSelect(sel);
+            } else  if (inst.getType().isKindOf(CIAccounting.Periode.getType())) {
+                ret = inst;
+            } else  if (inst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+                final PrintQuery print = new CachedPrintQuery(inst, SubPeriod_Base.CACHEKEY);
+                final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                                .instance();
+                print.addSelect(selPeriodInst);
+                print.execute();
+                ret = print.<Instance>getSelect(selPeriodInst);
             }
         }
         return ret;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
+import org.efaps.db.Instance;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -33,10 +33,24 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("f3b159cd-31f5-4d41-b880-645a3405bad0")
+@EFapsUUID("ea1a8ce4-50e8-44dd-b43c-dd517ebadb2a")
 @EFapsRevision("$Rev$")
-public class FieldValue
-    extends FieldValue_Base
+public class DocumentInfo
+    extends DocumentInfo_Base
 {
+    /**
+     * Constructor.
+     */
+    public DocumentInfo()
+    {
+        super();
+    }
 
+    /**
+     * @param _instance Instance of the Document
+     */
+    public DocumentInfo(final Instance _instance)
+    {
+        super(_instance);
+    }
 }

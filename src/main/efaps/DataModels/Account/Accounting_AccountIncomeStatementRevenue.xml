@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,20 +23,16 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>64ee3820-f608-4895-a47e-e9169ce3ea74</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00032</specification>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountIncomeStatementRevenue</name>
         <parent>Accounting_AccountIncomeStatement</parent>
-
         <attribute>
             <name>PeriodeLink</name>
             <type>Link</type>
@@ -44,9 +40,20 @@
             <sqltable>Accounting_AccountSQLTable</sqltable>
             <sqlcolumn>PERIODEID</sqlcolumn>
         </attribute>
-        <trigger program="org.efaps.esjp.accounting.Account"
-            method="sumUpdateTrigger"
-            name="Accounting_AccountIncomeStatementRevenue.UPDATE_POST"
-            event="UPDATE_POST"/>
+        <trigger program="org.efaps.esjp.accounting.Account" method="sumUpdateTrigger"
+            name="Accounting_AccountIncomeStatementRevenue.UPDATE_POST" event="UPDATE_POST" />
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils" method="cleanQueryCacheTrigger"
+            name="Accounting_AccountIncomeStatementRevenue.INSERT_POST" event="INSERT_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.Account.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils" index="2"
+            method="cleanQueryCacheTrigger" name="Accounting_AccountIncomeStatementRevenue.UPDATE_POST.2"
+            event="UPDATE_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.Account.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils" method="cleanQueryCacheTrigger"
+            name="Accounting_AccountIncomeStatementRevenue.DELETE_POST" event="DELETE_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.Account.CacheKey</property>
+        </trigger>
     </definition>
 </datamodel-type>
