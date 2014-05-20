@@ -71,6 +71,7 @@
             import org.efaps.db.InstanceQuery;
             import org.efaps.esjp.admin.ui.UIUpdate;
             import org.efaps.esjp.data.ObjectImport;
+            import org.efaps.esjp.admin.user.RoleUpdate;
 
             EFAPS_LOGGER.info("Importing Data for eFapsApp-Accounting");
 
@@ -182,6 +183,33 @@
 
             <!-- Accounting_Accounting, Admin_Help_MainMenu -->
             update.add2Help("906bd8c4-2e7f-4234-936b-6a1ee74bdf37", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
+
+            <!-- add to Accounting_Admin role -->
+            RoleUpdate rolUp = new RoleUpdate("c687443f-e47e-4689-8a51-7eacdeac1e09");
+            <!-- Sales_IncomingDetractionMyDesk -->
+            rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
+            <!-- Sales_IncomingRetentionMyDesk -->
+            rolUp.addUI("ef7ab984-44aa-45de-ba12-148ee783ba43");
+            <!-- Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut -->
+            rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
+
+            <!-- add to Accounting_Manager role -->
+            RoleUpdate rolUp = new RoleUpdate("757f9274-acd0-416a-a336-20470409e8af");
+            <!-- Sales_IncomingDetractionMyDesk -->
+            rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
+            <!-- Sales_IncomingRetentionMyDesk -->
+            rolUp.addUI("ef7ab984-44aa-45de-ba12-148ee783ba43");
+            <!-- Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut -->
+            rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
+
+            <!-- add to Accounting_Executive role -->
+            RoleUpdate rolUp = new RoleUpdate("fc3af4de-83c9-4165-b466-5478329847eb");
+            <!-- Sales_IncomingDetractionMyDesk -->
+            rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
+            <!-- Sales_IncomingRetentionMyDesk -->
+            rolUp.addUI("ef7ab984-44aa-45de-ba12-148ee783ba43");
+            <!-- Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut -->
+            rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
 
         </script>
     </version>

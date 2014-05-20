@@ -38,6 +38,7 @@
             <child>Accounting_ReportMyDesk</child>
             <child>Accounting_DocumentMyDesk</child>
             <child>Accounting_IncomingDocumentsMyDesk</child>
+            <child>Sales_DocumentsPaymentsTaxMyDesk</child>
             <!-- <child>Accounting_PaymentMyDesk</child> -->
             <child>Accounting_PurchaseRecordMyDesk</child>
             <child>Sales_Document_ReportMyDesk</child>
