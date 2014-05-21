@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
-
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -19,29 +17,35 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>eeaa18ba-10f4-40f6-8c73-ed375bdf780e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PurchaseRecordDocumentSelectForm</name>
-        <!-- fields -->
         <field name="documents" character="Target">
             <property name="HideLabel">true</property>
             <property name="TargetShowCheckBoxes">true</property>
             <property name="ModeEdit">READONLY</property>
             <table>Accounting_PurchaseRecordDocumentSelectTable</table>
             <evaluate program="org.efaps.esjp.accounting.PurchaseRecord" method="documentMultiPrint">
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="Type02">Sales_IncomingCreditNote</property>
-                <property name="Type03">Sales_IncomingReminder</property>
-                <property name="Type04">Accounting_ExternalVoucher</property>
-                <property name="NoStatus">Replaced</property>
-             </evaluate>
+                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="Type02">Sales_IncomingReceipt</property>
+                <property name="Type03">Sales_IncomingCreditNote</property>
+                <property name="Type04">Sales_IncomingReminder</property>
+                <property name="Type05">Accounting_ExternalVoucher</property>
+                <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
+                <property name="Status01">!Replaced</property>
+                <property name="StatusGroup02">Sales_IncomingReceiptStatus</property>
+                <property name="Status02">!Replaced</property>
+                <property name="StatusGroup03">Sales_IncomingCreditNoteStatus</property>
+                <property name="Status03">!Replaced</property>
+                <property name="StatusGroup04">Accounting_ExternalVoucherStatus</property>
+                <property name="Status04">!Replaced</property>
+            </evaluate>
         </field>
     </definition>
 </ui-form>

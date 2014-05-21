@@ -1,14 +1,8 @@
 package org.efaps.esjp.accounting;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -61,6 +55,11 @@ import org.joda.time.DateTime;
 public abstract class PurchaseRecord_Base
 {
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return Return containg the map for multi
+     * @throws EFapsException on error
+     */
     public Return documentMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
@@ -76,18 +75,6 @@ public abstract class PurchaseRecord_Base
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                                 CIAccounting.PurchaseRecord2Document.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
-
-                final Map<Integer, String> nonStatus = analyseProperty(_parameter, "NoStatus");
-                if (!nonStatus.isEmpty()) {
-                    final List<Long> listStatus = new ArrayList<Long>();
-                    for (final Entry<Integer, String> entry : nonStatus.entrySet()) {
-                        final Type statusLink = Type.get(_queryBldr.getTypeUUID()).getStatusAttribute().getLink();
-                        listStatus.add(Status.find(statusLink.getUUID(), entry.getValue()).getId());
-                    }
-                    if (!listStatus.isEmpty()) {
-                        _queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract, listStatus.toArray());
-                    }
-                }
             }
         };
         return multi.execute(_parameter);

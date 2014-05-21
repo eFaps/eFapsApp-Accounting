@@ -642,11 +642,11 @@ public abstract class FieldValue_Base
                                 CISales.DocumentSumAbstract.RateCrossTotal);
                 final String docName = print2.<String>getAttribute(CISales.DocumentSumAbstract.Name);
 
-                html.append("<td>").append(docInst.getType().getLabel())
+                html.append("<tr><td>").append(docInst.getType().getLabel())
                     .append("</td><td>").append(docName).append("</td>")
                     .append("<td>").append(getLabel(docInst, CISales.DocumentSumAbstract.RateCrossTotal))
                     .append("</td><td>").append(rateCross).append(new CurrencyInst(curInst).getSymbol())
-                    .append("</td>");
+                    .append("</td></tr>");
             }
         }
         html.append(getDocInformation(_parameter, _doc))
