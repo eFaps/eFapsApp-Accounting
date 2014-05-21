@@ -279,5 +279,18 @@
             <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+         <field name="docHeading" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Accounting_TransactionForm.docHeading.Heading</property>
+        </field>
+        <field name="docTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <table>Accounting_Transaction2DocDocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_Transaction2ERPDocument</property>
+                <property name="LinkFrom">FromLinkAbstract</property>
+            </evaluate>
+        </field>
     </definition>
 </ui-form>

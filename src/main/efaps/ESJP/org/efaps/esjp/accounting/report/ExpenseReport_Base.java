@@ -23,11 +23,11 @@ package org.efaps.esjp.accounting.report;
 
 import java.util.List;
 
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
@@ -74,8 +74,12 @@ public abstract class ExpenseReport_Base
                                           final DateTime _to)
         throws EFapsException
     {
+        final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+        final AttributeQuery attrQuery = attrQuerBldr
+                        .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
+
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
-        queryBldr.addWhereClassification((Classification) CIAccounting.TransactionClassDocument.getType());
+        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery);
         queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, _from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, _to.plusDays(1));
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, _parameter.getInstance().getId());

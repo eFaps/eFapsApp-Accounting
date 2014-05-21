@@ -631,22 +631,23 @@ public abstract class FieldValue_Base
                             .instance();
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                if (docInst.isValid()) {
+                    final PrintQuery print2 = new PrintQuery(docInst);
+                    print2.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name);
+                    print2.addSelect(selCurInst);
+                    print2.execute();
 
-                final PrintQuery print2 = new PrintQuery(docInst);
-                print2.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name);
-                print2.addSelect(selCurInst);
-                print2.execute();
+                    final Instance curInst = print2.<Instance>getSelect(selCurInst);
+                    final BigDecimal rateCross = print2.<BigDecimal>getAttribute(
+                                    CISales.DocumentSumAbstract.RateCrossTotal);
+                    final String docName = print2.<String>getAttribute(CISales.DocumentSumAbstract.Name);
 
-                final Instance curInst = print2.<Instance>getSelect(selCurInst);
-                final BigDecimal rateCross = print2.<BigDecimal>getAttribute(
-                                CISales.DocumentSumAbstract.RateCrossTotal);
-                final String docName = print2.<String>getAttribute(CISales.DocumentSumAbstract.Name);
-
-                html.append("<tr><td>").append(docInst.getType().getLabel())
-                    .append("</td><td>").append(docName).append("</td>")
-                    .append("<td>").append(getLabel(docInst, CISales.DocumentSumAbstract.RateCrossTotal))
-                    .append("</td><td>").append(rateCross).append(new CurrencyInst(curInst).getSymbol())
-                    .append("</td></tr>");
+                    html.append("<tr><td>").append(docInst.getType().getLabel())
+                        .append("</td><td>").append(docName).append("</td>")
+                        .append("<td>").append(getLabel(docInst, CISales.DocumentSumAbstract.RateCrossTotal))
+                        .append("</td><td>").append(rateCross).append(new CurrencyInst(curInst).getSymbol())
+                        .append("</td></tr>");
+                }
             }
         }
         html.append(getDocInformation(_parameter, _doc))

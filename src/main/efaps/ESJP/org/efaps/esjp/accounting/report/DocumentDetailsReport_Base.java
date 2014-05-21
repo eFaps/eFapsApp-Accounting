@@ -131,11 +131,11 @@ public abstract class DocumentDetailsReport_Base
             final DRDataSource dataSource = new DRDataSource("oid", "trName", "trDate", "trDesc", "acName", "acDesc",
                             "debit", "credit");
             final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-            attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink,
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink,
                             _parameter.getInstance());
             final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+                            .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
             queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, attrQuery);
             final MultiPrintQuery multi = queryBldr.getPrint();

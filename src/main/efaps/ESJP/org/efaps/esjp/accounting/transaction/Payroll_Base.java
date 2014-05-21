@@ -97,8 +97,8 @@ public abstract class Payroll_Base
         throws EFapsException
     {
         boolean ret = false;
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, _docInst);
         final InstanceQuery query = queryBldr.getQuery();
         ret = query.execute().isEmpty();
         return ret;
@@ -135,7 +135,7 @@ public abstract class Payroll_Base
 
             // make the classifications
             final Create create = new Create();
-            create.createDocClass(_parameter, insert.getInstance(), _docInst);
+            create.connectDoc2Transaction(_parameter, insert.getInstance(), _docInst);
 
             // Payroll might not be installed so no CITypes are used
             //Payroll_CasePositionCalc

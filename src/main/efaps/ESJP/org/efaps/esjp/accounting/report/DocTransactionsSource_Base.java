@@ -108,19 +108,20 @@ public abstract class DocTransactionsSource_Base
 
         final AttributeQuery docAttrQuery = docAttrQueryBldr.getAttributeQuery(CIERP.DocumentAbstract.ID);
 
-        // filter the transaction by the classification
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-        attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassDocument.DocumentLink, docAttrQuery);
-        final AttributeQuery attrQuery =
-                        attrQueryBldr.getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+
+        final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+        attrQuerBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.ToLink, docAttrQuery);
+        final AttributeQuery attrQuery = attrQuerBldr
+                        .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
 
         final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Transaction);
         queryBuilder.addWhereAttrInQuery(CIAccounting.Transaction.ID, attrQuery);
         queryBuilder.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
 
         final MultiPrintQuery multi = queryBuilder.getPrint();
-        final SelectBuilder selDoc = new SelectBuilder().clazz(CIAccounting.TransactionClassDocument)
-                        .linkto(CIAccounting.TransactionClassDocument.DocumentLink);
+        final SelectBuilder selDoc = new SelectBuilder()
+            .linkfrom(CIAccounting.Transaction2SalesDocument, CIAccounting.Transaction2SalesDocument.FromLink)
+                        .linkto(CIAccounting.Transaction2SalesDocument.ToLink);
         final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
         final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
         final SelectBuilder selDocType = new SelectBuilder(selDoc).type().label();

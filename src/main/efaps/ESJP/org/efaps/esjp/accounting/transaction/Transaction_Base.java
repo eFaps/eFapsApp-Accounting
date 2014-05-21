@@ -78,7 +78,6 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
@@ -679,44 +678,6 @@ public abstract class Transaction_Base
     }
 
     /**
-     * method obtains transaction of the documents for UUID and show the
-     * instances.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return list of instances
-     * @throws EFapsException on error
-     */
-    public Return getTransaction4DocMultiPrint(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                super.add2QueryBldr(_parameter, _queryBldr);
-                if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-                    if (_parameter.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
-                        final QueryBuilder attrQuery = new QueryBuilder(CIAccounting.TransactionClassPayDoc);
-                        attrQuery.addWhereAttrEqValue(CIAccounting.TransactionClassPayDoc.PayDocLink,
-                                        _parameter.getInstance());
-                        _queryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery
-                                        .getAttributeQuery(CIAccounting.TransactionClassPayDoc.TransactionLink));
-                    } else {
-                        final QueryBuilder attrQuery = new QueryBuilder(CIAccounting.TransactionClassDocument);
-                        attrQuery.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink,
-                                        _parameter.getInstance());
-                        _queryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID, attrQuery
-                                        .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink));
-                    }
-                }
-            }
-        } .execute(_parameter);
-    }
-
-    /**
      * Method for search contact by name and auto-complete.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -961,10 +922,10 @@ public abstract class Transaction_Base
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 if (docInst.isValid()) {
 
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, docInst);
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst);
                     final AttributeQuery attrQuery = attrQueryBldr
-                                    .getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+                                    .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
                     final boolean outDoc = _doc.getInstance().getType().isKindOf(
                                     CISales.PaymentDocumentOutAbstract.getType());
                     final QueryBuilder posQueryBldr = new QueryBuilder(outDoc

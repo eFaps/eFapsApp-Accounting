@@ -40,7 +40,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -50,6 +49,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -95,9 +95,9 @@ public class ImportDetails
         try {
             if (typeStr != null) {
                 final Map<String, Instance> map = checkDocs(file, Type.get(typeStr));
-                checkAccounts(file, map, date, inverse);
+                checkAccounts(_parameter, file, map, date, inverse);
             } else {
-                checkAccounts(file, null, date, inverse);
+                checkAccounts(_parameter, file, null, date, inverse);
             }
 
 //            final List<Account> accs = readAccounts4Concar(file);
@@ -177,7 +177,8 @@ public class ImportDetails
         return ret;
     }
 
-    protected List<Document> checkAccounts(final File _file,
+    protected List<Document> checkAccounts(final Parameter _parameter,
+                                            final File _file,
                                            final Map<String, Instance> _docMap,
                                            final DateTime _date,
                                            final Boolean _inverse)
@@ -309,27 +310,7 @@ public class ImportDetails
 
             if (_docMap != null) {
                 final Instance instance = insert.getInstance();
-
-                final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-                final Insert insertClassRel = new Insert(classification1.getClassifyRelationType());
-                insertClassRel.add(classification1.getRelLinkAttributeName(), instance.getId());
-                insertClassRel.add(classification1.getRelTypeAttributeName(), classification1.getId());
-                insertClassRel.execute();
-
-                final Insert insertClass = new Insert(classification1);
-                insertClass.add(classification1.getLinkAttributeName(), instance.getId());
-                insertClass.execute();
-
-                final Classification classification2 = (Classification) CIAccounting.TransactionClassDocument.getType();
-                final Insert insertClassRel2 = new Insert(classification2.getClassifyRelationType());
-                insertClassRel2.add(classification2.getRelLinkAttributeName(), instance.getId());
-                insertClassRel2.add(classification2.getRelTypeAttributeName(), classification2.getId());
-                insertClassRel2.execute();
-
-                final Insert insertClass2 = new Insert(classification2);
-                insertClass2.add(classification2.getLinkAttributeName(), instance.getId());
-                insertClass2.add(CIAccounting.TransactionClassDocument.DocumentLink, doc.getInstance());
-                insertClass2.execute();
+                new Create().connectDoc2Transaction(_parameter, instance, doc.getInstance());
             }
 
             final Map<String, Account> accounts = doc.getAccounts();
@@ -471,7 +452,7 @@ public class ImportDetails
          */
         private String getName()
         {
-            return name;
+            return this.name;
         }
 
         /**
@@ -479,7 +460,7 @@ public class ImportDetails
          */
         private Instance getInstance()
         {
-            return instance;
+            return this.instance;
         }
 
 
@@ -488,7 +469,7 @@ public class ImportDetails
          */
         private String getRuc()
         {
-            return ruc;
+            return this.ruc;
         }
 
         /**
@@ -496,7 +477,7 @@ public class ImportDetails
          */
         private String getDate()
         {
-            return date;
+            return this.date;
         }
 
         /**
@@ -504,7 +485,7 @@ public class ImportDetails
          */
         private String getDesc()
         {
-            return desc;
+            return this.desc;
         }
 
         /**
@@ -512,7 +493,7 @@ public class ImportDetails
          */
         private BigDecimal getAmountMECredit()
         {
-            return amountMECredit;
+            return this.amountMECredit;
         }
 
         /**
@@ -528,7 +509,7 @@ public class ImportDetails
          */
         private BigDecimal getAmountMEDebit()
         {
-            return amountMEDebit;
+            return this.amountMEDebit;
         }
 
         /**
@@ -544,7 +525,7 @@ public class ImportDetails
          */
         private BigDecimal getAmountMNCredit()
         {
-            return amountMNCredit;
+            return this.amountMNCredit;
         }
 
         /**
@@ -560,7 +541,7 @@ public class ImportDetails
          */
         private BigDecimal getAmountMNDebit()
         {
-            return amountMNDebit;
+            return this.amountMNDebit;
         }
 
         /**
@@ -576,7 +557,7 @@ public class ImportDetails
          */
         private Map<String, Account> getAccounts()
         {
-            return accounts;
+            return this.accounts;
         }
     }
 

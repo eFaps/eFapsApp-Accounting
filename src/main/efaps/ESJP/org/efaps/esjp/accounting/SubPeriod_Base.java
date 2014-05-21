@@ -121,9 +121,9 @@ public abstract class SubPeriod_Base
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
                 final DateTime to = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
 
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIAccounting.TransactionClassDocument.DocumentLink);
+                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
                 _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
                 _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
@@ -155,10 +155,10 @@ public abstract class SubPeriod_Base
                 transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
                 final AttributeQuery tranAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-                attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassDocument.TransactionLink, tranAttrQuery);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                attrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.FromLink, tranAttrQuery);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                                CIAccounting.TransactionClassDocument.DocumentLink);
+                                CIAccounting.Transaction2SalesDocument.ToLink);
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
             }
         };
@@ -192,9 +192,9 @@ public abstract class SubPeriod_Base
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
                 final DateTime to = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
 
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIAccounting.TransactionClassDocument.DocumentLink);
+                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
                 _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
                 _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
@@ -226,10 +226,10 @@ public abstract class SubPeriod_Base
                 transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
                 final AttributeQuery tranAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-                attrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionClassDocument.TransactionLink, tranAttrQuery);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                attrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.FromLink, tranAttrQuery);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                                CIAccounting.TransactionClassDocument.DocumentLink);
+                                CIAccounting.Transaction2SalesDocument.ToLink);
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
             }
         };

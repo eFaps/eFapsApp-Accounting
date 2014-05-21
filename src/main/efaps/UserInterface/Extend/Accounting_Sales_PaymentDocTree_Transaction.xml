@@ -32,10 +32,10 @@
             <role>Accounting_Admin</role>
         </access>
         <target>
-            <table>Accounting_TransactionTable</table>
-            <evaluate method="getTransaction4DocMultiPrint"
-                program="org.efaps.esjp.accounting.transaction.Transaction">
-                <property name="Type">Accounting_TransactionAbstract</property>
+            <table>Accounting_Transaction2DocTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_Transaction2PaymentDocument</property>
+                <property name="LinkFrom">ToLink</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

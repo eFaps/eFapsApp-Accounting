@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,21 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1e63ffc2-d3a6-478c-916b-2a78360e4144</uuid>
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>6ddbbc38-a302-4a3e-9c9b-80a9e4762e80</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
+    <specification />
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_TransactionClassPayDocSQLTable</name>
-        <database>
-            <table-name>T_ACCTRANSACTIONCLASSPAY</table-name>
-            <!-- columns -->
-            <column name="TRANSID"  type="INTEGER" not-null="true" />
-            <column name="PAYDOCID" type="INTEGER" not-null="true" />
-            <foreign name="T_ACCTRANSACTIONCLASSPAY_FK_TRANSID"    key="TRANSID"   reference="T_ACCTRANSACTION(ID)" />
-            <foreign name="T_ACCTRANSACTIONCLASSPAY_FK_DOCID"      key="PAYDOCID"  reference="T_ERPDOC(ID)" />
-        </database>
+        <name>Accounting_Transaction2SalesDocument</name>
+        <parent>Accounting_Transaction2ERPDocument</parent>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_DocumentAbstract</typelink>
+            <sqltable>Accounting_Transaction2ObjectSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
-</datamodel-sqltable>
+</datamodel-type>

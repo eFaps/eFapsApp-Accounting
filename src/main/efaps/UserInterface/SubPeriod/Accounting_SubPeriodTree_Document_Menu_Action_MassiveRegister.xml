@@ -35,9 +35,7 @@
         </access>
         <target>
             <form>Accounting_MassiveRegister4DocumentForm</form>
-            <execute method="createDoc4Massive" program="org.efaps.esjp.accounting.transaction.Create">
-                <property name="Classification">Accounting_TransactionClassDocument</property>
-            </execute>
+            <execute method="createDoc4Massive" program="org.efaps.esjp.accounting.transaction.Create"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

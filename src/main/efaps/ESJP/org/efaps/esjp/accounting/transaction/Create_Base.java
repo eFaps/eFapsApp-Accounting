@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
 
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
@@ -126,7 +125,7 @@ public abstract class Create_Base
                         insertPosition4Massiv(_parameter, docInfo, transInst, CIAccounting.TransactionPositionDebit,
                                         account);
                     }
-                    createPaymentClass(_parameter, transInst, docInfo.getInstance());
+                    connectDoc2Transaction(_parameter, transInst, docInfo.getInstance());
                     setStatus4Payment(_parameter, docInfo.getInstance());
                 }
             }
@@ -146,10 +145,36 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Instance instance = createBaseTrans(_parameter, _parameter.getParameterValue("description"));
-        final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-        createPaymentClass(_parameter, instance, docInst);
-        setStatus4Payment(_parameter, docInst);
+        final Instance payDocInst = Instance.get(_parameter.getParameterValue("document"));
+        connectDoc2Transaction(_parameter, instance, payDocInst);
+        setStatus4Payment(_parameter, payDocInst);
         return new Return();
+    }
+
+    /**
+     * @param _parameter    Parameter as passe by the eFaps api
+     * @param _transInst    instance of the transaction
+     * @param _docInstances docuemtn instances
+     * @throws EFapsException on error
+     */
+    public void connectDoc2Transaction(final Parameter _parameter,
+                                       final Instance _transInst,
+                                       final Instance... _docInstances)
+        throws EFapsException
+    {
+        for (final Instance docInst : _docInstances) {
+            if (docInst.isValid()) {
+                final Insert insert;
+                if (docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+                    insert = new Insert(CIAccounting.Transaction2PaymentDocument);
+                } else {
+                    insert = new Insert(CIAccounting.Transaction2SalesDocument);
+                }
+                insert.add(CIAccounting.Transaction2ERPDocument.FromLink, _transInst);
+                insert.add(CIAccounting.Transaction2ERPDocument.ToLinkAbstract, docInst);
+                insert.execute();
+            }
+        }
     }
 
     /**
@@ -243,27 +268,7 @@ public abstract class Create_Base
         final Instance instance = createBaseTrans(_parameter, descr);
 
         if (docInst != null && docInst.isValid()) {
-            // create classifications
-            final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-            final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
-            relInsert1.add(classification1.getRelLinkAttributeName(), instance.getId());
-            relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
-            relInsert1.execute();
-
-            final Insert classInsert1 = new Insert(classification1);
-            classInsert1.add(classification1.getLinkAttributeName(), instance.getId());
-            classInsert1.execute();
-
-            final Classification classification = (Classification) CIAccounting.TransactionClassDocument.getType();
-            final Insert relInsert = new Insert(classification.getClassifyRelationType());
-            relInsert.add(classification.getRelLinkAttributeName(), instance.getId());
-            relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
-            relInsert.execute();
-
-            final Insert classInsert = new Insert(classification);
-            classInsert.add(classification.getLinkAttributeName(), instance.getId());
-            classInsert.add(CIAccounting.TransactionClassDocument.DocumentLink, docInst.getId());
-            classInsert.execute();
+            connectDoc2Transaction(_parameter, instance, docInst);
 
             final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
 
@@ -278,86 +283,16 @@ public abstract class Create_Base
                 print.executeWithoutAccessCheck();
                 final Status status = Status.get(print.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
                 if ("Digitized".equals(status.getKey())) {
-                   final Status newStatus = Status.find(status.getStatusGroup().getUUID(), "Open");
-                   if (newStatus != null) {
-                       final Update update = new Update(docInst);
-                       update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
-                       update.execute();
-                   }
+                    final Status newStatus = Status.find(status.getStatusGroup().getUUID(), "Open");
+                    if (newStatus != null) {
+                        final Update update = new Update(docInst);
+                        update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
+                        update.execute();
+                    }
                 }
             }
         }
         return new Return();
-    }
-
-    /**
-     * Create the classifcation.
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _transInst    Transaction Instance
-     * @param _payDocInst   Payment Document instance
-     * @throws EFapsException on error
-     */
-    protected void createPaymentClass(final Parameter _parameter,
-                                      final Instance _transInst,
-                                      final Instance _payDocInst)
-        throws EFapsException
-    {
-        // create classifications
-        final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-        final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
-        relInsert1.add(classification1.getRelLinkAttributeName(), _transInst.getId());
-        relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
-        relInsert1.execute();
-
-        final Insert classInsert1 = new Insert(classification1);
-        classInsert1.add(classification1.getLinkAttributeName(), _transInst.getId());
-        classInsert1.execute();
-
-        final Classification classification = (Classification) CIAccounting.TransactionClassPayDoc.getType();
-        final Insert relInsert = new Insert(classification.getClassifyRelationType());
-        relInsert.add(classification.getRelLinkAttributeName(), _transInst.getId());
-        relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
-        relInsert.execute();
-
-        final Insert classInsert = new Insert(CIAccounting.TransactionClassPayDoc);
-        classInsert.add(classification.getLinkAttributeName(), _transInst.getId());
-        classInsert.add(CIAccounting.TransactionClassPayDoc.PayDocLink, _payDocInst.getId());
-        classInsert.execute();
-    }
-
-    /**
-     * Create the classifcation.
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _transInst    Transaction Instance
-     * @param _docInst      Document instance
-     * @throws EFapsException on error
-     */
-    protected void createDocClass(final Parameter _parameter,
-                                  final Instance _transInst,
-                                  final Instance _docInst)
-        throws EFapsException
-    {
-     // create classifications
-        final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-        final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
-        relInsert1.add(classification1.getRelLinkAttributeName(), _transInst.getId());
-        relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
-        relInsert1.execute();
-
-        final Insert classInsert1 = new Insert(classification1);
-        classInsert1.add(classification1.getLinkAttributeName(), _transInst.getId());
-        classInsert1.execute();
-
-        final Classification classification = (Classification) CIAccounting.TransactionClassDocument.getType();
-        final Insert relInsert = new Insert(classification.getClassifyRelationType());
-        relInsert.add(classification.getRelLinkAttributeName(), _transInst.getId());
-        relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
-        relInsert.execute();
-
-        final Insert classInsert = new Insert(CIAccounting.TransactionClassDocument);
-        classInsert.add(classification.getLinkAttributeName(), _transInst.getId());
-        classInsert.add(CIAccounting.TransactionClassDocument.DocumentLink, _docInst.getId());
-        classInsert.execute();
     }
 
     /**
@@ -373,7 +308,7 @@ public abstract class Create_Base
 
         final Instance instance = createBaseTrans(_parameter, _parameter.getParameterValue("description"));
         final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-        createDocClass(_parameter, instance, docInst);
+        connectDoc2Transaction(_parameter, instance, docInst);
 
         final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
 
@@ -856,7 +791,7 @@ public abstract class Create_Base
                 for (final AccountInfo account : doc.getDebitAccounts()) {
                     insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionDebit, account);
                 }
-                createDocClass(_parameter, transInst, docInst);
+                connectDoc2Transaction(_parameter, transInst, docInst);
             }
         }
         return new Return();
@@ -1042,7 +977,7 @@ public abstract class Create_Base
                                           final String _description)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        _parameter.get(ParameterValues.PROPERTIES);
 
         final Insert insert = new Insert(CIAccounting.Transaction);
         insert.add(CIAccounting.Transaction.Description, _description);
@@ -1051,35 +986,8 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
         insert.execute();
 
-        final Instance instance = insert.getInstance();
-
-        final Classification classType = properties.containsKey("Classification")
-                        ? Classification.get((String) properties.get("Classification")) : null;
-        if (classType != null) {
-            final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-            final Insert insertClassRel = new Insert(classification1.getClassifyRelationType());
-            insertClassRel.add(classification1.getRelLinkAttributeName(), instance.getId());
-            insertClassRel.add(classification1.getRelTypeAttributeName(), classification1.getId());
-            insertClassRel.execute();
-
-            final Insert insertClass = new Insert(classification1);
-            insertClass.add(classification1.getLinkAttributeName(), instance.getId());
-            insertClass.execute();
-
-            final Classification classification2 = classType;
-            final Insert insertClassRel2 = new Insert(classification2.getClassifyRelationType());
-            insertClassRel2.add(classification2.getRelLinkAttributeName(), instance.getId());
-            insertClassRel2.add(classification2.getRelTypeAttributeName(), classification2.getId());
-            insertClassRel2.execute();
-
-            final Insert insertClass2 = new Insert(classification2);
-            insertClass2.add(classification2.getLinkAttributeName(), instance.getId());
-            insertClass2.add(CIAccounting.TransactionClassDocument.DocumentLink, _doc.getInstance());
-            insertClass2.execute();
-        }
-
         final Instance transInst = insert.getInstance();
-
+        connectDoc2Transaction(_parameter, transInst, _doc.getInstance());
         for (final AccountInfo account : _doc.getCreditAccounts()) {
             insertPosition4Massiv(_parameter, _doc, transInst, CIAccounting.TransactionPositionCredit, account);
         }

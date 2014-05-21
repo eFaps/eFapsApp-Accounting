@@ -306,28 +306,7 @@ public abstract class Recalculate_Base
                     insert.execute();
 
                     final Instance instance = insert.getInstance();
-                    // create classifications
-                    final Classification classification1 = (Classification) CIAccounting.TransactionClass.getType();
-                    final Insert relInsert1 = new Insert(classification1.getClassifyRelationType());
-                    relInsert1.add(classification1.getRelLinkAttributeName(), instance.getId());
-                    relInsert1.add(classification1.getRelTypeAttributeName(), classification1.getId());
-                    relInsert1.execute();
-
-                    final Insert classInsert1 = new Insert(classification1);
-                    classInsert1.add(classification1.getLinkAttributeName(), instance.getId());
-                    classInsert1.execute();
-
-                    final Classification classification =
-                                    (Classification) CIAccounting.TransactionClassDocument.getType();
-                    final Insert relInsert = new Insert(classification.getClassifyRelationType());
-                    relInsert.add(classification.getRelLinkAttributeName(), instance.getId());
-                    relInsert.add(classification.getRelTypeAttributeName(), classification.getId());
-                    relInsert.execute();
-
-                    final Insert classInsert = new Insert(classification);
-                    classInsert.add(classification.getLinkAttributeName(), instance.getId());
-                    classInsert.add(CIAccounting.TransactionClassDocument.DocumentLink, docInst.getId());
-                    classInsert.execute();
+                    new Create().connectDoc2Transaction(_parameter, instance, docInst);
 
                     final Insert insert2 = new Insert(CIAccounting.TransactionPositionCredit);
                     insert2.add(CIAccounting.TransactionPositionCredit.TransactionLink, instance.getId());
@@ -664,9 +643,10 @@ public abstract class Recalculate_Base
         for (final String oid : oidsDoc) {
             final Instance instDoc = Instance.get(oid);
 
-            final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.TransactionClassDocument);
-            attrQuerBldr.addWhereAttrEqValue(CIAccounting.TransactionClassDocument.DocumentLink, instDoc.getId());
-            final AttributeQuery attrQuery = attrQuerBldr.getAttributeQuery(CIAccounting.TransactionClassDocument.TransactionLink);
+            final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+            attrQuerBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, instDoc);
+            final AttributeQuery attrQuery = attrQuerBldr
+                            .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
 
             // filter classification Document
             final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIAccounting.Transaction);
@@ -824,17 +804,7 @@ public abstract class Recalculate_Base
                                     new Object[] {BigDecimal.ONE, BigDecimal.ONE});
                     classInsert.execute();
 
-                    final Classification classification2 =
-                                    (Classification) CIAccounting.TransactionClassDocument.getType();
-                    final Insert relInsert2 = new Insert(classification2.getClassifyRelationType());
-                    relInsert2.add(classification2.getRelLinkAttributeName(), instance.getId());
-                    relInsert2.add(classification2.getRelTypeAttributeName(), classification2.getId());
-                    relInsert2.execute();
-
-                    final Insert classInsert2 = new Insert(classification2);
-                    classInsert2.add(classification2.getLinkAttributeName(), instance.getId());
-                    classInsert2.add(CIAccounting.TransactionClassDocument.DocumentLink, instDoc.getId());
-                    classInsert2.execute();
+                    new Create().connectDoc2Transaction(_parameter, instance, instDoc);
                 }
             }
         }
