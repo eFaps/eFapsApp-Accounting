@@ -24,9 +24,9 @@ package org.efaps.esjp.accounting.transaction;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -89,12 +89,12 @@ public abstract class DocumentInfo_Base
     /**
      * List of TargetAccounts for debit.
      */
-    private final Map<Instance, AccountInfo> debitAccounts = new LinkedHashMap<Instance, AccountInfo>();
+    private final Set<AccountInfo> debitAccounts = new LinkedHashSet<AccountInfo>();
 
     /**
      * List of TargetAccounts for credit.
      */
-    private final Map<Instance, AccountInfo> creditAccounts = new LinkedHashMap<Instance, AccountInfo>();
+    private final Set<AccountInfo> creditAccounts = new LinkedHashSet<AccountInfo>();
 
     /**
      * Amount of this Account.
@@ -125,6 +125,11 @@ public abstract class DocumentInfo_Base
      * Mapping of classification id 2 amount.
      */
     private HashMap<Long, BigDecimal> clazz2Amount;
+
+    /**
+     * Summarize or not.
+     */
+    private boolean summarize = true;
 
     /**
      * Constructor.
@@ -268,7 +273,6 @@ public abstract class DocumentInfo_Base
         return this.amount;
     }
 
-
     /**
      * Setter method for instance variable {@link #amount}.
      *
@@ -285,9 +289,21 @@ public abstract class DocumentInfo_Base
      *
      * @return value of instance variable {@link #debitAccounts}
      */
-    public Map<Instance, AccountInfo> getDebitAccounts()
+    public Set<AccountInfo> getDebitAccounts()
     {
         return this.invert ?  this.creditAccounts : this.debitAccounts;
+    }
+
+    /**
+     * @param _accInfo acinfo
+     * @return this
+     * @throws EFapsException on error
+     */
+    public DocumentInfo addDebit(final AccountInfo _accInfo)
+        throws EFapsException
+    {
+        add(this.debitAccounts, _accInfo);
+        return (DocumentInfo) this;
     }
 
     /**
@@ -295,9 +311,53 @@ public abstract class DocumentInfo_Base
      *
      * @return value of instance variable {@link #creditAccounts}
      */
-    public Map<Instance, AccountInfo> getCreditAccounts()
+    public Set<AccountInfo> getCreditAccounts()
     {
         return this.invert ? this.debitAccounts : this.creditAccounts;
+    }
+
+    /**
+     * @param _accInfo acinfo
+     * @return this
+     * @throws EFapsException on error
+     */
+    public DocumentInfo addCredit(final AccountInfo _accInfo)
+        throws EFapsException
+    {
+        add(this.creditAccounts, _accInfo);
+        return (DocumentInfo) this;
+    }
+
+    /**
+     * @param _accounts accounts to add to
+     * @param _accInfo the new account
+     * @throws EFapsException on error
+     */
+    protected void add(final Set<AccountInfo> _accounts,
+                       final AccountInfo _accInfo)
+        throws EFapsException
+    {
+        if (_accInfo.getRateInfo() == null) {
+            if (getRateInfo() != null) {
+                _accInfo.setRateInfo(getRateInfo());
+            } else {
+                _accInfo.setRateInfo(RateInfo.getDummyRateInfo());
+            }
+        }
+        boolean add = true;
+        if (isSummarize()) {
+            for (final AccountInfo acc : _accounts) {
+                if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getInstance4Currency()
+                                .equals(_accInfo.getRateInfo().getInstance4Currency())) {
+                    acc.add(_accInfo.getAmount());
+                    add = false;
+                    break;
+                }
+            }
+        }
+        if (add) {
+            _accounts.add(_accInfo);
+        }
     }
 
     /**
@@ -423,7 +483,7 @@ public abstract class DocumentInfo_Base
     public BigDecimal getCreditSum()
     {
         BigDecimal ret = BigDecimal.ZERO;
-        for (final AccountInfo account : getCreditAccounts().values()) {
+        for (final AccountInfo account : getCreditAccounts()) {
             ret = ret.add(account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
@@ -445,7 +505,7 @@ public abstract class DocumentInfo_Base
     public BigDecimal getDebitSum()
     {
         BigDecimal ret = BigDecimal.ZERO;
-        for (final AccountInfo account : getDebitAccounts().values()) {
+        for (final AccountInfo account : getDebitAccounts()) {
             ret = ret.add(account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
@@ -491,7 +551,6 @@ public abstract class DocumentInfo_Base
         return this.rateInfo;
     }
 
-
     /**
      * Setter method for instance variable {@link #rateInfo}.
      *
@@ -502,7 +561,6 @@ public abstract class DocumentInfo_Base
         this.rateInfo = _rateInfo;
     }
 
-
     /**
      * Getter method for the instance variable {@link #paymentDoc}.
      *
@@ -512,7 +570,6 @@ public abstract class DocumentInfo_Base
     {
         return this.paymentDoc;
     }
-
 
     /**
      * Setter method for instance variable {@link #paymentDoc}.
@@ -547,9 +604,32 @@ public abstract class DocumentInfo_Base
 
     /**
      * Valid means not zero and equal.
+     * @return true if valid, else false
      */
     public boolean isValid()
     {
         return getDebitSum().compareTo(BigDecimal.ZERO) != 0 && getDebitSum().compareTo(getCreditSum()) == 0;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #summarize}.
+     *
+     * @return value of instance variable {@link #summarize}
+     */
+    public boolean isSummarize()
+    {
+        return this.summarize;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #summarize}.
+     *
+     * @param _summarize value for instance variable {@link #summarize}
+     */
+    public void setSummarize(final boolean _summarize)
+    {
+        this.summarize = _summarize;
     }
 }

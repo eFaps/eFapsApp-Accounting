@@ -869,22 +869,21 @@ public abstract class Transaction_Base
 
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                     .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
-                    String postFix;
-                    Map<Instance, AccountInfo> acounts;
-                    if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
-                                    || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
-                        postFix = "_Credit";
-                        acounts = _doc.getCreditAccounts();
-                    } else {
-                        postFix = "_Debit";
-                        acounts = _doc.getDebitAccounts();
-                    }
+
                     if (add) {
+                        String postFix;
                         final AccountInfo account = new AccountInfo(inst, accAmount);
                         account.setAmountRate(accAmountRate);
-                        account.setLink(getLinkString(inst, postFix));
                         account.setRateInfo(rateInfo);
-                        acounts.put(inst, account);
+                        if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
+                                        || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
+                            postFix = "_Credit";
+                            _doc.addCredit(account);
+                        } else {
+                            postFix = "_Debit";
+                            _doc.addDebit(account);
+                        }
+                        account.setLink(getLinkString(inst, postFix));
                     }
                 }
             }
@@ -921,16 +920,14 @@ public abstract class Transaction_Base
             new Periode().evaluateCurrentPeriod(_parameter);
             while (multi.next()) {
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                Map<Instance, AccountInfo> accounts;
-                if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
-                    accounts = _doc.getDebitAccounts();
-                } else {
-                    accounts = _doc.getCreditAccounts();
-                }
                 final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
                 final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).add(amount);
                 account.setRateInfo(_doc.getRateInfo());
-                accounts.put(account.getInstance(), account);
+                if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
+                    _doc.addDebit(account);
+                } else {
+                    _doc.addCredit(account);
+                }
             }
         }
     }
@@ -991,9 +988,9 @@ public abstract class Transaction_Base
                             final AccountInfo acc = new AccountInfo().setInstance(accInst)
                                             .add(_doc.getAmount()).setRateInfo(_doc.getRateInfo());
                             if (outDoc) {
-                                _doc.getDebitAccounts().put(acc.getInstance(), acc);
+                                _doc.addDebit(acc);
                             } else {
-                                _doc.getCreditAccounts().put(acc.getInstance(), acc);
+                                _doc.addCredit(acc);
                             }
                         }
                     }
@@ -1018,19 +1015,18 @@ public abstract class Transaction_Base
         if (addAccount != null && addAccount.length() > 0) {
             final UIFormCell uiform = (UIFormCell) _parameter.get(ParameterValues.CLASS);
             final Instance instance = Instance.get(uiform.getParent().getInstanceKey());
-            BigDecimal amount = _doc.getAmount();
+            final BigDecimal amount = _doc.getAmount();
 
-            Map<Instance, AccountInfo> accounts;
-            if ("Credit".equals(addAccount)) {
-                accounts = _doc.getCreditAccounts();
-                amount = amount.subtract(_doc.getCreditSum());
-            } else {
-                accounts = _doc.getDebitAccounts();
-                amount = amount.subtract(_doc.getDebitSum());
-            }
-            final AccountInfo account = new AccountInfo(instance, amount);
+            final AccountInfo account = new AccountInfo(instance);
             account.setRateInfo(_doc.getRateInfo());
-            accounts.put(instance, account);
+
+            if ("Credit".equals(addAccount)) {
+                account.setAmount(amount.subtract(_doc.getCreditSum()));
+                _doc.addCredit(account);
+            } else {
+                account.setAmount(amount.subtract(_doc.getDebitSum()));
+                _doc.addDebit(account);
+            }
         }
     }
 
@@ -1078,8 +1074,8 @@ public abstract class Transaction_Base
             .append(getSetFieldValue(0, "sumCredit", _doc.getCreditSumFormated()))
             .append(getSetFieldValue(0, "sumTotal", _doc.getDifferenceFormated()))
             .append(getSetSubJournalScript(_parameter, _doc))
-            .append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts().values()))
-            .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts().values()));
+            .append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
+            .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
         return js;
     }
 

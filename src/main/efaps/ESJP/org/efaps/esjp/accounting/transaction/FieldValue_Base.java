@@ -715,12 +715,11 @@ public abstract class FieldValue_Base
                     html.append("<td>").append(getFormater(2, 2).format(price)).append("</td>")
                          .append("<td>").append(rateTmp.getCurrencyInst().getSymbol()).append("</td>");
 
-
                     if (script) {
-                        analyzeProduct(_doc, _doc.getCreditAccounts(), prodInst.getOid(), cost, rate,
+                        analyzeProduct(_doc, true, prodInst, cost, rate,
                                        CIAccounting.AccountBalanceSheetAsset2ProductClass,
                                        CIAccounting.AccountBalanceSheetAsset);
-                        analyzeProduct(_doc, _doc.getDebitAccounts(), prodInst.getOid(), cost, rate,
+                        analyzeProduct(_doc, false, prodInst, cost, rate,
                                         CIAccounting.AccountIncomeStatementExpenses2ProductClass,
                                         CIAccounting.AccountIncomeStatementExpenses);
                     }
@@ -765,9 +764,9 @@ public abstract class FieldValue_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _doc.getInstance().getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder taxOisSel = new SelectBuilder().linkto(CISales.PositionSumAbstract.Tax).oid();
-        final SelectBuilder prodOidSel = new SelectBuilder().linkto(CISales.PositionAbstract.Product).oid();
-        multi.addSelect(taxOisSel, prodOidSel);
+        final SelectBuilder selTaxInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Tax).instance();
+        final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.PositionAbstract.Product).instance();
+        multi.addSelect(selTaxInst, selProdInst);
         multi.addAttribute(CISales.PositionSumAbstract.NetPrice,
                            CISales.PositionSumAbstract.CrossPrice,
                            CISales.PositionSumAbstract.Rate);
@@ -781,9 +780,9 @@ public abstract class FieldValue_Base
                         BigDecimal.ROUND_HALF_UP);
             final BigDecimal taxAmount = cross.subtract(net).multiply(newRatepos);
             final BigDecimal prodAmount = net.multiply(newRatepos);
-            analyzeTax(_doc.getCreditAccounts(), multi.<String>getSelect(taxOisSel), taxAmount);
+            analyzeTax(_doc, false, multi.<Instance>getSelect(selTaxInst), taxAmount);
             final RateInfo rate = evaluateRate(_parameter, periode, _doc.getDate(), _doc.getRateCurrInst());
-            analyzeProduct(_doc, _doc.getCreditAccounts(), multi.<String>getSelect(prodOidSel), prodAmount, rate,
+            analyzeProduct(_doc, false, multi.<Instance>getSelect(selProdInst), prodAmount, rate,
                            CIAccounting.AccountIncomeStatementRevenue2ProductClass,
                            CIAccounting.AccountIncomeStatementRevenue);
         }
@@ -811,14 +810,14 @@ public abstract class FieldValue_Base
                 getPriceInformation(_parameter, _doc);
             }
 
-            for (final AccountInfo account : _doc.getDebitAccounts().values()) {
+            for (final AccountInfo account : _doc.getDebitAccounts()) {
                 account.setLink(getLinkString(account.getInstance(), "_Debit"));
             }
-            for (final AccountInfo account : _doc.getCreditAccounts().values()) {
+            for (final AccountInfo account : _doc.getCreditAccounts()) {
                 account.setLink(getLinkString(account.getInstance(), "_Credit"));
             }
-            ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts().values()))
-                .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts().values()));
+            ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
+                .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
         }
         return ret;
     }
@@ -827,8 +826,8 @@ public abstract class FieldValue_Base
      * Analyse a product for income statement.
      *
      * @param _doc          Document
-     * @param _account2Amount map
-     * @param _productOid   oid of the product
+     * @param _debit        debit or credit
+     * @param  _productInstance  insatnce of the product
      * @param _amount       amount
      * @param _rate         Rate
      * @param _relType      CIType for the relation
@@ -836,19 +835,19 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected void analyzeProduct(final DocumentInfo _doc,
-                                  final Map<Instance, AccountInfo> _account2Amount,
-                                  final String _productOid,
+                                  final boolean _debit,
+                                  final Instance _productInstance,
                                   final BigDecimal _amount,
                                   final RateInfo _rate,
                                   final CIType _relType,
                                   final CIType _acountType)
         throws EFapsException
     {
-        final Instance instance = Instance.get(_productOid);
-        final PrintQuery print = new PrintQuery(instance);
-        print.addSelect("class.type");
+        final PrintQuery print = new PrintQuery(_productInstance);
+        final SelectBuilder sel = SelectBuilder.get().clazz().type();
+        print.addSelect(sel);
         print.execute();
-        final List<Classification> list = print.<List<Classification>>getSelect("class.type");
+        final List<Classification> list = print.<List<Classification>>getSelect(sel);
         if (list != null) {
             for (final Classification clazz : list) {
                 Long id = null;
@@ -869,21 +868,12 @@ public abstract class FieldValue_Base
                 if (id != null) {
                     final Instance accInst = Instance.get(_acountType.getType(), id);
                     if (accInst.isValid()) {
-                        if (_account2Amount.containsKey(accInst)) {
-                            final AccountInfo account = _account2Amount.get(accInst);
-                            if (_rate.getInstance4Currency().equals(account.getRateInfo().getInstance4Currency())) {
-                                account.add(_amount);
-                            } else {
-                                account.setAmount(account.getAmountRate()
-                                                .add(_amount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                                .divide(_rate.getRate(), BigDecimal.ROUND_HALF_UP)));
-                                account.setRateInfo(_doc.getRateInfo());
-                                account.setAmountRate(null);
-                            }
+                        final AccountInfo account = new AccountInfo().setInstance(accInst).add(_amount);
+                        account.setRateInfo(_rate);
+                        if (_debit) {
+                            _doc.addDebit(account);
                         } else {
-                            final AccountInfo account = new AccountInfo().setInstance(accInst).add(_amount);
-                            _account2Amount.put(accInst, account);
-                            account.setRateInfo(_rate);
+                            _doc.addCredit(account);
                         }
                     }
                     break;
@@ -895,13 +885,15 @@ public abstract class FieldValue_Base
     /**
      * Method for analizeTax.
      *
-     * @param _account2Amount contains a new Map.
-     * @param _taxOid contains oid of the Tax.
+     * @param _doc docuemtn info
+     * @param _debit dbeit or credit
+     * @param _taxInst instance of the Tax.
      * @param _tax contains amount of the Tax.
      * @throws EFapsException on error.
      */
-    protected void analyzeTax(final Map<Instance, AccountInfo> _account2Amount,
-                              final String _taxOid,
+    protected void analyzeTax(final DocumentInfo _doc,
+                              final boolean _debit,
+                              final Instance _taxInst,
                               final BigDecimal _tax)
         throws EFapsException
     {
@@ -912,15 +904,15 @@ public abstract class FieldValue_Base
 
         final SelectBuilder selInst = new SelectBuilder(sel).instance();
 
-        final PrintQuery print = new PrintQuery(Instance.get(_taxOid));
+        final PrintQuery print = new PrintQuery(_taxInst);
         print.addSelect(selInst);
         print.execute();
         final Instance accountInst = print.<Instance>getSelect(selInst);
         if (accountInst != null) {
-            if (_account2Amount.containsKey(accountInst)) {
-                _account2Amount.put(accountInst, _account2Amount.get(accountInst).add(_tax));
+            if (_debit) {
+                _doc.addDebit(new AccountInfo(accountInst, _tax));
             } else {
-                _account2Amount.put(accountInst, new AccountInfo(accountInst, _tax));
+                _doc.addCredit(new AccountInfo(accountInst, _tax));
             }
         }
     }

@@ -118,11 +118,11 @@ public abstract class Create_Base
                     insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
                     insert.execute();
                     final Instance transInst = insert.getInstance();
-                    for (final AccountInfo account : docInfo.getCreditAccounts().values()) {
+                    for (final AccountInfo account : docInfo.getCreditAccounts()) {
                         insertPosition4Massiv(_parameter, docInfo, transInst, CIAccounting.TransactionPositionCredit,
                                         account);
                     }
-                    for (final AccountInfo account : docInfo.getDebitAccounts().values()) {
+                    for (final AccountInfo account : docInfo.getDebitAccounts()) {
                         insertPosition4Massiv(_parameter, docInfo, transInst, CIAccounting.TransactionPositionDebit,
                                         account);
                     }
@@ -850,10 +850,10 @@ public abstract class Create_Base
                                 Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                 insert.execute();
                 final Instance transInst = insert.getInstance();
-                for (final AccountInfo account : doc.getCreditAccounts().values()) {
+                for (final AccountInfo account : doc.getCreditAccounts()) {
                     insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionCredit, account);
                 }
-                for (final AccountInfo account : doc.getDebitAccounts().values()) {
+                for (final AccountInfo account : doc.getDebitAccounts()) {
                     insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionDebit, account);
                 }
                 createDocClass(_parameter, transInst, docInst);
@@ -955,14 +955,9 @@ public abstract class Create_Base
 
                 final BigDecimal checkCrossTotal = checkPrint
                                 .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                BigDecimal debit = BigDecimal.ZERO;
-                for (final AccountInfo acc : doc.getDebitAccounts().values()) {
-                    debit = debit.add(acc.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
-                }
-                BigDecimal credit = BigDecimal.ZERO;
-                for (final AccountInfo acc : doc.getCreditAccounts().values()) {
-                    credit = credit.add(acc.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
-                }
+                BigDecimal debit = doc.getDebitSum();
+                BigDecimal credit = doc.getCreditSum();
+
                 if (useRounding) {
                     // is does not sum to 0 but is less then the max defined
                     final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodeInst);
@@ -971,7 +966,7 @@ public abstract class Create_Base
                                     ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
                     if ((checkCrossTotal.compareTo(debit) != 0 || checkCrossTotal.compareTo(credit) != 0)
                                     && debit.subtract(credit).abs().compareTo(diffMin) < 0) {
-                        final AccountInfo acc = doc.getDebitAccounts().values().iterator().next();
+                        final AccountInfo acc = doc.getDebitAccounts().iterator().next();
                         if (checkCrossTotal.compareTo(debit) > 0) {
                             final AccountInfo account = getRoundingAccount(_parameter,
                                             AccountingSettings.PERIOD_ROUNDINGDEBIT);
@@ -980,13 +975,13 @@ public abstract class Create_Base
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
                                             .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
                             account.setAmountRate(rateAmount);
-                            doc.getDebitAccounts().put(account.getInstance(), account);
+                            doc.addDebit(account);
                             debit = debit.add(checkCrossTotal.subtract(debit));
                         }
                         if (checkCrossTotal.compareTo(credit) > 0) {
                             final AccountInfo account = getRoundingAccount(_parameter,
                                             AccountingSettings.PERIOD_ROUNDINGCREDIT);
-                            doc.getCreditAccounts().put(account.getInstance(), account);
+                            doc.addCredit(account);
                             account.setAmount(checkCrossTotal.subtract(credit));
                             account.setRateInfo(acc.getRateInfo());
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
@@ -1085,13 +1080,12 @@ public abstract class Create_Base
 
         final Instance transInst = insert.getInstance();
 
-        for (final AccountInfo account : _doc.getCreditAccounts().values()) {
+        for (final AccountInfo account : _doc.getCreditAccounts()) {
             insertPosition4Massiv(_parameter, _doc, transInst, CIAccounting.TransactionPositionCredit, account);
         }
-        for (final AccountInfo account : _doc.getDebitAccounts().values()) {
+        for (final AccountInfo account : _doc.getDebitAccounts()) {
             insertPosition4Massiv(_parameter, _doc, transInst, CIAccounting.TransactionPositionDebit, account);
         }
-
     }
 
     /**

@@ -33,7 +33,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -699,41 +698,9 @@ public abstract class Periode_Base
     public Return getPaymentToBook(final Parameter _parameter)
         throws EFapsException
     {
-        final MultiPrint multi = new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                _queryBldr.addWhereAttrEqValue(CISales.PaymentDocumentIOAbstract.StatusAbstract,
-                                getStati4Payment(_parameter));
-            }
-        };
-        return multi.execute(_parameter);
+        return new MultiPrint().execute(_parameter);
     }
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return Object Array
-     * @throws EFapsException on error
-     */
-    protected Object[] getStati4Payment(final Parameter _parameter)
-        throws CacheReloadException
-    {
-        final List<Status> statuses = new ArrayList<Status>();
-        final Set<Type> types = getTypeList(_parameter, CISales.PaymentDocumentIOAbstract.getType());
-        for (final Type type : types) {
-            if (!type.isAbstract()) {
-                final StatusGroup statusGroup = Status.get(type.getStatusAttribute().getLink().getName());
-                for (final Entry<String, Status> entry : statusGroup.entrySet()) {
-                    if (!"Booked".equals(entry.getKey()) && !"Canceled".equals(entry.getKey())) {
-                        statuses.add(entry.getValue());
-                    }
-                }
-            }
-        }
-        return statuses.toArray();
-    }
+
 
     /**
      * Called from a tree menu command to present the Account2Account relations
