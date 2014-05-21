@@ -194,7 +194,7 @@
             rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
 
             <!-- add to Accounting_Manager role -->
-            RoleUpdate rolUp = new RoleUpdate("757f9274-acd0-416a-a336-20470409e8af");
+            rolUp = new RoleUpdate("757f9274-acd0-416a-a336-20470409e8af");
             <!-- Sales_IncomingDetractionMyDesk -->
             rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
             <!-- Sales_IncomingRetentionMyDesk -->
@@ -203,7 +203,7 @@
             rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
 
             <!-- add to Accounting_Executive role -->
-            RoleUpdate rolUp = new RoleUpdate("fc3af4de-83c9-4165-b466-5478329847eb");
+            rolUp = new RoleUpdate("fc3af4de-83c9-4165-b466-5478329847eb");
             <!-- Sales_IncomingDetractionMyDesk -->
             rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
             <!-- Sales_IncomingRetentionMyDesk -->
