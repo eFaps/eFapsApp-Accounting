@@ -901,7 +901,8 @@ public abstract class Transaction_Base
                                             final DocumentInfo _doc)
         throws EFapsException
     {
-        if (_doc.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+        if (_doc.getInstance() != null && _doc.getInstance().isValid()
+                        && _doc.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
             attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
@@ -943,7 +944,7 @@ public abstract class Transaction_Base
                                    final DocumentInfo _doc)
         throws EFapsException
     {
-        if (_doc.getInstance().isValid()
+        if (_doc.getInstance() != null && _doc.getInstance().isValid()
                         && _doc.getInstance().getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
             final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
             queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, _doc.getInstance());
