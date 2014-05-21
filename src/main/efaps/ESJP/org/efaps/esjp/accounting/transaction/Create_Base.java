@@ -270,6 +270,14 @@ public abstract class Create_Base
         if (docInst != null && docInst.isValid()) {
             connectDoc2Transaction(_parameter, instance, docInst);
 
+            final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
+            if (purchaseRecInst.isValid()) {
+                final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
+                purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst);
+                purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                purInsert.execute();
+            }
+
             final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
 
             if (setStatus) {

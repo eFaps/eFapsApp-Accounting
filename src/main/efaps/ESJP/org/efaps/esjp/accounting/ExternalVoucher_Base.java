@@ -105,14 +105,6 @@ public abstract class ExternalVoucher_Base
 
         _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
         new Create().create4External(_parameter);
-
-        final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
-        if (purchaseRecInst.isValid()) {
-            final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
-            purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst.getId());
-            purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, createdDoc.getInstance().getId());
-            purInsert.execute();
-        }
         return new Return();
     }
 
