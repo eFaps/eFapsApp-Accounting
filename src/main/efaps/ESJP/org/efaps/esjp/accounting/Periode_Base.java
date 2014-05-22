@@ -673,7 +673,9 @@ public abstract class Periode_Base
                                         Status.find(CISales.IncomingInvoiceStatus.Paid),
                                         Status.find(CISales.PaymentOrderStatus.Open),
                                         Status.find(CIAccounting.ExternalVoucherStatus.Open),
-                                        Status.find(CIAccounting.ExternalVoucherStatus.Paid));
+                                        Status.find(CIAccounting.ExternalVoucherStatus.Paid),
+                                        Status.find(CISales.IncomingCreditNoteStatus.Open),
+                                        Status.find(CISales.IncomingReminderStatus.Open));
         queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
 
         final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
