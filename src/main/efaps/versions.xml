@@ -184,12 +184,6 @@
             <!-- Accounting_Accounting, Admin_Help_MainMenu -->
             update.add2Help("906bd8c4-2e7f-4234-936b-6a1ee74bdf37", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
 
-            <!-- connect the Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing to Sales_IncomingRetentionTree -->
-            update.add2Menu("56cd1287-922e-487c-84a2-07350d757473", "2fafd07b-9823-4128-bea5-1a62979253d4", -1);
-
-            <!-- connect the Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing to Sales_IncomingDetractionTree -->
-            update.add2Menu("56cd1287-922e-487c-84a2-07350d757473", "1dc086f3-2cdb-4952-8eb3-2c6f28ee1d28", -1);
-
             <!-- add to Accounting_Admin role -->
             RoleUpdate rolUp = new RoleUpdate("c687443f-e47e-4689-8a51-7eacdeac1e09");
             <!-- Sales_IncomingDetractionMyDesk -->
