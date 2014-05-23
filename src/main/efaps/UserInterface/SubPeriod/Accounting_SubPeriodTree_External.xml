@@ -45,7 +45,7 @@
                 <property name="StatusGroup03">Sales_IncomingInvoiceStatus</property>
                 <property name="Status03">Paid</property>
                 <property name="StatusGroup04">Sales_PaymentOrderStatus</property>
-                <property name="Status04">PaymentOrderStatus</property>
+                <property name="Status04">Open</property>
                 <property name="StatusGroup05">Accounting_ExternalVoucherStatus</property>
                 <property name="Status05">Open</property>
                 <property name="StatusGroup06">Accounting_ExternalVoucherStatus</property>
