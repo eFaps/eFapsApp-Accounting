@@ -30,21 +30,17 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodeTree_PettyCashReceipt_Menu_Action_Register</name>
-
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_TransactionCreate4PettyCashReceiptForm</form>
-            <execute program="org.efaps.esjp.accounting.ExternalVoucher"
-                method="create4PettyCashReceipt" />
+            <execute method="create4PettyCashReceipt" program="org.efaps.esjp.accounting.transaction.Create" />
             <validate
-                program="org.efaps.esjp.accounting.transaction.Transaction"
-                method="validate">
+                program="org.efaps.esjp.accounting.transaction.Transaction" method="validate">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
-            <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

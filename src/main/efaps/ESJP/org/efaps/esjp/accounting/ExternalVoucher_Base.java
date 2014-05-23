@@ -307,57 +307,6 @@ public abstract class ExternalVoucher_Base
         return CIAccounting.ExternalVoucher.getType();
     }
 
-    /**
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new empty Return
-     * @throws EFapsException on error
-     */
-    public Return create4PettyCashReceipt(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-        if (docInst.isValid()) {
-            final SelectBuilder selContactOid = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact).oid();
-            final PrintQuery print = new PrintQuery(docInst);
-            print.addAttribute(CISales.PettyCashReceipt.Date,
-                            CISales.PettyCashReceipt.RateCurrencyId,
-                            CISales.PettyCashReceipt.RateCrossTotal);
-            print.addSelect(selContactOid);
-            print.execute();
-            _parameter.getParameters().put("currencyExternal",
-                                            new String[] { print.<Long>getAttribute(
-                                                            CISales.PettyCashReceipt.RateCurrencyId).toString() });
-            _parameter.getParameters().put("rate_Credit", new String[] { "1", "1" });
-            _parameter.getParameters().put("rate_Debit", new String[] { "1", "1" });
-            _parameter.getParameters().put("extDate", new String[] {
-                      print.<DateTime>getAttribute(CISales.PettyCashReceipt.Date).withTimeAtStartOfDay().toString() });
-            _parameter.getParameters().put("extDueDate",
-                            new String[] { print.<DateTime>getAttribute(CISales.PettyCashReceipt.Date)
-                                            .withTimeAtStartOfDay().toString() });
-            _parameter.getParameters().put("contact", new String[] { print.<String>getSelect(selContactOid) });
-            _parameter.getParameters().put("amountExternal",
-                            new String[] { print.<BigDecimal>getAttribute(CISales.PettyCashReceipt.RateCrossTotal)
-                                            .toString() });
-
-            final CreatedDoc createdDoc = createDoc(_parameter);
-
-            if (createdDoc.getInstance().isValid()) {
-                final Insert insert = new Insert(CIAccounting.ExternalVoucher2Document);
-                insert.add(CIAccounting.ExternalVoucher2Document.FromLink, createdDoc.getInstance().getId());
-                insert.add(CIAccounting.ExternalVoucher2Document.ToLink, docInst.getId());
-                insert.execute();
-            }
-
-            _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
-            if (createdDoc.getInstance().isValid()) {
-                _parameter.getParameters().remove("document");
-            }
-            new Create().create4External(_parameter);
-            connect2DocumentType(_parameter, createdDoc);
-        }
-        return new Return();
-    }
-
     @Override
     protected void connect2DocumentType(final Parameter _parameter,
                                         final CreatedDoc _createdDoc)
