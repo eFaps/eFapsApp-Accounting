@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Classification;
@@ -42,7 +41,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.admin.user.Company;
 import org.efaps.ci.CIAttribute;
@@ -123,40 +121,6 @@ public abstract class Account_Base
                         || (summary != null && summary && inverse)) {
             ret.put(ReturnValues.TRUE, true);
         }
-        return ret;
-    }
-
-
-    /**
-     * Called from a tree menu command to present the documents that are with status
-     * booked and therefor must be worked on still.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getDocumentsToBook(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Instance instance = _parameter.getInstance();
-        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
-        final UUID uuidTypeDoc = command.getUUID();
-        final PrintQuery print = new PrintQuery(instance);
-        print.addAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink);
-        print.execute();
-
-        final Long id = print.<Long>getAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink);
-
-        _parameter.put(ParameterValues.INSTANCE, Instance.get(CIAccounting.Periode.getType(), id));
-
-        final List<Instance> instances = new Periode().getDocumentsToBookList(_parameter);
-        // Accounting_AccountTree_DocsToPay
-        if (uuidTypeDoc.equals(UUID.fromString("6fd11ce2-72e0-40ef-a959-186e3e664aa9"))) {
-            instances.addAll(new Periode().getExternalsToBookList(_parameter));
-        }
-
-        ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
 

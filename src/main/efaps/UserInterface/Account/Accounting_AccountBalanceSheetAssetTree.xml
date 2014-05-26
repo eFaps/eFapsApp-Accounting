@@ -52,9 +52,6 @@
             <child>Accounting_AccountTree_Account</child>
             <child>Accounting_AccountTree_Child</child>
             <child>Accounting_AccountTree_TransactionPosition</child>
-            <child>Accounting_AccountTree_DocsToGain</child>
-            <child>Accounting_AccountTree_DocsToPay</child>
-            <child>Accounting_AccountBalanceSheetAssetTree_ProductClass</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>

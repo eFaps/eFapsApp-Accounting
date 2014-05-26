@@ -34,7 +34,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountIncomeStatementRevenueTree</name>
-        <!-- targets -->
         <target>
             <menu>Accounting_AccountTree_Menu</menu>
             <form>Accounting_AccountForm</form>
@@ -46,15 +45,12 @@
                 <property name="Child_ExpandChildType">true</property>
             </evaluate>
         </target>
-        <!-- type tree for -->
         <type>Accounting_AccountIncomeStatementRevenue</type>
         <childs>
             <child>Accounting_AccountTree_Account</child>
             <child>Accounting_AccountTree_Child</child>
             <child>Accounting_AccountTree_TransactionPosition</child>
-            <child>Accounting_AccountIncomeStatementRevenueTree_ProductClass</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

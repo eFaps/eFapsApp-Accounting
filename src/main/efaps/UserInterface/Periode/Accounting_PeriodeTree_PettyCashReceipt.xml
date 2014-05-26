@@ -35,8 +35,9 @@
             <menu>Accounting_PeriodeTree_PettyCashReceipt_Menu</menu>
             <table>Accounting_Sales_PettyCashReceiptTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode" method="getPettyCashExternals">
-                <property name="Type">ERP_DocumentAbstract</property>
-                <property name="PettyCashBalanceStatus">Verified</property>
+                <property name="Type">Sales_PettyCashReceiptStatus</property>
+                <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
+                <property name="Status">Closed</property>
             </evaluate>
         </target>
         <!-- properties -->

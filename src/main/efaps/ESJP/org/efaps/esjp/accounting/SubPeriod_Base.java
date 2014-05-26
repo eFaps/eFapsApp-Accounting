@@ -150,9 +150,15 @@ public abstract class SubPeriod_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
+                final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
                 final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.SubPeriod.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+
                 final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
-                transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
+                transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, periodInst);
                 final AttributeQuery tranAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
@@ -160,6 +166,7 @@ public abstract class SubPeriod_Base
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                                 CIAccounting.Transaction2SalesDocument.ToLink);
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
             }
         };
         return multi.execute(_parameter);
@@ -221,16 +228,25 @@ public abstract class SubPeriod_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance instance = _parameter.getInstance();
+                final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
+
+                final PrintQuery print = new CachedPrintQuery(_parameter.getInstance(), SubPeriod_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.SubPeriod.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+
                 final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
-                transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
+                transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, periodInst);
                 final AttributeQuery tranAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 attrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.FromLink, tranAttrQuery);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                                 CIAccounting.Transaction2SalesDocument.ToLink);
+
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+
             }
         };
         return multi.execute(_parameter);
@@ -264,7 +280,11 @@ public abstract class SubPeriod_Base
         return multi.execute(_parameter);
     }
 
-
+    /**
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
     public Return printReport(final Parameter _parameter)
         throws EFapsException
     {

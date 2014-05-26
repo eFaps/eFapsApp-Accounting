@@ -20,7 +20,6 @@
 
 package org.efaps.esjp.accounting;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,7 +29,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -40,7 +38,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
@@ -61,6 +58,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -79,6 +77,7 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsUUID("42e5a308-5d9a-4a8d-a469-b9929010858a")
 @EFapsRevision("$Rev$")
 public abstract class Periode_Base
+    extends AbstractCommon
 {
     /**
      * CacheKey for Periods.
@@ -376,65 +375,30 @@ public abstract class Periode_Base
     public Return getDocumentsToBook(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, getDocumentsToBookList(_parameter));
-        return ret;
-    }
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new PrintQuery(instance);
+                print.addAttribute(CIAccounting.Periode.FromDate);
+                print.addAttribute(CIAccounting.Periode.ToDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
 
-    /**
-     * Called from a tree menu command to present the documents that are with
-     * status booked and therefor must be worked on still.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return list with values.
-     * @throws EFapsException on error
-     */
-    protected List<Instance> getDocumentsToBookList(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instance = _parameter.getInstance();
-        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
-        final UUID uuidTypeDoc = command.getUUID();
-
-        final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
-        transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
-        final AttributeQuery transAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
-
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-        attrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.FromLink, transAttrQuery);
-        final AttributeQuery attrQuery =
-                            attrQueryBldr.getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                      Status.find(CISales.InvoiceStatus.Open),
-                                      Status.find(CISales.InvoiceStatus.Paid),
-                                      Status.find(CISales.ReceiptStatus.Open),
-                                      Status.find(CISales.ReceiptStatus.Paid),
-                                      Status.find(CISales.CreditNoteStatus.Open),
-                                      Status.find(CISales.CreditNoteStatus.Paid),
-                                      Status.find(CISales.ReminderStatus.Open),
-                                      Status.find(CISales.ReminderStatus.Paid));
-        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-        // Accounting_AccountTree_DocsToGain
-        if (uuidTypeDoc.equals(UUID.fromString("63f34c69-fe9a-4e5b-adab-b90268b2a34f"))) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
-                                        CISales.Invoice.getType().getId(),
-                                        CISales.Receipt.getType().getId());
-        // Accounting_AccountTree_DocsToPay
-        } else if (uuidTypeDoc.equals(UUID.fromString("6fd11ce2-72e0-40ef-a959-186e3e664aa9"))) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
-                                        CISales.CreditNote.getType().getId());
-        }
-
-        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        final DocMulti multi = new DocMulti();
-        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentSumAbstract.getType());
-
-        final InstanceQuery query = queryBldr.getQuery();
-        final List<Instance> instances = query.execute();
-
-        return instances;
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
     }
 
     /**
@@ -491,114 +455,60 @@ public abstract class Periode_Base
     public Return getPettyCashExternals(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final MultiPrint multi = new MultiPrint()
+        {
 
-        final Return ret = new Return();
-        final Instance instance = _parameter.getInstance();
-        final PrintQuery print = new PrintQuery(instance);
-        print.addAttribute(CIAccounting.Periode.FromDate);
-        print.addAttribute(CIAccounting.Periode.ToDate);
-        print.execute();
-        final DateTime from = print.<DateTime> getAttribute(CIAccounting.Periode.FromDate);
-        final DateTime to = print.<DateTime> getAttribute(CIAccounting.Periode.ToDate);
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Periode.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
 
-        final List<Status> statusArrayBalance = new ArrayList<Status>();
+                final List<Status> statusArrayBalance = new ArrayList<Status>();
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
-        if (properties.containsKey("PettyCashBalanceStatus")) {
-            final String status = (String) properties.get("PettyCashBalanceStatus");
-            if (status != null) {
-                final String[] statusStr = status.split(",");
-                for (final String statusId : statusStr) {
-                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, statusId.trim()));
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
+                if (containsProperty(_parameter, "PettyCashBalanceStatus")) {
+                    for (final String balanceStatus : analyseProperty(_parameter, "PettyCashBalanceStatus").values()) {
+                        statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, balanceStatus));
+                    }
+                } else {
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
                 }
-            }
-        } else {
-            statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
-        }
-        if (!statusArrayBalance.isEmpty()) {
-            queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
-        }
-        final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
-
-        final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Payment);
-        queryBldr2.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
-        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(CISales.Payment.CreateDocument);
-
-        final List<Status> statusArrayReceipt = new ArrayList<Status>();
-
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.ExternalVoucher2Document);
-        final AttributeQuery attrQueryDoc = attrQueryBldr.getAttributeQuery(
-                        CIAccounting.ExternalVoucher2Document.ToLink);
-
-        final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
-        final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
-                        CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
-
-        final QueryBuilder queryBldr3 = new QueryBuilder(CISales.PettyCashReceipt);
-        if (properties.containsKey("PettyCashReceiptStatus")) {
-            final String status = (String) properties.get("PettyCashReceiptStatus");
-            if (status != null) {
-                final String[] statusStr = status.split(",");
-                for (final String statusId : statusStr) {
-                    statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.uuid, statusId.trim()));
+                if (!statusArrayBalance.isEmpty()) {
+                    queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
                 }
+                final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
+
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+                queryBldr2.addWhereAttrInQuery(CISales.PettyCashBalance2PettyCashReceipt.FromLink, attrQuery);
+                final AttributeQuery attrQuery2 = queryBldr2
+                                .getAttributeQuery(CISales.PettyCashBalance2PettyCashReceipt.ToLink);
+
+                _queryBldr.addWhereAttrGreaterValue(CISales.PettyCashReceipt.Date, from.minusMinutes(1));
+
+                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                                attrQuery2);
+                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                                CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
+
+                _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, docTypeAttrQuery);
             }
-        } else {
-            statusArrayReceipt.add(Status.find(CISales.PettyCashReceiptStatus.Closed));
-        }
-        if (!statusArrayReceipt.isEmpty()) {
-            queryBldr3.addWhereAttrEqValue(CISales.PettyCashReceipt.Status, statusArrayReceipt.toArray());
-        }
-        queryBldr3.addWhereAttrGreaterValue(CISales.PettyCashReceipt.Date, from.minusMinutes(1));
-        queryBldr3.addWhereAttrLessValue(CISales.PettyCashReceipt.Date, to.plusDays(1));
-        queryBldr3.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery2);
-        queryBldr3.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, docTypeAttrQuery);
-        queryBldr3.addWhereAttrNotInQuery(CISales.PettyCashReceipt.ID, attrQueryDoc);
-        final MultiPrintQuery multi = queryBldr3.getPrint();
-        multi.addAttribute(CISales.PettyCashReceipt.Name,
-                        CISales.PettyCashReceipt.CrossTotal);
-        multi.execute();
-
-        final Map<String, Instance> map = new HashMap<String, Instance>();
-        while (multi.next()) {
-            final String name = multi.<String>getAttribute(CISales.PettyCashReceipt.Name);
-            if (map.containsKey(name)) {
-                if (multi.getCurrentInstance().getId() > map.get(name).getId()) {
-                    map.put(name, multi.getCurrentInstance());
-                }
-            } else {
-                map.put(name, multi.getCurrentInstance());
-            }
-            final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PettyCashReceipt.CrossTotal);
-            if (cross.compareTo(BigDecimal.ZERO) == 0) {
-                map.remove(name);
-            }
-        }
-
-        final List<Long> listIds = new ArrayList<Long>();
-        for (final Entry<String, Instance> entry : map.entrySet()) {
-            listIds.add(entry.getValue().getId());
-        }
-        List<Instance> instances = new ArrayList<Instance>();
-        if (!listIds.isEmpty()) {
-            final QueryBuilder newQuery = new QueryBuilder(CISales.DocumentSumAbstract);
-            newQuery.addWhereAttrEqValue(CISales.DocumentSumAbstract.ID, listIds.toArray());
-
-            final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
-            final DocMulti multiDoc = new DocMulti();
-            multiDoc.analyzeTable(_parameter, filter, newQuery, CISales.DocumentStockAbstract.getType());
-
-            final InstanceQuery query = newQuery.getQuery();
-            instances = query.execute();
-        }
-        ret.put(ReturnValues.VALUES, instances);
-        return ret;
+        };
+        return multi.execute(_parameter);
     }
 
     /**
      * Called from a tree menu command to present the documents that are with status
-     * booked and therefor must be worked on still.
+     * booked and therefore must be worked on still.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return reeutun with map
+     * @throws EFapsException on error
      */
     public Return getExternals(final Parameter _parameter)
         throws EFapsException
@@ -640,53 +550,31 @@ public abstract class Periode_Base
     public Return getExternalsToBook(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, getExternalsToBookList(_parameter));
-        return ret;
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Periode.FromDate);
+                print.addAttribute(CIAccounting.Periode.ToDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
     }
-
-    /**
-     * Called from a tree menu command to present the documents that are with status
-     * booked and therefor must be worked on still.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return list instance with values.
-     * @throws EFapsException on error.
-     */
-    protected List<Instance> getExternalsToBookList(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instance = _parameter.getInstance();
-
-        final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.Transaction);
-        transQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
-        final AttributeQuery transAttrQuery = transQueryBldr.getAttributeQuery(CIAccounting.Transaction.ID);
-
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-        attrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.FromLink, transAttrQuery);
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                        CIAccounting.Transaction2SalesDocument.ToLink);
-
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                        Status.find(CISales.IncomingInvoiceStatus.Open),
-                                        Status.find(CISales.IncomingInvoiceStatus.Paid),
-                                        Status.find(CISales.PaymentOrderStatus.Open),
-                                        Status.find(CIAccounting.ExternalVoucherStatus.Open),
-                                        Status.find(CIAccounting.ExternalVoucherStatus.Paid),
-                                        Status.find(CISales.IncomingCreditNoteStatus.Open),
-                                        Status.find(CISales.IncomingReminderStatus.Open));
-        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-
-        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        final DocMulti multi = new DocMulti();
-        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
-
-        final InstanceQuery query = queryBldr.getQuery();
-        final List<Instance> instances = query.execute();
-        return instances;
-    }
-
 
     /**
      * Called from a tree menu command to present the documents related with
@@ -741,6 +629,7 @@ public abstract class Periode_Base
      * @throws CacheReloadException on error
      * @return set of types
      */
+    @Override
     protected Set<Type> getTypeList(final Parameter _parameter,
                                     final Type _type)
         throws CacheReloadException
