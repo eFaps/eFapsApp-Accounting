@@ -60,8 +60,12 @@
                 <property name="Status06">Paid</property>
                 <property name="StatusGroup07">Sales_IncomingCreditNoteStatus</property>
                 <property name="Status07">Open</property>
-                <property name="StatusGroup08">Sales_IncomingReminderStatus</property>
-                <property name="Status08">Open</property>
+                <property name="StatusGroup08">Sales_IncomingCreditNoteStatus</property>
+                <property name="Status08">Digitized</property>
+                <property name="StatusGroup09">Sales_IncomingReminderStatus</property>
+                <property name="Status09">Open</property>
+                <property name="StatusGroup10">Sales_IncomingReminderStatus</property>
+                <property name="Status10">Digitized</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
