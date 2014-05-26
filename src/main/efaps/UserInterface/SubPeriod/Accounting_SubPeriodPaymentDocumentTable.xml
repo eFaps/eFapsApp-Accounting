@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2012 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>780c429c-16ed-4740-804b-eab3d3d6a39a</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_SubPeriodPaymentDocumentTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Type.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="code">
+            <property name="Attribute">Code</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Code.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Accounting_SubPeriodPaymentDocumentTable.code.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessOnField">
+                <property name="SystemConfig">Sales-Configuration</property>
+                <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocument</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Name.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Contact.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">FALSE</property>
+            <property name="FilterBase">MEMORY</property>
+            <property name="FilterDefault">MONTH:3:4</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">StatusAbstract</property>
+            <property name="FilterType">PICKLIST</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/StatusAbstract.Label</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Amount.Label</property>
+        </field>
+        <field name="currencyLink">
+            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
+            <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDocumentAbstract.Currency.Label</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
+</ui-table>

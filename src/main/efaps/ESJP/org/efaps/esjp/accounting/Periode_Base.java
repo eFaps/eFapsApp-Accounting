@@ -452,7 +452,7 @@ public abstract class Periode_Base
      * @return List if Instances
      * @throws EFapsException on error
      */
-    public Return getPettyCashExternals(final Parameter _parameter)
+    public Return getPettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
         final MultiPrint multi = new MultiPrint()

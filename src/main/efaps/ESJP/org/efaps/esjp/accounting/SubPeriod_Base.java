@@ -20,10 +20,12 @@
 
 package org.efaps.esjp.accounting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -41,6 +43,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uitable.MultiPrint;
@@ -314,5 +317,81 @@ public abstract class SubPeriod_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getPaymentToBook(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final PrintQuery print = new CachedPrintQuery(_parameter.getInstance(), SubPeriod_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.SubPeriod.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+    public Return getPettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final PrintQuery print = new CachedPrintQuery(_parameter.getInstance(), SubPeriod_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.SubPeriod.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
+
+                final List<Status> statusArrayBalance = new ArrayList<Status>();
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
+                if (containsProperty(_parameter, "PettyCashBalanceStatus")) {
+                    for (final String balanceStatus : analyseProperty(_parameter, "PettyCashBalanceStatus").values()) {
+                        statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, balanceStatus));
+                    }
+                } else {
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
+                }
+                if (!statusArrayBalance.isEmpty()) {
+                    queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
+                }
+                final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
+
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+                queryBldr2.addWhereAttrInQuery(CISales.PettyCashBalance2PettyCashReceipt.FromLink, attrQuery);
+                final AttributeQuery attrQuery2 = queryBldr2
+                                .getAttributeQuery(CISales.PettyCashBalance2PettyCashReceipt.ToLink);
+
+                _queryBldr.addWhereAttrGreaterValue(CISales.PettyCashReceipt.Date, from.minusMinutes(1));
+
+                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                                attrQuery2);
+                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                                CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
+
+                _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, docTypeAttrQuery);
+            }
+        };
+        return multi.execute(_parameter);
     }
 }

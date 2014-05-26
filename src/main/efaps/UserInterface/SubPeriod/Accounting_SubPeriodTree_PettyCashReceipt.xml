@@ -35,11 +35,11 @@
         </access>
         <target>
             <menu>Accounting_SubPeriodTree_PettyCashReceipt_Menu</menu>
-            <table>Accounting_Sales_PettyCashReceiptTable</table>
-            <evaluate method="getPettyCashExternals"
-                program="org.efaps.esjp.accounting.Periode">
-                <property name="Type">ERP_DocumentAbstract</property>
-                <property name="PettyCashBalanceStatus">Verified</property>
+            <table>Accounting_SubPeriodPettyCashReceiptTable</table>
+            <evaluate program="org.efaps.esjp.accounting.SubPeriod" method="getPettyCashReceipt">
+                <property name="Type">Sales_PettyCashReceipt</property>
+                <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
+                <property name="Status">Closed</property>
             </evaluate>
         </target>
         <!-- properties -->

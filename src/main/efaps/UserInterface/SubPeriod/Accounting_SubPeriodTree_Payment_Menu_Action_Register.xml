@@ -20,28 +20,31 @@
  Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>9dd8d5ef-0179-4aed-aec5-871400590413</uuid>
+    <uuid>b7d9a553-7688-423b-b4c1-f0c352bb9ab3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PettyCashReceipt</name>
+        <name>Accounting_SubPeriodTree_Payment_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_PettyCashReceipt_Menu</menu>
-            <table>Accounting_Sales_PettyCashReceiptTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Periode" method="getPettyCashReceipt">
-                <property name="Type">Sales_PettyCashReceipt</property>
-                <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
-                <property name="Status">Closed</property>
-            </evaluate>
+            <form>Accounting_TransactionCreate4PaymentForm</form>
+            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create"/>
+            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction"/>
+            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Accounting_PeriodeTree_Securities_Menu_Action_Register.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">1</property>
     </definition>
 </ui-command>
