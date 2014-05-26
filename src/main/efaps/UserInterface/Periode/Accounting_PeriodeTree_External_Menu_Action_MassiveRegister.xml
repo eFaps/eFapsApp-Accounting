@@ -37,7 +37,7 @@
         </access>
         <target>
             <form>Accounting_MassiveRegister4ExternalForm</form>
-            <execute method="createDoc4Massive" program="org.efaps.esjp.accounting.transaction.Create"/>
+            <execute method="create4DocMassive" program="org.efaps.esjp.accounting.transaction.Create"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
                 name="Accounting_PeriodeTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK"
