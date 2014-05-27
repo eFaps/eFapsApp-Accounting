@@ -48,6 +48,8 @@
                 <property name="Status04">!Booked</property>
                 <property name="StatusGroup05">Sales_IncomingCreditNoteStatus</property>
                 <property name="Status05">!Booked</property>
+                <property name="StatusGroup06">Sales_IncomingReceiptStatus</property>
+                <property name="Status06">!Booked</property>
             </evaluate>
         </target>
         <!-- properties -->
