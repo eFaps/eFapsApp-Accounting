@@ -883,7 +883,7 @@ public abstract class Transaction_Base
             while (multi.next()) {
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
                 final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
-                final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).add(amount);
+                final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).addAmount(amount);
                 account.setRateInfo(_doc.getRateInfo());
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
                     _doc.addDebit(account);
@@ -948,7 +948,7 @@ public abstract class Transaction_Base
                             dateTmp = date;
                             final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
                             final AccountInfo acc = new AccountInfo().setInstance(accInst)
-                                            .add(_doc.getAmount()).setRateInfo(_doc.getRateInfo());
+                                            .addAmount(_doc.getAmount()).setRateInfo(_doc.getRateInfo());
                             if (outDoc) {
                                 _doc.addDebit(acc);
                             } else {

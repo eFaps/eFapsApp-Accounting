@@ -60,7 +60,9 @@ public abstract class AccountInfo_Base
     private String description;
 
     /**
-     * Amount of this account.
+     * Amount of this account. The Part editable for through
+     * the User meaning that it can be in other currencies
+     * than the base currency for the period.
      */
     private BigDecimal amount;
 
@@ -75,7 +77,8 @@ public abstract class AccountInfo_Base
     private RateInfo rateInfo;
 
     /**
-     * Amount of this account.
+     * The Amount of this account converted into the base
+     * currency for this period  by applying the exchange rate.
      */
     private BigDecimal amountRate;
 
@@ -119,7 +122,7 @@ public abstract class AccountInfo_Base
      * @param _amount amount.
      * @return this.
      */
-    public AccountInfo add(final BigDecimal _amount)
+    public AccountInfo addAmount(final BigDecimal _amount)
     {
         this.amount = this.amount.add(_amount);
         return (AccountInfo) this;

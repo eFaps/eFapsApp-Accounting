@@ -433,8 +433,8 @@ public abstract class Create_Base
 
                 final BigDecimal checkCrossTotal = checkPrint
                                 .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                BigDecimal debit = doc.getDebitSum();
-                BigDecimal credit = doc.getCreditSum();
+                BigDecimal debit = doc.getRateDebitSum();
+                BigDecimal credit = doc.getRateCreditSum();
 
                 if (useRounding) {
                     // is does not sum to 0 but is less then the max defined

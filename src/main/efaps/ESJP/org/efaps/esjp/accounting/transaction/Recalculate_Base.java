@@ -691,7 +691,7 @@ public abstract class Recalculate_Base
                     }
                     if (map.containsKey(accountInst.getOid())) {
                         final AccountInfo tarAcc = map.get(accountInst.getOid());
-                        tarAcc.add(gainloss);
+                        tarAcc.addAmount(gainloss);
                     } else {
                         final AccountInfo tarAcc = new AccountInfo(accountInst, gainloss);
                         tarAcc.setAmountRate(gainloss);

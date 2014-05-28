@@ -349,7 +349,7 @@ public abstract class DocumentInfo_Base
             for (final AccountInfo acc : _accounts) {
                 if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getInstance4Currency()
                                 .equals(_accInfo.getRateInfo().getInstance4Currency())) {
-                    acc.add(_accInfo.getAmount());
+                    acc.addAmount(_accInfo.getAmount());
                     add = false;
                     break;
                 }
@@ -478,7 +478,20 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @return the sum of credit accounts
+     * @return the sum in the rate currency
+     */
+    public BigDecimal getRateCreditSum()
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final AccountInfo account : getCreditAccounts()) {
+            ret = ret.add(account.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+        }
+        return ret;
+    }
+
+
+    /**
+     * @return the sum of credit accounts in base currency
      */
     public BigDecimal getCreditSum()
     {
@@ -500,7 +513,19 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @return the sum of all debit accounts
+     * @return the sum in the rate currency
+     */
+    public BigDecimal getRateDebitSum()
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final AccountInfo account : getDebitAccounts()) {
+            ret = ret.add(account.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+        }
+        return ret;
+    }
+
+    /**
+     * @return the sum of all debit accounts in base currency
      */
     public BigDecimal getDebitSum()
     {
