@@ -484,12 +484,12 @@ public abstract class Periode_Base
                 }
                 final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
 
-                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
-                queryBldr2.addWhereAttrInQuery(CISales.PettyCashBalance2PettyCashReceipt.FromLink, attrQuery);
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
+                queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
                 final AttributeQuery attrQuery2 = queryBldr2
-                                .getAttributeQuery(CISales.PettyCashBalance2PettyCashReceipt.ToLink);
+                                .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
 
-                _queryBldr.addWhereAttrGreaterValue(CISales.PettyCashReceipt.Date, from.minusMinutes(1));
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
 
                 final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
                 docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
@@ -497,7 +497,7 @@ public abstract class Periode_Base
                 final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
                                 CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
-                _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, docTypeAttrQuery);
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
             }
         };
         return multi.execute(_parameter);
