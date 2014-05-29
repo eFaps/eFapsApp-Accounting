@@ -59,7 +59,7 @@
                 <property name="StatusGroup08">Sales_CreditNoteStatus</property>
                 <property name="Status08">Paid</property>
                 <property name="StatusGroup09">Sales_CreditNoteStatus</property>
-                <property name="Status097">Digitized</property>
+                <property name="Status09">Digitized</property>
                 <property name="StatusGroup10">Sales_ReminderStatus</property>
                 <property name="Status10">Open</property>
                 <property name="StatusGroup11">Sales_ReminderStatus</property>
