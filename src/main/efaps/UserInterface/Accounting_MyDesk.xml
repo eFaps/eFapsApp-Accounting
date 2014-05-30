@@ -34,17 +34,16 @@
         <childs>
             <child>Accounting_PeriodeMyDesk</child>
             <child>Accounting_SubPeriodMyDesk</child>
-            <child>Accounting_ConfigurationMyDesk</child>
-            <child>Accounting_ReportMyDesk</child>
             <child>Accounting_DocumentMyDesk</child>
-            <child>Accounting_IncomingDocumentMyDesk</child>
             <child>Accounting_IncomingDocumentsMyDesk</child>
-            <child>Sales_DocumentsPaymentsTaxMyDesk</child>
-            <!-- <child>Accounting_PaymentMyDesk</child> -->
             <child>Accounting_PurchaseRecordMyDesk</child>
             <child>Sales_Document_ReportMyDesk</child>
-            <child>Sales_PaymentRetention_Report</child>
+            <child>Accounting_IncomingRetentionMyDesk</child>
+            <child>Accounting_IncomingDetractionMyDesk</child>
+            <child>Accounting_IncomingPerceptionMyDesk</child>
             <child>Products_KardexMyDesk</child>
+            <child>Accounting_ConfigurationMyDesk</child>
+            <child>Accounting_ReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

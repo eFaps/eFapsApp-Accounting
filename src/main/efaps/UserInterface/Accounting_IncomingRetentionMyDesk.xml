@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,18 +22,17 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6eb87ed0-663e-4c3b-9833-3ef5143f94c7</uuid>
+    <uuid>b286bb7a-a99a-4bd8-beec-7b808d49ec1f</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_IncomingDocumentsMyDesk</name>
+        <name>Accounting_IncomingRetentionMyDesk</name>
         <childs>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Accounting_IncomingDocumentMyDesk</child>
+            <child>Sales_IncomingRetentionMyDesk</child>
+            <child>Sales_PaymentRetention_Report</child>
+            <child>Sales_RetentionCertificateMyDesk</child>
+            <child>Sales_IncomingRetentionCertificateMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
