@@ -118,6 +118,9 @@
             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_IncomingExchangeTree menu -->
             update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "d3586d4f-7b25-49b6-9319-2ba4e6cf68af", -1);
 
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_PettyCashReceiptTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "bd92f918-d154-478d-a686-b8fe256c8900", -1);
+
             <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCashOutTree -->
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "d5bd0a02-56e8-4cf7-bf04-1c5e179856a2", -1);
 
