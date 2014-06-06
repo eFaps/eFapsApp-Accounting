@@ -4,7 +4,7 @@
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="false"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
@@ -845,7 +845,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentType}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="39a0d782-f79a-41f1-9e26-98f91b673a5a" stretchType="RelativeToBandHeight" x="85" y="0" width="30" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -863,7 +863,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{docSerialNo}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="50b7b80c-6495-48b0-bd56-7439b3a5b2a4" stretchType="RelativeToBandHeight" x="257" y="0" width="82" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -880,7 +880,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="e02abc0e-3196-4851-9a98-078f1e608ab7" stretchType="RelativeToBandHeight" x="339" y="0" width="82" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -926,7 +926,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="5a3b941f-7bae-4586-8ba6-5e60e1c3608f" key="" stretchType="RelativeToBandHeight" x="685" y="0" width="70" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 				</reportElement>
@@ -941,7 +941,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{netTotal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="b689b082-a149-419a-88d7-d4f88eac25be" key="" stretchType="RelativeToBandHeight" x="755" y="0" width="70" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 				</reportElement>
@@ -956,7 +956,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{igv}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="5a3b941f-7bae-4586-8ba6-5e60e1c3608f" key="" stretchType="RelativeToBandHeight" x="1105" y="0" width="70" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 				</reportElement>
@@ -971,7 +971,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{export}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="5880bc3b-311e-4e38-afa9-1a93ecc2e50c" stretchType="RelativeToBandHeight" x="1315" y="0" width="70" height="14">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -988,7 +988,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00##" isBlankWhenNull="true">
+			<textField isStretchWithOverflow="true" pattern="###0.00##" isBlankWhenNull="true">
 				<reportElement uuid="5ae0bd22-495a-47f6-a0ee-0ec48a4863d9" key="" stretchType="RelativeToBandHeight" x="1602" y="0" width="45" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<printWhenExpression><![CDATA[BigDecimal.ONE.compareTo($F{rate}) != 0]]></printWhenExpression>
@@ -1019,7 +1019,7 @@ DOCUMENTO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{contactDocType}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="e61ba3d5-7e32-4320-8ad7-bf1b8157354e" stretchType="RelativeToBandHeight" x="115" y="0" width="62" height="14">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
