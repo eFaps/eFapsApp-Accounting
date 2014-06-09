@@ -445,6 +445,63 @@ public abstract class Periode_Base
     }
 
     /**
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getFundsToBeSettled(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Periode.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+
+                final List<Status> statusArrayBalance = new ArrayList<Status>();
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.FundsToBeSettledBalance);
+                if (containsProperty(_parameter, "FundsToBeSettledBalanceStatus")) {
+                    for (final String balanceStatus : analyseProperty(_parameter, "FundsToBeSettledBalanceStatus")
+                                    .values()) {
+                        statusArrayBalance.add(Status.find(CISales.FundsToBeSettledBalanceStatus.uuid, balanceStatus));
+                    }
+                } else {
+                    statusArrayBalance.add(Status.find(CISales.FundsToBeSettledBalanceStatus.Closed));
+                }
+                if (!statusArrayBalance.isEmpty()) {
+                    queryBldr.addWhereAttrEqValue(CISales.FundsToBeSettledBalance.Status, statusArrayBalance.toArray());
+                }
+                final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.FundsToBeSettledBalance.ID);
+
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
+                queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
+                final AttributeQuery attrQuery2 = queryBldr2
+                                .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+
+                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                                attrQuery2);
+                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                                CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
+
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+    /**
      * Called from a tree menu command to present the documents that are with status
      * booked and therefor must be worked on still.
      *
