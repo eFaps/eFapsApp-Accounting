@@ -45,6 +45,15 @@
                 program="org.efaps.esjp.accounting.transaction.Transaction">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
+            <validate program="org.efaps.esjp.accounting.ExternalVoucher" method="validate" index="1">
+                <property name="Validation">NAME</property>
+                <property name="NAME_FieldName">extName</property>
+                <property name="ContactFieldName">contactPicker</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
+                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
+                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_SubPeriodTree_External_Menu_Action_Create.UI_ACCESSCHECK.1"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI"
