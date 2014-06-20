@@ -329,7 +329,7 @@ public abstract class Recalculate_Base
                     insert3.execute();
 
                     _parameter.put(ParameterValues.INSTANCE, docInst);
-                    new DocumentSum().recalculateRate(_parameter);
+                    getRecalculateRate4Doc(_parameter);
                 }
             }
         }
@@ -829,5 +829,15 @@ public abstract class Recalculate_Base
         return set;
     }
 
+    protected Return getRecalculateRate4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new DocSum().recalculateRate(_parameter);
+    }
 
+    public class DocSum
+        extends DocumentSum
+    {
+
+    }
 }
