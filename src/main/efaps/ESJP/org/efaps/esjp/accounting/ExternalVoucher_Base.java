@@ -64,10 +64,12 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.ContactsPicker;
+import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
+import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
-import org.efaps.esjp.sales.document.DocumentSum;
-import org.efaps.esjp.sales.document.DocumentSum_Base;
+import org.efaps.esjp.sales.document.AbstractDocumentSum;
+import org.efaps.esjp.sales.document.AbstractDocumentSum_Base;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
@@ -87,7 +89,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("204d6d77-a034-455e-9867-afcada575c09")
 @EFapsRevision("$Rev$")
 public abstract class ExternalVoucher_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Called from event for creation of a transaction for a External Document.
@@ -128,7 +130,7 @@ public abstract class ExternalVoucher_Base
         final CreatedDoc createdDoc = new CreatedDoc();
         //create a list of calculators
         final List<Calculator> calcList = analyseAmountsFromUI(_parameter);
-        createdDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+        createdDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
 
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 

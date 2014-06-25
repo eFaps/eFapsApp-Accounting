@@ -64,7 +64,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.document.DocumentSum;
+import org.efaps.esjp.sales.document.AbstractDocumentSum;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -830,7 +830,7 @@ public abstract class Recalculate_Base
     }
 
     public class Accounting4DocSum
-        extends DocumentSum
+        extends AbstractDocumentSum
     {
 
     }
