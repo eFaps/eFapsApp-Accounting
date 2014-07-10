@@ -26,48 +26,31 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Payment</name>
+        <name>Accounting_PeriodeTree_PayMenu_Payment</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_Payment_Menu</menu>
+            <menu>Accounting_PeriodeTree_PayMenu_Payment_Menu</menu>
             <table>Sales_PaymentDocumentAbstractTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode"
                 method="getPaymentToBook">
                 <property name="Type">Sales_PaymentDocumentIOAbstract</property>
-                <property name="Type">Sales_PaymentDocumentIOAbstract</property>
-                <property name="StatusGroup01">Sales_PaymentInternalStatus</property>
+                <property name="StatusGroup01">Sales_PaymentCashOutStatus</property>
                 <property name="Status01">Closed</property>
-                <property name="StatusGroup02">Sales_PaymentCashStatus</property>
+                <property name="StatusGroup02">Sales_PaymentCheckOutStatus</property>
                 <property name="Status02">Closed</property>
-                <property name="StatusGroup03">Sales_PaymentCheckStatus</property>
+                <property name="StatusGroup03">Sales_PaymentDepositOutStatus</property>
                 <property name="Status03">Closed</property>
-                <property name="StatusGroup04">Sales_PaymentCreditCardAbstractStatus</property>
+                <property name="StatusGroup04">Sales_PaymentDetractionOutStatus</property>
                 <property name="Status04">Closed</property>
-                <property name="StatusGroup05">Sales_PaymentDebitCardAbstractStatus</property>
+                <property name="StatusGroup05">Sales_PaymentExchangeOutStatus</property>
                 <property name="Status05">Closed</property>
-                <property name="StatusGroup06">Sales_PaymentDetractionStatus</property>
+                <property name="StatusGroup06">Sales_PaymentRetentionOutStatus</property>
                 <property name="Status06">Closed</property>
-                <property name="StatusGroup07">Sales_PaymentExchangeStatus</property>
+                <property name="StatusGroup07">Sales_PaymentSupplierOutStatus</property>
                 <property name="Status07">Closed</property>
-                <property name="StatusGroup08">Sales_PaymentRetentionStatus</property>
-                <property name="Status08">Closed</property>
-                <property name="StatusGroup09">Sales_PaymentCashOutStatus</property>
-                <property name="Status09">Closed</property>
-                <property name="StatusGroup10">Sales_PaymentCheckOutStatus</property>
-                <property name="Status10">Closed</property>
-                <property name="StatusGroup11">Sales_PaymentDepositOutStatus</property>
-                <property name="Status11">Closed</property>
-                <property name="StatusGroup12">Sales_PaymentDetractionOutStatus</property>
-                <property name="Status12">Closed</property>
-                <property name="StatusGroup13">Sales_PaymentExchangeOutStatus</property>
-                <property name="Status13">Closed</property>
-                <property name="StatusGroup14">Sales_PaymentRetentionOutStatus</property>
-                <property name="Status14">Closed</property>
-                <property name="StatusGroup15">Sales_PaymentSupplierOutStatus</property>
-                <property name="Status15">Closed</property>
             </evaluate>
         </target>
         <!-- properties -->

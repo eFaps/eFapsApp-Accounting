@@ -19,18 +19,17 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>4c08766e-0249-4f6c-a4cf-6b65c11a56bd</uuid>
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>412d0f82-b55d-4952-b147-eaceaee71b2b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Payment_Menu</name>
-        <!-- childs -->
+        <name>Accounting_PeriodeTree_PaymentInternal_Menu</name>
         <childs>
-            <child>Accounting_PeriodeTree_Payment_Menu_Action</child>
+            <child>Accounting_PeriodeTree_PaymentInternal_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

@@ -44,14 +44,9 @@
             <child>Accounting_PeriodeTree_PayMenu</child>
             <child>Accounting_PeriodeTree_CollectMenu</child>
 
-            <child>Accounting_PeriodeTree_Payment</child>
-
-
             <child>Accounting_PeriodeTree_StockToBook</child>
-
             <child>Accounting_PeriodeTree_RetPer</child>
-            <child>Accounting_PeriodeTree_Securities</child>
-
+            <child>Accounting_PeriodeTree_PaymentInternal</child>
             <child>Accounting_PeriodeTree_GainLoss</child>
             <child>Accounting_PeriodeTree_Transaction</child>
             <child>Accounting_PeriodeTree_ConfigMenu</child>
