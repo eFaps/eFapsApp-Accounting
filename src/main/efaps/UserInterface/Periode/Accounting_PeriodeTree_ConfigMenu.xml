@@ -35,8 +35,8 @@
             <child>Accounting_PeriodeTree_ConfigMenu_Account</child>
             <child>Accounting_PeriodeTree_Case</child>
             <child>Accounting_PeriodeTree_ConfigMenu_BankCash</child>
-            <child>Accounting_PeriodeTree_Account2Account</child>
-            <child>Accounting_PeriodeTree_Label</child>
+            <child>Accounting_PeriodeTree_ConfigMenu_Label</child>
+            <child>Accounting_PeriodeTree_ConfigMenu_Account2Account</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
