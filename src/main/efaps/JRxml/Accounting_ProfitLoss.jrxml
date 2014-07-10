@@ -1,128 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ProfitLoss" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="672814c3-4691-44f1-b294-a02d5801ec54">
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="UUID" value="390d6c86-f632-4013-bb7b-f4b208e9afca"/>
-	</parameter>
-	<parameter name="CompanyName" class="java.lang.String"/>
-	<parameter name="CompanyTaxNum" class="java.lang.String"/>
-	<parameter name="FromDate" class="org.joda.time.DateTime"/>
-	<parameter name="ToDate" class="org.joda.time.DateTime"/>
-	<parameter name="PeriodeYear" class="org.joda.time.DateTime"/>
-	<pageHeader>
-		<band height="110">
-			<staticText>
-				<reportElement uuid="e165d2d3-b5a8-4aea-9af8-0cb99e1b17a6" x="0" y="80" width="80" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[RUC:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="2206a9fb-7c90-4a1f-98c6-e9d8b2fa692a" x="0" y="64" width="80" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="10" isBold="true"/>
-				</textElement>
-				<text><![CDATA[EMPRESA:]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ebd70492-2fcb-4127-97f6-a0cbf73a0e42" x="80" y="80" width="360" height="16"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="3d2db4c4-0fff-4ad8-bc73-451d5976688b" x="80" y="64" width="360" height="16"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="4e2715aa-0763-421f-bc73-775424d05f7e" x="150" y="46" width="90" height="16">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="11" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{ToDate}.toDate()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="0fa7b076-62a2-444c-aeba-055f92fe67e3" x="0" y="46" width="30" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[DEL:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="5f238bc2-24e7-448d-aed8-e9512821b473" x="0" y="0" width="549" height="22">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="15" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ESTADO DE GANANCIAS Y PÉRDIDAS]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="a557a642-416f-44c8-9c5c-0aa1c8168797" x="0" y="30" width="79" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[EJERCICIO:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="af7509c0-859c-49f1-87f8-891687adfb62" x="120" y="46" width="30" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[AL:]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="b74cbc9a-1bba-4341-935e-96d1b869895a" x="79" y="30" width="470" height="16"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{PeriodeYear}.getYear()]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="f7ef9772-61c6-4f19-847b-7cf7d95283b1" x="30" y="46" width="90" height="16"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="11" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{FromDate}.toDate()]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageHeader>
-	<pageFooter>
-		<band height="12">
-			<textField>
-				<reportElement uuid="346a06a1-a55c-4457-a7c9-b819b00dd150" x="419" y="0" width="80" height="12"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement uuid="2ba2bc74-460e-4f8e-a496-14a1e011ff4e" x="500" y="0" width="40" height="12"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.3" value="columnHeader"/>
+    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+        <property name="UUID" value="390d6c86-f632-4013-bb7b-f4b208e9afca"/>
+    </parameter>
+    <parameter name="CompanyName" class="java.lang.String"/>
+    <parameter name="CompanyTaxNum" class="java.lang.String"/>
+    <parameter name="FromDate" class="org.joda.time.DateTime"/>
+    <parameter name="ToDate" class="org.joda.time.DateTime"/>
+    <parameter name="PeriodYear" class="org.joda.time.DateTime"/>
+    <pageHeader>
+        <band height="110">
+            <staticText>
+                <reportElement uuid="e165d2d3-b5a8-4aea-9af8-0cb99e1b17a6" x="0" y="80" width="80" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[RUC:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement uuid="2206a9fb-7c90-4a1f-98c6-e9d8b2fa692a" x="0" y="64" width="80" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EMPRESA:]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="ebd70492-2fcb-4127-97f6-a0cbf73a0e42" x="80" y="80" width="360" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="3d2db4c4-0fff-4ad8-bc73-451d5976688b" x="80" y="64" width="360" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement uuid="4e2715aa-0763-421f-bc73-775424d05f7e" x="150" y="46" width="90" height="16">
+                    <property name="local_mesure_unitwidth" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{ToDate}.toDate()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement uuid="0fa7b076-62a2-444c-aeba-055f92fe67e3" x="0" y="46" width="30" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[DEL:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement uuid="5f238bc2-24e7-448d-aed8-e9512821b473" x="0" y="0" width="549" height="22">
+                    <property name="local_mesure_unitheight" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="15" isBold="true"/>
+                </textElement>
+                <text><![CDATA[ESTADO DE GANANCIAS Y PÉRDIDAS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement uuid="a557a642-416f-44c8-9c5c-0aa1c8168797" x="0" y="30" width="79" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EJERCICIO:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement uuid="af7509c0-859c-49f1-87f8-891687adfb62" x="120" y="46" width="30" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[AL:]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="b74cbc9a-1bba-4341-935e-96d1b869895a" x="79" y="30" width="470" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{PeriodYear}.getYear()]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement uuid="f7ef9772-61c6-4f19-847b-7cf7d95283b1" x="30" y="46" width="90" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{FromDate}.toDate()]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <pageFooter>
+        <band height="12">
+            <textField>
+                <reportElement uuid="346a06a1-a55c-4457-a7c9-b819b00dd150" x="419" y="0" width="80" height="12"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement uuid="2ba2bc74-460e-4f8e-a496-14a1e011ff4e" x="500" y="0" width="40" height="12"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
 </jasperReport>
