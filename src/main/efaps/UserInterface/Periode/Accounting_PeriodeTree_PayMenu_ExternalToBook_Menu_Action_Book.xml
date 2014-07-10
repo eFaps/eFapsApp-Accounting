@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ExternalToBook_Menu_Action_Book</name>
+        <name>Accounting_PeriodeTree_PayMenu_ExternalToBook_Menu_Action_Book</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>

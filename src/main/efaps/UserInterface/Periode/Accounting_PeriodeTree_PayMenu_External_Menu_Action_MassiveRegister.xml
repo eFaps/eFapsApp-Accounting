@@ -22,15 +22,12 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>ec2437f7-7163-47fb-85aa-9a52cb572ee3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev: 5317 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_External_Menu_Action_MassiveRegister</name>
-
+        <name>Accounting_PeriodeTree_PayMenu_External_Menu_Action_MassiveRegister</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -45,7 +42,6 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>

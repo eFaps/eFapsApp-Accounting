@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -15,45 +17,44 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5317 $
- Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>9b5bf396-1af7-46eb-9ec9-1e069b4921fc</uuid>
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>8882fbf7-e84c-4de1-b9af-3dbfeeb03259</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev: 5317 $</file-revision>
-
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ExternalToBook_Menu_Action_MassiveBook</name>
-
+        <name>Accounting_PeriodeTree_PayMenu_External_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_MassiveBooking4ExternalForm</form>
-            <execute method="create4DocMassive" program="org.efaps.esjp.accounting.transaction.Create"/>
+            <form>Accounting_TransactionCreate4ExternalForm</form>
+            <execute program="org.efaps.esjp.accounting.transaction.Create"
+                method="create4External" />
+            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="validate" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_ExternalToBook_Menu_Action_MassiveBook.UI_ACCESSCHECK"
+                name="Accounting_PeriodeTree_External_Menu_Action_Register.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodeLink</property>
+        <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">800</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
-        <property name="AskUser">true</property>
-        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

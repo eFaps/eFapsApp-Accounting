@@ -32,8 +32,8 @@
             <form>Accounting_PeriodeTree_PayMenuForm</form>
         </target>
         <childs>
-            <child>Accounting_PeriodeTree_External</child>
-            <child>Accounting_PeriodeTree_ExternalToBook</child>
+            <child>Accounting_PeriodeTree_PayMenu_External</child>
+            <child>Accounting_PeriodeTree_PayMenu_ExternalToBook</child>
             <child>Accounting_PeriodeTree_PettyCashReceipt</child>
             <child>Accounting_PeriodeTree_FundsToBeSettled</child>
         </childs>

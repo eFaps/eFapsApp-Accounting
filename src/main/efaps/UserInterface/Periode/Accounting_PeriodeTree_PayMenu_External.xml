@@ -32,13 +32,13 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_External</name>
+        <name>Accounting_PeriodeTree_PayMenu_External</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_External_Menu</menu>
+            <menu>Accounting_PeriodeTree_PayMenu_External_Menu</menu>
             <table>Accounting_IncomingDocumentTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode" method="getExternals" >
                 <property name="Type01">Sales_IncomingInvoice</property>
