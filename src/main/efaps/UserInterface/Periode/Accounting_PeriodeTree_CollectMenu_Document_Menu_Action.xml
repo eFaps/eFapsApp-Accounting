@@ -23,25 +23,22 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-menu xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>2a510f62-2a6d-4c56-b56f-d1cbcb5aefae</uuid>
+    <uuid>3253a0b8-e02a-4fdb-975b-4fa4100612d0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_BankCash_Menu_Action_Disconnect</name>
-        <!-- target definitions -->
-        <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
-        </target>
-
-        <!-- properties -->
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <name>Accounting_PeriodeTree_CollectMenu_Document_Menu_Action</name>
+        <!-- childs -->
+        <childs>
+            <child>Accounting_PeriodeTree_CollectMenu_Document_Menu_Action_Book</child>
+            <child>Accounting_PeriodeTree_CollectMenu_Document_Menu_Action_MassiveRegister</child>
+        </childs>
     </definition>
 
-</ui-command>
+</ui-menu>

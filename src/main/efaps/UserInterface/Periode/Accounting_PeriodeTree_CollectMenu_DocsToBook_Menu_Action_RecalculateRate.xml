@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -15,45 +17,44 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5317 $
- Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>3714fd6b-fc13-4aa4-b24e-1594324a1d18</uuid>
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>55f1d618-a00d-4916-8ba9-c47a1b5c7d24</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev: 5317 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateDocument</name>
+        <name>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate</name>
 
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_GainLoss4DocumentAccountForm</form>
-            <execute method="createGainLoss4DocumentAccount"
-                program="org.efaps.esjp.accounting.transaction.Recalculate">
-            </execute>
+            <form>Accounting_TransactionRecalculateForm</form>
+            <execute program="org.efaps.esjp.accounting.transaction.Recalculate"
+                method="recalculateRate"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateDocument.UI_ACCESSCHECK"
+                name="Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateRate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">800</property>
-        <property name="AskUser">true</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

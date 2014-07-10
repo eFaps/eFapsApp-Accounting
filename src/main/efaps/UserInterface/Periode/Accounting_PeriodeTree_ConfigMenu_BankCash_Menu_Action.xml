@@ -26,21 +26,16 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>de9ed030-5d2b-426f-b969-eb57841980f0</uuid>
+    <uuid>f6785c7d-4352-44b4-a920-bdcd36f69b50</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_DocsToBook_Menu_Action</name>
+        <name>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_Book</child>
-            <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_MassiveBook</child>
-            <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateRate</child>
-            <child>Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateDocument</child>
+            <child>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu_Action_AddExisting</child>
+            <child>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu_Action_Disconnect</child>
         </childs>
     </definition>
-
 </ui-menu>

@@ -32,9 +32,9 @@
             <form>Accounting_PeriodeTree_ConfigMenuForm</form>
         </target>
         <childs>
-            <child>Accounting_PeriodeTree_Account</child>
+            <child>Accounting_PeriodeTree_ConfigMenu_Account</child>
             <child>Accounting_PeriodeTree_Case</child>
-            <child>Accounting_PeriodeTree_BankCash</child>
+            <child>Accounting_PeriodeTree_ConfigMenu_BankCash</child>
             <child>Accounting_PeriodeTree_Account2Account</child>
             <child>Accounting_PeriodeTree_Label</child>
         </childs>

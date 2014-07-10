@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,37 +15,29 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5317 $
+ Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (lun, 16 ago 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
--->
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>7c79a9f0-5d3e-4908-bb5a-3704ec0279c6</uuid>
+    <uuid>05935653-74dd-4624-9c8e-630acb191c64</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 5317 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Document_Menu_Action_Book</name>
-
+        <name>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook</name>
          <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4DocForm</form>
-            <execute program="org.efaps.esjp.accounting.transaction.Create"
-                method="create4Doc" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
-                method="validate" />
+            <form>Accounting_MassiveBooking4DocumentForm</form>
+            <execute method="create4DocMassive" program="org.efaps.esjp.accounting.transaction.Create"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_Document_Menu_Action_Book.UI_ACCESSCHECK"
+                name="Accounting_PeriodeTree_DocsToBook_Menu_Action_MassiveBook.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>
@@ -57,9 +47,11 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">800</property>
         <property name="Submit">true</property>
+        <property name="AskUser">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 
 </ui-command>

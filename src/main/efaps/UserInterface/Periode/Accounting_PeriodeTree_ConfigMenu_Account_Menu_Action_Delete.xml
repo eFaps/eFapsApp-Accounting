@@ -23,22 +23,27 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>3253a0b8-e02a-4fdb-975b-4fa4100612d0</uuid>
+    <uuid>1781cfe8-0b39-4c24-a13d-4f2d734404b6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Document_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Accounting_PeriodeTree_Document_Menu_Action_Book</child>
-            <child>Accounting_PeriodeTree_Document_Menu_Action_MassiveRegister</child>
-        </childs>
+        <name>Accounting_PeriodeTree_ConfigMenu_Account_Menu_Action_Delete</name>
+         <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
+        <target>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+        </target>
+        <!-- properties -->
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 
-</ui-menu>
+</ui-command>

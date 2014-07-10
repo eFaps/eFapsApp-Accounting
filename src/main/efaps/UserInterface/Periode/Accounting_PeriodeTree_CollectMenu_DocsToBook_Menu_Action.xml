@@ -27,17 +27,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>cd3b968d-45d1-490e-bd00-7407a83fcdc9</uuid>
+    <uuid>de9ed030-5d2b-426f-b969-eb57841980f0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Account_Menu_Action</name>
+        <name>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Account_Menu_Action_Create</child>
-            <child>Accounting_PeriodeTree_Account_Menu_Action_Delete</child>
+            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_Book</child>
+            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook</child>
+            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate</child>
+            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_RecalculateDocument</child>
         </childs>
     </definition>
 

@@ -26,22 +26,23 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7e0e27df-15f2-41a1-a6dd-4a37dd62fc39</uuid>
+
+    <uuid>4b1a5f70-6b87-4b51-8473-133184bc5fe1</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_BankCash</name>
+        <name>Accounting_PeriodeTree_ConfigMenu_Account</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_BankCash_Menu</menu>
-            <table>Accounting_Periode2AccountTable</table>
+            <menu>Accounting_PeriodeTree_ConfigMenu_Account_Menu</menu>
+            <table>Accounting_AccountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_Periode2Account</property>
-                <property name="LinkFrom">ToLink</property>
+                <property name="Type">Accounting_AccountAbstract</property>
+                <property name="LinkFrom">PeriodeAbstractLink</property>
             </evaluate>
         </target>
         <!-- properties -->

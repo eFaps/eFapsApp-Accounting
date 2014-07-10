@@ -27,27 +27,21 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>0b89b5e3-893c-40c6-8369-cdb2a74625c3</uuid>
+    <uuid>2a510f62-2a6d-4c56-b56f-d1cbcb5aefae</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Account_Menu_Action_Create</name>
-        <access>
-            <role>Accounting_Admin</role>
-            <role>Accounting_Manager</role>
-        </access>
+        <name>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu_Action_Disconnect</name>
+        <!-- target definitions -->
         <target>
-            <form>Accounting_AccountForm</form>
-            <execute program="org.efaps.esjp.accounting.Account" method="create" />
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_AccountAbstract</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+
+        <!-- properties -->
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 
 </ui-command>

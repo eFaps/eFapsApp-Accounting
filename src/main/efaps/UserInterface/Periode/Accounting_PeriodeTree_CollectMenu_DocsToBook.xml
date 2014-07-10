@@ -31,13 +31,13 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_DocsToBook</name>
+        <name>Accounting_PeriodeTree_CollectMenu_DocsToBook</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_DocsToBook_Menu</menu>
+            <menu>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu</menu>
             <table>Accounting_PeriodeDocumentSumTable</table>
             <evaluate program="org.efaps.esjp.accounting.Periode" method="getDocumentsToBook" >
                 <property name="Type">Sales_DocumentSumAbstract</property>
