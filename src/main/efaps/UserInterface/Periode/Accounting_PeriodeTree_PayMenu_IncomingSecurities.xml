@@ -28,14 +28,14 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_IncomingSecurities</name>
+        <name>Accounting_PeriodTree_PayMenu_IncomingSecurities</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_PayMenu_IncomingSecurities_Menu</menu>
-            <table>Accounting_PeriodeSecuritiesTable</table>
+            <menu>Accounting_PeriodTree_PayMenu_IncomingSecurities_Menu</menu>
+            <table>Accounting_PeriodSecuritiesTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type01">Sales_IncomingCredit</property>
                 <property name="StatusGroup01">Sales_IncomingCreditStatus</property>
@@ -46,7 +46,7 @@
                 <property name="Status03">Canceled</property>
             </evaluate>
             <trigger event="UI_ACCESSCHECK" method="configObjectCheck"
-                name="Accounting_PeriodeTree_Securities.UI_ACCESSCHECK"
+                name="Accounting_PeriodTree_Securities.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateSecurities</property>

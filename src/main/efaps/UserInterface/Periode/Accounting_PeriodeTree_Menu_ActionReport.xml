@@ -27,13 +27,13 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_ActionReport</name>
+        <name>Accounting_PeriodTree_Menu_ActionReport</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Menu_ActionReport_Journal</child>
-            <child>Accounting_PeriodeTree_Menu_ActionReport_JournalGainLoss</child>            
-            <child>Accounting_PeriodeTree_Menu_ActionReport_ExternalVoucherJournal</child>
-            <child>Accounting_PeriodeTree_Menu_ActionReport_DocTransactions</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Journal</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_JournalGainLoss</child>            
+            <child>Accounting_PeriodTree_Menu_ActionReport_ExternalVoucherJournal</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_DocTransactions</child>
         </childs>
     </definition>
 

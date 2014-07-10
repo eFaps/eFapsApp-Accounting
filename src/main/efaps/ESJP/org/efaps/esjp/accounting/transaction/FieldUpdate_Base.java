@@ -39,7 +39,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
-import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -132,15 +132,15 @@ public abstract class FieldUpdate_Base
                 rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
             }
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
+            final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
             final BigDecimal sum = getSum(_parameter, postfix, null, null, null);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
             final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
             final String sumStr = formater.format(sum) + " "
-                            + new Periode().getCurrency(periodeInstance).getSymbol();
+                            + new Period().getCurrency(periodInstance).getSymbol();
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
-                            + new Periode().getCurrency(periodeInstance).getSymbol();
+                            + new Period().getCurrency(periodInstance).getSymbol();
 
             final Map<String, String> map = new HashMap<String, String>();
             map.put("sum" + postfix, sumStr);
@@ -175,9 +175,9 @@ public abstract class FieldUpdate_Base
             final int pos = getSelectedRow(_parameter);
             final String dateStr = _parameter.getParameterValue("date_eFapsDate");
             final DateTime date = DateUtil.getDateFromParameter(dateStr);
-            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
+            final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
-            final RateInfo rate = evaluateRate(_parameter, periodeInstance, date,
+            final RateInfo rate = evaluateRate(_parameter, periodInstance, date,
                             Instance.get(CIERP.Currency.getType(), currIds[pos]));
             final DecimalFormat rateFormater = rate.getFormatter().getFrmt4RateUI();
             final DecimalFormat formater = getFormater(2, 2);
@@ -188,9 +188,9 @@ public abstract class FieldUpdate_Base
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
             final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
             final String sumStr = formater.format(sum) + " "
-                            + new Periode().getCurrency(periodeInstance).getSymbol();
+                            + new Period().getCurrency(periodInstance).getSymbol();
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
-                            + new Periode().getCurrency(periodeInstance).getSymbol();
+                            + new Period().getCurrency(periodInstance).getSymbol();
 
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Map<String, String> map = new HashMap<String, String>();
@@ -334,15 +334,15 @@ public abstract class FieldUpdate_Base
                 rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
             }
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
+            final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
             final BigDecimal sum = getSum(_parameter, postfix, null, null, null);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
             final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
             final String sumStr = formater.format(sum) + " "
-                            + new Periode().getCurrency(periodeInstance).getSymbol();
+                            + new Period().getCurrency(periodInstance).getSymbol();
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
-                            + new Periode().getCurrency(periodeInstance).getSymbol();
+                            + new Period().getCurrency(periodInstance).getSymbol();
 
             final Map<String, String> map = new HashMap<String, String>();
             map.put("sum" + postfix, sumStr);
@@ -375,10 +375,10 @@ public abstract class FieldUpdate_Base
         final StringBuilder ret = new StringBuilder();
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
         final DateTime date = DateUtil.getDateFromParameter(dateStr);
-        final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
         if (currIds != null) {
             for (int i = 0; i < currIds.length; i++) {
-                final RateInfo rate = evaluateRate(_parameter, periodeInstance, date,
+                final RateInfo rate = evaluateRate(_parameter, periodInstance, date,
                                 Instance.get(CIERP.Currency.getType(), currIds[i]));
                 ret.append("document.getElementsByName('").append(_targetFieldName).append("')[").append(i)
                     .append("].value='").append(rate.getRateUIFrmt()).append("';")

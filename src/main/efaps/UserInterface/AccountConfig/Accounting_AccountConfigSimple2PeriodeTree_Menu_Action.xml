@@ -29,10 +29,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfigSimple2PeriodeTree_Menu_Action</name>
+        <name>Accounting_AccountConfigSimple2PeriodTree_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_AccountConfigSimple2PeriodeTree_Menu_Action_Edit</child>
+            <child>Accounting_AccountConfigSimple2PeriodTree_Menu_Action_Edit</child>
         </childs>
     </definition>
 </ui-menu>

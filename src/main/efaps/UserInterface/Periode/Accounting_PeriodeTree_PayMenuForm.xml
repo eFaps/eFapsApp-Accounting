@@ -27,6 +27,6 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenuForm</name>
+        <name>Accounting_PeriodTree_PayMenuForm</name>
     </definition>
 </ui-form>

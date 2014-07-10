@@ -27,11 +27,11 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_ActionExport</name>
+        <name>Accounting_PeriodTree_Menu_ActionExport</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Menu_ActionExport_ExportAccountTable</child>
-            <child>Accounting_PeriodeTree_Menu_ActionExport_ExportCaseTable</child>
+            <child>Accounting_PeriodTree_Menu_ActionExport_ExportAccountTable</child>
+            <child>Accounting_PeriodTree_Menu_ActionExport_ExportCaseTable</child>
         </childs>
     </definition>
 

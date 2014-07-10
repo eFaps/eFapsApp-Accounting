@@ -28,14 +28,14 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_Exchange</name>
+        <name>Accounting_PeriodTree_PayMenu_Exchange</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_PayMenu_Exchange_Menu</menu>
-            <table>Accounting_PeriodeExchangeTable</table>
+            <menu>Accounting_PeriodTree_PayMenu_Exchange_Menu</menu>
+            <table>Accounting_PeriodExchangeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type01">Sales_Exchange</property>
                 <property name="StatusGroup01">Sales_ExchangeStatus</property>
@@ -43,7 +43,7 @@
             </evaluate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configObjectCheck"
-                name="Accounting_PeriodeTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                name="Accounting_PeriodTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateExchange</property>
             </trigger>

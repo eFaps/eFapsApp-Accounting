@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfigSimple2PeriodeTree_Menu_Action_Edit</name>
+        <name>Accounting_AccountConfigSimple2PeriodTree_Menu_Action_Edit</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -37,7 +37,7 @@
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_AccountConfigSimple2PeriodeForm</form>
+            <form>Accounting_AccountConfigSimple2PeriodForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
         </target>
 

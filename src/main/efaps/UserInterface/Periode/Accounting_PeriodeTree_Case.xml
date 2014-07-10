@@ -32,17 +32,17 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Case</name>
+        <name>Accounting_PeriodTree_Case</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_Case_Menu</menu>
+            <menu>Accounting_PeriodTree_Case_Menu</menu>
             <table>Accounting_CaseTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Accounting_CaseAbstract</property>
-                <property name="LinkFrom">PeriodeAbstractLink</property>
+                <property name="LinkFrom">PeriodAbstractLink</property>
             </evaluate>
         </target>
         <!-- properties -->

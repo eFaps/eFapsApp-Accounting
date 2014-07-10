@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_GainLoss_Menu_Action_AddExistingSimple</name>
+        <name>Accounting_PeriodTree_GainLoss_Menu_Action_AddExistingSimple</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -39,7 +39,7 @@
             <execute program="org.efaps.esjp.common.uisearch.Connect">
                 <property name="ConnectChildAttribute">FromLink</property>
                 <property name="ConnectParentAttribute">ToLink</property>
-                <property name="ConnectType">Accounting_AccountConfigSimple2Periode</property>
+                <property name="ConnectType">Accounting_AccountConfigSimple2Period</property>
             </execute>
         </target>
 

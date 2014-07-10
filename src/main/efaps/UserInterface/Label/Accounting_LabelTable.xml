@@ -55,11 +55,11 @@
             <property name="Attribute">Active</property>
             <property name="Label">Accounting_LabelAbstract/Active.Label</property>
         </field>
-        <field name="periodeLink">
+        <field name="periodLink">
             <property name="ModeSearch">READONLY</property>
-            <property name="SelectAlternateOID">linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[PeriodeAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_LabelAbstract/PeriodeAbstractLink.Label</property>
+            <property name="SelectAlternateOID">linkto[PeriodAbstractLink].oid</property>
+            <property name="Select">linkto[PeriodAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_LabelAbstract/PeriodAbstractLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
     </definition>

@@ -28,7 +28,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</name>
+        <name>Accounting_PeriodTree_Menu_Action_TransactionNumbering</name>
         <access>
             <role>Accounting_Admin</role>
         </access>

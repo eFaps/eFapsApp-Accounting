@@ -116,7 +116,7 @@ public abstract class DocTransactionsSource_Base
 
         final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Transaction);
         queryBuilder.addWhereAttrInQuery(CIAccounting.Transaction.ID, attrQuery);
-        queryBuilder.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, instance.getId());
+        queryBuilder.addWhereAttrEqValue(CIAccounting.Transaction.PeriodLink, instance.getId());
 
         final MultiPrintQuery multi = queryBuilder.getPrint();
         final SelectBuilder selDoc = new SelectBuilder()

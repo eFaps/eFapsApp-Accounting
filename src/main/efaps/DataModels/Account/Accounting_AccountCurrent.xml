@@ -33,9 +33,9 @@
         <name>Accounting_AccountCurrent</name>
         <parent>Accounting_AccountAbstract</parent>
         <attribute>
-            <name>PeriodeLink</name>
+            <name>PeriodLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_AccountSQLTable</sqltable>
             <sqlcolumn>PERIODEID</sqlcolumn>
         </attribute>

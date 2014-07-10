@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeDocumentSumTable</name>
+        <name>Accounting_PeriodDocumentSumTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>

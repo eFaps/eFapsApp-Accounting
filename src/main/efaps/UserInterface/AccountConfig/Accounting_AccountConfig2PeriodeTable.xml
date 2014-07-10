@@ -25,42 +25,42 @@
     <file-revision>$Rev: 8463 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfig2PeriodeTable</name>
+        <name>Accounting_AccountConfig2PeriodTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">Accounting_Periode2Account/Type.Label</property>
+            <property name="Label">Accounting_Period2Account/Type.Label</property>
             <property name="ModeSearch">READONLY</property>
             <property name="HRef">TREE</property>
             <property name="FilterType">PICKLIST</property>
         </field>
         <field name="isSales">
             <property name="Attribute">IsSale</property>
-            <property name="Label">Accounting_Periode2Account/IsSale.Label</property>
+            <property name="Label">Accounting_Period2Account/IsSale.Label</property>
         </field>
         <field name="name">
             <property name="ModeSearch">READONLY</property>
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Select">linkto[FromAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_Periode2Account/Name.Label</property>
+            <property name="Label">Accounting_Period2Account/Name.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="description">
             <property name="ModeSearch">READONLY</property>
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Select">linkto[FromAbstractLink].attribute[Description]</property>
-            <property name="Label">Accounting_Periode2Account/Description.Label</property>
+            <property name="Label">Accounting_Period2Account/Description.Label</property>
             <property name="Width">2</property>
         </field>
         <field name="sumBooked">
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Select">linkto[FromAbstractLink].attribute[SumBooked]</property>
-            <property name="Label">Accounting_Periode2Account/SumBooked.Label</property>
+            <property name="Label">Accounting_Period2Account/SumBooked.Label</property>
         </field>
         <field name="sumReport">
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Select">linkto[FromAbstractLink].attribute[SumReport]</property>
-            <property name="Label">Accounting_Periode2Account/SumReport.Label</property>
+            <property name="Label">Accounting_Period2Account/SumReport.Label</property>
         </field>
     </definition>
 </ui-table>

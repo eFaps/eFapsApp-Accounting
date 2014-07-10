@@ -79,18 +79,18 @@
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
         </field>
-        <field name="periode">
+        <field name="period">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="Label">Accounting_PaymentDocumentAbstractForm.periode.Label</property>
+            <property name="Label">Accounting_PaymentDocumentAbstractForm.period.Label</property>
             <trigger program="org.efaps.esjp.accounting.Payment"
-                method="periodeUIFieldValue"
-                name="Accounting_PaymentCheckForm.periode.UI_FIELD_VALUE"
+                method="periodUIFieldValue"
+                name="Accounting_PaymentCheckForm.period.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
             <trigger program="org.efaps.esjp.accounting.Payment"
-                method="update4Periode"
-                name="Accounting_PaymentCheckForm.periode.UI_FIELD_UPDATE"
+                method="update4Period"
+                name="Accounting_PaymentCheckForm.period.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="account">

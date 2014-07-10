@@ -27,15 +27,15 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Periode2AccountForm</name>
+        <name>Accounting_Period2AccountForm</name>
         <!-- fields -->
         <field name="salesAccountLink4Edit">
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">SalesAccountLink</property>
-            <property name="Label">Accounting_Periode2Account/SalesAccountLink.Label</property>
+            <property name="Label">Accounting_Period2Account/SalesAccountLink.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Accounting_Periode2AccountForm.salesAccountLink4Edit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Accounting_Period2AccountForm.salesAccountLink4Edit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
              </trigger>
@@ -43,14 +43,14 @@
         <field name="salesAccountLink">
             <property name="SelectAlternateOID">linkto[SalesAccountLink].oid</property>
             <property name="Phrase">$&lt;linkto[SalesAccountLink].attribute[Name]&gt; - $&lt;linkto[SalesAccountLink].linkto[CurrencyLink].attribute[Name]&gt;</property>
-            <property name="Label">Accounting_Periode2Account/SalesAccountLink.Label</property>
+            <property name="Label">Accounting_Period2Account/SalesAccountLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="accountLink">
             <property name="ModeSearch">READONLY</property>
             <property name="SelectAlternateOID">linkto[FromLink].oid</property>
             <property name="Select">linkto[FromLink].attribute[Name]</property>
-            <property name="Label">Accounting_Periode2Account/ToLink.Label</property>
+            <property name="Label">Accounting_Period2Account/ToLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field character="Group" name="createGroup">

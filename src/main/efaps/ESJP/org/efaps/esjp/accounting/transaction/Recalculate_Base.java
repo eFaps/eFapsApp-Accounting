@@ -300,7 +300,7 @@ public abstract class Recalculate_Base
                                 .append(" ").append(nameDoc).append(" ").append(dateStr);
                     insert.add(CIAccounting.Transaction.Description, description);
                     insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-                    insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                    insert.add(CIAccounting.Transaction.PeriodLink, _parameter.getInstance().getId());
                     insert.add(CIAccounting.Transaction.Status,
                                                     Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                     insert.execute();
@@ -387,7 +387,7 @@ public abstract class Recalculate_Base
             if (accs.length > 0) {
                 for (int i = 0; i < accs.length; i++) {
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                    queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                    queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
                                     _parameter.getInstance().getId());
                     queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accs[i].toString());
                     final MultiPrintQuery multi = queryBldr.getPrint();
@@ -423,7 +423,7 @@ public abstract class Recalculate_Base
         for (final String oid : relOIDs) {
             final Instance relInst = Instance.get(oid);
             if (!(relInst.isValid() && relInst.getType().isKindOf(
-                            CIAccounting.AccountConfigSimple2Periode.getType()))) {
+                            CIAccounting.AccountConfigSimple2Period.getType()))) {
                 check = false;
                 break;
             }
@@ -449,11 +449,11 @@ public abstract class Recalculate_Base
         throws EFapsException
     {
         final PrintQuery printPer = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CIAccounting.Periode.CurrencyLink).instance();
+        final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CIAccounting.Period.CurrencyLink).instance();
         printPer.addSelect(selCurrInst);
-        printPer.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.CurrencyLink);
+        printPer.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.CurrencyLink);
         printPer.execute();
-        final DateTime dateFrom = printPer.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+        final DateTime dateFrom = printPer.<DateTime>getAttribute(CIAccounting.Period.FromDate);
         final Instance currencyInst = printPer.<Instance>getSelect(selCurrInst);
 
         final String[] relOIDs = (String[]) Context.getThreadContext()
@@ -470,14 +470,14 @@ public abstract class Recalculate_Base
             final Instance relInst = Instance.get(oid);
             final PrintQuery print = new PrintQuery(relInst);
             final SelectBuilder selAccount = new SelectBuilder()
-                            .linkto(CIAccounting.AccountConfigSimple2Periode.FromLink).oid();
+                            .linkto(CIAccounting.AccountConfigSimple2Period.FromLink).oid();
             print.addSelect(selAccount);
-            print.addAttribute(CIAccounting.AccountConfigSimple2Periode.IsSale);
+            print.addAttribute(CIAccounting.AccountConfigSimple2Period.IsSale);
             if (print.execute()) {
                 final Instance instAcc = Instance.get(print.<String>getSelect(selAccount));
-                final boolean isSale = print.<Boolean>getAttribute(CIAccounting.AccountConfigSimple2Periode.IsSale);
+                final boolean isSale = print.<Boolean>getAttribute(CIAccounting.AccountConfigSimple2Period.IsSale);
                 final QueryBuilder attrQuerBldr = new QueryBuilder(CIAccounting.Transaction);
-                attrQuerBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance());
+                attrQuerBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodLink, _parameter.getInstance());
                 attrQuerBldr.addWhereAttrGreaterValue(CIAccounting.Transaction.Date, dateFrom.minusMinutes(1));
                 attrQuerBldr.addWhereAttrLessValue(CIAccounting.Transaction.Date, dateTo.plusDays(1));
                 final AttributeQuery attrQuery = attrQuerBldr.getAttributeQuery(CIAccounting.Transaction.ID);
@@ -526,7 +526,7 @@ public abstract class Recalculate_Base
                             insert = new Insert(CIAccounting.Transaction);
                             insert.add(CIAccounting.Transaction.Description, descr);
                             insert.add(CIAccounting.Transaction.Date, dateTo);
-                            insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance());
+                            insert.add(CIAccounting.Transaction.PeriodLink, _parameter.getInstance());
                             insert.add(CIAccounting.Transaction.Status,
                                             Status.find(CIAccounting.TransactionStatus.Open));
                             insert.execute();
@@ -650,7 +650,7 @@ public abstract class Recalculate_Base
 
             // filter classification Document
             final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIAccounting.Transaction);
-            attrQueryBldr2.addWhereAttrEqValue(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+            attrQueryBldr2.addWhereAttrEqValue(CIAccounting.Transaction.PeriodLink, _parameter.getInstance().getId());
             attrQueryBldr2.addWhereAttrInQuery(CIAccounting.Transaction.ID, attrQuery);
             final AttributeQuery attrQuery2 = attrQuerBldr.getAttributeQuery(CIAccounting.Transaction.ID);
 
@@ -731,7 +731,7 @@ public abstract class Recalculate_Base
                                 insert = new Insert(CIAccounting.Transaction);
                                 insert.add(CIAccounting.Transaction.Description, description.toString());
                                 insert.add(CIAccounting.Transaction.Date, dateTo);
-                                insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                                insert.add(CIAccounting.Transaction.PeriodLink, _parameter.getInstance().getId());
                                 insert.add(CIAccounting.Transaction.Status,
                                                 Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                                 insert.execute();
@@ -816,8 +816,8 @@ public abstract class Recalculate_Base
         throws EFapsException
     {
         final Set<String> set = new HashSet<String>();
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountConfigDocument2Periode);
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.AccountConfigDocument2Periode.FromLink);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountConfigDocument2Period);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.AccountConfigDocument2Period.FromLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         queryBldr.addWhereAttrInQuery(CIAccounting.AccountAbstract.ID, attrQuery);

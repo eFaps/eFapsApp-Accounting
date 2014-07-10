@@ -45,9 +45,9 @@
         </field>
         <field name="period">
             <property name="HRef">TREE</property>
-            <property name="SelectAlternateOID">linkto[FromAccountLink].linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[FromAccountLink].linkto[PeriodeAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_AccountAbstract/PeriodeAbstractLink.Label</property>
+            <property name="SelectAlternateOID">linkto[FromAccountLink].linkto[PeriodAbstractLink].oid</property>
+            <property name="Select">linkto[FromAccountLink].linkto[PeriodAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_AccountAbstract/PeriodAbstractLink.Label</property>
         </field>
     </definition>
 </ui-table>

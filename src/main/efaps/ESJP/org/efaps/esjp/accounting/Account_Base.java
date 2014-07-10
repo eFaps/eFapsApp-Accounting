@@ -78,7 +78,7 @@ public abstract class Account_Base
     public static final String CACHEKEY = Account.class.getName() + ".CacheKey";
 
     /**
-     * Method to show the tree transaction in periode.
+     * Method to show the tree transaction in period.
      *
      * @param _parameter Parameter as passed from eFaps API
      * @return ret Return
@@ -88,10 +88,10 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode2Account);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Periode2Account.FromLink, _parameter.getInstance());
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period2Account);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Period2Account.FromLink, _parameter.getInstance());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selInst = new SelectBuilder().linkto(CIAccounting.Periode2Account.ToLink).instance();
+        final SelectBuilder selInst = new SelectBuilder().linkto(CIAccounting.Period2Account.ToLink).instance();
         multi.addSelect(selInst);
         multi.execute();
         final Instance accInst = multi.<Instance>getSelect(selInst);
@@ -189,7 +189,7 @@ public abstract class Account_Base
     public Return autoComplete4Account(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance instance = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance instance = new Period().evaluateCurrentPeriod(_parameter);
 
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final boolean caseFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Account"));
@@ -218,8 +218,8 @@ public abstract class Account_Base
         boolean showPeriod = false;
         if (!caseFilter || !caseInst.isValid()) {
             // if we do not filter for period we must show it
-            if (instance != null && instance.getType().isKindOf(CIAccounting.Periode.getType())) {
-                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, instance);
+            if (instance != null && instance.getType().isKindOf(CIAccounting.Period.getType())) {
+                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, instance);
             } else {
                 showPeriod = true;
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Company,
@@ -248,8 +248,8 @@ public abstract class Account_Base
                         CIAccounting.AccountAbstract.Company);
         SelectBuilder selPeriod = null;
         if (showPeriod) {
-            selPeriod = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
-                        .attribute(CIAccounting.Periode.Name);
+            selPeriod = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.PeriodAbstractLink)
+                        .attribute(CIAccounting.Period.Name);
             multi.addSelect(selPeriod);
         }
         multi.execute();
@@ -292,15 +292,15 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Instance instance = _parameter.getCallInstance();
-        long periode;
+        long period;
         boolean parent = false;
-        if ("Accounting_Periode".equals(instance.getType().getName())) {
-            periode = instance.getId();
+        if ("Accounting_Period".equals(instance.getType().getName())) {
+            period = instance.getId();
         } else {
             final PrintQuery print = new PrintQuery(instance);
-            print.addAttribute("PeriodeAbstractLink");
+            print.addAttribute("PeriodAbstractLink");
             print.execute();
-            periode = print.<Long> getAttribute("PeriodeAbstractLink");
+            period = print.<Long> getAttribute("PeriodAbstractLink");
             parent = true;
         }
 
@@ -318,7 +318,7 @@ public abstract class Account_Base
         if (parent) {
             insert.add("ParentLink", instance.getId());
         }
-        insert.add("PeriodeLink", periode);
+        insert.add("PeriodLink", period);
         insert.execute();
         return new Return();
     }
@@ -484,7 +484,7 @@ public abstract class Account_Base
 
 
     /**
-     * Method is called from a periode to recacluate all values for the accounts.
+     * Method is called from a period to recacluate all values for the accounts.
      * @param _parameter Parameter as passed from the eFaps API
      * @return empty Return
      * @throws EFapsException on error
@@ -494,7 +494,7 @@ public abstract class Account_Base
         final Map<Instance, BigDecimal> acc2sumBooked = new HashMap<Instance, BigDecimal>();
         final Map<Instance, BigDecimal> acc2sumReport = new HashMap<Instance, BigDecimal>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, _parameter.getInstance().getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodLink, _parameter.getInstance().getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.TransactionAbstract.StatusAbstract);
         multi.execute();
@@ -531,7 +531,7 @@ public abstract class Account_Base
 
         final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         accQueryBldr.addWhereAttrIsNull(CIAccounting.AccountAbstract.ParentLink);
-        accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+        accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
                                          _parameter.getInstance().getId());
         final InstanceQuery accQuery = accQueryBldr.getQuery();
         accQuery.execute();
@@ -646,16 +646,16 @@ public abstract class Account_Base
                 if (accInst != null && accInst.isValid()) {
                     if (accInst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
                         final PrintQuery print = new PrintQuery(accInst);
-                        print.addAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink);
+                        print.addAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink);
                         print.executeWithoutAccessCheck();
-                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
-                                    print.getAttribute(CIAccounting.AccountAbstract.PeriodeAbstractLink));
+                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
+                                    print.getAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink));
                     } else if (accInst.getType().isKindOf(CIAccounting.CaseAbstract.getType())) {
                         final PrintQuery print = new PrintQuery(accInst);
-                        print.addAttribute(CIAccounting.CaseAbstract.PeriodeAbstractLink);
+                        print.addAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink);
                         print.executeWithoutAccessCheck();
-                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
-                                        print.getAttribute(CIAccounting.CaseAbstract.PeriodeAbstractLink));
+                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
+                                        print.getAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink));
                     }
                 }
             }

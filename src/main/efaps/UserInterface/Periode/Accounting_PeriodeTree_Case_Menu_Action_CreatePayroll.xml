@@ -30,7 +30,7 @@
     <file-revision>$Rev: 5317 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Case_Menu_Action_CreatePayroll</name>
+        <name>Accounting_PeriodTree_Case_Menu_Action_CreatePayroll</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -45,7 +45,7 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_CasePayroll</property>
-        <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodeAbstractLink</property>
+        <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodAbstractLink</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

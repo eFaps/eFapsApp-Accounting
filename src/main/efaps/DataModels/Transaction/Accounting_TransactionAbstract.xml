@@ -53,9 +53,9 @@
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>PeriodeLink</name>
+            <name>PeriodLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_TransactionSQLTable</sqltable>
             <sqlcolumn>PERIODEID</sqlcolumn>
         </attribute>

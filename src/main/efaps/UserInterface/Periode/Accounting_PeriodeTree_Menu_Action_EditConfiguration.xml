@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action_EditConfiguration</name>
+        <name>Accounting_PeriodTree_Menu_Action_EditConfiguration</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -38,7 +38,7 @@
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_PeriodeConfigurationForm</form>
+            <form>Accounting_PeriodConfigurationForm</form>
             <execute program="org.efaps.esjp.admin.common.SystemConf" method="updateObjectAttribute">
                 <!-- Accounting-Configuration -->
                 <property name="SystemConfigurationUUID">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>

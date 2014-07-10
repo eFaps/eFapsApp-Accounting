@@ -27,13 +27,13 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Periode2AccountTree</name>
+        <name>Accounting_Period2AccountTree</name>
         <!-- targets -->
         <target>
-            <menu>Accounting_Periode2AccountTree_Menu</menu>
-            <form>Accounting_Periode2AccountForm</form>
+            <menu>Accounting_Period2AccountTree_Menu</menu>
+            <form>Accounting_Period2AccountForm</form>
         </target>
-        <type>Accounting_Periode2Account</type>
+        <type>Accounting_Period2Account</type>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

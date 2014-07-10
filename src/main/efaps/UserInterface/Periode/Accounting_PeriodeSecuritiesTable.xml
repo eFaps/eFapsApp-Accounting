@@ -27,7 +27,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeSecuritiesTable</name>
+        <name>Accounting_PeriodSecuritiesTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>

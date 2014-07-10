@@ -33,11 +33,11 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_StockToBook_Menu_Action</name>
+        <name>Accounting_PeriodTree_StockToBook_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_StockToBook_Menu_Action_Book</child>
-            <child>Accounting_PeriodeTree_StockToBook_Menu_Action_BookMassive</child>
+            <child>Accounting_PeriodTree_StockToBook_Menu_Action_Book</child>
+            <child>Accounting_PeriodTree_StockToBook_Menu_Action_BookMassive</child>
         </childs>
     </definition>
 

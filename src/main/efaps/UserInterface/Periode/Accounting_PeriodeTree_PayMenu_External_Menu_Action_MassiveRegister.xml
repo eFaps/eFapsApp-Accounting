@@ -27,7 +27,7 @@
     <file-revision>$Rev: 5317 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_External_Menu_Action_MassiveRegister</name>
+        <name>Accounting_PeriodTree_PayMenu_External_Menu_Action_MassiveRegister</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -37,7 +37,7 @@
             <execute method="create4DocMassive" program="org.efaps.esjp.accounting.transaction.Create"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK"
+                name="Accounting_PeriodTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>

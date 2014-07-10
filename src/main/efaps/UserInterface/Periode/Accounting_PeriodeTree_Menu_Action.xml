@@ -33,16 +33,16 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action</name>
+        <name>Accounting_PeriodTree_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Menu_Action_Edit</child>
-            <child>Accounting_PeriodeTree_Menu_Action_EditConfiguration</child>
-            <child>Accounting_PeriodeTree_Menu_Action_OpeningBalance</child>
-            <child>Accounting_PeriodeTree_Menu_Action_Recalculate</child>
-            <child>Accounting_PeriodeTree_Menu_Action_TransactionNumbering</child>
-            <child>Accounting_PeriodeTree_Menu_Action_TransactionAsignNumber</child>
-            <child>Accounting_PeriodeTree_Menu_Action_VerifyTransactions</child>
+            <child>Accounting_PeriodTree_Menu_Action_Edit</child>
+            <child>Accounting_PeriodTree_Menu_Action_EditConfiguration</child>
+            <child>Accounting_PeriodTree_Menu_Action_OpeningBalance</child>
+            <child>Accounting_PeriodTree_Menu_Action_Recalculate</child>
+            <child>Accounting_PeriodTree_Menu_Action_TransactionNumbering</child>
+            <child>Accounting_PeriodTree_Menu_Action_TransactionAsignNumber</child>
+            <child>Accounting_PeriodTree_Menu_Action_VerifyTransactions</child>
         </childs>
     </definition>
 </ui-menu>

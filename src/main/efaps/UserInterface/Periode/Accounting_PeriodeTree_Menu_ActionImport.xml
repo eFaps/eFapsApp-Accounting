@@ -27,12 +27,12 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_ActionImport</name>
+        <name>Accounting_PeriodTree_Menu_ActionImport</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Menu_ActionImport_UpdateAccountTable</child>
-            <child>Accounting_PeriodeTree_Menu_ActionImport_UpdateViewAccountTable</child>
-            <child>Accounting_PeriodeTree_Menu_ActionImport_ImportCaseTable</child>
+            <child>Accounting_PeriodTree_Menu_ActionImport_UpdateAccountTable</child>
+            <child>Accounting_PeriodTree_Menu_ActionImport_UpdateViewAccountTable</child>
+            <child>Accounting_PeriodTree_Menu_ActionImport_ImportCaseTable</child>
         </childs>
     </definition>
 

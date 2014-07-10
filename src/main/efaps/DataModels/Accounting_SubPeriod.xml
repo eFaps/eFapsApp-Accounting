@@ -51,7 +51,7 @@
         <attribute>
             <name>PeriodLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_SubPeriodSQLTable</sqltable>
             <sqlcolumn>PERIODID</sqlcolumn>
         </attribute>

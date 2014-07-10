@@ -34,7 +34,7 @@
             <child>Accounting_SubPeriodTree_External_Menu_Action_Create</child>
             <child>Accounting_SubPeriodTree_External_Menu_Action_MassiveRegister</child>
         </childs>
-        <property name="Label">Accounting_PeriodeTree_External_Menu_Action.Label</property>
+        <property name="Label">Accounting_PeriodTree_External_Menu_Action.Label</property>
     </definition>
 
 </ui-menu>

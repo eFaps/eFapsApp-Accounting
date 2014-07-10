@@ -29,14 +29,14 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Payroll_CreateTransactionForm</name>
         <!-- fields -->
-        <field name="periodeLink">
-            <property name="Attribute">PeriodeLink</property>
-            <property name="Label">Accounting_AccountForm.periode.Label</property>
+        <field name="periodLink">
+            <property name="Attribute">PeriodLink</property>
+            <property name="Label">Accounting_AccountForm.period.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Periode"
-                name="Accounting_Payroll_CreateTransactionForm.periodeLink.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.accounting.Periode" >
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Period"
+                name="Accounting_Payroll_CreateTransactionForm.periodLink.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.accounting.Period" >
                 <property name="Key">OID</property>
             </trigger>
         </field>

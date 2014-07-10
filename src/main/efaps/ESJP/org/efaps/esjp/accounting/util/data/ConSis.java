@@ -134,7 +134,7 @@ public class ConSis
                 insert.add(CIAccounting.TransactionOpeningBalance.Description, "Asiento de Apertura");
                 insert.add(CIAccounting.TransactionOpeningBalance.Status,
                                 Status.find(CIAccounting.TransactionStatus.Open));
-                insert.add(CIAccounting.TransactionOpeningBalance.PeriodeLink, _parameter.getInstance());
+                insert.add(CIAccounting.TransactionOpeningBalance.PeriodLink, _parameter.getInstance());
                 insert.executeWithoutAccessCheck();
 
                 final Instance basCur = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);

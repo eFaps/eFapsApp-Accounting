@@ -31,17 +31,17 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeMyDesk</name>
+        <name>Accounting_PeriodMyDesk</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
             <role>Accounting_Executive</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeMyDesk_Menu</menu>
-            <table>Accounting_PeriodeTable</table>
+            <menu>Accounting_PeriodMyDesk_Menu</menu>
+            <table>Accounting_PeriodTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_Periode</property>
+                <property name="Type">Accounting_Period</property>
             </evaluate>
         </target>
 

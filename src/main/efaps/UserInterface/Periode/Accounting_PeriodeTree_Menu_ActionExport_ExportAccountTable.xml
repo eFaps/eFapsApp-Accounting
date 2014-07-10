@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_ActionExport_ExportAccountTable</name>
+        <name>Accounting_PeriodTree_Menu_ActionExport_ExportAccountTable</name>
 
         <access>
             <role>Accounting_Admin</role>

@@ -32,17 +32,17 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Transaction</name>
+        <name>Accounting_PeriodTree_Transaction</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_Transaction_Menu</menu>
+            <menu>Accounting_PeriodTree_Transaction_Menu</menu>
             <table>Accounting_TransactionTable_MONTH</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Accounting_TransactionAbstract</property>
-                <property name="LinkFrom">PeriodeLink</property>
+                <property name="LinkFrom">PeriodLink</property>
             </evaluate>
         </target>
         <!-- properties -->

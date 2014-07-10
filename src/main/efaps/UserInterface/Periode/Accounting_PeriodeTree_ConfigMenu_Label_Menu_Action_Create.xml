@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ConfigMenu_Label_Menu_Action_Create</name>
+        <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</name>
 
          <access>
             <role>Accounting_Admin</role>
@@ -48,7 +48,7 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_LabelProject</property>
-        <property name="TargetConnectAttribute">Accounting_LabelAbstract/PeriodeAbstractLink</property>
+        <property name="TargetConnectAttribute">Accounting_LabelAbstract/PeriodAbstractLink</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_StockToBook_Menu_Action_Book</name>
+        <name>Accounting_PeriodTree_StockToBook_Menu_Action_Book</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -49,7 +49,7 @@
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodeLink</property>
+        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1450</property>

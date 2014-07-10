@@ -33,13 +33,13 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu</name>
+        <name>Accounting_PeriodTree_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Menu_Action</child>
-            <child>Accounting_PeriodeTree_Menu_ActionReport</child>
-            <child>Accounting_PeriodeTree_Menu_ActionImport</child>
-            <child>Accounting_PeriodeTree_Menu_ActionExport</child>
+            <child>Accounting_PeriodTree_Menu_Action</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport</child>
+            <child>Accounting_PeriodTree_Menu_ActionImport</child>
+            <child>Accounting_PeriodTree_Menu_ActionExport</child>
         </childs>
     </definition>
 

@@ -27,16 +27,16 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ConfigMenu</name>
+        <name>Accounting_PeriodTree_ConfigMenu</name>
         <target>
-            <form>Accounting_PeriodeTree_ConfigMenuForm</form>
+            <form>Accounting_PeriodTree_ConfigMenuForm</form>
         </target>
         <childs>
-            <child>Accounting_PeriodeTree_ConfigMenu_Account</child>
-            <child>Accounting_PeriodeTree_Case</child>
-            <child>Accounting_PeriodeTree_ConfigMenu_BankCash</child>
-            <child>Accounting_PeriodeTree_ConfigMenu_Label</child>
-            <child>Accounting_PeriodeTree_ConfigMenu_Account2Account</child>
+            <child>Accounting_PeriodTree_ConfigMenu_Account</child>
+            <child>Accounting_PeriodTree_Case</child>
+            <child>Accounting_PeriodTree_ConfigMenu_BankCash</child>
+            <child>Accounting_PeriodTree_ConfigMenu_Label</child>
+            <child>Accounting_PeriodTree_ConfigMenu_Account2Account</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

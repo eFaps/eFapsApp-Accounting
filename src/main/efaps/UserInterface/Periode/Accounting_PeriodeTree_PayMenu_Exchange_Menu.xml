@@ -29,9 +29,9 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_Exchange_Menu</name>
+        <name>Accounting_PeriodTree_PayMenu_Exchange_Menu</name>
         <childs>
-            <child>Accounting_PeriodeTree_PayMenu_Exchange_Menu_Action</child>
+            <child>Accounting_PeriodTree_PayMenu_Exchange_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

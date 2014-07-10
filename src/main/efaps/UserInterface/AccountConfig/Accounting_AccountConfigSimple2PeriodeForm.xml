@@ -27,7 +27,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfigSimple2PeriodeForm</name>
+        <name>Accounting_AccountConfigSimple2PeriodForm</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>

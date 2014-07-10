@@ -27,7 +27,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeRetPerTable</name>
+        <name>Accounting_PeriodRetPerTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>

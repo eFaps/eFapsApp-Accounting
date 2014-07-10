@@ -33,14 +33,14 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu_Action_AddExisting</name>
+        <name>Accounting_PeriodTree_ConfigMenu_BankCash_Menu_Action_AddExisting</name>
         <!-- target definition -->
         <target>
             <search>Accounting_AccountTree_Account_Menu_Action_AddExistingAccount_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
                 <property name="ConnectChildAttribute">FromLink</property>
                 <property name="ConnectParentAttribute">ToLink</property>
-                <property name="ConnectType">Accounting_Periode2Account</property>
+                <property name="ConnectType">Accounting_Period2Account</property>
             </execute>
         </target>
 

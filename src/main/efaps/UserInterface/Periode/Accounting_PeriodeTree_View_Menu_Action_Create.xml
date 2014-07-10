@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_View_Menu_Action_Create</name>
+        <name>Accounting_PeriodTree_View_Menu_Action_Create</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -43,6 +43,6 @@
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_ViewRoot</property>
-        <property name="TargetConnectAttribute">Accounting_AccountBaseAbstract/PeriodeAbstractLink</property>
+        <property name="TargetConnectAttribute">Accounting_AccountBaseAbstract/PeriodAbstractLink</property>
     </definition>
 </ui-command>

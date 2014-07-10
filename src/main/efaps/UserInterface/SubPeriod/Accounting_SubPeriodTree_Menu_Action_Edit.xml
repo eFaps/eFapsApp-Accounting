@@ -42,7 +42,7 @@
             <execute program="org.efaps.esjp.common.uiform.Edit" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Create.UI_ACCESSCHECK.1"
+                name="Accounting_PeriodTree_SubPeriod_Menu_Action_Create.UI_ACCESSCHECK.1"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
                 <property name="Select4Instance">linkto[PeriodLink].instance</property>

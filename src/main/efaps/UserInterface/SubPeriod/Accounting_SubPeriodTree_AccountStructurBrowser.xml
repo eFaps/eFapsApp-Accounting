@@ -43,6 +43,6 @@
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetStructurBrowserField">name</property>
-        <property name="Label">Accounting_PeriodeTree_AccountStructurBrowser.Label</property>
+        <property name="Label">Accounting_PeriodTree_AccountStructurBrowser.Label</property>
     </definition>
 </ui-command>

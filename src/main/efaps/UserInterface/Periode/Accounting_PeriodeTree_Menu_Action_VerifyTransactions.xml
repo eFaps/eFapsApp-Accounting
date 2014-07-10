@@ -28,7 +28,7 @@
     <file-revision>$Rev: 8311 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_Action_VerifyTransactions</name>
+        <name>Accounting_PeriodTree_Menu_Action_VerifyTransactions</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>

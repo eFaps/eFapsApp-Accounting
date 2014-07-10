@@ -59,6 +59,6 @@
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="Submit">true</property>
-        <property name="Label">Accounting_PeriodeTree_DocsToBook_Menu_Action_RecalculateRate.Label</property>
+        <property name="Label">Accounting_PeriodTree_DocsToBook_Menu_Action_RecalculateRate.Label</property>
     </definition>
 </ui-command>

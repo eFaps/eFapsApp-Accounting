@@ -389,7 +389,7 @@ public abstract class ExternalVoucher_Base
                                              final boolean _isCross)
         throws EFapsException
     {
-        final Instance periodeInst = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
 
         final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
         formater.setParseBigDecimal(true);
@@ -420,7 +420,7 @@ public abstract class ExternalVoucher_Base
 
             if (!taxes.isEmpty()) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                attrQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodeInst);
+                attrQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.AccountAbstract.ID);
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountBalanceSheetLiability2Tax);
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBalanceSheetLiability2Tax.ToTaxLink,

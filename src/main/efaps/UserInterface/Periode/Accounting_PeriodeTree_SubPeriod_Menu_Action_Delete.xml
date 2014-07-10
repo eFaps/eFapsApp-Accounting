@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete</name>
+        <name>Accounting_PeriodTree_SubPeriod_Menu_Action_Delete</name>
          <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -38,7 +38,7 @@
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete.UI_ACCESSCHECK"
+                name="Accounting_PeriodTree_SubPeriod_Menu_Action_Delete.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>

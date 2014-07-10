@@ -33,12 +33,12 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Transaction_Menu_Action</name>
+        <name>Accounting_PeriodTree_Transaction_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Transaction_Menu_Action_Create</child>
-            <child>Accounting_PeriodeTree_Transaction_Menu_Action_SetStatusClosed</child>
-            <child>Accounting_PeriodeTree_Transaction_Menu_Action_Delete</child>
+            <child>Accounting_PeriodTree_Transaction_Menu_Action_Create</child>
+            <child>Accounting_PeriodTree_Transaction_Menu_Action_SetStatusClosed</child>
+            <child>Accounting_PeriodTree_Transaction_Menu_Action_Delete</child>
         </childs>
     </definition>
 </ui-menu>

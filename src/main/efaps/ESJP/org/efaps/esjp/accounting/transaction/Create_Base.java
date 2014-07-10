@@ -47,7 +47,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -98,12 +98,12 @@ public abstract class Create_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String postfix = (String) properties.get("TypePostfix");
 
-        final Instance periodeInst = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
         final Insert insert = new Insert(CIAccounting.Transaction);
         insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
         insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodeLink, periodeInst.getId());
+        insert.add(CIAccounting.Transaction.PeriodLink, periodInst.getId());
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
         insert.execute();
         final Instance instance = insert.getInstance();
@@ -270,7 +270,7 @@ public abstract class Create_Base
                         CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.useDate.name));
         final String[] oidsPay = (String[]) Context.getThreadContext().getSessionAttribute(
                         CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.document.name);
-        final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
         for (final String oid : oidsPay) {
             final Instance payDocInst = Instance.get(oid);
             if (payDocInst.isValid()) {
@@ -286,7 +286,7 @@ public abstract class Create_Base
                     insert.add(CIAccounting.Transaction.Description,
                                     new FieldValue().getDescription(_parameter, docInfo.getInstance()));
                     insert.add(CIAccounting.Transaction.Date, docInfo.getDate());
-                    insert.add(CIAccounting.Transaction.PeriodeLink, periodInst);
+                    insert.add(CIAccounting.Transaction.PeriodLink, periodInst);
                     insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
                     insert.execute();
                     final Instance transInst = insert.getInstance();
@@ -360,7 +360,7 @@ public abstract class Create_Base
 
         for (final String oid : oids) {
             Context.getThreadContext()
-                 .setSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY, _parameter.getInstance());
+                 .setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY, _parameter.getInstance());
             final Instance docInst = Instance.get(oid);
             final String description = new FieldValue().getDescription(_parameter, docInst);
             final PrintQuery print = new PrintQuery(oid);
@@ -380,7 +380,7 @@ public abstract class Create_Base
                 insert.add(CIAccounting.Transaction.Name, name);
                 insert.add(CIAccounting.Transaction.Description, description);
                 insert.add(CIAccounting.Transaction.Date, date);
-                insert.add(CIAccounting.Transaction.PeriodeLink, _parameter.getInstance().getId());
+                insert.add(CIAccounting.Transaction.PeriodLink, _parameter.getInstance().getId());
                 insert.add(CIAccounting.Transaction.Status,
                                 Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
                 insert.execute();
@@ -405,7 +405,7 @@ public abstract class Create_Base
     public Return create4DocMassive(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance periodeInst = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
         DateTime date = new DateTime(_parameter
                         .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.date.name));
         final boolean useDateForm = Boolean.parseBoolean(_parameter
@@ -449,7 +449,7 @@ public abstract class Create_Base
                 final String desc = val.toString();
 
                 final Transaction txn = new Transaction();
-                final RateInfo rate = txn.evaluateRate(_parameter, periodeInst, date, currInst);
+                final RateInfo rate = txn.evaluateRate(_parameter, periodInst, date, currInst);
                 final DocumentInfo doc = new DocumentInfo(instDoc);
                 doc.setAmount(amount);
                 doc.setFormater(txn.getFormater(2, 2));
@@ -471,7 +471,7 @@ public abstract class Create_Base
 
                 if (useRounding) {
                     // is does not sum to 0 but is less then the max defined
-                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodeInst);
+                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
                     final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT);
                     final BigDecimal diffMin = (diffMinStr != null && !diffMinStr.isEmpty())
                                     ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
@@ -505,7 +505,7 @@ public abstract class Create_Base
                 final boolean valid = checkCrossTotal.compareTo(debit) == 0 && checkCrossTotal.compareTo(credit) == 0;
 
                 if (valid) {
-                    createTrans4DocMassive(_parameter, doc, periodeInst, desc);
+                    createTrans4DocMassive(_parameter, doc, periodInst, desc);
                     setStatus4Doc(_parameter, doc.getInstance());
                     connectDoc2PurchaseRecord(_parameter, doc.getInstance());
                 }
@@ -572,10 +572,10 @@ public abstract class Create_Base
         throws EFapsException
     {
         Instance parent = _parameter.getCallInstance();
-        // in case that an account is the parent the periode is searched
+        // in case that an account is the parent the period is searched
         if (parent.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
             final PrintQuery print = new PrintQuery(parent);
-            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
+            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.PeriodAbstractLink)
                             .instance();
             print.addSelect(sel);
             print.execute();
@@ -592,7 +592,7 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
         insert.add(CIAccounting.Transaction.Description, _description);
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodeLink, parent);
+        insert.add(CIAccounting.Transaction.PeriodLink, parent);
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open"));
         insert.execute();
         final Instance instance = insert.getInstance();
@@ -688,7 +688,7 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
         insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodeLink, parent.getId());
+        insert.add(CIAccounting.Transaction.PeriodLink, parent.getId());
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
         insert.execute();
         final Instance instance = insert.getInstance();
@@ -744,10 +744,10 @@ public abstract class Create_Base
         final DecimalFormat formater = new Transaction().getFormater(null, null);
         try {
             Instance inst = _parameter.getCallInstance();
-            if (!inst.getType().isKindOf(CIAccounting.Periode.getType())) {
-                inst = new Periode().evaluateCurrentPeriod(_parameter);
+            if (!inst.getType().isKindOf(CIAccounting.Period.getType())) {
+                inst = new Period().evaluateCurrentPeriod(_parameter);
             }
-            final Instance curInstance = new Periode().getCurrency(inst).getInstance();
+            final Instance curInstance = new Period().getCurrency(inst).getInstance();
             if (amounts != null) {
                 for (int i = 0; i < amounts.length; i++) {
                     final Object[] rateObj = new Transaction().getRateObject(_parameter, "_" + _postFix, i);
@@ -887,13 +887,13 @@ public abstract class Create_Base
         final Instance curInstance;
         if (parent.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
             final PrintQuery print = new PrintQuery(parent);
-            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.TransactionAbstract.PeriodeLink).oid();
+            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.TransactionAbstract.PeriodLink).oid();
             print.addSelect(sel);
             print.execute();
-            final Instance periodeInst = Instance.get(print.<String>getSelect(sel));
-            curInstance = new Periode().getCurrency(periodeInst).getInstance();
+            final Instance periodInst = Instance.get(print.<String>getSelect(sel));
+            curInstance = new Period().getCurrency(periodInst).getInstance();
         } else {
-            curInstance = new Periode().getCurrency(_parameter.getCallInstance()).getInstance();
+            curInstance = new Period().getCurrency(_parameter.getCallInstance()).getInstance();
         }
         BigDecimal amount = DecimalType.parseLocalized(amountStr);
         final Type type = Type.get(typeName);
@@ -928,20 +928,20 @@ public abstract class Create_Base
         final String debitAccOId = _parameter.getParameterValue("accountLink_Debit");
         final String[] amounts = _parameter.getParameterValues("amount");
         final String[] accounts = _parameter.getParameterValues("accountLink_Credit");
-        final Instance periodeInst = _parameter.getInstance();
+        final Instance periodInst = _parameter.getInstance();
 
         final Insert insert = new Insert(CIAccounting.TransactionOpeningBalance);
         insert.add(CIAccounting.TransactionOpeningBalance.Name, 0);
         insert.add(CIAccounting.TransactionOpeningBalance.Description,
                         DBProperties.getProperty("org.efaps.esjp.accounting.Transaction.openingBalance.description"));
         insert.add(CIAccounting.TransactionOpeningBalance.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.TransactionOpeningBalance.PeriodeLink, periodeInst.getId());
+        insert.add(CIAccounting.TransactionOpeningBalance.PeriodLink, periodInst.getId());
         insert.add(CIAccounting.TransactionOpeningBalance.Status,
                         ((Long) Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId()).toString());
         insert.execute();
 
         BigDecimal debitAmount = BigDecimal.ZERO;
-        final CurrencyInst curr = new Periode().getCurrency(periodeInst);
+        final CurrencyInst curr = new Period().getCurrency(periodInst);
         final DecimalFormat formater = new Transaction().getFormater(null, 2);
         for (int i = 0; i < amounts.length; i++) {
             final Instance accInst = Instance.get(accounts[i]);
@@ -1012,13 +1012,13 @@ public abstract class Create_Base
                                              final String _key)
         throws EFapsException
     {
-        final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
         AccountInfo ret = null;
         final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
         final String name = props.getProperty(_key);
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, name);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodInst);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
@@ -1033,13 +1033,13 @@ public abstract class Create_Base
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @param _doc          Document to add the info
-     * @param _instPeriode  period
+     * @param _instPeriod  period
      * @param _description description
      * @throws EFapsException on error
      */
     protected void createTrans4DocMassive(final Parameter _parameter,
                                           final DocumentInfo _doc,
-                                          final Instance _instPeriode,
+                                          final Instance _instPeriod,
                                           final String _description)
         throws EFapsException
     {
@@ -1048,7 +1048,7 @@ public abstract class Create_Base
         final Insert insert = new Insert(CIAccounting.Transaction);
         insert.add(CIAccounting.Transaction.Description, _description);
         insert.add(CIAccounting.Transaction.Date, _doc.getDate());
-        insert.add(CIAccounting.Transaction.PeriodeLink, _instPeriode);
+        insert.add(CIAccounting.Transaction.PeriodLink, _instPeriod);
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
         insert.execute();
 
@@ -1080,16 +1080,16 @@ public abstract class Create_Base
     {
         final boolean isDebitTrans = _type.equals(CIAccounting.TransactionPositionDebit);
         final Instance accInst = _account.getInstance();
-        Instance periodeInst = _parameter.getCallInstance();
+        Instance periodInst = _parameter.getCallInstance();
         if (_parameter.getCallInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
             final PrintQuery print = new CachedPrintQuery(_parameter.getCallInstance(), SubPeriod_Base.CACHEKEY);
             final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
                             .instance();
             print.addSelect(selPeriodInst);
             print.execute();
-            periodeInst = print.<Instance>getSelect(selPeriodInst);
+            periodInst = print.<Instance>getSelect(selPeriodInst);
         }
-        final Instance curInstance = new Periode().getCurrency(periodeInst).getInstance();
+        final Instance curInstance = new Period().getCurrency(periodInst).getInstance();
         final Insert insert = new Insert(_type);
         insert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transInst.getId());
         insert.add(CIAccounting.TransactionPositionAbstract.AccountLink, accInst.getId());

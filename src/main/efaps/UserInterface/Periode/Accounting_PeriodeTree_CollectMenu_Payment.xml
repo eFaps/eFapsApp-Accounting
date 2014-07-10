@@ -27,15 +27,15 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_CollectMenu_Payment</name>
+        <name>Accounting_PeriodTree_CollectMenu_Payment</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_CollectMenu_Payment_Menu</menu>
+            <menu>Accounting_PeriodTree_CollectMenu_Payment_Menu</menu>
             <table>Sales_PaymentDocumentAbstractTable</table>
-            <evaluate method="getPaymentToBook" program="org.efaps.esjp.accounting.Periode">
+            <evaluate method="getPaymentToBook" program="org.efaps.esjp.accounting.Period">
                 <property name="Type">Sales_PaymentDocumentIOAbstract</property>
                 <property name="StatusGroup01">Sales_PaymentCashStatus</property>
                 <property name="Status02">Closed</property>

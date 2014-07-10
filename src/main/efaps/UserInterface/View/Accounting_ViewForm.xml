@@ -52,9 +52,9 @@
         <field name="value">
             <property name="Attribute">Value</property>
         </field>
-        <field name="periodeLink">
-            <property name="SelectAlternateOID">linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[PeriodeAbstractLink].attribute[Name]</property>
+        <field name="periodLink">
+            <property name="SelectAlternateOID">linkto[PeriodAbstractLink].oid</property>
+            <property name="Select">linkto[PeriodAbstractLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field character="Group" name="createGroup">

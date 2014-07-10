@@ -69,11 +69,11 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Accounting_ReportNodeAccountTable.accountLink.Label</property>
         </field>
-        <field name="periodeAbstractLink">
-            <property name="SelectAlternateOID">linkto[AccountLink].linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[AccountLink].linkto[PeriodeAbstractLink].attribute[Name]</property>
+        <field name="periodAbstractLink">
+            <property name="SelectAlternateOID">linkto[AccountLink].linkto[PeriodAbstractLink].oid</property>
+            <property name="Select">linkto[AccountLink].linkto[PeriodAbstractLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Accounting_ReportNodeAccountTable.periodeAbstractLink.Label</property>
+            <property name="Label">Accounting_ReportNodeAccountTable.periodAbstractLink.Label</property>
         </field>
         <field name="companyLink">
             <property name="Select">linkto[AccountLink].attribute[Company]</property>

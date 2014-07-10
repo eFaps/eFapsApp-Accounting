@@ -59,10 +59,10 @@ public abstract class Payroll_Base
     {
         final Instance paySlipInst = _parameter.getInstance();
         final DateTime date = new DateTime();
-        final Instance periodeInst = Instance.get(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_Payroll_CreateTransactionForm.periodeLink.name));
+        final Instance periodInst = Instance.get(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_Payroll_CreateTransactionForm.periodLink.name));
         if (allowCreate(_parameter, paySlipInst)) {
-            createTransaction(_parameter, periodeInst, paySlipInst, date);
+            createTransaction(_parameter, periodInst, paySlipInst, date);
         }
         return new Return();
     }
@@ -72,13 +72,13 @@ public abstract class Payroll_Base
     {
         final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("storeSelectedRowOIDs");
         final DateTime date = new DateTime();
-        final Instance periodeInst = Instance.get(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_Payroll_CreateTransactionForm.periodeLink.name));
+        final Instance periodInst = Instance.get(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_Payroll_CreateTransactionForm.periodLink.name));
 
         for (final String oid : oids) {
             final Instance paySlipInst = Instance.get(oid);
             if (allowCreate(_parameter, paySlipInst)) {
-                createTransaction(_parameter, periodeInst, paySlipInst, date);
+                createTransaction(_parameter, periodInst, paySlipInst, date);
             }
         }
         Context.getThreadContext().removeSessionAttribute("storeSelectedRowOIDs");
@@ -112,13 +112,13 @@ public abstract class Payroll_Base
      * @throws EFapsException on error.
      */
     protected Return createTransaction(final Parameter _parameter,
-                                       final Instance _periodeInst,
+                                       final Instance _periodInst,
                                        final Instance _docInst,
                                        final DateTime _transDate)
         throws EFapsException
     {
 
-        if (_periodeInst.isValid()) {
+        if (_periodInst.isValid()) {
 
             final PrintQuery print = new PrintQuery(_docInst);
             print.addAttribute(CISales.DocumentSumAbstract.Name);
@@ -128,7 +128,7 @@ public abstract class Payroll_Base
             final Insert insert = new Insert(CIAccounting.Transaction);
             insert.add(CIAccounting.Transaction.Description, name);
             insert.add(CIAccounting.Transaction.Date, _transDate);
-            insert.add(CIAccounting.Transaction.PeriodeLink, _periodeInst.getId());
+            insert.add(CIAccounting.Transaction.PeriodLink, _periodInst.getId());
             insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open")
                             .getId());
             insert.execute();
@@ -155,11 +155,11 @@ public abstract class Payroll_Base
 
             final Action action = new Action() {
                 @Override
-                protected Instance getPeriodeInstance(final Parameter _parameter,
+                protected Instance getPeriodInstance(final Parameter _parameter,
                                                       final Instance _transactionInstance)
                     throws EFapsException
                 {
-                    return _periodeInst;
+                    return _periodInst;
                 }
 
                 @Override

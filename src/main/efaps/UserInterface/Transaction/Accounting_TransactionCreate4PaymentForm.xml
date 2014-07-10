@@ -28,12 +28,12 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4PaymentForm</name>
-        <field name="setPeriode">
+        <field name="setPeriod">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="setPeriodeUIFieldValue"
-                name="Accounting_TransactionCreate4PaymentForm.setPeriode.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE" method="setPeriodUIFieldValue"
+                name="Accounting_TransactionCreate4PaymentForm.setPeriod.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
                 <property name="case">true</property>
             </trigger>

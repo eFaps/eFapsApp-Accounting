@@ -64,7 +64,7 @@ public abstract class StructurBrowser_Base
             print.addSelect(selPeriodInst);
             print.execute();
             final Instance instance = print.<Instance>getSelect(selPeriodInst);
-            _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, instance);
+            _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, instance);
         }
     }
 

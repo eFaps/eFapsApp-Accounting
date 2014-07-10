@@ -33,25 +33,25 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Case_Menu_Action</name>
+        <name>Accounting_PeriodTree_Case_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCashGain</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateBankCashPay</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateDocBooking</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateDocRegister</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateExternalBooking</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateExternalRegister</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreatePettyCashReceiptRegister</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateFundsToBeSettled</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateStockBooking</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateGeneral</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreatePayroll</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreatePettyCash</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateExchange</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateRetPer</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_CreateSecurities</child>
-            <child>Accounting_PeriodeTree_Case_Menu_Action_Delete</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateBankCashGain</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateBankCashPay</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateDocBooking</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateDocRegister</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateExternalBooking</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateExternalRegister</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreatePettyCashReceiptRegister</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateFundsToBeSettled</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateStockBooking</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateGeneral</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreatePayroll</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreatePettyCash</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateExchange</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateRetPer</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_CreateSecurities</child>
+            <child>Accounting_PeriodTree_Case_Menu_Action_Delete</child>
         </childs>
     </definition>
 

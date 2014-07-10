@@ -31,25 +31,25 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree</name>
+        <name>Accounting_PeriodTree</name>
         <target>
-            <menu>Accounting_PeriodeTree_Menu</menu>
-            <form>Accounting_PeriodeForm</form>
+            <menu>Accounting_PeriodTree_Menu</menu>
+            <form>Accounting_PeriodForm</form>
         </target>
-        <type>Accounting_Periode</type>
+        <type>Accounting_Period</type>
         <childs>
-            <child>Accounting_PeriodeTree_SubPeriod</child>
-            <child>Accounting_PeriodeTree_AccountStructurBrowser</child>
-            <child>Accounting_PeriodeTree_View</child>
-            <child>Accounting_PeriodeTree_PayMenu</child>
-            <child>Accounting_PeriodeTree_CollectMenu</child>
+            <child>Accounting_PeriodTree_SubPeriod</child>
+            <child>Accounting_PeriodTree_AccountStructurBrowser</child>
+            <child>Accounting_PeriodTree_View</child>
+            <child>Accounting_PeriodTree_PayMenu</child>
+            <child>Accounting_PeriodTree_CollectMenu</child>
 
-            <child>Accounting_PeriodeTree_StockToBook</child>
-            <child>Accounting_PeriodeTree_RetPer</child>
-            <child>Accounting_PeriodeTree_PaymentInternal</child>
-            <child>Accounting_PeriodeTree_GainLoss</child>
-            <child>Accounting_PeriodeTree_Transaction</child>
-            <child>Accounting_PeriodeTree_ConfigMenu</child>
+            <child>Accounting_PeriodTree_StockToBook</child>
+            <child>Accounting_PeriodTree_RetPer</child>
+            <child>Accounting_PeriodTree_PaymentInternal</child>
+            <child>Accounting_PeriodTree_GainLoss</child>
+            <child>Accounting_PeriodTree_Transaction</child>
+            <child>Accounting_PeriodTree_ConfigMenu</child>
 
         </childs>
         <property name="Target">content</property>

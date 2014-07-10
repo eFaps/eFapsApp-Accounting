@@ -96,7 +96,7 @@ public abstract class ExportCase_Base
         throws EFapsException
     {
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.CaseAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodeAbstractLink, _parameter.getInstance());
+        attrQueryBldr.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodAbstractLink, _parameter.getInstance());
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.CaseAbstract.ID);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);

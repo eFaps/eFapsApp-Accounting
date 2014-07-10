@@ -540,8 +540,8 @@ public abstract class Payment_Base
             insert.add(CIAccounting.PaymentDocumentPlanned.Date, new DateTime());
             insert.execute();
 
-            final Instance periodeInst = Instance.get(_parameter.getParameterValue("periode"));
-            if (periodeInst.isValid()) {
+            final Instance periodInst = Instance.get(_parameter.getParameterValue("period"));
+            if (periodInst.isValid()) {
                 final Instance accInst = Instance.get(_parameter.getParameterValue("account"));
                 if (accInst.isValid() && _parameter.getParameterValue("accountAutoComplete") != null
                                 && !_parameter.getParameterValue("accountAutoComplete").isEmpty()) {
@@ -575,10 +575,10 @@ public abstract class Payment_Base
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
         final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-        accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodeInstance.getId());
+        accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInstance.getId());
         final AttributeQuery accQuery = accQueryBldr.getAttributeQuery(CIAccounting.AccountAbstract.ID);
 
         final QueryBuilder payQueryBldr = new QueryBuilder(CIAccounting.PaymentDocumentAbstract);
@@ -663,16 +663,16 @@ public abstract class Payment_Base
      * @return new Return
      * @throws EFapsException on error
      */
-    public Return periodeUIFieldValue(final Parameter _parameter)
+    public Return periodUIFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period);
         final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute(CIAccounting.Periode.Name);
+        print.addAttribute(CIAccounting.Period.Name);
         print.execute();
         final Map<String, String> values = new TreeMap<String, String>();
         while (print.next()) {
-            values.put(print.<String>getAttribute(CIAccounting.Periode.Name), print.getCurrentInstance().getOid());
+            values.put(print.<String>getAttribute(CIAccounting.Period.Name), print.getCurrentInstance().getOid());
         }
         final StringBuilder html = new StringBuilder();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
@@ -697,14 +697,14 @@ public abstract class Payment_Base
      * @return list needed for field update event
      * @throws EFapsException on error
      */
-    public Return update4Periode(final Parameter _parameter)
+    public Return update4Period(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
-        final String periodeOid = _parameter.getParameterValue("periode");
-        final Instance periodeInst = Instance.get(periodeOid);
-        Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY,
-                        periodeInst.isValid() ? periodeInst : null);
+        final String periodOid = _parameter.getParameterValue("period");
+        final Instance periodInst = Instance.get(periodOid);
+        Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY,
+                        periodInst.isValid() ? periodInst : null);
         return ret;
     }
 
@@ -949,15 +949,15 @@ public abstract class Payment_Base
         final Type type = !_parameter.getParameterValue("paymentType").equals("*")
                         ? Type.get(Long.parseLong(_parameter.getParameterValue("paymentType"))) : Type.get(0);
         if (type != null && !type.isKindOf(CIAccounting.PaymentDocumentImmediate.getType())) {
-            final QueryBuilder queryBlrd = new QueryBuilder(CIAccounting.Periode);
-            queryBlrd.addWhereAttrGreaterValue(CIAccounting.Periode.ToDate, new DateTime().minusDays(1));
-            queryBlrd.addWhereAttrLessValue(CIAccounting.Periode.FromDate, new DateTime().plusSeconds(1));
+            final QueryBuilder queryBlrd = new QueryBuilder(CIAccounting.Period);
+            queryBlrd.addWhereAttrGreaterValue(CIAccounting.Period.ToDate, new DateTime().minusDays(1));
+            queryBlrd.addWhereAttrLessValue(CIAccounting.Period.FromDate, new DateTime().plusSeconds(1));
             final MultiPrintQuery multiP = queryBlrd.getPrint();
             multiP.execute();
             html.append("<table>");
             if (multiP.next()) {
                 final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                accQueryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
                                 multiP.getCurrentInstance().getId());
                 final AttributeQuery accQuery = accQueryBldr.getAttributeQuery(CIAccounting.AccountAbstract.ID);
 

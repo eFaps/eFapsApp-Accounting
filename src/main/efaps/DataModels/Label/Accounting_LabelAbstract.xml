@@ -59,9 +59,9 @@
             <sqlcolumn>COMPANYID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>PeriodeAbstractLink</name>
+            <name>PeriodAbstractLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_LabelSQLTable</sqltable>
             <sqlcolumn>PERIODEID</sqlcolumn>
         </attribute>

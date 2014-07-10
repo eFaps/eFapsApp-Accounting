@@ -98,7 +98,7 @@ public abstract class ExportAccount_Base
     {
         int addGrpCols = 0;
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, _parameter.getInstance());
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, _parameter.getInstance());
         queryBldr.addOrderByAttributeAsc(CIAccounting.AccountAbstract.ID);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.AccountAbstract.Name,

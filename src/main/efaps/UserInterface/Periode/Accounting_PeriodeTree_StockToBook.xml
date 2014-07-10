@@ -32,21 +32,21 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_StockToBook</name>
+        <name>Accounting_PeriodTree_StockToBook</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_StockToBook_Menu</menu>
-            <table>Accounting_PeriodeDocumentTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Periode"
+            <menu>Accounting_PeriodTree_StockToBook_Menu</menu>
+            <table>Accounting_PeriodDocumentTable</table>
+            <evaluate program="org.efaps.esjp.accounting.Period"
                 method="getStockToBook">
                 <property name="Type">ERP_DocumentAbstract</property>
             </evaluate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configObjectCheck"
-                name="Accounting_PeriodeTree_StockToBook_Menu.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                name="Accounting_PeriodTree_StockToBook_Menu.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateStock</property>
             </trigger>

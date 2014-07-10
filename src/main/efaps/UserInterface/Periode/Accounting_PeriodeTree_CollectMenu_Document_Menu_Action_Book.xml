@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_CollectMenu_Document_Menu_Action_Book</name>
+        <name>Accounting_PeriodTree_CollectMenu_Document_Menu_Action_Book</name>
 
          <access>
             <role>Accounting_Admin</role>
@@ -47,7 +47,7 @@
                 method="validate" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_Document_Menu_Action_Book.UI_ACCESSCHECK"
+                name="Accounting_PeriodTree_Document_Menu_Action_Book.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>

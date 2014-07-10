@@ -28,12 +28,12 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4ExchangeForm</name>
-        <field name="setPeriode">
+        <field name="setPeriod">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="setPeriodeUIFieldValue"
-                name="Accounting_TransactionCreate4ExchangeForm.setPeriode.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE" method="setPeriodUIFieldValue"
+                name="Accounting_TransactionCreate4ExchangeForm.setPeriod.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
                 <property name="case">true</property>
             </trigger>
@@ -59,7 +59,7 @@
                 name="Accounting_TransactionCreate4ExchangeForm.case.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
                 <property name="Type">Accounting_CaseExchange</property>
-                <property name="LinkFrom">PeriodeAbstractLink</property>
+                <property name="LinkFrom">PeriodAbstractLink</property>
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>

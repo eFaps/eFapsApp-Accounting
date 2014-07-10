@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu_Action_Disconnect</name>
+        <name>Accounting_PeriodTree_ConfigMenu_BankCash_Menu_Action_Disconnect</name>
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />

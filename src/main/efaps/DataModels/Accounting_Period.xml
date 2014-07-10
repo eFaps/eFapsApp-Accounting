@@ -33,51 +33,51 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Periode</name>
+        <name>Accounting_Period</name>
         <attribute>
             <name>OID</name>
             <type>OID</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ID</name>
             <type>Long</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Company</name>
             <type>CompanyLink</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>COMPANYID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Name</name>
             <type>String</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
         <attribute>
             <name>FromDate</name>
             <type>Date</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>FROMDATE</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToDate</name>
             <type>Date</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>TODATE</sqlcolumn>
         </attribute>
         <attribute>
             <name>CurrencyLink</name>
             <type>LinkWithRanges</type>
             <typelink>ERP_Currency</typelink>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_Periode.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+                name="Accounting_Period.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
@@ -86,7 +86,7 @@
             <name>Status</name>
             <type>Status</type>
             <typelink>Accounting_PeriodStatus</typelink>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
                 name="Accounting_Period.Status.RANGE_VALUE" event="RANGE_VALUE" />
@@ -94,42 +94,42 @@
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>CREATOR</sqlcolumn>
         </attribute>
         <attribute>
             <name>Created</name>
             <type>Created</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>CREATED</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modifier</name>
             <type>ModifierLink</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>MODIFIER</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modified</name>
             <type>Modified</type>
-            <sqltable>Accounting_PeriodeSQLTable</sqltable>
+            <sqltable>Accounting_PeriodSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
 
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
-            method="cleanQueryCacheTrigger" name="Accounting_Periode.INSERT_POST"
+            method="cleanQueryCacheTrigger" name="Accounting_Period.INSERT_POST"
             event="INSERT_POST">
-            <property name="CacheName">org.efaps.esjp.accounting.Periode.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.accounting.Period.CacheKey</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
-            method="cleanQueryCacheTrigger" name="Accounting_Periode.UPDATE_POST"
+            method="cleanQueryCacheTrigger" name="Accounting_Period.UPDATE_POST"
             event="UPDATE_POST">
-            <property name="CacheName">org.efaps.esjp.accounting.Periode.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.accounting.Period.CacheKey</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
-            method="cleanQueryCacheTrigger" name="Accounting_Periode.DELETE_POST"
+            method="cleanQueryCacheTrigger" name="Accounting_Period.DELETE_POST"
             event="DELETE_POST">
-            <property name="CacheName">org.efaps.esjp.accounting.Periode.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.accounting.Period.CacheKey</property>
         </trigger>
     </definition>
 </datamodel-type>

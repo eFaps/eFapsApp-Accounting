@@ -46,6 +46,6 @@
         <property name="Submit">true</property>
         <property name="SubmitSelectedRows">0</property>
         <property name="NoUpdateAfterCOMMAND">true</property>
-        <property name="Label">Accounting_PeriodeTree_AccountStructurBrowser_Menu_Action_PrintAccount.Label</property>
+        <property name="Label">Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_PrintAccount.Label</property>
     </definition>
 </ui-command>

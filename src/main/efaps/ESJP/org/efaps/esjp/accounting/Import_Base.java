@@ -65,7 +65,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Periode_Base.java 7855 2012-08-03 01:35:53Z jan@moxter.net $
+ * @version $Id: Period_Base.java 7855 2012-08-03 01:35:53Z jan@moxter.net $
  */
 @EFapsUUID("4f7c8d48-01d0-4862-82e7-2efcf6761e5a")
 @EFapsRevision("$Rev: 7855 $")
@@ -124,17 +124,17 @@ public abstract class Import_Base
     public Return createReportOfFile(final Parameter _parameter)
         throws EFapsException
     {
-        final String periode = _parameter.getParameterValue("periodeLink");
+        final String period = _parameter.getParameterValue("periodLink");
         final FileParameter reports = Context.getThreadContext().getFileParameters().get("reports");
-        if (periode != null && reports != null) {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode);
-            queryBldr.addWhereAttrEqValue(CIAccounting.Periode.ID, periode);
+        if (period != null && reports != null) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Period.ID, period);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIAccounting.Periode.OID);
+            multi.addAttribute(CIAccounting.Period.OID);
             multi.execute();
             Instance instance = null;
             while (multi.next()) {
-                instance = Instance.get(multi.<String>getAttribute(CIAccounting.Periode.OID));
+                instance = Instance.get(multi.<String>getAttribute(CIAccounting.Period.OID));
             }
             if (instance != null) {
                 createReports(instance, reports, getImportAccountFromDB(_parameter, instance));
@@ -158,7 +158,7 @@ public abstract class Import_Base
     {
         final Map<String, ImportAccount> ret = new HashMap<String, ImportAccount>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, _instance.getId());
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.AccountAbstract.ParentLink)
                                         .attribute(CIAccounting.AccountAbstract.Name);
@@ -177,7 +177,7 @@ public abstract class Import_Base
     }
 
     /**
-     * @param _periodInst periode the account table belongs to
+     * @param _periodInst period the account table belongs to
      * @param _reports csv file
      * @param _accounts map of accounts
      * @throws EFapsException on error
@@ -263,7 +263,7 @@ public abstract class Import_Base
     }
 
     /**
-     * @param _periodInst periode the account table belongs to
+     * @param _periodInst period the account table belongs to
      * @param _accountTable csv file
      * @return HashMap
      * @throws EFapsException on error
@@ -324,7 +324,7 @@ public abstract class Import_Base
                 }
             }
         } catch (final IOException e) {
-            throw new EFapsException(Periode.class, "createAccountTable.IOException", e);
+            throw new EFapsException(Period.class, "createAccountTable.IOException", e);
         }
         return accounts;
     }
@@ -408,7 +408,7 @@ public abstract class Import_Base
                         final String nameAcc = lstTarget.get(cont);
                         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, nameAcc);
-                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
                                         _periodInst.getId());
                         final InstanceQuery query = queryBldr.getQuery();
                         query.execute();
@@ -425,7 +425,7 @@ public abstract class Import_Base
                 }
             }
         } catch (final IOException e) {
-            throw new EFapsException(Periode.class, "createAccountTable.IOException", e);
+            throw new EFapsException(Period.class, "createAccountTable.IOException", e);
         }
         return accounts;
     }
@@ -560,7 +560,7 @@ public abstract class Import_Base
         private String a2cDenum;
         private boolean a2cDefault;
         private Instance accInst;
-        private Instance periodeInst;
+        private Instance periodInst;
 
 
         /**
@@ -573,7 +573,7 @@ public abstract class Import_Base
                           final String[] _row)
         {
             try {
-                this.periodeInst = _periodInst;
+                this.periodInst = _periodInst;
                 this.caseName = _row[_colName2Index.get(ColumnCase.CASENAME.getKey())].trim()
                                 .replaceAll("\n", "");
                 this.caseDescription = _row[_colName2Index.get(ColumnCase.CASEDESC.getKey())].trim()
@@ -610,7 +610,7 @@ public abstract class Import_Base
 
                 final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
-                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, _periodInst.getId());
+                queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, _periodInst.getId());
                 final InstanceQuery query = queryBuilder.getQuery();
                 query.executeWithoutAccessCheck();
                 if (query.next()) {
@@ -639,7 +639,7 @@ public abstract class Import_Base
         {
             final QueryBuilder queryBuilder = new QueryBuilder(this.casetype);
             queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.Name, this.caseName);
-            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodeAbstractLink, this.periodeInst.getId());
+            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
             final InstanceQuery query = queryBuilder.getQuery();
             query.executeWithoutAccessCheck();
             Instance caseInst;
@@ -649,7 +649,7 @@ public abstract class Import_Base
                 final Insert insert = new Insert(this.casetype);
                 insert.add(CIAccounting.CaseAbstract.Name, this.caseName);
                 insert.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
-                insert.add(CIAccounting.CaseAbstract.PeriodeAbstractLink, this.periodeInst.getId());
+                insert.add(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
                 insert.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
                 insert.execute();
                 caseInst = insert.getInstance();
@@ -732,14 +732,14 @@ public abstract class Import_Base
         private final List<BigDecimal> lstDenominator;
 
         /**
-         * @param _periode periode this account belong to
+         * @param _period period this account belong to
          * @param _colName2Index mapping o column name to index
          * @param _row actual row
          * @param _relAccountColumns map of related (linked) Account  columns
          * @param _accounts mapping of accounts
          * @throws EFapsException on error
          */
-        public ImportAccount(final Instance _periode,
+        public ImportAccount(final Instance _period,
                              final Map<String, Integer> _colName2Index,
                              final String[] _row,
                              final Map<String, List<String>> _relAccountColumns,
@@ -791,7 +791,7 @@ public abstract class Import_Base
             if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.AccountAbstract.getType())) {
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, this.value);
-                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodAbstractLink, _period.getId());
                 final InstanceQuery query = queryBldr.getQuery();
                 query.execute();
                 if (query.next()) {
@@ -801,7 +801,7 @@ public abstract class Import_Base
                 }
             } else if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.ViewAbstract.getType())) {
                 final String[] parts = this.path.split("_");
-                final Instance updateInst = validateUpdate(this.value, null, _periode, 0, parts);
+                final Instance updateInst = validateUpdate(this.value, null, _period, 0, parts);
 
                 if (updateInst != null) {
                     update = new Update(updateInst);
@@ -814,7 +814,7 @@ public abstract class Import_Base
                 update.add("Summary", summary);
             }
 
-            update.add(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+            update.add(CIAccounting.AccountBaseAbstract.PeriodAbstractLink, _period.getId());
             update.add(CIAccounting.AccountBaseAbstract.Name, this.value);
             update.add(CIAccounting.AccountBaseAbstract.Description, this.description);
             update.execute();
@@ -974,7 +974,7 @@ public abstract class Import_Base
         /**
          * @param _name
          * @param _id
-         * @param _periode
+         * @param _period
          * @param _cont
          * @param _parts
          * @return
@@ -982,7 +982,7 @@ public abstract class Import_Base
          */
         private Instance validateUpdate(final String _name,
                                        final Long _id,
-                                       final Instance _periode,
+                                       final Instance _period,
                                        int _cont,
                                        final String[] _parts) throws EFapsException {
             Instance ret = null;
@@ -991,7 +991,7 @@ public abstract class Import_Base
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ViewAbstract);
             if (_cont == 0) {
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, _name);
-                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodeAbstractLink, _periode.getId());
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodAbstractLink, _period.getId());
                 ver = true;
             } else {
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.ID, _id);
@@ -1009,7 +1009,7 @@ public abstract class Import_Base
                 final String parentName = multi.<String>getSelect(selParent);
                 if (_cont < (_parts.length)) {
                     if (parentName.equals(_parts[_cont])) {
-                        ret = validateUpdate(parentName, parentId, _periode, _cont, _parts);
+                        ret = validateUpdate(parentName, parentId, _period, _cont, _parts);
                         if (ret != null) {
                             break;
                         }
@@ -1059,7 +1059,7 @@ public abstract class Import_Base
         {
 
             final Insert insert = new Insert(Import_Base.TYPE2TYPE.get(_type));
-            insert.add(CIAccounting.ReportAbstract.PeriodeLink, _periodInst.getId());
+            insert.add(CIAccounting.ReportAbstract.PeriodLink, _periodInst.getId());
             insert.add(CIAccounting.ReportAbstract.Name, _name);
             insert.add(CIAccounting.ReportAbstract.Description, _description);
             insert.add(CIAccounting.ReportAbstract.Numbering, _numbering);

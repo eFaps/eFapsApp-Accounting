@@ -73,9 +73,9 @@ public abstract class View_Base
     {
         final Instance instance = _parameter.getCallInstance();
         final PrintQuery print = new PrintQuery(instance);
-        print.addAttribute(CIAccounting.ViewAbstract.PeriodeAbstractLink);
+        print.addAttribute(CIAccounting.ViewAbstract.PeriodAbstractLink);
         print.execute();
-        final Long periodeId = print.<Long> getAttribute(CIAccounting.ViewAbstract.PeriodeAbstractLink);
+        final Long periodId = print.<Long> getAttribute(CIAccounting.ViewAbstract.PeriodAbstractLink);
 
         final Create create = new Create() {
 
@@ -84,7 +84,7 @@ public abstract class View_Base
                                            final Insert _insert)
                 throws EFapsException
             {
-                _insert.add(CIAccounting.ViewAbstract.PeriodeAbstractLink, periodeId);
+                _insert.add(CIAccounting.ViewAbstract.PeriodAbstractLink, periodId);
             }
         };
         return create.execute(_parameter);

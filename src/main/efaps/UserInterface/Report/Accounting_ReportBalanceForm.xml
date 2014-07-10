@@ -37,20 +37,20 @@
         <!-- fields -->
         <field name="reports">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Accounting_PeriodeForm.reports.Label</property>
+            <property name="Label">Accounting_PeriodForm.reports.Label</property>
             <trigger name="Accounting_ReportBalanceForm.reports.UI_FIELD_VALUE"
                      method="getFieldValueUI"
                      program="org.efaps.esjp.common.file.FileField"
                      event="UI_FIELD_VALUE" />
         </field>
-        <field name="periodeLink">
-            <property name="Attribute">PeriodeLink</property>
-            <property name="Label">Accounting_AccountForm.periode.Label</property>
+        <field name="periodLink">
+            <property name="Attribute">PeriodLink</property>
+            <property name="Label">Accounting_AccountForm.period.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.accounting.Periode"
-                     method="autoComplete4Periode"
-                     name="Accounting_ReportBalanceForm.periodeLink.UI_FIELD_AUTOCOMPLETE"
+            <trigger program="org.efaps.esjp.accounting.Period"
+                     method="autoComplete4Period"
+                     name="Accounting_ReportBalanceForm.periodLink.UI_FIELD_AUTOCOMPLETE"
                      event="UI_FIELD_AUTOCOMPLETE" />
         </field>
     </definition>

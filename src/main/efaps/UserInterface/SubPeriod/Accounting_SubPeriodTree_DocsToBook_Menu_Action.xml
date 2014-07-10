@@ -35,6 +35,6 @@
             <child>Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateRate</child>
             <child>Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateDocument</child>
         </childs>
-        <property name="Label">Accounting_PeriodeTree_DocsToBook_Menu_Action.Label</property>
+        <property name="Label">Accounting_PeriodTree_DocsToBook_Menu_Action.Label</property>
     </definition>
 </ui-menu>

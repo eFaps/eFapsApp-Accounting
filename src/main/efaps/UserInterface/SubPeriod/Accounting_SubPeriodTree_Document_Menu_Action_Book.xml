@@ -63,7 +63,7 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
-        <property name="Label">Accounting_PeriodeTree_Document_Menu_Action_Book.Label</property>
+        <property name="Label">Accounting_PeriodTree_Document_Menu_Action_Book.Label</property>
     </definition>
 
 </ui-command>

@@ -30,15 +30,15 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_ExternalToBook</name>
+        <name>Accounting_PeriodTree_PayMenu_ExternalToBook</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_PayMenu_ExternalToBook_Menu</menu>
+            <menu>Accounting_PeriodTree_PayMenu_ExternalToBook_Menu</menu>
             <table>Accounting_IncomingDocumentTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Periode" method="getExternalsToBook">
+            <evaluate program="org.efaps.esjp.accounting.Period" method="getExternalsToBook">
                 <property name="Type">ERP_DocumentAbstract</property>
                 <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">!Booked</property>

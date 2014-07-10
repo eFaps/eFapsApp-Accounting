@@ -46,10 +46,10 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="periodeLink">
-            <property name="SelectAlternateOID">linkto[ToLink].linkto[PeriodeAbstractLink].oid</property>
-            <property name="Phrase">$&lt;linkto[ToLink].linkto[PeriodeAbstractLink].attribute[Name]&gt;</property>
-            <property name="Label">Accounting_ActionDefinitionPettyCash2Case/PeriodeLink.Label</property>
+        <field name="periodLink">
+            <property name="SelectAlternateOID">linkto[ToLink].linkto[PeriodAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkto[ToLink].linkto[PeriodAbstractLink].attribute[Name]&gt;</property>
+            <property name="Label">Accounting_ActionDefinitionPettyCash2Case/PeriodLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>

@@ -28,14 +28,14 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ConfigMenu_Account2Account</name>
+        <name>Accounting_PeriodTree_ConfigMenu_Account2Account</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
             <table>Accounting_Account2AccountAbstractTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Periode" method="getAcc2AccMultiPrint">
+            <evaluate program="org.efaps.esjp.accounting.Period" method="getAcc2AccMultiPrint">
                 <property name="Type">Accounting_Account2AccountAbstract</property>
             </evaluate>
         </target>

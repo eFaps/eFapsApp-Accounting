@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ import org.joda.time.format.DateTimeFormat;
  */
 @EFapsUUID("42e5a308-5d9a-4a8d-a469-b9929010858a")
 @EFapsRevision("$Rev$")
-public abstract class Periode_Base
+public abstract class Period_Base
     extends AbstractCommon
 {
     /**
@@ -89,18 +89,18 @@ public abstract class Periode_Base
      */
     public static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<String, String>();
     {
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_NAME, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGDEBIT, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGEGAIN, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGELOSS, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_TRANSFERACCOUNT, null);
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT, "0.05");
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEEXCHANGE, "true");
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEVIEWS, "false");
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATESTOCK, "false");
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATERETPER, "false");
-        Periode_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATESECURITIES, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_NAME, null);
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGDEBIT, null);
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGEGAIN, null);
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_EXCHANGELOSS, null);
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_TRANSFERACCOUNT, null);
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT, "0.05");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEEXCHANGE, "true");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEVIEWS, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATESTOCK, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATERETPER, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATESECURITIES, "false");
     }
 
     /**
@@ -114,21 +114,21 @@ public abstract class Periode_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Insert insert = new Insert(CIAccounting.Periode);
-        insert.add(CIAccounting.Periode.Name,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.name.name));
-        insert.add(CIAccounting.Periode.FromDate,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.fromDate.name));
-        insert.add(CIAccounting.Periode.ToDate,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.toDate.name));
-        insert.add(CIAccounting.Periode.CurrencyLink,
-                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodeForm.currencyLink.name));
-        insert.add(CIAccounting.Periode.Status, Status.find(CIAccounting.PeriodStatus.Open));
+        final Insert insert = new Insert(CIAccounting.Period);
+        insert.add(CIAccounting.Period.Name,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodForm.name.name));
+        insert.add(CIAccounting.Period.FromDate,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodForm.fromDate.name));
+        insert.add(CIAccounting.Period.ToDate,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodForm.toDate.name));
+        insert.add(CIAccounting.Period.CurrencyLink,
+                        _parameter.getParameterValue(CIFormAccounting.Accounting_PeriodForm.currencyLink.name));
+        insert.add(CIAccounting.Period.Status, Status.find(CIAccounting.PeriodStatus.Open));
         insert.execute();
         final Instance periodInst = insert.getInstance();
         final StringBuilder props = new StringBuilder();
 
-        for (final Entry<String, String> entry : Periode_Base.DEFAULTSETTINGS4PERIOD.entrySet()) {
+        for (final Entry<String, String> entry : Period_Base.DEFAULTSETTINGS4PERIOD.entrySet()) {
             if (props.length() > 0) {
                 props.append("\n");
             }
@@ -144,9 +144,9 @@ public abstract class Periode_Base
         conf.addObjectAttribute(Accounting.getSysConfig().getUUID(), periodInst,  props.toString());
 
         final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+                        CIFormAccounting.Accounting_PeriodForm.accountTable.name);
         final FileParameter reports = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.reports.name);
+                        CIFormAccounting.Accounting_PeriodForm.reports.name);
         if (accountTable != null && accountTable.getSize() > 0) {
             final Import imp = new Import();
             final HashMap<String, ImportAccount> accounts = imp.createAccountTable(periodInst, accountTable);
@@ -159,7 +159,7 @@ public abstract class Periode_Base
 
     /**
      * @param _instance instance of a period or an account
-     * @return Instance of the periode the currency is wanted for
+     * @return Instance of the period the currency is wanted for
      * @throws EFapsException on error
      */
     public CurrencyInst getCurrency(final Instance _instance)
@@ -167,15 +167,15 @@ public abstract class Periode_Base
     {
         CurrencyInst ret;
         if (_instance.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
-            final PrintQuery print = new CachedPrintQuery(_instance, Periode_Base.CACHEKEY);
-            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodeLink)
-                            .linkto(CIAccounting.Periode.CurrencyLink).instance();
+            final PrintQuery print = new CachedPrintQuery(_instance, Period_Base.CACHEKEY);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodLink)
+                            .linkto(CIAccounting.Period.CurrencyLink).instance();
             print.addSelect(sel);
             print.execute();
             ret = new CurrencyInst(print.<Instance>getSelect(sel));
         } else {
-            final PrintQuery print = new CachedPrintQuery(_instance, Periode_Base.CACHEKEY);
-            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Periode.CurrencyLink).instance();
+            final PrintQuery print = new CachedPrintQuery(_instance, Period_Base.CACHEKEY);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Period.CurrencyLink).instance();
             print.addSelect(sel);
             print.execute();
             ret = new CurrencyInst(print.<Instance>getSelect(sel));
@@ -193,7 +193,7 @@ public abstract class Periode_Base
     {
         final Instance periodInst = _parameter.getInstance();
         final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+                        CIFormAccounting.Accounting_PeriodForm.accountTable.name);
         if (accountTable != null && accountTable.getSize() > 0) {
             final Import imp = new Import();
             imp.createAccountTable(periodInst, accountTable);
@@ -211,7 +211,7 @@ public abstract class Periode_Base
     {
         final Instance periodInst = _parameter.getInstance();
         final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+                        CIFormAccounting.Accounting_PeriodForm.accountTable.name);
         if (accountTable != null && accountTable.getSize() > 0) {
             final Import imp = new Import();
             imp.createViewAccountTable(periodInst, accountTable);
@@ -229,7 +229,7 @@ public abstract class Periode_Base
     {
         final Instance periodInst = _parameter.getInstance();
         final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodeForm.accountTable.name);
+                        CIFormAccounting.Accounting_PeriodForm.accountTable.name);
         if (accountTable != null && accountTable.getSize() > 0) {
             final Import imp = new Import();
             imp.createCaseTable(periodInst, accountTable);
@@ -245,7 +245,7 @@ public abstract class Periode_Base
      * @return list of map used for an autocomplete event
      * @throws EFapsException on erro
      */
-    public Return autoComplete4Periode(final Parameter _parameter)
+    public Return autoComplete4Period(final Parameter _parameter)
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
@@ -254,17 +254,17 @@ public abstract class Periode_Base
 
         final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
 
-        final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Periode);
-        queryBuilder.addWhereAttrMatchValue(CIAccounting.Periode.Name, input + "*").setIgnoreCase(true);
+        final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Period);
+        queryBuilder.addWhereAttrMatchValue(CIAccounting.Period.Name, input + "*").setIgnoreCase(true);
         final MultiPrintQuery multi = queryBuilder.getPrint();
         multi.addAttribute(key);
-        multi.addAttribute(CIAccounting.Periode.FromDate, CIAccounting.Periode.ToDate, CIAccounting.Periode.Name);
+        multi.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.ToDate, CIAccounting.Period.Name);
         multi.execute();
         while (multi.next()) {
             final String keyVal = multi.getAttribute(key).toString();
-            final String name = multi.<String> getAttribute(CIAccounting.Periode.Name);
-            final DateTime fromDate = multi.<DateTime> getAttribute(CIAccounting.Periode.FromDate);
-            final DateTime toDate = multi.<DateTime> getAttribute(CIAccounting.Periode.ToDate);
+            final String name = multi.<String> getAttribute(CIAccounting.Period.Name);
+            final DateTime fromDate = multi.<DateTime> getAttribute(CIAccounting.Period.FromDate);
+            final DateTime toDate = multi.<DateTime> getAttribute(CIAccounting.Period.ToDate);
             final String toDateStr = toDate.toString(DateTimeFormat.forStyle("S-")
                             .withLocale(Context.getThreadContext().getLocale()));
             final String fromDateStr = fromDate.toString(DateTimeFormat.forStyle("S-")
@@ -294,25 +294,25 @@ public abstract class Periode_Base
         throws EFapsException
     {
         Instance ret = (Instance) Context.getThreadContext()
-                        .getSessionAttribute(Transaction_Base.PERIODE_SESSIONKEY);
+                        .getSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY);
         if (ret == null && _parameter.getInstance() != null && _parameter.getInstance().isValid()) {
             final Instance inst = _parameter.getInstance();
             if (inst.getType().isKindOf(CIAccounting.Account2ObjectAbstract.getType())) {
                 final PrintQuery print = new PrintQuery(inst);
                 final SelectBuilder sel = SelectBuilder.get()
                                 .linkto(CIAccounting.Account2ObjectAbstract.FromAccountAbstractLink)
-                                .linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).instance();
+                                .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
                 print.addSelect(sel);
                 print.execute();
                 ret = print.<Instance>getSelect(sel);
             } else  if (inst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
                 final PrintQuery print = new PrintQuery(inst);
                 final SelectBuilder sel = SelectBuilder.get()
-                                .linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink).instance();
+                                .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
                 print.addSelect(sel);
                 print.execute();
                 ret = print.<Instance>getSelect(sel);
-            } else  if (inst.getType().isKindOf(CIAccounting.Periode.getType())) {
+            } else  if (inst.getType().isKindOf(CIAccounting.Period.getType())) {
                 ret = inst;
             } else  if (inst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
                 final PrintQuery print = new CachedPrintQuery(inst, SubPeriod_Base.CACHEKEY);
@@ -347,11 +347,11 @@ public abstract class Periode_Base
             {
                 final Instance instance = _parameter.getInstance();
                 final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CIAccounting.Periode.FromDate);
-                print.addAttribute(CIAccounting.Periode.ToDate);
+                print.addAttribute(CIAccounting.Period.FromDate);
+                print.addAttribute(CIAccounting.Period.ToDate);
                 print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
@@ -384,11 +384,11 @@ public abstract class Periode_Base
             {
                 final Instance instance = _parameter.getInstance();
                 final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CIAccounting.Periode.FromDate);
-                print.addAttribute(CIAccounting.Periode.ToDate);
+                print.addAttribute(CIAccounting.Period.FromDate);
+                print.addAttribute(CIAccounting.Period.ToDate);
                 print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
@@ -416,11 +416,11 @@ public abstract class Periode_Base
         final Return ret = new Return();
         final Instance instance = _parameter.getInstance();
         final PrintQuery print = new PrintQuery(instance);
-        print.addAttribute(CIAccounting.Periode.FromDate);
-        print.addAttribute(CIAccounting.Periode.ToDate);
+        print.addAttribute(CIAccounting.Period.FromDate);
+        print.addAttribute(CIAccounting.Period.ToDate);
         print.execute();
-        final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-        final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+        final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+        final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
         final AttributeQuery attrQuery = attrQueryBldr
@@ -461,10 +461,10 @@ public abstract class Periode_Base
                 throws EFapsException
             {
                 final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.Periode.FromDate);
+                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Period.FromDate);
                 print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
 
                 final List<Status> statusArrayBalance = new ArrayList<Status>();
 
@@ -521,10 +521,10 @@ public abstract class Periode_Base
                 throws EFapsException
             {
                 final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.Periode.FromDate);
+                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Period.FromDate);
                 print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
 
                 final List<Status> statusArrayBalance = new ArrayList<Status>();
 
@@ -578,12 +578,12 @@ public abstract class Periode_Base
                 throws EFapsException
             {
                 final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.Periode.FromDate);
-                print.addAttribute(CIAccounting.Periode.ToDate);
+                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Period.FromDate);
+                print.addAttribute(CIAccounting.Period.ToDate);
                 print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
@@ -615,12 +615,12 @@ public abstract class Periode_Base
                 throws EFapsException
             {
                 final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new CachedPrintQuery(instance, Periode_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.Periode.FromDate);
-                print.addAttribute(CIAccounting.Periode.ToDate);
+                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Period.FromDate);
+                print.addAttribute(CIAccounting.Period.ToDate);
                 print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Periode.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Periode.ToDate);
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
@@ -668,7 +668,7 @@ public abstract class Periode_Base
                 throws EFapsException
             {
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink,
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
                                 _parameter.getInstance());
                 final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CIAccounting.AccountAbstract.ID);
                 _queryBldr.addWhereAttrInQuery(CIAccounting.Account2AccountAbstract.FromAccountLink, attrQuery);

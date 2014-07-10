@@ -75,10 +75,10 @@
             <property name="Attribute">Summary</property>
             <property name="Label">Accounting_AccountAbstract/Summary.Label</property>
         </field>
-        <field name="periodeLink">
-            <property name="SelectAlternateOID">linkto[PeriodeLink].oid</property>
-            <property name="Select">linkto[PeriodeLink].attribute[Name]</property>
-            <property name="Label">Accounting_AccountAbstract/PeriodeLink.Label</property>
+        <field name="periodLink">
+            <property name="SelectAlternateOID">linkto[PeriodLink].oid</property>
+            <property name="Select">linkto[PeriodLink].attribute[Name]</property>
+            <property name="Label">Accounting_AccountAbstract/PeriodLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="active">

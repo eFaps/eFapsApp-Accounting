@@ -59,7 +59,7 @@
                 name="Accounting_TransactionCreate4PettyCashMassiveForm.case.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
                 <property name="Type">Accounting_CaseFundsToBeSettled</property>
-                <property name="LinkFrom">PeriodeAbstractLink</property>
+                <property name="LinkFrom">PeriodAbstractLink</property>
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>

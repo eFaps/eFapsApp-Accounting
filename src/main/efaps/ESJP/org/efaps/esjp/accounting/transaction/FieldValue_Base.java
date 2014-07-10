@@ -61,7 +61,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
@@ -110,8 +110,8 @@ public abstract class FieldValue_Base
                                                  final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
-                _queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodeLink, periodInst.getId());
+                final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+                _queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodLink, periodInst.getId());
             }
         };
         return field.dropDownFieldValue(_parameter);
@@ -181,8 +181,8 @@ public abstract class FieldValue_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String type = (String) properties.get("Type");
         if (type != null) {
-            final Instance periodeInstance = new Periode().evaluateCurrentPeriod(_parameter);
-            _parameter.put(ParameterValues.INSTANCE, periodeInstance);
+            final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
+            _parameter.put(ParameterValues.INSTANCE, periodInstance);
             final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
             {
 
@@ -224,10 +224,10 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         Instance inst = _parameter.getCallInstance();
-        if (!inst.getType().getUUID().equals(CIAccounting.Periode)) {
-            inst = new Periode().evaluateCurrentPeriod(_parameter);
+        if (!inst.getType().getUUID().equals(CIAccounting.Period)) {
+            inst = new Period().evaluateCurrentPeriod(_parameter);
         }
-        final String baseCurName = new Periode().getCurrency(inst).getName();
+        final String baseCurName = new Period().getCurrency(inst).getName();
         ret.put(ReturnValues.VALUES, baseCurName);
         return ret;
     }
@@ -296,10 +296,10 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         Instance inst = _parameter.getCallInstance();
-        if (!inst.getType().getUUID().equals(CIAccounting.Periode.uuid)) {
-            inst = new Periode().evaluateCurrentPeriod(_parameter);
+        if (!inst.getType().getUUID().equals(CIAccounting.Period.uuid)) {
+            inst = new Period().evaluateCurrentPeriod(_parameter);
         }
-        final Instance baseCur = new Periode().getCurrency(inst).getInstance();
+        final Instance baseCur = new Period().getCurrency(inst).getInstance();
         final Field field = new Field()
         {
             @Override
@@ -674,7 +674,7 @@ public abstract class FieldValue_Base
             boolean costValidated = true;
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final boolean script = !"true".equalsIgnoreCase((String) props.get("noScript"));
-            final Instance periodInst = new Periode().evaluateCurrentPeriod(_parameter);
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
             final RateInfo rate = evaluateRate(_parameter, periodInst, _date == null ? new DateTime() : _date, null);
             _doc.setRateInfo(rate);
 
@@ -803,7 +803,7 @@ public abstract class FieldValue_Base
                            CISales.PositionSumAbstract.CrossPrice,
                            CISales.PositionSumAbstract.Rate);
         multi.execute();
-        final Instance periode = new Periode().evaluateCurrentPeriod(_parameter);
+        final Instance period = new Period().evaluateCurrentPeriod(_parameter);
         while (multi.next()) {
             final BigDecimal net = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
             final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
@@ -813,7 +813,7 @@ public abstract class FieldValue_Base
             final BigDecimal taxAmount = cross.subtract(net).multiply(newRatepos);
             final BigDecimal prodAmount = net.multiply(newRatepos);
             analyzeTax(_doc, false, multi.<Instance>getSelect(selTaxInst), taxAmount);
-            final RateInfo rate = evaluateRate(_parameter, periode, _doc.getDate(), _doc.getRateCurrInst());
+            final RateInfo rate = evaluateRate(_parameter, period, _doc.getDate(), _doc.getRateCurrInst());
             analyzeProduct(_doc, false, multi.<Instance>getSelect(selProdInst), prodAmount, rate,
                            CIAccounting.AccountIncomeStatementRevenue2ProductClass,
                            CIAccounting.AccountIncomeStatementRevenue);

@@ -53,10 +53,10 @@
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
         </field>
-        <field name="periodeLink">
-            <property name="SelectAlternateOID">linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[PeriodeAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_LabelAbstract/PeriodeLink.Label</property>
+        <field name="periodLink">
+            <property name="SelectAlternateOID">linkto[PeriodAbstractLink].oid</property>
+            <property name="Select">linkto[PeriodAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_LabelAbstract/PeriodLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="active">

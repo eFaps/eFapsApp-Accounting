@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Menu_ActionImport_UpdateViewAccountTable</name>
+        <name>Accounting_PeriodTree_Menu_ActionImport_UpdateViewAccountTable</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -38,10 +38,10 @@
 
         <!-- target definitions -->
         <target>
-            <form>Accounting_PeriodeAccountTableForm</form>
-            <execute method="updateViewTableAccount" program="org.efaps.esjp.accounting.Periode" />
+            <form>Accounting_PeriodAccountTableForm</form>
+            <execute method="updateViewTableAccount" program="org.efaps.esjp.accounting.Period" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configObjectCheck" name="Accounting_PeriodeTree_View.UI_ACCESSCHECK"
+                method="configObjectCheck" name="Accounting_PeriodTree_View.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateViews</property>

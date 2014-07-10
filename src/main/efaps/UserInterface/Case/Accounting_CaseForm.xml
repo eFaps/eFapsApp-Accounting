@@ -62,10 +62,10 @@
             <property name="Attribute">IsCross</property>
             <property name="Required">true</property>
         </field>
-        <field name="periodeLink">
-            <property name="SelectAlternateOID">linkto[PeriodeAbstractLink].oid</property>
-            <property name="Select">linkto[PeriodeAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_CaseAbstract/PeriodeAbstractLink.Label</property>
+        <field name="periodLink">
+            <property name="SelectAlternateOID">linkto[PeriodAbstractLink].oid</property>
+            <property name="Select">linkto[PeriodAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_CaseAbstract/PeriodAbstractLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="createGroup" character="Group">

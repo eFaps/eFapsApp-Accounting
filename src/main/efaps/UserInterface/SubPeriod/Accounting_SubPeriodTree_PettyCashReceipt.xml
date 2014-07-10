@@ -49,6 +49,6 @@
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_PeriodeTree_PettyCashReceipt.Label</property>
+        <property name="Label">Accounting_PeriodTree_PettyCashReceipt.Label</property>
     </definition>
 </ui-command>

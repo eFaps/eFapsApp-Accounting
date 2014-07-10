@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeMyDesk_Menu_Action_Delete</name>
+        <name>Accounting_PeriodMyDesk_Menu_Action_Delete</name>
 
         <access>
             <role>Accounting_Admin</role>

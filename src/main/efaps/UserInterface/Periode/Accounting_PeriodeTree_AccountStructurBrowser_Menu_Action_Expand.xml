@@ -27,14 +27,14 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_AccountStructurBrowser_Menu_Action_Expand</name>
+        <name>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_Expand</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
             <execute program="org.efaps.esjp.accounting.StructurBrowser" method="expand">
-                <!-- Accounting_PeriodeTree_AccountStructurBrowser -->
+                <!-- Accounting_PeriodTree_AccountStructurBrowser -->
                 <property name="StrBrwsCmd">73f42867-9452-47ec-85c0-21b001ec1e47</property>
                 <property name="Child_Type">Accounting_AccountAbstract</property>
                 <property name="Child_LinkFrom">ParentLink</property>

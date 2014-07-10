@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeSQLTable</name>
+        <name>Accounting_PeriodSQLTable</name>
         <database>
             <table-name>T_ACCPERIODE</table-name>
             <!-- columns -->

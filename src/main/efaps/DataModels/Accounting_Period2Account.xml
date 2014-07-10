@@ -31,7 +31,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Periode2Account</name>
+        <name>Accounting_Period2Account</name>
         <parent>Accounting_Account2ObjectAbstract</parent>
         <attribute>
             <name>FromLink</name>
@@ -43,7 +43,7 @@
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

@@ -25,7 +25,7 @@
     <file-revision>$Rev: 8463 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfig2PeriodeAbstract</name>
+        <name>Accounting_AccountConfig2PeriodAbstract</name>
         <parent>Accounting_Account2ObjectAbstract</parent>
         <purpose abstract="true"/>
         <attribute>
@@ -38,7 +38,7 @@
         <attribute>
             <name>ToAbstractLink</name>
             <type>Link</type>
-            <typelink>Accounting_Periode</typelink>
+            <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

@@ -29,10 +29,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu</name>
+        <name>Accounting_PeriodTree_SubPeriod_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_SubPeriod_Menu_Action</child>
+            <child>Accounting_PeriodTree_SubPeriod_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_GainLoss_Menu_Action_Disconnect</name>
+        <name>Accounting_PeriodTree_GainLoss_Menu_Action_Disconnect</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>

@@ -62,22 +62,22 @@
             <property name="Attribute">Numbering</property>
             <property name="Required">true</property>
         </field>
-        <field name="periodeLink4view">
-            <property name="SelectAlternateOID">linkto[PeriodeLink].oid</property>
-            <property name="Select">linkto[PeriodeLink].attribute[Name]</property>
-            <property name="Label">Accounting_AccountForm.periode.Label</property>
+        <field name="periodLink4view">
+            <property name="SelectAlternateOID">linkto[PeriodLink].oid</property>
+            <property name="Select">linkto[PeriodLink].attribute[Name]</property>
+            <property name="Label">Accounting_AccountForm.period.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-        <field name="periodeLink">
+        <field name="periodLink">
             <property name="Required">true</property>
-            <property name="Attribute">PeriodeLink</property>
-            <property name="Label">Accounting_AccountForm.periode.Label</property>
+            <property name="Attribute">PeriodLink</property>
+            <property name="Label">Accounting_AccountForm.period.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.accounting.Periode"
-                method="autoComplete4Periode"
-                name="Accounting_ReportForm.periode4create.UI_FIELD_AUTOCOMPLETE"
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="autoComplete4Period"
+                name="Accounting_ReportForm.period4create.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE"/>
         </field>
         <field name="createGroup" character="Group">

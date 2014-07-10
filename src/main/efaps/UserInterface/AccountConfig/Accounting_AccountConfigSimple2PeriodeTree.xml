@@ -29,13 +29,13 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfigSimple2PeriodeTree</name>
+        <name>Accounting_AccountConfigSimple2PeriodTree</name>
         <!-- targets -->
         <target>
-            <menu>Accounting_AccountConfigSimple2PeriodeTree_Menu</menu>
-            <form>Accounting_AccountConfigSimple2PeriodeForm</form>
+            <menu>Accounting_AccountConfigSimple2PeriodTree_Menu</menu>
+            <form>Accounting_AccountConfigSimple2PeriodForm</form>
         </target>
-        <type>Accounting_AccountConfigSimple2Periode</type>
+        <type>Accounting_AccountConfigSimple2Period</type>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

@@ -53,10 +53,10 @@
             <property name="Attribute">Numbering</property>
             <property name="Label">Accounting_ReportAbstract/Numbering.Label</property>
         </field>
-        <field name="periode">
-            <property name="SelectAlternateOID">linkto[PeriodeLink].oid</property>
-            <property name="Select">linkto[PeriodeLink].attribute[Name]</property>
-            <property name="Label">Accounting_PeriodeTable.periode.Label</property>
+        <field name="period">
+            <property name="SelectAlternateOID">linkto[PeriodLink].oid</property>
+            <property name="Select">linkto[PeriodLink].attribute[Name]</property>
+            <property name="Label">Accounting_PeriodTable.period.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">READONLY</property>
         </field>

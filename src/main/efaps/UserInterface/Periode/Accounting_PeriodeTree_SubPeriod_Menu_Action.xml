@@ -29,10 +29,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_SubPeriod_Menu_Action</name>
+        <name>Accounting_PeriodTree_SubPeriod_Menu_Action</name>
         <childs>
-            <child>Accounting_PeriodeTree_SubPeriod_Menu_Action_Create</child>
-            <child>Accounting_PeriodeTree_SubPeriod_Menu_Action_Delete</child>
+            <child>Accounting_PeriodTree_SubPeriod_Menu_Action_Create</child>
+            <child>Accounting_PeriodTree_SubPeriod_Menu_Action_Delete</child>
         </childs>
     </definition>
 </ui-menu>

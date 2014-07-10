@@ -33,7 +33,7 @@
         <!-- childs -->
         <childs>
             <child>Accounting_SubPeriodTree_Menu_Action</child>
-            <child>Accounting_PeriodeTree_Menu_ActionReport</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport</child>
         </childs>
     </definition>
 </ui-menu>

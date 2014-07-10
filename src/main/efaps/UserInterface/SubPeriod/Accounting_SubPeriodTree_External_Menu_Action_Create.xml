@@ -72,10 +72,10 @@
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodeLink</property>
+        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1450</property>
-        <property name="Label">Accounting_PeriodeTree_External_Menu_Action_Create.Label</property>
+        <property name="Label">Accounting_PeriodTree_External_Menu_Action_Create.Label</property>
     </definition>
 </ui-command>

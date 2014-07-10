@@ -25,16 +25,16 @@
     <file-revision>$Rev: 5317 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_GainLoss</name>
+        <name>Accounting_PeriodTree_GainLoss</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_GainLoss_Menu</menu>
-            <table>Accounting_AccountConfig2PeriodeTable</table>
+            <menu>Accounting_PeriodTree_GainLoss_Menu</menu>
+            <table>Accounting_AccountConfig2PeriodTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_AccountConfig2PeriodeAbstract</property>
+                <property name="Type">Accounting_AccountConfig2PeriodAbstract</property>
                 <property name="LinkFrom">ToAbstractLink</property>
             </evaluate>
         </target>

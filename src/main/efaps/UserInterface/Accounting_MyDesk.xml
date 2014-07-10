@@ -32,7 +32,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_MyDesk</name>
         <childs>
-            <child>Accounting_PeriodeMyDesk</child>
+            <child>Accounting_PeriodMyDesk</child>
             <child>Accounting_SubPeriodMyDesk</child>
             <child>Accounting_DocumentMyDesk</child>
             <child>Accounting_IncomingDocumentsMyDesk</child>

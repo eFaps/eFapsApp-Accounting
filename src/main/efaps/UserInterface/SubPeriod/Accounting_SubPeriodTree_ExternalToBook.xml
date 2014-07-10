@@ -55,6 +55,6 @@
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_PeriodeTree_ExternalToBook.Label</property>
+        <property name="Label">Accounting_PeriodTree_ExternalToBook.Label</property>
     </definition>
 </ui-command>

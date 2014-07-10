@@ -214,21 +214,21 @@ public abstract class Report_Base
         Instance inst = null;
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
             inst = _parameter.getInstance();
-            if (_parameter.getInstance().getType().isKindOf(CIAccounting.Periode.getType())) {
-                sel.attribute(_from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+            if (_parameter.getInstance().getType().isKindOf(CIAccounting.Period.getType())) {
+                sel.attribute(_from ? CIAccounting.Period.FromDate : CIAccounting.Period.ToDate);
             } else if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
                 sel.attribute(_from ? CIAccounting.SubPeriod.FromDate : CIAccounting.SubPeriod.ToDate);
             } else {
-                sel.linkto(CIAccounting.ReportAbstract.PeriodeLink).attribute(
-                                _from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+                sel.linkto(CIAccounting.ReportAbstract.PeriodLink).attribute(
+                                _from ? CIAccounting.Period.FromDate : CIAccounting.Period.ToDate);
             }
         } else {
             final String[] oids = _parameter.getParameterValues("selectedRow");
             if (oids != null && oids.length > 0) {
                 inst = Instance.get(oids[0]);
                 if (inst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
-                    sel.linkto(CIAccounting.AccountAbstract.PeriodeAbstractLink)
-                                    .attribute(_from ? CIAccounting.Periode.FromDate : CIAccounting.Periode.ToDate);
+                    sel.linkto(CIAccounting.AccountAbstract.PeriodAbstractLink)
+                                    .attribute(_from ? CIAccounting.Period.FromDate : CIAccounting.Period.ToDate);
                 }
             }
         }
@@ -415,14 +415,14 @@ public abstract class Report_Base
             }
             final PrintQuery printQ = new PrintQuery(_parameter.getInstance());
             final SelectBuilder selPeriodDate = new SelectBuilder()
-                            .linkto(CIAccounting.ReportAbstract.PeriodeLink)
-                            .attribute(CIAccounting.Periode.FromDate);
+                            .linkto(CIAccounting.ReportAbstract.PeriodLink)
+                            .attribute(CIAccounting.Period.FromDate);
             printQ.addSelect(selPeriodDate);
             printQ.execute();
-            final DateTime periodeDate = printQ.<DateTime>getSelect(selPeriodDate);
+            final DateTime periodDate = printQ.<DateTime>getSelect(selPeriodDate);
             jrb.getJasperParameters().put("FromDate", this.dateFrom);
             jrb.getJasperParameters().put("ToDate", this.dateTo);
-            jrb.getJasperParameters().put("PeriodeYear", periodeDate);
+            jrb.getJasperParameters().put("PeriodYear", periodDate);
 
             ret.put(ReturnValues.VALUES, super.getFile(jrb.toJasperPrint(), mime));
             ret.put(ReturnValues.TRUE, true);

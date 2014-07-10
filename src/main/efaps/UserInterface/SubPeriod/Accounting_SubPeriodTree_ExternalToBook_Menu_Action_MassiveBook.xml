@@ -55,13 +55,13 @@
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodeLink</property>
+        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
         <property name="WindowWidth">800</property>
         <property name="Submit">true</property>
         <property name="AskUser">true</property>
         <property name="SubmitSelectedRows">-1</property>
-        <property name="Label">Accounting_PeriodeTree_ExternalToBook_Menu_Action_MassiveBook.Label</property>
+        <property name="Label">Accounting_PeriodTree_ExternalToBook_Menu_Action_MassiveBook.Label</property>
     </definition>
 </ui-command>

@@ -29,10 +29,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_AccountStructurBrowser_Menu_Action</name>
+        <name>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action</name>
         <childs>
-            <child>Accounting_PeriodeTree_AccountStructurBrowser_Menu_Action_PrintAccount</child>
-            <child>Accounting_PeriodeTree_AccountStructurBrowser_Menu_Action_Expand</child>
+            <child>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_PrintAccount</child>
+            <child>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_Expand</child>
         </childs>
     </definition>
 </ui-menu>

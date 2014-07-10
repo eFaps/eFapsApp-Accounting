@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Case_Menu_Action_Delete</name>
+        <name>Accounting_PeriodTree_Case_Menu_Action_Delete</name>
 
         <access>
             <role>Accounting_Admin</role>

@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Case_Menu_Action_CreateExchange</name>
+        <name>Accounting_PeriodTree_Case_Menu_Action_CreateExchange</name>
 
         <access>
             <role>Accounting_Admin</role>
@@ -40,7 +40,7 @@
             <execute program="org.efaps.esjp.common.uiform.Create" />
              <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configObjectCheck"
-                name="Accounting_PeriodeTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                name="Accounting_PeriodTree_Exchange.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Accounting-Configuration</property>
                 <property name="Key">ActivateExchange</property>
             </trigger>
@@ -50,7 +50,7 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_CaseExchange</property>
-        <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodeAbstractLink</property>
+        <property name="TargetConnectAttribute">Accounting_CaseAbstract/PeriodAbstractLink</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

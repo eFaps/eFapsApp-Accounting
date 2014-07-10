@@ -47,10 +47,10 @@
             <property name="Select">linkto[FromLinkAbstract].attribute[StatusAbstract]</property>
             <property name="Label">Accounting_Transaction/Status.Label</property>
         </field>
-        <field name="periode">
-            <property name="SelectAlternateOID">linkto[FromLinkAbstract].linkto[PeriodeLink].oid</property>
-            <property name="Select">linkto[FromLinkAbstract].linkto[PeriodeLink].attribute[Name]</property>
-            <property name="Label">Accounting_TransactionTable.periode.Label</property>
+        <field name="period">
+            <property name="SelectAlternateOID">linkto[FromLinkAbstract].linkto[PeriodLink].oid</property>
+            <property name="Select">linkto[FromLinkAbstract].linkto[PeriodLink].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionTable.period.Label</property>
             <property name="HRef">TREE</property>
         </field>
     </definition>

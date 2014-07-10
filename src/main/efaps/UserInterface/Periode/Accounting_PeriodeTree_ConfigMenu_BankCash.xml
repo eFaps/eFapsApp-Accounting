@@ -31,16 +31,16 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_ConfigMenu_BankCash</name>
+        <name>Accounting_PeriodTree_ConfigMenu_BankCash</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodeTree_ConfigMenu_BankCash_Menu</menu>
-            <table>Accounting_Periode2AccountTable</table>
+            <menu>Accounting_PeriodTree_ConfigMenu_BankCash_Menu</menu>
+            <table>Accounting_Period2AccountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_Periode2Account</property>
+                <property name="Type">Accounting_Period2Account</property>
                 <property name="LinkFrom">ToLink</property>
             </evaluate>
         </target>

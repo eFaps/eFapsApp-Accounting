@@ -31,9 +31,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_External_Menu</name>
+        <name>Accounting_PeriodTree_PayMenu_External_Menu</name>
         <childs>
-            <child>Accounting_PeriodeTree_PayMenu_External_Menu_Action</child>
+            <child>Accounting_PeriodTree_PayMenu_External_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

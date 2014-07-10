@@ -29,7 +29,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PayMenu_Exchange_Menu_Action_Register</name>
+        <name>Accounting_PeriodTree_PayMenu_Exchange_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -40,7 +40,7 @@
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Accounting_PeriodeTree_Exchange_Menu_Action_Register.UI_ACCESSCHECK"
+                name="Accounting_PeriodTree_Exchange_Menu_Action_Register.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>

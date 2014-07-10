@@ -27,9 +27,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_CollectMenu_Securities_Menu_Action</name>
+        <name>Accounting_PeriodTree_CollectMenu_Securities_Menu_Action</name>
         <childs>
-            <child>Accounting_PeriodeTree_CollectMenu_Securities_Menu_Action_Register</child>
+            <child>Accounting_PeriodTree_CollectMenu_Securities_Menu_Action_Register</child>
         </childs>
     </definition>
 </ui-menu>

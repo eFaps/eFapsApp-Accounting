@@ -279,7 +279,7 @@ public class ImportDetails
             }
         }
 
-        final Instance periodeInst = getPeriodeInstance();
+        final Instance periodInst = getPeriodInstance();
         for (final Document doc : map.values()) {
             final BigDecimal amountCreditMN = doc.getAmountMNCredit() != null ? doc.getAmountMNCredit() : BigDecimal.ZERO;
             final BigDecimal amountDebitMN = doc.getAmountMNDebit() != null ? doc.getAmountMNDebit() : BigDecimal.ZERO;
@@ -305,7 +305,7 @@ public class ImportDetails
             insert.add(CIAccounting.TransactionOpeningBalance.Description, descBldr.toString());
             insert.add(CIAccounting.TransactionOpeningBalance.Status,
                             Status.find(CIAccounting.TransactionStatus.Open));
-            insert.add(CIAccounting.TransactionOpeningBalance.PeriodeLink, periodeInst);
+            insert.add(CIAccounting.TransactionOpeningBalance.PeriodLink, periodInst);
             insert.executeWithoutAccessCheck();
 
             if (_docMap != null) {
@@ -382,13 +382,13 @@ public class ImportDetails
     protected Account getRoundingAccount(final String _key)
         throws EFapsException
     {
-        final Instance periodInst = getPeriodeInstance();
+        final Instance periodInst = getPeriodInstance();
         Account ret = null;
         final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
         final String name = props.getProperty(_key);
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, name);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodeAbstractLink, periodInst);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
         multi.executeWithoutAccessCheck();
@@ -400,14 +400,14 @@ public class ImportDetails
         return ret;
     }
 
-    protected Instance getPeriodeInstance()
+    protected Instance getPeriodInstance()
         throws EFapsException
     {
         Instance ret = null;
         final DateTime date = new DateTime();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Periode);
-        queryBldr.addWhereAttrGreaterValue(CIAccounting.Periode.ToDate, date);
-        queryBldr.addWhereAttrLessValue(CIAccounting.Periode.FromDate, date);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period);
+        queryBldr.addWhereAttrGreaterValue(CIAccounting.Period.ToDate, date);
+        queryBldr.addWhereAttrLessValue(CIAccounting.Period.FromDate, date);
         final InstanceQuery query = queryBldr.getQuery();
         query.executeWithoutAccessCheck();
         if (query.next()) {

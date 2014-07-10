@@ -29,12 +29,12 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_AccountConfigDocument2PeriodeTree</name>
+        <name>Accounting_AccountConfigDocument2PeriodTree</name>
         <target>
-            <menu>Accounting_AccountConfigDocument2PeriodeTree_Menu</menu>
-            <form>Accounting_AccountConfigDocument2PeriodeForm</form>
+            <menu>Accounting_AccountConfigDocument2PeriodTree_Menu</menu>
+            <form>Accounting_AccountConfigDocument2PeriodForm</form>
         </target>
-        <type>Accounting_AccountConfigDocument2Periode</type>
+        <type>Accounting_AccountConfigDocument2Period</type>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

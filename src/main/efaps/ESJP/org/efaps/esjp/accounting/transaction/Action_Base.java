@@ -33,7 +33,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.accounting.Periode;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.PriceUtil;
@@ -67,13 +67,13 @@ public abstract class Action_Base
                                 final Instance _rateCurrInst)
         throws EFapsException
     {
-        final Instance periodeInst = getPeriodeInstance(_parameter, _transactionInstance);
+        final Instance periodInst = getPeriodInstance(_parameter, _transactionInstance);
 
-        final CurrencyInst periodeCurInst = new Periode().getCurrency(periodeInst);
+        final CurrencyInst periodCurInst = new Period().getCurrency(periodInst);
         final CurrencyInst rateCurInst = new CurrencyInst(_rateCurrInst);
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.CasePayroll);
-        attrQueryBldr.addWhereAttrEqValue(CIAccounting.CasePayroll.PeriodeAbstractLink, periodeInst.getId());
+        attrQueryBldr.addWhereAttrEqValue(CIAccounting.CasePayroll.PeriodAbstractLink, periodInst.getId());
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.CasePayroll.ID);
 
         final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIAccounting.ActionDefinition2Case);
@@ -112,7 +112,7 @@ public abstract class Action_Base
 
                 final PriceUtil util = new PriceUtil();
                 final BigDecimal[] rates = util.getRates(getExchangeDate(_parameter, _transactionInstance),
-                                periodeCurInst.getInstance(), rateCurInst.getInstance());
+                                periodCurInst.getInstance(), rateCurInst.getInstance());
 
                 final Object[] rateObj = new Object[] { rateCurInst.isInvert() ? BigDecimal.ONE : rates[3],
                                 rateCurInst.isInvert() ? rates[3] : BigDecimal.ONE };
@@ -130,7 +130,7 @@ public abstract class Action_Base
                 final Insert posInsert = new Insert(type);
                 posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transactionInstance.getId());
                 posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, accountInst.getId());
-                posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, periodeCurInst.getInstance()
+                posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, periodCurInst.getInstance()
                                 .getId());
                 posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, rateCurInst.getInstance()
                                 .getId());
@@ -144,12 +144,12 @@ public abstract class Action_Base
         }
     }
 
-    protected Instance getPeriodeInstance(final Parameter _parameter,
+    protected Instance getPeriodInstance(final Parameter _parameter,
                                           final Instance _transactionInstance)
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_transactionInstance);
-        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.TransactionAbstract.PeriodeLink).instance();
+        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.TransactionAbstract.PeriodLink).instance();
         print.addSelect(sel);
         print.executeWithoutAccessCheck();
         return print.<Instance>getSelect(sel);

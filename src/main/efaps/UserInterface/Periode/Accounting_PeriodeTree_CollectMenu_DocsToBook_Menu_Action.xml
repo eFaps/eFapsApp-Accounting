@@ -33,13 +33,13 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action</name>
+        <name>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_Book</child>
-            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook</child>
-            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate</child>
-            <child>Accounting_PeriodeTree_CollectMenu_DocsToBook_Menu_Action_RecalculateDocument</child>
+            <child>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_Book</child>
+            <child>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook</child>
+            <child>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate</child>
+            <child>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateDocument</child>
         </childs>
     </definition>
 

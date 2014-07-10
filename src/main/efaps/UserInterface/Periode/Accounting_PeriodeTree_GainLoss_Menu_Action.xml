@@ -25,13 +25,13 @@
     <file-revision>$Rev: 5317 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_GainLoss_Menu_Action</name>
+        <name>Accounting_PeriodTree_GainLoss_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Accounting_PeriodeTree_GainLoss_Menu_Action_AddExistingDocument</child>
-            <child>Accounting_PeriodeTree_GainLoss_Menu_Action_AddExistingSimple</child>
-            <child>Accounting_PeriodeTree_GainLoss_Menu_Action_Disconnect</child>
-            <child>Accounting_PeriodeTree_GainLoss_Menu_Action_SimpleRecalculate</child>
+            <child>Accounting_PeriodTree_GainLoss_Menu_Action_AddExistingDocument</child>
+            <child>Accounting_PeriodTree_GainLoss_Menu_Action_AddExistingSimple</child>
+            <child>Accounting_PeriodTree_GainLoss_Menu_Action_Disconnect</child>
+            <child>Accounting_PeriodTree_GainLoss_Menu_Action_SimpleRecalculate</child>
         </childs>
     </definition>
 </ui-menu>

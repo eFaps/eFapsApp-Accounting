@@ -114,10 +114,10 @@ public abstract class JournalDataSource_Base
                 final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIAccounting.ReportSubJournal);
                 attrQueryBldr2.addWhereAttrEqValue(CIAccounting.ReportSubJournal.ID, getInstance());
                 final AttributeQuery attrQuery2 = attrQueryBldr2.
-                                getAttributeQuery(CIAccounting.ReportSubJournal.PeriodeLink);
-                queryBuilder.addWhereAttrInQuery(CIAccounting.TransactionAbstract.PeriodeLink, attrQuery2);
+                                getAttributeQuery(CIAccounting.ReportSubJournal.PeriodLink);
+                queryBuilder.addWhereAttrInQuery(CIAccounting.TransactionAbstract.PeriodLink, attrQuery2);
             } else {
-                queryBuilder.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodeLink, getInstance());
+                queryBuilder.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodLink, getInstance());
             }
             queryBuilder.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
             queryBuilder.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));

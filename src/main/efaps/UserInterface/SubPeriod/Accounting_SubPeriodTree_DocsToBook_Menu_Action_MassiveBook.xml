@@ -62,6 +62,6 @@
         <property name="Submit">true</property>
         <property name="AskUser">true</property>
         <property name="SubmitSelectedRows">-1</property>
-        <property name="Label">Accounting_PeriodeTree_DocsToBook_Menu_Action_MassiveBook.Label</property>
+        <property name="Label">Accounting_PeriodTree_DocsToBook_Menu_Action_MassiveBook.Label</property>
     </definition>
 </ui-command>
