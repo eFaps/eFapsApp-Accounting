@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -23,14 +22,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>568e7bab-4625-401a-84b3-baf599cd806b</uuid>
+    <uuid>fd06d7db-6c3d-4238-bb8e-4ff0578c38bd</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Securities_Menu_Action</name>
+        <name>Accounting_PeriodeTree_CollectMenu_Securities_Menu_Action</name>
         <childs>
-            <child>Accounting_PeriodeTree_Securities_Menu_Action_Register</child>
+            <child>Accounting_PeriodeTree_CollectMenu_Securities_Menu_Action_Register</child>
         </childs>
     </definition>
 </ui-menu>

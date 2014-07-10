@@ -28,7 +28,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_Securities_Menu_Action_Register</name>
+        <name>Accounting_PeriodeTree_PayMenu_IncomingSecurities_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
