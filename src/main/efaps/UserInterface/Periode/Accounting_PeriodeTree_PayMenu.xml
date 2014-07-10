@@ -36,6 +36,7 @@
             <child>Accounting_PeriodeTree_PayMenu_ExternalToBook</child>
             <child>Accounting_PeriodeTree_PayMenu_PettyCashReceipt</child>
             <child>Accounting_PeriodeTree_PayMenu_FundsToBeSettled</child>
+            <child>Accounting_PeriodeTree_PayMenu_Exchange</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

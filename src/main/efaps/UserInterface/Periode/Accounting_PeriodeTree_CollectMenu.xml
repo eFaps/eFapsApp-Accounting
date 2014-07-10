@@ -34,6 +34,7 @@
         <childs>
             <child>Accounting_PeriodeTree_CollectMenu_Document</child>
             <child>Accounting_PeriodeTree_CollectMenu_DocsToBook</child>
+            <child>Accounting_PeriodeTree_CollectMenu_IncomingExchange</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

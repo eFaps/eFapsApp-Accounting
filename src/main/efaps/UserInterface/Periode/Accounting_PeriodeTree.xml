@@ -49,7 +49,6 @@
 
             <child>Accounting_PeriodeTree_StockToBook</child>
 
-            <child>Accounting_PeriodeTree_Exchange</child>
             <child>Accounting_PeriodeTree_RetPer</child>
             <child>Accounting_PeriodeTree_Securities</child>
 
