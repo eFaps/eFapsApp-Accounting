@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>3eca827f-bf37-41e0-a7e9-cbfba082b02c</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_PeriodTree_CollectMenu_Document</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
+        <target>
+            <menu>Accounting_PeriodTree_CollectMenu_Document_Menu</menu>
+            <table>Accounting_PeriodDocumentSumTable</table>
+            <evaluate program="org.efaps.esjp.accounting.Period" method="getDocuments" >
+                <property name="Type">Sales_DocumentSumAbstract</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
+                <property name="Status01">Open</property>
+                <property name="StatusGroup02">Sales_InvoiceStatus</property>
+                <property name="Status02">Paid</property>
+                <property name="StatusGroup03">Sales_InvoiceStatus</property>
+                <property name="Status03">Digitized</property>
+                <property name="StatusGroup04">Sales_ReceiptStatus</property>
+                <property name="Status04">Open</property>
+                <property name="StatusGroup05">Sales_ReceiptStatus</property>
+                <property name="Status05">Paid</property>
+                <property name="StatusGroup06">Sales_ReceiptStatus</property>
+                <property name="Status06">Digitized</property>
+                <property name="StatusGroup07">Sales_CreditNoteStatus</property>
+                <property name="Status07">Open</property>
+                <property name="StatusGroup08">Sales_CreditNoteStatus</property>
+                <property name="Status08">Paid</property>
+                <property name="StatusGroup09">Sales_CreditNoteStatus</property>
+                <property name="Status09">Digitized</property>
+                <property name="StatusGroup10">Sales_ReminderStatus</property>
+                <property name="Status10">Open</property>
+                <property name="StatusGroup11">Sales_ReminderStatus</property>
+                <property name="Status11">Paid</property>
+                <property name="StatusGroup12">Sales_ReminderStatus</property>
+                <property name="Status12">Digitized</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
+</ui-command>
