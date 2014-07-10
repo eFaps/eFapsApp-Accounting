@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,21 +22,22 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8c7d7fc9-f1d9-40fa-8982-e4c5e23bcabe</uuid>
+    <uuid>6947c5e4-d32b-455d-a8ea-66d9b5fdbf27</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_PettyCashReceipt_Menu_Action_MassiveRegister</name>
+        <name>Accounting_PeriodeTree_PayMenu_FundsToBeSettled_Menu_Action_MassiveRegister</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4PettyCashMassiveForm</form>
-            <execute method="create4PettyCashMassive" program="org.efaps.esjp.accounting.transaction.Create" />
+            <form>Accounting_TransactionCreate4FundsToBeSettledMassiveForm</form>
+            <execute method="create4FundsToBeSettledMassive"
+                program="org.efaps.esjp.accounting.transaction.Create" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_TransactionCreate4PettyCashMassiveForm.UI_ACCESSCHECK"
+                name="Accounting_PeriodeTree_FundsToBeSettled_Menu_Action_MassiveRegister.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>

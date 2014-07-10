@@ -22,36 +22,27 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9fd794d5-48e9-42ff-a6ef-368efd1eabaa</uuid>
+    <uuid>25ff1912-73d0-4add-8bcc-a70724619fc8</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodeTree_FundsToBeSettled_Menu_Action_Register</name>
+        <name>Accounting_PeriodeTree_PayMenu_FundsToBeSettled</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4FundsToBeSettledForm</form>
-            <execute method="create4FundsToBeSettled"
-                program="org.efaps.esjp.accounting.transaction.Create" />
-            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction">
-                <property name="Types">Accounting_ExternalVoucher</property>
-            </validate>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_PeriodeTree_FundsToBeSettled_Menu_Action_Register.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
-            </trigger>
+            <menu>Accounting_PeriodeTree_PayMenu_FundsToBeSettled_Menu</menu>
+            <table>Accounting_IncomingDocumentTable</table>
+            <evaluate method="getFundsToBeSettled" program="org.efaps.esjp.accounting.Periode">
+                <property name="FundsToBeSettledBalanceStatus">Verified</property>
+                <property name="Type01">Sales_FundsToBeSettledReceipt</property>
+                <property name="StatusGroup01">Sales_FundsToBeSettledReceiptStatus</property>
+                <property name="Status01">Closed</property>
+            </evaluate>
         </target>
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="Submit">true</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
 </ui-command>

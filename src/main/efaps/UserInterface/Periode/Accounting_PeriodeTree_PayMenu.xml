@@ -34,8 +34,8 @@
         <childs>
             <child>Accounting_PeriodeTree_PayMenu_External</child>
             <child>Accounting_PeriodeTree_PayMenu_ExternalToBook</child>
-            <child>Accounting_PeriodeTree_PettyCashReceipt</child>
-            <child>Accounting_PeriodeTree_FundsToBeSettled</child>
+            <child>Accounting_PeriodeTree_PayMenu_PettyCashReceipt</child>
+            <child>Accounting_PeriodeTree_PayMenu_FundsToBeSettled</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
