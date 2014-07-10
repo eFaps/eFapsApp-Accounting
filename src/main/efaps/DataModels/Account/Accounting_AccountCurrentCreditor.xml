@@ -37,7 +37,7 @@
             <type>Link</type>
             <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>PERIODEID</sqlcolumn>
+            <sqlcolumn>PERIODID</sqlcolumn>
         </attribute>
         <trigger program="org.efaps.esjp.accounting.Account" method="sumUpdateTrigger"
             name="Accounting_AccountCurrentCreditor.UPDATE_POST" event="UPDATE_POST" />

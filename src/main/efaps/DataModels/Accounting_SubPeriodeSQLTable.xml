@@ -48,7 +48,7 @@
             <column name="MODIFIER"     type="INTEGER"      not-null="true" />
             <column name="MODIFIED"     type="DATETIME"     not-null="true" />
             <foreign name="T_ACCSUBPERIOD_FK_COMPANYID"   key="COMPANYID"     reference="T_USERABSTRACT(ID)" />
-            <foreign name="T_ACCSUBPERIOD_FK_PERIODID"    key="PERIODID"      reference="T_ACCPERIODE(ID)" />
+            <foreign name="T_ACCSUBPERIOD_FK_PERIODID"    key="PERIODID"      reference="T_ACCPERIOD(ID)" />
             <foreign name="T_ACCSUBPERIOD_FK_CRTR"        key="CREATOR"       reference="T_USERPERSON(ID)" />
             <foreign name="T_ACCSUBPERIOD_FK_MDFR"        key="MODIFIER"      reference="T_USERPERSON(ID)" />
         </database>

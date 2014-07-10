@@ -57,7 +57,7 @@
             <type>Link</type>
             <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_TransactionSQLTable</sqltable>
-            <sqlcolumn>PERIODEID</sqlcolumn>
+            <sqlcolumn>PERIODID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Name</name>

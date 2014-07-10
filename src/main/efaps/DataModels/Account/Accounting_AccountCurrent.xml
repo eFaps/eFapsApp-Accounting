@@ -37,7 +37,7 @@
             <type>Link</type>
             <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_AccountSQLTable</sqltable>
-            <sqlcolumn>PERIODEID</sqlcolumn>
+            <sqlcolumn>PERIODID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ContactLink</name>
