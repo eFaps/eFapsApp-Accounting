@@ -180,6 +180,14 @@
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="docTaxInfo">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Accounting_IncomingDocumentTable.docTaxInfo.Label</property>
+            <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
+                method="getDocTaxInfoFieldValueUI"
+                name="Accounting_IncomingDocumentTable.docTaxInfo.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
+        </field>
         <field name="project">
             <property name="SelectAlternateOID">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
             <property name="Select">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>

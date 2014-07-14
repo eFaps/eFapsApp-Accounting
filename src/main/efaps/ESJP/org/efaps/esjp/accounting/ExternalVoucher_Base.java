@@ -64,12 +64,11 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.ContactsPicker;
-import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
-import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.AbstractDocumentSum;
-import org.efaps.esjp.sales.document.AbstractDocumentSum_Base;
+import org.efaps.esjp.sales.document.AbstractDocumentTax;
+import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
@@ -130,7 +129,7 @@ public abstract class ExternalVoucher_Base
         final CreatedDoc createdDoc = new CreatedDoc();
         //create a list of calculators
         final List<Calculator> calcList = analyseAmountsFromUI(_parameter);
-        createdDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
+        createdDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
 
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
@@ -514,6 +513,19 @@ public abstract class ExternalVoucher_Base
                             && sysconf.getAttributeValueAsBoolean("DeactivateFieldPicker4ExternalVoucher")) {
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public Return getDocTaxInfoFieldValueUI(final Parameter _parameter)
+     throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+        AbstractDocumentTax.evaluateDocTaxInfo(_parameter, instances);
+        final StringBuilder html = AbstractDocumentTax.getSmallTaxField4Doc(_parameter, _parameter.getInstance());
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 
