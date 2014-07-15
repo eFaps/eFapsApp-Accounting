@@ -36,7 +36,7 @@
             <table>Sales_PaymentDocumentAbstractTable</table>
             <evaluate program="org.efaps.esjp.accounting.Period"
                 method="getPaymentToBook">
-                <property name="Type">Sales_PaymentDocumentIOAbstract</property>
+                <property name="Type">Sales_PaymentDocumentOutAbstract</property>
                 <property name="StatusGroup01">Sales_PaymentCashOutStatus</property>
                 <property name="Status01">Closed</property>
                 <property name="StatusGroup02">Sales_PaymentCheckOutStatus</property>
