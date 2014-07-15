@@ -19,22 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6eb87ed0-663e-4c3b-9833-3ef5143f94c7</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ad011f98-d430-4d8c-9eb3-99977e7738d3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_IncomingDocumentsMyDesk</name>
+        <name>Accounting_IncomingDocumentSearch</name>
         <childs>
-            <child>Accounting_Common_SearchMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Accounting_IncomingDocumentMyDesk</child>
+            <child>Sales_IncomingInvoiceSearch</child>
+            <child>Sales_IncomingReceiptSearch</child>
+            <child>Sales_IncomingCreditNoteSearch</child>
+            <child>Sales_IncomingReminderSearch</child>
+            <child>Accounting_ExternalVoucherSearch</child>
         </childs>
     </definition>
 </ui-menu>

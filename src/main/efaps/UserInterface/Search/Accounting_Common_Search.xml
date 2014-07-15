@@ -14,27 +14,29 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
+ Author:          tmo
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6eb87ed0-663e-4c3b-9833-3ef5143f94c7</uuid>
+--><ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>f86eebdc-288a-4ed7-987a-45dfdef9fbe0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_IncomingDocumentsMyDesk</name>
+        <name>Accounting_Common_Search</name>
+        <!-- defaults -->
+        <default>
+            <command>Accounting_DocumentSearch</command>
+        </default>
+        <!-- childs -->
         <childs>
-            <child>Accounting_Common_SearchMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Accounting_IncomingDocumentMyDesk</child>
+            <child>Accounting_DocumentSearch</child>
+            <child>Accounting_IncomingDocumentSearch</child>
         </childs>
     </definition>
-</ui-menu>
+
+</ui-search>

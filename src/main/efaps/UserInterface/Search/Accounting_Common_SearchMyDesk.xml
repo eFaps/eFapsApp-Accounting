@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,22 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6eb87ed0-663e-4c3b-9833-3ef5143f94c7</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>feb1871b-e5cf-4f79-9340-006b0b361d49</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_IncomingDocumentsMyDesk</name>
-        <childs>
-            <child>Accounting_Common_SearchMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Accounting_IncomingDocumentMyDesk</child>
-        </childs>
+        <name>Accounting_Common_SearchMyDesk</name>
+        <!-- target definitions -->
+        <target>
+            <search>Accounting_Common_Search</search>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">popup</property>
     </definition>
-</ui-menu>
+
+</ui-command>
