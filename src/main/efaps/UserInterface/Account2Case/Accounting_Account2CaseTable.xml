@@ -34,11 +34,14 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2CaseTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_Account2CaseAbstract/Type.Label</property>
              <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="order">
+            <property name="Attribute">Order</property>
+            <property name="Label">Accounting_Account2CaseAbstract/Order.Label</property>
         </field>
         <field name="numerator">
             <property name="Attribute">Numerator</property>

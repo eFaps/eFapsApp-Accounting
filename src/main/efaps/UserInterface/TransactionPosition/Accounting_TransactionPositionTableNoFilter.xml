@@ -22,15 +22,16 @@
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>de943c32-8330-4682-b613-0b0bca89c704</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPositionTableNoFilter</name>
-        <!-- fields -->
+        <field name="position">
+            <property name="Attribute">Position</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/Position.Label</property>
+        </field>
         <field name="type">
             <property name="ModeSearch">READONLY</property>
             <property name="Attribute">Type</property>

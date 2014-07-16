@@ -26,17 +26,20 @@
 <ui-form xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>221ced08-4566-4ef9-abb3-41ddfb40d146</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2CaseForm</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
+        </field>
+        <field name="order">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Order</property>
+            <property name="Required">true</property>
         </field>
         <field name="numerator">
             <property name="ModeCreate">EDITABLE</property>
@@ -68,11 +71,11 @@
                 name="Accounting_Account2CaseTable.classificationLink.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Products_ProductAbstract</property>
-             </trigger>
-             <trigger program="org.efaps.esjp.accounting.Case"
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.Case"
                 method="classificationLinkAccessCheck"
                 name="Accounting_Account2CaseTable.classificationLink.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK"/>
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="classificationLink4view">
             <property name="Attribute">LinkValue</property>
@@ -85,7 +88,7 @@
             <trigger program="org.efaps.esjp.accounting.Case"
                 method="classificationLinkAccessCheck"
                 name="Accounting_Account2CaseTable.classificationLink4view.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK"/>
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="fromAccountAbstractLink">
             <property name="SelectAlternateOID">linkto[FromAccountAbstractLink].oid</property>
@@ -102,8 +105,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Accounting_Account2CaseForm.fromAccountAbstractLink.Label</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-                method="autoComplete4Account"
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Account"
                 name="Accounting_Account2CaseForm.account.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.accounting.Account">
                 <property name="ShowSumAccount">false</property>

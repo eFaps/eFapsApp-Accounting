@@ -29,9 +29,7 @@
     <uuid>09eab419-0460-4f23-b18b-247f8d4905e0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseAbstract</name>
         <purpose abstract="true"/>

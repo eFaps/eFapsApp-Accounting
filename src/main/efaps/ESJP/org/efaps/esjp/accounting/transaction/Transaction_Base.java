@@ -795,28 +795,29 @@ public abstract class Transaction_Base
             final RateInfo rateInfo = _doc.getRateInfo();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
-            final MultiPrintQuery print = queryBldr.getPrint();
-
+            queryBldr.addOrderByAttributeAsc(CIAccounting.Account2CaseAbstract.Order);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.setEnforceSorted(true);
             final SelectBuilder selInst = new SelectBuilder()
                             .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
-            print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
+            multi.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                             CIAccounting.Account2CaseAbstract.Denominator,
                             CIAccounting.Account2CaseAbstract.LinkValue,
                             CIAccounting.Account2CaseAbstract.Default);
-            print.addSelect(selInst);
-            print.execute();
-            while (print.next()) {
-                final Type type = print.getCurrentInstance().getType();
+            multi.addSelect(selInst);
+            multi.execute();
+            while (multi.next()) {
+                final Type type = multi.getCurrentInstance().getType();
                 final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
                                 || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
-                final Boolean isDefault = print.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
+                final Boolean isDefault = multi.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
                 // classRel or default selected will be added
                 boolean add = classRel || isDefault;
                 if (add) {
-                    final Instance inst = print.<Instance>getSelect(selInst);
-                    final Integer denom = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
-                    final Integer numer = print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
-                    final Long linkId = print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
+                    final Instance inst = multi.<Instance>getSelect(selInst);
+                    final Integer denom = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
+                    final Integer numer = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
+                    final Long linkId = multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
                     final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
                                     BigDecimal.ROUND_HALF_UP);
                     final BigDecimal accAmount;

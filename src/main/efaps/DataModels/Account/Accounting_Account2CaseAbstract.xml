@@ -43,6 +43,13 @@
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>Order</name>
+            <type>Integer</type>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>ORD</sqlcolumn>
+            <defaultvalue>1</defaultvalue>
+        </attribute>
         <attribute>
             <name>Numerator</name>
             <type>Integer</type>

@@ -84,6 +84,35 @@ public abstract class Create_Base
 
 
     /**
+     * Method called to create a transaction including its positions.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance parent = _parameter.getCallInstance();
+
+        final Insert insert = new Insert(CIAccounting.Transaction);
+        insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
+        insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
+        insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
+        insert.add(CIAccounting.Transaction.PeriodLink, parent.getId());
+        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+        insert.execute();
+        final Instance instance = insert.getInstance();
+        final int pos = insertPositions(_parameter, instance, "Debit", null, 1);
+        insertPositions(_parameter, instance, "Credit", null, pos);
+        // create classifications
+        new org.efaps.esjp.common.uiform.Create().insertClassification(_parameter, instance);
+
+        insertReportRelation(_parameter, instance);
+        return new Return();
+    }
+
+    /**
      * Method is used to create a transaction for a given account. e.g. the user
      * selects an account and than only selects the amount and the target
      * accounts.
@@ -107,8 +136,9 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
         insert.execute();
         final Instance instance = insert.getInstance();
-        insertPositions(_parameter, instance, postfix, new String[] { _parameter.getCallInstance().getOid() });
-        insertPositions(_parameter, instance, "Debit".equals(postfix) ? "Credit" : "Debit", null);
+        final int pos = insertPositions(_parameter, instance, postfix, new String[] { _parameter.getCallInstance()
+                        .getOid() }, 0);
+        insertPositions(_parameter, instance, "Debit".equals(postfix) ? "Credit" : "Debit", null, pos);
         new org.efaps.esjp.common.uiform.Create().insertClassification(_parameter, instance);
         return new Return();
     }
@@ -596,8 +626,9 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open"));
         insert.execute();
         final Instance instance = insert.getInstance();
-        insertPositions(_parameter, instance, "Credit", null);
-        insertPositions(_parameter, instance, "Debit", null);
+
+        final int pos = insertPositions(_parameter, instance, "Credit", null, 1);
+        insertPositions(_parameter, instance, "Debit", null, pos);
 
         insertReportRelation(_parameter, instance);
 
@@ -673,35 +704,6 @@ public abstract class Create_Base
     }
 
     /**
-     * Method called to create a transaction including its positions.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return create(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance parent = _parameter.getCallInstance();
-
-        final Insert insert = new Insert(CIAccounting.Transaction);
-        insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
-        insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
-        insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodLink, parent.getId());
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
-        insert.execute();
-        final Instance instance = insert.getInstance();
-        insertPositions(_parameter, instance, "Credit", null);
-        insertPositions(_parameter, instance, "Debit", null);
-        // create classifications
-        new org.efaps.esjp.common.uiform.Create().insertClassification(_parameter, instance);
-
-        insertReportRelation(_parameter, instance);
-        return new Return();
-    }
-
-    /**
      * @param _parameter            Parameter as passed from the eFaps API
      * @param _transactionInstance  instance of the Transaction
      * @throws EFapsException on error
@@ -728,12 +730,14 @@ public abstract class Create_Base
      * @param _accountOids oid of the accounts
      * @throws EFapsException on error
      */
-    public void insertPositions(final Parameter _parameter,
-                                final Instance _instance,
-                                final String _postFix,
-                                final String[] _accountOids)
+    public Integer insertPositions(final Parameter _parameter,
+                                   final Instance _instance,
+                                   final String _postFix,
+                                   final String[] _accountOids,
+                                   final int _pos)
         throws EFapsException
     {
+        int ret = _pos;
         final String[] accountOids = _accountOids == null
                         ? _parameter.getParameterValues("accountLink_" + _postFix) : _accountOids;
         final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
@@ -754,24 +758,25 @@ public abstract class Create_Base
                     final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                                     BigDecimal.ROUND_HALF_UP);
                     final Type type = Type.get(Long.parseLong(types[i]));
-                    final Insert insert2 = new Insert(type);
-                    insert2.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _instance);
-                    insert2.add(CIAccounting.TransactionPositionAbstract.AccountLink, Instance.get(accountOids[i]));
-                    insert2.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
-                    insert2.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, curr[i]);
-                    insert2.add(CIAccounting.TransactionPositionAbstract.Rate, rateObj);
+                    final Insert posInsert = new Insert(type);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.Position, ret++);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _instance);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, Instance.get(accountOids[i]));
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, curr[i]);
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, rateObj);
 
                     final BigDecimal rateAmount = ((BigDecimal) formater.parse(amounts[i]))
                                                                        .setScale(6, BigDecimal.ROUND_HALF_UP);
                     final boolean isDebitTrans = type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid);
-                    insert2.add(CIAccounting.TransactionPositionAbstract.RateAmount,
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount,
                                     isDebitTrans ? rateAmount.negate() : rateAmount);
                     final BigDecimal amount = rateAmount.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
-                    insert2.add(CIAccounting.TransactionPositionAbstract.Amount,
+                    posInsert.add(CIAccounting.TransactionPositionAbstract.Amount,
                                     isDebitTrans ? amount.negate() : amount);
-                    insert2.execute();
+                    posInsert.execute();
 
-                    final Instance instance2 = insert2.getInstance();
+                    final Instance posInstance = posInsert.getInstance();
                     if (label2projectOids != null) {
                         final Long id2Label = Instance.get(label2projectOids[i]).getId();
                         if (id2Label != 0) {
@@ -781,7 +786,7 @@ public abstract class Create_Base
                             }
                             insert2Position.add(CIAccounting.LabelProject2PositionAbstract.FromLabelLink, id2Label);
                             insert2Position.add(CIAccounting.LabelProject2PositionAbstract.ToPositionAbstractLink,
-                                            instance2.getId());
+                                            posInstance);
                             insert2Position.execute();
                         }
                     }
@@ -847,6 +852,7 @@ public abstract class Create_Base
                             if (insert3 == null) {
                                 Create_Base.LOG.error("Missing defintion");
                             } else {
+                                insert3.add(CIAccounting.TransactionPositionAbstract.Position, ret++);
                                 insert3.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _instance);
                                 insert3.add(CIAccounting.TransactionPositionAbstract.AccountLink,
                                                 multi.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
@@ -864,6 +870,7 @@ public abstract class Create_Base
         } catch (final ParseException e) {
             throw new EFapsException(Transaction_Base.class, "insertPositions", e);
         }
+        return ret;
     }
 
     /**

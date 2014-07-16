@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,21 +22,16 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e84d98ed-1e3a-439a-922b-b5d18194047d</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00014</specification>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPositionAbstract</name>
-        <purpose abstract="true"/>
-
+        <purpose abstract="true" />
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -70,6 +65,13 @@
             <sqlcolumn>ACCOUNTID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Position</name>
+            <type>Integer</type>
+            <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
+            <sqlcolumn>POS</sqlcolumn>
+            <defaultvalue>0</defaultvalue>
+        </attribute>
+        <attribute>
             <name>Amount</name>
             <type>Decimal</type>
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
@@ -81,8 +83,8 @@
             <typelink>ERP_Currency</typelink>
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
+                event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
@@ -99,8 +101,8 @@
             <typelink>ERP_Currency</typelink>
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>RATECURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
+                event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>

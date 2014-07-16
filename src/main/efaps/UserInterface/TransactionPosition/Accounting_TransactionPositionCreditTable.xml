@@ -32,6 +32,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPositionCreditTable</name>
+        <field name="position_Credit">
+            <property name="Attribute">Position</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/Position.Label</property>
+        </field>
         <field name="type_Credit">
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Accounting_TransactionPositionAbstract/Type.Label</property>

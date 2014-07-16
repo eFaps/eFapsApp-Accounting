@@ -30,17 +30,15 @@
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification></specification>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseSQLTable</name>
         <typeid-column>TYPEID</typeid-column>
         <database>
             <table-name>T_ACCCASE</table-name>
-            <!-- columns -->
             <column name="TYPEID"    type="INTEGER"      not-null="true" />
-            <column name="COMPANYID" type="INTEGER"         not-null="true"/>
-            <column name="PERIODID" type="INTEGER"      not-null="true"/>
+            <column name="COMPANYID" type="INTEGER"      not-null="true"/>
+            <column name="PERIODID"  type="INTEGER"      not-null="true"/>
             <column name="NAME"      type="STRING_SHORT" not-null="true" length="128" />
             <column name="DESCR"     type="STRING_SHORT" not-null="true" length="256" />
             <column name="ACTIVE"    type="BOOLEAN" />
