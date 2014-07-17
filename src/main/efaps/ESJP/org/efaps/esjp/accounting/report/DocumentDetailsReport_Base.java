@@ -25,8 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +35,9 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.group.CustomGroupBuilder;
 import net.sf.dynamicreports.report.builder.group.GroupBuilder;
 import net.sf.dynamicreports.report.constant.GroupHeaderLayout;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -55,6 +53,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.sales.report.ComparativeReport;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -119,6 +118,9 @@ public abstract class DocumentDetailsReport_Base
         return new DocDetailsReport();
     }
 
+    /**
+     * Dynamic report.
+     */
     public static class DocDetailsReport
         extends AbstractDynamicReport
     {
@@ -128,9 +130,8 @@ public abstract class DocumentDetailsReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final DRDataSource dataSource = new DRDataSource("oid", "trName", "trDate", "trDesc", "acName", "acDesc",
-                            "debit", "credit");
-            final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            final List<DataBean> data = new ArrayList<>();
+
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
             attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink,
                             _parameter.getInstance());
@@ -147,84 +148,84 @@ public abstract class DocumentDetailsReport_Base
                             .attribute(CIAccounting.AccountAbstract.Description);
             final SelectBuilder selTrName = SelectBuilder.get()
                             .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
-                            .attribute(CIAccounting.Transaction.Name);
+                            .attribute(CIAccounting.TransactionAbstract.Name);
+            final SelectBuilder selTrIdent = SelectBuilder.get()
+                            .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
+                            .attribute(CIAccounting.TransactionAbstract.Identifier);
             final SelectBuilder selTrDesc = SelectBuilder.get()
                             .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
-                            .attribute(CIAccounting.Transaction.Description);
+                            .attribute(CIAccounting.TransactionAbstract.Description);
             final SelectBuilder selTrDate = SelectBuilder.get()
                             .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
-                            .attribute(CIAccounting.Transaction.Date);
-            final SelectBuilder selTrOID = SelectBuilder.get()
+                            .attribute(CIAccounting.TransactionAbstract.Date);
+            final SelectBuilder selTrOid = SelectBuilder.get()
                             .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
                             .oid();
-            multi.addSelect(selTrOID, selAcName, selAcDesc, selTrName, selTrDesc, selTrDate);
-            multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+            multi.addSelect(selTrOid, selAcName, selAcDesc, selTrName, selTrDesc, selTrDate, selTrIdent);
+            multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
+                            CIAccounting.TransactionPositionAbstract.Position);
             multi.execute();
             while (multi.next()) {
-                final Map<String, Object> map = new HashMap<String, Object>();
-                map.put("oid", multi.getSelect(selTrOID));
-                map.put("trName", multi.getSelect(selTrName));
-                map.put("trDate", multi.<DateTime>getSelect(selTrDate).toDate());
-                map.put("trDesc", multi.getSelect(selTrDesc));
-                map.put("acName", multi.getSelect(selAcName));
-                map.put("acDesc", multi.getSelect(selAcDesc));
+                final DataBean bean = getDataBean(_parameter);
+                data.add(bean);
+                bean.setTransOid(multi.<String>getSelect(selTrOid))
+                    .setTransName(multi.<String>getSelect(selTrName))
+                    .setTransIdent(multi.<String>getSelect(selTrIdent))
+                    .setTransDate(multi.<DateTime>getSelect(selTrDate))
+                    .setTransDesc(multi.<String>getSelect(selTrDesc))
+                    .setAccDesc(multi.<String>getSelect(selAcDesc))
+                    .setAccName(multi.<String>getSelect(selAcName))
+                    .setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position));
                 if (multi.getCurrentInstance().getType().isKindOf(CIAccounting.TransactionPositionCredit.getType())) {
-                    map.put("credit", multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount)
+                    bean.setCredit(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount)
                                     .abs());
                 } else {
-                    map.put("debit", multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount)
+                    bean.setDebit(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount)
                                     .abs());
                 }
-                values.add(map);
             }
             final ComparatorChain comChain = new ComparatorChain();
-            comChain.addComparator(new Comparator<Map<String, Object>>()
+            comChain.addComparator(new Comparator<DataBean>()
             {
                 @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
                 {
-                    return String.valueOf(_o1.get("trName")).compareTo(String.valueOf(_o2.get("trName")));
+                    return _o1.getTransName().compareTo(_o2.getTransName());
+                }
+            });
+            comChain.addComparator(new Comparator<DataBean>()
+            {
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getTransDate().compareTo(_o2.getTransDate());
+                }
+            });
+            comChain.addComparator(new Comparator<DataBean>()
+            {
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getTransOid().compareTo(_o2.getTransOid());
+                }
+            });
+            comChain.addComparator(new Comparator<DataBean>()
+            {
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getPosition().compareTo(_o2.getPosition());
                 }
             });
 
-            comChain.addComparator(new Comparator<Map<String, Object>>()
-            {
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    return ((Date) _o1.get("trDate")).compareTo(((Date) _o2.get("trDate")));
-                }
-            });
 
-            comChain.addComparator(new Comparator<Map<String, Object>>()
-            {
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    return String.valueOf(_o1.get("oid")).compareTo(String.valueOf(_o2.get("oid")));
-                }
-            });
+            Collections.sort(data, comChain);
 
-            comChain.addComparator(new Comparator<Map<String, Object>>()
-            {
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    return String.valueOf(_o1.get("acName")).compareTo(String.valueOf(_o2.get("acName")));
-                }
-            });
-
-            Collections.sort(values, comChain);
-
-            for (final Map<String, Object> map : values) {
-                dataSource.add(map.get("oid"), map.get("trName"), map.get("trDate"), map.get("trDesc"),
-                                map.get("acName"), map.get("acDesc"), map.get("debit"), map.get("credit"));
-            }
-            return dataSource;
+            return new JRBeanCollectionDataSource(data);
         }
 
         @Override
@@ -234,19 +235,22 @@ public abstract class DocumentDetailsReport_Base
         {
             final TextColumnBuilder<String> trNameColumn = DynamicReports.col.column(DBProperties
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.trName"),
-                            "trName", DynamicReports.type.stringType()).setWidth(50);
-            final TextColumnBuilder<Date> trDateColumn = DynamicReports.col.column(DBProperties
+                            "transName", DynamicReports.type.stringType()).setWidth(50);
+            final TextColumnBuilder<String> trNameIdent = DynamicReports.col.column(DBProperties
+                            .getProperty(DocumentDetailsReport.class.getName() + ".Column.trIdent"),
+                            "transIdent", DynamicReports.type.stringType());
+            final TextColumnBuilder<DateTime> trDateColumn = DynamicReports.col.column(DBProperties
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.trDate"),
-                            "trDate", DynamicReports.type.dateType());
+                            "transDate", DateTimeDate.get());
             final TextColumnBuilder<String> trDescColumn = DynamicReports.col.column(DBProperties
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.trDesc"),
-                            "trDesc", DynamicReports.type.stringType()).setWidth(220);
+                            "transDesc", DynamicReports.type.stringType()).setWidth(220);
             final TextColumnBuilder<String> acNameColumn = DynamicReports.col.column(DBProperties
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.acName"),
-                            "acName", DynamicReports.type.stringType()).setWidth(50);
+                            "accName", DynamicReports.type.stringType()).setWidth(50);
             final TextColumnBuilder<String> acDescColumn = DynamicReports.col.column(DBProperties
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.acDesc"),
-                            "acDesc", DynamicReports.type.stringType()).setWidth(220);
+                            "accDesc", DynamicReports.type.stringType()).setWidth(220);
 
             final TextColumnBuilder<BigDecimal> debitColumn = DynamicReports.col.column(DBProperties
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.debit"),
@@ -255,38 +259,335 @@ public abstract class DocumentDetailsReport_Base
                             .getProperty(DocumentDetailsReport.class.getName() + ".Column.credit"),
                             "credit", DynamicReports.type.bigDecimalType());
 
-            _builder.addColumn(trNameColumn, trDateColumn, trDescColumn, acNameColumn, acDescColumn, debitColumn,
-                            creditColumn);
+            _builder.addColumn(trNameColumn, trNameIdent, trDateColumn, trDescColumn, acNameColumn, acDescColumn,
+                            debitColumn, creditColumn);
 
-            final CustomGroupBuilder transGroup = DynamicReports.grp.group("oid", String.class)
-                            .setHeaderLayout(GroupHeaderLayout.EMPTY) ;
+            final CustomGroupBuilder transGroup = DynamicReports.grp.group("transOid", String.class)
+                            .setHeaderLayout(GroupHeaderLayout.EMPTY);
             trNameColumn.setPrintWhenExpression(new NoRepeatedInGroupExpression(transGroup));
+            trNameIdent.setPrintWhenExpression(new NoRepeatedInGroupExpression(transGroup));
             trDateColumn.setPrintWhenExpression(new NoRepeatedInGroupExpression(transGroup));
             trDescColumn.setPrintWhenExpression(new NoRepeatedInGroupExpression(transGroup));
 
             _builder.groupBy(transGroup);
         }
+
+        /**
+         * @param _parameter    Parameter as passed by the eFaps API
+         * @return new  DataBean
+         */
+        protected DataBean getDataBean(final Parameter _parameter)
+        {
+            return new DataBean();
+        }
     }
 
+    /**
+     * databean.
+     */
+    public static class DataBean
+    {
+        /**
+         * Used for grouping;
+         */
+        private String transOid;
+
+        /**
+         * Name of the Transaction.
+         */
+        private String transName;
+
+        /**
+         * Identification of the Transaction.
+         */
+        private String transIdent;
+
+        /**
+         * Identification of the Transaction.
+         */
+        private DateTime transDate;
+
+        /**
+         * Description of the Transaction.
+         */
+        private String transDesc;
+
+        /**
+         * Name of the Account.
+         */
+        private String accName;
+
+        /**
+         * Description of the Account.
+         */
+        private String accDesc;
+
+        /**
+         * Position.
+         */
+        private Integer position;
+
+        /**
+         * Debit.
+         */
+        private BigDecimal debit;
+
+        /**
+         * Credit.
+         */
+        private BigDecimal credit;
+
+        /**
+         * Getter method for the instance variable {@link #transName}.
+         *
+         * @return value of instance variable {@link #transName}
+         */
+        public String getTransName()
+        {
+            return this.transName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transName}.
+         *
+         * @param _transName value for instance variable {@link #transName}
+         * @return this for chaining
+         */
+        public DataBean setTransName(final String _transName)
+        {
+            this.transName = _transName;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #transIdent}.
+         *
+         * @return value of instance variable {@link #transIdent}
+         */
+        public String getTransIdent()
+        {
+            return this.transIdent;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transIdent}.
+         *
+         * @param _transIdent value for instance variable {@link #transIdent}
+         * @return this for chaining
+         */
+        public DataBean setTransIdent(final String _transIdent)
+        {
+            this.transIdent = _transIdent;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #transDate}.
+         *
+         * @return value of instance variable {@link #transDate}
+         */
+        public DateTime getTransDate()
+        {
+            return this.transDate;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transDate}.
+         *
+         * @param _transDate value for instance variable {@link #transDate}
+         * @return this for chaining
+         */
+        public DataBean setTransDate(final DateTime _transDate)
+        {
+            this.transDate = _transDate;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #transDesc}.
+         *
+         * @return value of instance variable {@link #transDesc}
+         */
+        public String getTransDesc()
+        {
+            return this.transDesc;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transDesc}.
+         *
+         * @param _transDesc value for instance variable {@link #transDesc}
+         * @return this for chaining
+         */
+        public DataBean setTransDesc(final String _transDesc)
+        {
+            this.transDesc = _transDesc;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #accName}.
+         *
+         * @return value of instance variable {@link #accName}
+         */
+        public String getAccName()
+        {
+            return this.accName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #accName}.
+         *
+         * @param _accName value for instance variable {@link #accName}
+         * @return this for chaining
+         */
+        public DataBean setAccName(final String _accName)
+        {
+            this.accName = _accName;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #accDesc}.
+         *
+         * @return value of instance variable {@link #accDesc}
+         */
+        public String getAccDesc()
+        {
+            return this.accDesc;
+        }
+
+        /**
+         * Setter method for instance variable {@link #accDesc}.
+         *
+         * @param _accDesc value for instance variable {@link #accDesc}
+         * @return this for chaining
+         */
+        public DataBean setAccDesc(final String _accDesc)
+        {
+            this.accDesc = _accDesc;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #debit}.
+         *
+         * @return value of instance variable {@link #debit}
+         */
+        public BigDecimal getDebit()
+        {
+            return this.debit;
+        }
+
+        /**
+         * Setter method for instance variable {@link #debit}.
+         *
+         * @param _debit value for instance variable {@link #debit}
+         * @return this for chaining
+         */
+        public DataBean setDebit(final BigDecimal _debit)
+        {
+            this.debit = _debit;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #credit}.
+         *
+         * @return value of instance variable {@link #credit}
+         */
+        public BigDecimal getCredit()
+        {
+            return this.credit;
+        }
+
+        /**
+         * Setter method for instance variable {@link #credit}.
+         *
+         * @param _credit value for instance variable {@link #credit}
+         * @return this for chaining
+         */
+        public DataBean setCredit(final BigDecimal _credit)
+        {
+            this.credit = _credit;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #position}.
+         *
+         * @return value of instance variable {@link #position}
+         */
+        public Integer getPosition()
+        {
+            return this.position;
+        }
+
+        /**
+         * Setter method for instance variable {@link #position}.
+         *
+         * @param _position value for instance variable {@link #position}
+         */
+        public void setPosition(final Integer _position)
+        {
+            this.position = _position;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #oid}.
+         *
+         * @return value of instance variable {@link #oid}
+         */
+        public String getTransOid()
+        {
+            return this.transOid;
+        }
+
+        /**
+         * Setter method for instance variable {@link #oid}.
+         *
+         * @param _oid value for instance variable {@link #oid}
+         * @return this for chaining
+         */
+        public DataBean setTransOid(final String _oid)
+        {
+            this.transOid = _oid;
+            return this;
+        }
+    }
+
+    /**
+     * Expression to prevent repetition.
+     */
     public static class NoRepeatedInGroupExpression
         extends AbstractSimpleExpression<Boolean>
     {
 
         /**
-         *
+         * Needed for serialization.
          */
         private static final long serialVersionUID = 1L;
 
+        /**
+         * GroupBuilder.
+         */
         private final GroupBuilder<?> group;
 
-        public NoRepeatedInGroupExpression(final GroupBuilder<?> group)
+        /**
+         * @param _group group to be used
+         */
+        public NoRepeatedInGroupExpression(final GroupBuilder<?> _group)
         {
-            this.group = group;
+            this.group = _group;
         }
 
-        public Boolean evaluate(final ReportParameters reportParameters)
+        /**
+         * @param _reportParameters parameters to be added
+         * @return true if repeated
+         */
+        public Boolean evaluate(final ReportParameters _reportParameters)
         {
-            final int groupNumber = DynamicReports.exp.groupRowNumber(this.group).evaluate(reportParameters);
+            final int groupNumber = DynamicReports.exp.groupRowNumber(this.group).evaluate(_reportParameters);
             return groupNumber == 1;
         }
     }
