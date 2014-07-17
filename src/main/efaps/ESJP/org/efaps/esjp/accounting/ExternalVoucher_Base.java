@@ -28,6 +28,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -69,6 +70,7 @@ import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.AbstractDocumentSum;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.IncomingInvoice;
 import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
@@ -76,8 +78,9 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -90,6 +93,11 @@ import org.joda.time.DateTime;
 public abstract class ExternalVoucher_Base
     extends AbstractDocumentSum
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ExternalVoucher.class);
+
     /**
      * Called from event for creation of a transaction for a External Document.
      *
@@ -241,7 +249,7 @@ public abstract class ExternalVoucher_Base
     @Override
     protected Instance getRateCurrencyInstance(final Parameter _parameter,
                                                final CreatedDoc _createdDoc)
-        throws CacheReloadException, EFapsException
+        throws EFapsException
     {
         Instance ret;
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
@@ -516,17 +524,140 @@ public abstract class ExternalVoucher_Base
         return ret;
     }
 
-
-    @SuppressWarnings("unchecked")
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return new Return
+     * @throws EFapsException on error
+     */
     public Return getDocTaxInfoFieldValueUI(final Parameter _parameter)
-     throws EFapsException
+        throws EFapsException
     {
         final Return ret = new Return();
+        @SuppressWarnings("unchecked")
         final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
         AbstractDocumentTax.evaluateDocTaxInfo(_parameter, instances);
         final StringBuilder html = AbstractDocumentTax.getSmallTaxField4Doc(_parameter, _parameter.getInstance());
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return new Return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4PerceptionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+        list.add(map);
+        final String percentStr = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.perceptionPercent.name);
+        if (percentStr != null && !percentStr.isEmpty()) {
+            final BigDecimal cross = evalAmountsFromUI(_parameter)[1];
+            if (cross.compareTo(BigDecimal.ZERO) != 0) {
+                try {
+                    final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                    final BigDecimal percent = (BigDecimal) formatter.parse(percentStr);
+                    final BigDecimal amount = cross.multiply(percent
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                    final String amountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .format(amount);
+                    map.put(CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.perceptionValue.name,
+                                    amountStr);
+                } catch (final ParseException e) {
+                    ExternalVoucher_Base.LOG.error("Catched ParseException", e);
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return new Return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4RetentionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+        list.add(map);
+        final String percentStr = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.retentionPercent.name);
+        if (percentStr != null && !percentStr.isEmpty()) {
+            final BigDecimal cross = evalAmountsFromUI(_parameter)[1];
+            if (cross.compareTo(BigDecimal.ZERO) != 0) {
+                try {
+                    final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                    final BigDecimal percent = (BigDecimal) formatter.parse(percentStr);
+                    final BigDecimal amount = cross.multiply(percent
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                    final String amountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .format(amount);
+                    map.put(CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.retentionValue.name,
+                                    amountStr);
+                } catch (final ParseException e) {
+                    ExternalVoucher_Base.LOG.error("Catched ParseException", e);
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return new Return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4DetractionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+        list.add(map);
+        final String percentStr = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.detractionPercent.name);
+        if (percentStr != null && !percentStr.isEmpty()) {
+            final BigDecimal cross = evalAmountsFromUI(_parameter)[1];
+            if (cross.compareTo(BigDecimal.ZERO) != 0) {
+                try {
+                    final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                    final BigDecimal percent = (BigDecimal) formatter.parse(percentStr);
+                    final BigDecimal amount = cross.multiply(percent
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                    final String amountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .format(amount);
+                    map.put(CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.detractionValue.name,
+                                    amountStr);
+                } catch (final ParseException e) {
+                    ExternalVoucher_Base.LOG.error("Catched ParseException", e);
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return new Return
+     * @throws EFapsException on error
+     */
+    public Return getJavaScript4TaxDocUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new IncomingInvoice().getJavaScript4TaxDocUIValue(_parameter);
     }
 
     /**
