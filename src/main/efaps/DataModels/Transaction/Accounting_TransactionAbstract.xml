@@ -66,6 +66,12 @@
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Identifier</name>
+            <type>String</type>
+            <sqltable>Accounting_TransactionSQLTable</sqltable>
+            <sqlcolumn>IDENT</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Description</name>
             <type>String</type>
             <sqltable>Accounting_TransactionSQLTable</sqltable>

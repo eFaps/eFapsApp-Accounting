@@ -22,6 +22,7 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.util.Properties;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
@@ -37,8 +38,12 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -51,6 +56,72 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public abstract class Trigger_Base
 {
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Trigger.class);
+
+    /**
+     * Method is executed as trigger after the insert of an
+     * Accounting_Transaction.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return afterInsertTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance transInst = _parameter.getInstance();
+        final PrintQuery print = new PrintQuery(transInst);
+        final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodLink)
+                        .instance();
+        print.addSelect(selPeriodInst);
+        print.executeWithoutAccessCheck();
+
+        final Instance periodInst = print.getSelect(selPeriodInst);
+
+        // go backwar in the given period and search the last assigned ident to be able to evaluate the new one
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodLink, periodInst);
+        queryBldr.addOrderByAttributeDesc(CIAccounting.TransactionAbstract.ID);
+        queryBldr.setLimit(500);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.setEnforceSorted(true);
+        multi.addAttribute(CIAccounting.TransactionAbstract.Identifier);
+        multi.executeWithoutAccessCheck();
+        int diff = 0;
+        String currentIdent = null;
+        boolean found = false;
+        while (multi.next() && !found) {
+            final Instance currentInst = multi.getCurrentInstance();
+            if (!currentInst.equals(transInst)) {
+                diff++;
+                currentIdent = multi.getAttribute(CIAccounting.TransactionAbstract.Identifier);
+                if (!Transaction.IDENTTEMP.equals(currentIdent)) {
+                    found = true;
+                }
+            }
+        }
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final String name = props.getProperty(AccountingSettings.PERIOD_NAME) + "-";
+        int currentIdx = 1;
+        if (found) {
+            try {
+                currentIdx = Integer.parseInt(currentIdent.replace(name, ""));
+            } catch (final NumberFormatException e) {
+                Trigger_Base.LOG.error("Could not evaluate next number", e);
+            }
+        }
+        currentIdx = currentIdx + diff;
+        final String ident = name + String.format("%06d", currentIdx);
+
+        final Update update = new Update(transInst);
+        update.add(CIAccounting.TransactionAbstract.Identifier, ident);
+        update.executeWithoutTrigger();
+        return new Return();
+    }
+
     /**
      * Method is executed as trigger after the insert of an
      * Accounting_TransactionPositionCredit.

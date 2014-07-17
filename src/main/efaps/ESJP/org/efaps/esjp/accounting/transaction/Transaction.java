@@ -37,5 +37,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class Transaction
     extends Transaction_Base
 {
-
+    /**
+     * Temporary ident key for transactions.
+     */
+    public static String IDENTTEMP = Transaction_Base.IDENTTEMP;
 }

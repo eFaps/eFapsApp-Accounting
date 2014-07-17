@@ -82,7 +82,6 @@ public abstract class Create_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(Create_Base.class);
 
-
     /**
      * Method called to create a transaction including its positions.
      *
@@ -100,8 +99,10 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
         insert.add(CIAccounting.Transaction.PeriodLink, parent.getId());
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
+        insert.add(CIAccounting.Transaction.Identifier, Transaction.IDENTTEMP);
         insert.execute();
+
         final Instance instance = insert.getInstance();
         final int pos = insertPositions(_parameter, instance, "Debit", null, 1);
         insertPositions(_parameter, instance, "Credit", null, pos);
@@ -133,7 +134,8 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
         insert.add(CIAccounting.Transaction.PeriodLink, periodInst.getId());
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
+        insert.add(CIAccounting.Transaction.Identifier, Transaction.IDENTTEMP);
         insert.execute();
         final Instance instance = insert.getInstance();
         final int pos = insertPositions(_parameter, instance, postfix, new String[] { _parameter.getCallInstance()
@@ -411,8 +413,8 @@ public abstract class Create_Base
                 insert.add(CIAccounting.Transaction.Description, description);
                 insert.add(CIAccounting.Transaction.Date, date);
                 insert.add(CIAccounting.Transaction.PeriodLink, _parameter.getInstance().getId());
-                insert.add(CIAccounting.Transaction.Status,
-                                Status.find(CIAccounting.TransactionStatus.uuid, "Open").getId());
+                insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
+                insert.add(CIAccounting.Transaction.Identifier, Transaction.IDENTTEMP);
                 insert.execute();
                 final Instance transInst = insert.getInstance();
                 for (final AccountInfo account : doc.getCreditAccounts()) {
@@ -623,12 +625,13 @@ public abstract class Create_Base
         insert.add(CIAccounting.Transaction.Description, _description);
         insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
         insert.add(CIAccounting.Transaction.PeriodLink, parent);
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.uuid, "Open"));
+        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
+        insert.add(CIAccounting.Transaction.Identifier, Transaction.IDENTTEMP);
         insert.execute();
         final Instance instance = insert.getInstance();
 
-        final int pos = insertPositions(_parameter, instance, "Credit", null, 1);
-        insertPositions(_parameter, instance, "Debit", null, pos);
+        final int pos = insertPositions(_parameter, instance, "Debit", null, 1);
+        insertPositions(_parameter, instance, "Credit", null, pos);
 
         insertReportRelation(_parameter, instance);
 

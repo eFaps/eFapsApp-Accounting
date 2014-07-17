@@ -22,10 +22,8 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f1962037-c73b-4b55-94d8-f33e47a219d6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -41,7 +39,12 @@
             <sqltable>Accounting_TransactionSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Accounting_Transaction.Status.RANGE_VALUE" event="RANGE_VALUE" />
+                name="Accounting_Transaction.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
         </attribute>
+        <trigger program="org.efaps.esjp.accounting.transaction.Trigger"
+            method="afterInsertTrigger"
+            name="Accounting_Transaction.INSERT_POST"
+            event="INSERT_POST"/>
     </definition>
 </datamodel-type>

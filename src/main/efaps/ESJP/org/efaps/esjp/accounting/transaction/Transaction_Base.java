@@ -113,6 +113,11 @@ public abstract class Transaction_Base
     public static final String PERIOD_SESSIONKEY = Transaction.class.getName() + ".ActiveAccountingPeriod";
 
     /**
+     * Temporary ident key for transactions.
+     */
+    protected static final String IDENTTEMP = "WMAFESMUDCHIPZAZG";
+
+    /**
      * Logger for this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(Transaction.class);

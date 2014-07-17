@@ -158,8 +158,10 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="name">
-            <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Name</property>
+        </field>
+        <field name="identifier">
+            <property name="Attribute">Identifier</property>
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
@@ -167,7 +169,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Columns">120</property>
         </field>
         <field name="status">
             <property name="ModeEdit">READONLY</property>

@@ -23,21 +23,21 @@
 
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>849e1deb-5189-477f-9600-cdbfb8e5891f</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionTable_MONTH</name>
-        <!-- fields -->
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Accounting_Transaction/Name.Label</property>
+        </field>
+        <field name="identifier">
+            <property name="Attribute">Identifier</property>
+            <property name="Label">Accounting_Transaction/Identifier.Label</property>
         </field>
         <field name="description">
             <property name="Attribute">Description</property>
@@ -62,6 +62,5 @@
             <property name="Label">Accounting_TransactionTable.period.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-
     </definition>
 </ui-table>

@@ -43,5 +43,9 @@
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
                 name="Accounting_TransactionBalanceOpening.Status.RANGE_VALUE" event="RANGE_VALUE" />
         </attribute>
+        <trigger program="org.efaps.esjp.accounting.transaction.Trigger"
+            method="afterInsertTrigger"
+            name="Accounting_TransactionOpeningBalance.INSERT_POST"
+            event="INSERT_POST"/>
     </definition>
 </datamodel-type>
