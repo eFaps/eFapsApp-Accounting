@@ -23,6 +23,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -656,5 +657,27 @@ public abstract class DocumentInfo_Base
     public void setSummarize(final boolean _summarize)
     {
         this.summarize = _summarize;
+    }
+
+    protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
+                                              final boolean _summarize)
+        throws EFapsException
+    {
+        DocumentInfo ret;
+        if (_docInfos.size() == 1) {
+            ret = _docInfos.iterator().next();
+        } else {
+            ret = new DocumentInfo();
+            ret.setSummarize(_summarize);
+            for (final DocumentInfo documentInfo : _docInfos) {
+                for (final AccountInfo accInfo : documentInfo.getCreditAccounts()) {
+                    ret.addCredit(accInfo);
+                }
+                for (final AccountInfo accInfo : documentInfo.getDebitAccounts()) {
+                    ret.addDebit(accInfo);
+                }
+            }
+        }
+        return ret;
     }
 }

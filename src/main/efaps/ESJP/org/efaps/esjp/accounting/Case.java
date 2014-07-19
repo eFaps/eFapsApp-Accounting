@@ -37,5 +37,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class Case
     extends Case_Base
 {
+    /**
+     * Key used for Caching.
+     */
+    public static final String CACHEKEY = Case_Base.CACHEKEY;
 
 }

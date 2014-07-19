@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -280,15 +279,15 @@ public abstract class FieldUpdate_Base
             final String docOid = _parameter.getParameterValue("document");
             final Instance docInst = Instance.get(docOid);
             if (docInst.isValid()) {
-                final DocumentInfo doc = new DocumentInfo(docInst);
-                final FieldValue fielValue = new FieldValue();
-                js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
-                    .append(StringEscapeUtils.escapeEcmaScript(
-                                    fielValue.getDocumentFieldValue(_parameter, doc).toString()))
-                    .append(StringEscapeUtils.escapeEcmaScript(
-                                    fielValue.getCostInformation(_parameter, date, doc).toString()))
-                    .append("'; ")
-                    .append(fielValue.getScript(_parameter, doc));
+//                final DocumentInfo doc = new DocumentInfo(docInst);
+//                final FieldValue fielValue = new FieldValue();
+//                js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
+//                    .append(StringEscapeUtils.escapeEcmaScript(
+//                                    fielValue.getDocumentFieldValue(_parameter, doc).toString()))
+//                    .append(StringEscapeUtils.escapeEcmaScript(
+//                                    fielValue.getCostInformation(_parameter, date, doc).toString()))
+//                    .append("'; ")
+//                    .append(fielValue.getScript(_parameter, doc));
             }
         }
 

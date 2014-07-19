@@ -22,6 +22,7 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -71,8 +72,12 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
+import org.efaps.esjp.sales.document.AbstractDocumentTax;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
+import org.efaps.esjp.ui.html.Table;
+import org.efaps.esjp.ui.html.Table_Base.Row;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -407,23 +412,45 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final String selected = Context.getThreadContext().getParameter("selectedRow");
-        final org.efaps.admin.datamodel.ui.FieldValue fieldValue = (FieldValue) _parameter.get(
-                        ParameterValues.UIOBJECT);
-        final Instance docInst = Instance.get(selected);
-        if (docInst.isValid()) {
-            final DocumentInfo doc = new DocumentInfo(docInst);
-            final DateTime date = _parameter.getParameterValue("date") != null
-                ? new DateTime(_parameter.getParameterValue("date"))
-                : new DateTime().withTime(0, 0, 0, 0);
-            html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">")
-                .append(getDocumentFieldValue(_parameter, doc))
-                .append(getCostInformation(_parameter, date, doc))
-                .append("<script type=\"text/javascript\">")
-                .append(getScript(_parameter, doc))
-                .append("</script>")
-                .append("</span>");
+        final String[] oids = _parameter.getParameterValues("selectedRow");
+        _parameter.getParameterValue("date");
+        new DateTime(_parameter.getParameterValue("date"));
+        new DateTime().withTimeAtStartOfDay();
+        final List<DocumentInfo> docs = new ArrayList<>();
+        final List<Integer> rowspan = new ArrayList<>();
+        final Table table = new Table();
+        for (final String oid : oids) {
+            final Instance docInst = Instance.get(oid);
+            if (docInst.isValid()) {
+                final DocumentInfo doc = new DocumentInfo(docInst);
+                addDocumentInfo(_parameter, table, doc);
+                final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
+                if (taxInfo.isPerception()) {
+                    final DocumentInfo percDoc = new DocumentInfo(taxInfo.getTaxDocInstance());
+                    addDocumentInfo(_parameter, table, percDoc);
+                }
+
+//              .append("</tr><tr><td colspan=\"4\">")
+//              .append(AbstractPaymentDocument.getTransactionHtml(_parameter, _doc.getInstance()))
+//              .append("</td></tr>");
+
+                //html.append(getCostInformation(_parameter, date, doc));
+                rowspan.add(table.getRows().size());
+            }
         }
+        int current = 0;
+        int i = 1;
+        for (final Integer span : rowspan) {
+            final Row row = table.getRows().get(current);
+            row.insertColumn(0, i + ".").setRowSpan(span - current);
+            current = span;
+            i++;
+        }
+        html.append(table.toHtml());
+        html.append("<script type=\"text/javascript\">")
+            .append(getScript(_parameter, docs))
+            .append("</script>");
+
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
@@ -477,15 +504,14 @@ public abstract class FieldValue_Base
      * @return StringBuilder
      * @throws EFapsException on error
      */
-    protected StringBuilder getDocumentFieldValue(final Parameter _parameter,
-                                                  final DocumentInfo _doc)
+    protected void addDocumentInfo(final Parameter _parameter,
+                                   final Table _table,
+                                   final DocumentInfo _doc)
         throws EFapsException
     {
         final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "noNetTotal"));
-        _doc.setFormater(getFormater(2, 2));
+        _doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
 
-        final StringBuilder html = new StringBuilder();
-        //Selects
         final SelectBuilder accSel = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
                         .clazz(CIContacts.ClassClient)
                         .linkfrom(CIAccounting.AccountCurrentDebtor2ContactClassClient,
@@ -528,8 +554,7 @@ public abstract class FieldValue_Base
         print.addSelect(accDescSel, accNameSel, accInstSel, contNameSel);
         print.execute();
 
-        final DateTime datetime = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-        _doc.setDate(datetime);
+        _doc.setDate(print.<DateTime>getAttribute(CISales.DocumentAbstract.Date));
 
         //Basic information for all documents
         final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
@@ -539,32 +564,30 @@ public abstract class FieldValue_Base
         if (account.getInstance() == null) {
             setAccounts4Debit(_parameter, _doc);
         }
+        final StringBuilder label = new StringBuilder().append(_doc.getInstance().getType().getLabel())
+            .append("<input type=\"hidden\" name=\"document\" value=\"").append(_doc.getInstance().getOid())
+            .append("\"/>");
+        _table.addRow()
+                .addColumn(label).getCurrentColumn().setStyle("font-weight: bold").getCurrentTable()
+            .addRow()
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Name))
+                .addColumn(name)
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Date))
+                .addColumn(_doc.getDateString())
+            .addRow()
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Contact));
 
-        html.append("<input type=\"hidden\" name=\"document\" value=\"").append(_doc.getInstance().getOid())
-            .append("\"/>")
-            .append("<table>").append("<tr>")
-            .append("<td colspan=\"4\">").append(_doc.getInstance().getType().getLabel())
-            .append("</td>").append("</tr><tr>")
-            .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Name))
-            .append("</td>").append("<td>").append(name).append("</td>")
-            .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Date))
-            .append("</td>").append("<td>").append(_doc.getDateString()).append("</td>")
-            .append("</tr><tr>")
-            .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Contact))
-            .append("</td>")
-            .append("<td colspan=\"3\">").append(contactName);
-
-        if (_doc.getDebtorAccount() != null) {
-            html.append(" -> ")
+        if (_doc.getDebtorAccount() == null) {
+            _table.addColumn(contactName);
+        } else {
+            _table.addColumn(new StringBuilder().append(contactName).append(" -> ")
                 .append(CIAccounting.AccountCurrentDebtor.getType().getLabel())
-                .append(": ").append(_doc.getDebtorAccount().getName());
+                .append(": ").append(_doc.getDebtorAccount().getName()));
         }
-
-        html.append("</td>")
-            .append("</tr><tr>")
-            .append("<td>").append(getLabel(_doc.getInstance(), "Status"))
-            .append("</td><td colspan=\"").append(_doc.isSumsDoc() || _doc.isPaymentDoc() ? 1 : 3).append("\">")
-            .append(Status.get(statusId).getLabel()).append("</td>");
+        _table.addRow()
+                .addColumn(getLabel(_doc.getInstance(), "Status"))
+                .addColumn(Status.get(statusId).getLabel()).getCurrentColumn()
+                    .setColSpan(_doc.isSumsDoc() || _doc.isPaymentDoc() ? 1 : 3);
 
         if (_doc.isSumsDoc()) {
             final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
@@ -574,50 +597,35 @@ public abstract class FieldValue_Base
             final String currSymbol = print.<String>getSelect(currSymbSel);
             final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel);
             final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
+            _table.addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
+                .addColumn(rate.toString());
 
-            html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
-                .append("</td><td>").append(rate).append("</td>")
-                .append("</tr>");
             if (showNetTotal) {
-                html.append("<tr>")
-                    .append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.NetTotal))
-                    .append("</td>").append("<td>")
-                    .append(getFormater(2, 2).format(netTotal)).append(" ").append(currSymbol).append("</td>")
-                    .append("<td>")
-                    .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateNetTotal))
-                    .append("</td>").append("<td>")
-                    .append(getFormater(2, 2).format(rateNetTotal)).append(" ").append(rateCurrSymbol).append("</td>")
-                    .append("</tr>");
+                _table.addRow()
+                    .addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.NetTotal))
+                    .addColumn(NumberFormatter.get().getTwoDigitsFormatter().format(netTotal) + " " + currSymbol)
+                    .addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateNetTotal))
+                    .addColumn(NumberFormatter.get().getTwoDigitsFormatter().format(rateNetTotal)
+                                    + " " + rateCurrSymbol);
             }
-            html.append("<tr>")
-                .append("<td>")
-                .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.CrossTotal))
-                .append("</td>").append("<td>")
-                .append(getFormater(2, 2).format(crossTotal)).append(" ").append(currSymbol).append("</td>")
-                .append("<td>")
-                .append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateCrossTotal))
-                .append("</td>").append("<td>")
-                .append(getFormater(2, 2).format(rateCrossTot)).append(" ").append(rateCurrSymbol).append("</td>")
-                .append("</tr>");
+            _table.addRow()
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.CrossTotal))
+                .addColumn(NumberFormatter.get().getTwoDigitsFormatter().format(crossTotal) + " " + currSymbol)
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.RateCrossTotal))
+                .addColumn(NumberFormatter.get().getTwoDigitsFormatter().format(rateCrossTot) + " " + rateCurrSymbol);
         }
         if (_doc.isPaymentDoc()) {
             final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PaymentDocumentAbstract.Amount);
             final String rateCurrSymbol = print.<String>getSelect(rateCurrSymbSel4Pay);
             final BigDecimal rate = print.<BigDecimal>getSelect(rateLabelSel);
 
-            html.append("<td>").append(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
-                .append("</td><td>").append(rate).append("</td>")
-                .append("</tr>").append("<tr>").append("<td>")
-                .append(getLabel(_doc.getInstance(), CISales.PaymentDocumentAbstract.Amount))
-                .append("</td>").append("<td colspan=\"3\">")
-                .append(getFormater(2, 2).format(amount)).append(" ").append(rateCurrSymbol).append("</td>")
-                .append("<tr>").append("<td>")
-                .append(getLabel(_doc.getInstance(), CISales.PaymentDocumentAbstract.Note))
-                .append("</td>").append("<td colspan=\"3\">")
-                .append(print.getAttribute(CISales.PaymentDocumentAbstract.Note)).append("</td>")
-                .append("</tr><tr><td colspan=\"4\">")
-                .append(AbstractPaymentDocument.getTransactionHtml(_parameter, _doc.getInstance()))
-                .append("</td></tr>");
+            _table.addRow()
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Rate))
+                .addColumn(rate.toString())
+                .addColumn(getLabel(_doc.getInstance(), CISales.PaymentDocumentAbstract.Amount))
+                .addColumn(NumberFormatter.get().getTwoDigitsFormatter().format(amount) + " " + rateCurrSymbol)
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentSumAbstract.Note))
+                .addColumn(print.<String>getAttribute(CISales.PaymentDocumentAbstract.Note));
 
             final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
             queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, _doc.getInstance());
@@ -641,18 +649,14 @@ public abstract class FieldValue_Base
                     final BigDecimal rateCross = print2.<BigDecimal>getAttribute(
                                     CISales.DocumentSumAbstract.RateCrossTotal);
                     final String docName = print2.<String>getAttribute(CISales.DocumentSumAbstract.Name);
-
-                    html.append("<tr><td>").append(docInst.getType().getLabel())
-                        .append("</td><td>").append(docName).append("</td>")
-                        .append("<td>").append(getLabel(docInst, CISales.DocumentSumAbstract.RateCrossTotal))
-                        .append("</td><td>").append(rateCross).append(new CurrencyInst(curInst).getSymbol())
-                        .append("</td></tr>");
+                    _table.addRow()
+                        .addColumn(docInst.getType().getLabel())
+                        .addColumn(docName)
+                        .addColumn(getLabel(docInst, CISales.DocumentSumAbstract.RateCrossTotal))
+                        .addColumn(rateCross + " " + new CurrencyInst(curInst).getSymbol());
                 }
             }
         }
-        html.append(getDocInformation(_parameter, _doc))
-            .append("</table>");
-        return html;
     }
 
     /**
@@ -830,27 +834,32 @@ public abstract class FieldValue_Base
      * @throws EFapsException on error
      */
     protected StringBuilder getScript(final Parameter _parameter,
-                                      final DocumentInfo _doc)
+                                      final List<DocumentInfo> _docs)
         throws EFapsException
     {
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean script = !"true".equalsIgnoreCase((String) props.get("noScript"));
-        _doc.setInvert(_doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
         final StringBuilder ret = new StringBuilder();
-        if (script && !_doc.getDebitAccounts().isEmpty() && !_doc.getCreditAccounts().isEmpty()) {
-            if (_doc.isSumsDoc()) {
-                getPriceInformation(_parameter, _doc);
-            }
+        if (script) {
+            for (final DocumentInfo doc : _docs) {
 
-            for (final AccountInfo account : _doc.getDebitAccounts()) {
-                account.setLink(getLinkString(account.getInstance(), "_Debit"));
             }
-            for (final AccountInfo account : _doc.getCreditAccounts()) {
-                account.setLink(getLinkString(account.getInstance(), "_Credit"));
-            }
-            ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
-                .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
         }
+//        _doc.setInvert(_doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
+//
+//        if (script && !_doc.getDebitAccounts().isEmpty() && !_doc.getCreditAccounts().isEmpty()) {
+//            if (_doc.isSumsDoc()) {
+//                getPriceInformation(_parameter, _doc);
+//            }
+//
+//            for (final AccountInfo account : _doc.getDebitAccounts()) {
+//                account.setLink(getLinkString(account.getInstance(), "_Debit"));
+//            }
+//            for (final AccountInfo account : _doc.getCreditAccounts()) {
+//                account.setLink(getLinkString(account.getInstance(), "_Credit"));
+//            }
+//            ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
+//                .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
         return ret;
     }
 
@@ -1058,22 +1067,6 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         return Collections.<String>emptyList();
-    }
-
-    /**
-     * To be overwritten from implementation.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _document  Document Object
-     * @return CharSequence to be added as additional information to the doc
-     *         table
-     * @throws EFapsException on error
-     */
-    protected CharSequence getDocInformation(final Parameter _parameter,
-                                                      final DocumentInfo _document)
-        throws EFapsException
-    {
-        return "";
     }
 
     /**

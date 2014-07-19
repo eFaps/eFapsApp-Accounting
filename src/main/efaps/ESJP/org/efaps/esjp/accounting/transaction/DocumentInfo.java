@@ -21,9 +21,12 @@
 
 package org.efaps.esjp.accounting.transaction;
 
+import java.util.Collection;
+
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -38,6 +41,7 @@ import org.efaps.db.Instance;
 public class DocumentInfo
     extends DocumentInfo_Base
 {
+
     /**
      * Constructor.
      */
@@ -52,5 +56,12 @@ public class DocumentInfo
     public DocumentInfo(final Instance _instance)
     {
         super(_instance);
+    }
+
+    public static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
+                                           final boolean _summarize)
+        throws EFapsException
+    {
+        return DocumentInfo_Base.getCombined(_docInfos, _summarize);
     }
 }

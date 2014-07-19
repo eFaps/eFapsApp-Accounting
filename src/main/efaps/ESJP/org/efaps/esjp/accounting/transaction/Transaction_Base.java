@@ -67,6 +67,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.db.transaction.ConnectionResource;
+import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.Period_Base;
 import org.efaps.esjp.accounting.SubPeriod_Base;
@@ -707,7 +708,8 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final StringBuilder js = getScript4ExecuteButton(_parameter, evalDocument(_parameter));
+        final StringBuilder js = getScript4ExecuteButton(_parameter,
+                        DocumentInfo.getCombined(evalDocuments(_parameter), false));
         ret.put(ReturnValues.SNIPLETT, js.toString());
         return ret;
     }
@@ -717,26 +719,29 @@ public abstract class Transaction_Base
      * @return new Document
      * @throws EFapsException on error
      */
-    public DocumentInfo evalDocument(final Parameter _parameter)
+    public List<DocumentInfo> evalDocuments(final Parameter _parameter)
         throws EFapsException
     {
-        final DocumentInfo ret = new DocumentInfo();
+        final List<DocumentInfo> ret = new ArrayList<>();
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-        final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
 
-        if (caseInst.isValid()
+        final String[] docOids = _parameter.getParameterValues("document");
+        for (final String docOid : docOids) {
+            final Instance docInst = Instance.get(docOid);
+            final DocumentInfo docInfo = new DocumentInfo();
+            if (caseInst.isValid()
                         || (docInst.isValid() && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType()))) {
             try {
+                ret.add(docInfo);
                 final String curr = _parameter.getParameterValue("currencyExternal");
                 final String amountStr = _parameter.getParameterValue("amountExternal");
-
-                ret.setFormater(NumberFormatter.get().getFormatter(2, 2));
+                docInfo.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
                 final Instance currInst;
                 if (curr == null && amountStr == null) {
-                    ret.setInstance(docInst);
+                    docInfo.setInstance(docInst);
                     boolean isCross = false;
                     if (caseInst.isValid()) {
-                        final PrintQuery printCase = new PrintQuery(caseInst);
+                        final PrintQuery printCase = new CachedPrintQuery(caseInst, Case.CACHEKEY);
                         printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
                         printCase.execute();
                         isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
@@ -744,7 +749,7 @@ public abstract class Transaction_Base
                     final PrintQuery print = new PrintQuery(docInst);
                     final SelectBuilder sel;
                     final String attrName;
-                    if (ret.isPaymentDoc()) {
+                    if (docInfo.isPaymentDoc()) {
                         sel = SelectBuilder.get().linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
                                         .instance();
                         attrName = CISales.PaymentDocumentAbstract.Amount.name;
@@ -758,30 +763,30 @@ public abstract class Transaction_Base
                     print.addAttribute(attrName);
                     print.execute();
                     currInst = print.<Instance>getSelect(sel);
-                    ret.setAmount(print.<BigDecimal>getAttribute(attrName));
+                    docInfo.setAmount(print.<BigDecimal>getAttribute(attrName));
                 } else {
-                    ret.setAmount((BigDecimal) ret.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
+                    docInfo.setAmount((BigDecimal) docInfo.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
                     currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
                 }
 
                 final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                ret.setDate(DateUtil.getDateFromParameter(dateStr));
+                docInfo.setDate(DateUtil.getDateFromParameter(dateStr));
 
-                final RateInfo rateInfo = evaluateRate(_parameter, ret.getDate(), currInst);
-                ret.setRateInfo(rateInfo);
+                final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getDate(), currInst);
+                docInfo.setRateInfo(rateInfo);
 
-                add2Doc4Case(_parameter, ret);
+                add2Doc4Case(_parameter, docInfo);
 
-                if (ret.getInstance() != null) {
-                    ret.setInvert(ret.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
-                    add2Doc4BankCash(_parameter, ret);
+                if (docInfo.getInstance() != null) {
+                    docInfo.setInvert(docInfo.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
+                    add2Doc4BankCash(_parameter, docInfo);
                 }
-
-                add2Doc4SalesTransaction(_parameter, ret);
-                add2Doc4Payment(_parameter, ret);
+                add2Doc4SalesTransaction(_parameter, docInfo);
+                add2Doc4Payment(_parameter, docInfo);
             } catch (final ParseException e) {
                 throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
             }
+        }
         }
         return ret;
     }

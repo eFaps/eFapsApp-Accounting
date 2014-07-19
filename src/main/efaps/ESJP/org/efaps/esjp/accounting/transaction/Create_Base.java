@@ -312,7 +312,7 @@ public abstract class Create_Base
                     parameter.getParameters().put("date_eFapsDate", new String[] { DateUtil.getDate4Parameter(date) });
                 }
 
-                final DocumentInfo docInfo = evalDocument(parameter);
+                final DocumentInfo docInfo = evalDocuments(parameter).get(0);
                 if (docInfo.isValid()) {
                     final Insert insert = new Insert(CIAccounting.Transaction);
                     insert.add(CIAccounting.Transaction.Description,

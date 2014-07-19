@@ -50,6 +50,11 @@ public abstract class Case_Base
 {
 
     /**
+     * Key used for Caching.
+     */
+    protected static final String CACHEKEY = Case.class.getName() + ".CacheKey";
+
+    /**
      * @param _parameter Paremeter as passed from the eFaPS API
      * @return Return SNIPPLET
      * @throws EFapsException on error
