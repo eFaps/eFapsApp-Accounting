@@ -91,6 +91,19 @@
             <defaultvalue>false</defaultvalue>
         </attribute>
         <attribute>
+            <name>Summarize</name>
+            <type>Boolean</type>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>SUMMARIZE</sqlcolumn>
+            <defaultvalue>false</defaultvalue>
+        </attribute>
+        <attribute>
+            <name>Label</name>
+            <type>String</type>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>LABEL</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Accounting_CaseSQLTable</sqltable>
