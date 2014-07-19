@@ -724,6 +724,9 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
+
+
+
         final StringBuilder js = getScript4ExecuteButton(_parameter,
                         DocumentInfo.getCombined(evalDocuments(_parameter), summarizeTransaction(_parameter)));
         ret.put(ReturnValues.SNIPLETT, js.toString());
@@ -818,6 +821,7 @@ public abstract class Transaction_Base
     {
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
         if (caseInst.isValid()) {
+            _doc.setCaseInst(caseInst);
             final RateInfo rateInfo = _doc.getRateInfo();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
@@ -1065,9 +1069,13 @@ public abstract class Transaction_Base
             .append(getSetSubJournalScript(_parameter, _doc))
             .append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
             .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
+
+        final String desc = _doc.getDescription(_parameter);
+        if (desc != null) {
+            js.append(getSetFieldValue(0, "description", desc));
+        }
         return js;
     }
-
 
     /**
      * @param _parameter    Parameter as passed by the eFaps API

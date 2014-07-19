@@ -27,16 +27,23 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Case;
+import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -60,6 +67,8 @@ public abstract class DocumentInfo_Base
      * Instance of this Document.
      */
     private Instance instance;
+
+    private Instance caseInst;
 
     /**
      * Is this a Stock moving Document.
@@ -659,6 +668,32 @@ public abstract class DocumentInfo_Base
         this.summarize = _summarize;
     }
 
+    /**
+     * @param _parameter
+     * @return
+     */
+    public String getDescription(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new CachedPrintQuery(getCaseInst(), Case.CACHEKEY);
+        print.addAttribute(CIAccounting.CaseAbstract.Label);
+        print.execute();
+
+        final String labelStr = print.<String>getAttribute(CIAccounting.CaseAbstract.Label);
+
+        final StrSubstitutor sub = new StrSubstitutor(getMap4Substitutor(_parameter));
+        return sub.replace(labelStr);
+    }
+
+
+    public final Map<String, String> getMap4Substitutor(final Parameter _parameter)
+    {
+        final Map<String, String> ret = new HashMap<String, String>();
+        ret.put("date", _parameter.getParameterValue("date_eFapsDate"));
+        return ret;
+    }
+
+
     protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
                                               final boolean _summarize)
         throws EFapsException
@@ -669,6 +704,7 @@ public abstract class DocumentInfo_Base
         } else {
             ret = new DocumentInfo();
             ret.setSummarize(_summarize);
+            ret.setCaseInst(_docInfos.iterator().next().getCaseInst());
             for (final DocumentInfo documentInfo : _docInfos) {
                 for (final AccountInfo accInfo : documentInfo.getCreditAccounts()) {
                     ret.addCredit(accInfo);
@@ -679,5 +715,27 @@ public abstract class DocumentInfo_Base
             }
         }
         return ret;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #caseInst}.
+     *
+     * @return value of instance variable {@link #caseInst}
+     */
+    public Instance getCaseInst()
+    {
+        return this.caseInst;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #caseInst}.
+     *
+     * @param _caseInst value for instance variable {@link #caseInst}
+     */
+    public void setCaseInst(final Instance _caseInst)
+    {
+        this.caseInst = _caseInst;
     }
 }

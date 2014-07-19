@@ -28,5 +28,23 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CasePettyCashReceiptRegister</name>
         <parent>Accounting_CaseAbstract</parent>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger"
+            name="Accounting_CasePettyCashReceiptRegister.INSERT_POST"
+            event="INSERT_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.Case.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger"
+            name="Accounting_CasePettyCashReceiptRegister.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.Case.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger"
+            name="Accounting_AccountBalanceSheet.DELETE_POST"
+            event="DELETE_POST">
+            <property name="CacheName">org.efaps.esjp.accounting.Case.CacheKey</property>
+        </trigger>
     </definition>
 </datamodel-type>

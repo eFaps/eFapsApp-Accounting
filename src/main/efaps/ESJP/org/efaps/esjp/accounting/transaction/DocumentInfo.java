@@ -64,4 +64,5 @@ public class DocumentInfo
     {
         return DocumentInfo_Base.getCombined(_docInfos, _summarize);
     }
+
 }
