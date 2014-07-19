@@ -120,4 +120,9 @@ public interface AccountingSettings
      * Activate the mechanism for Retention and Perception.
      */
     String PERIOD_ACTIVATESECURITIES = "ActivateSecurities";
+
+    /**
+     * Defintions of the Summarixe mechanism.
+     */
+    String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
 }

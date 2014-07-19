@@ -60,6 +60,7 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.DateTimeUtil;
@@ -508,7 +509,7 @@ public abstract class Create_Base
                 final RateInfo rate = txn.evaluateRate(_parameter, periodInst, date, currInst);
                 final DocumentInfo doc = new DocumentInfo(instDoc);
                 doc.setAmount(amount);
-                doc.setFormater(txn.getFormater(2, 2));
+                doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
                 doc.setDate(date);
                 doc.setRateInfo(rate);
 
@@ -774,7 +775,7 @@ public abstract class Create_Base
         final String[] rateCurIds = _parameter.getParameterValues("rateCurrencyLink_" + _postFix);
         final String[] acc2accOids = _parameter.getParameterValues("acc2acc_" + _postFix);
         final String[] label2projectOids = _parameter.getParameterValues("labelLink_" + _postFix);
-        final DecimalFormat formater = new Transaction().getFormater(null, null);
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
         try {
             Instance inst = _parameter.getCallInstance();
             if (!inst.getType().isKindOf(CIAccounting.Period.getType())) {
@@ -921,7 +922,7 @@ public abstract class Create_Base
         final String[] curr = _parameter.getParameterValues("rateCurrencyLink_" + _postFix);
         final String[] acc2accOids = _parameter.getParameterValues("acc2acc_" + _postFix);
         final String[] label2projectOids = _parameter.getParameterValues("labelLink_" + _postFix);
-        final DecimalFormat formater = new Transaction().getFormater(null, null);
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
         try {
             Instance inst = _parameter.getCallInstance();
             if (!inst.getType().isKindOf(CIAccounting.Period.getType())) {
@@ -1125,7 +1126,7 @@ public abstract class Create_Base
 
         BigDecimal debitAmount = BigDecimal.ZERO;
         final CurrencyInst curr = new Period().getCurrency(periodInst);
-        final DecimalFormat formater = new Transaction().getFormater(null, 2);
+        final DecimalFormat formater = NumberFormatter.get().getFormatter(null, 2);
         for (int i = 0; i < amounts.length; i++) {
             final Instance accInst = Instance.get(accounts[i]);
             final PrintQuery print = new PrintQuery(accInst);

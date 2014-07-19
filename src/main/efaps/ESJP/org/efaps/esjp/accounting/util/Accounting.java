@@ -44,6 +44,20 @@ public final class Accounting
     {
     }
 
+    public enum SummarizeDefintion
+    {
+        /** Never summarize for this period. Default if not set. */
+        NEVER,
+        /** Always summarize for this period. */
+        ALWAYS,
+        /** Summarize is defined only by the cases. */
+        CASE,
+        /** Summarize is defined only by the user. */
+        USER,
+        /** Summarize is defined first by case but can be overwritten by the user. */
+        CASEUSER;
+    }
+
     /**
      * @return the SystemConfigruation for Accounting
      * @throws CacheReloadException on error

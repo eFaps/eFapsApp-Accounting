@@ -45,7 +45,7 @@
         </field>
          <field name="caseGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">4</property>
         </field>
          <field name="document">
             <property name="ModeCreate">READONLY</property>
@@ -85,6 +85,13 @@
                 event="UI_FIELD_CMD">
             </trigger>
         </field>
+        <field name="checkbox4Summarize" >
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+        </field>
         <field name="purchaseRecord">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
@@ -103,7 +110,7 @@
                 <property name="Status">Open</property>
             </trigger>
         </field>
-        <field name="subJournal">
+         <field name="subJournal">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>

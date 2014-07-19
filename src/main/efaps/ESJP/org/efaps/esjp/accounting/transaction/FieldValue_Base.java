@@ -748,7 +748,7 @@ public abstract class FieldValue_Base
 
                     final BigDecimal cost = quantity.multiply(new BigDecimal(uom.getNumerator()))
                                         .divide(new BigDecimal(uom.getDenominator())).multiply(price);
-                    html.append("<td>").append(getFormater(2, 2).format(price)).append("</td>")
+                    html.append("<td>").append(NumberFormatter.get().getTwoDigitsFormatter().format(price)).append("</td>")
                          .append("<td>").append(rateTmp.getCurrencyInst().getSymbol()).append("</td>");
 
                     if (script) {
@@ -771,7 +771,7 @@ public abstract class FieldValue_Base
                 html.append("</tr>");
             }
             html.append("<tr>")
-                .append("<td colspan=4></td><td>").append(getFormater(2, 2).format(total))
+                .append("<td colspan=4></td><td>").append(NumberFormatter.get().getTwoDigitsFormatter().format(total))
                 .append("<input type=\"hidden\" name=\"amountExternal\" value=\"").append(total).append("\"/>")
                 .append("</td>")
                 .append("<td>").append(rate.getCurrencyInst().getSymbol())
@@ -1138,7 +1138,7 @@ public abstract class FieldValue_Base
             @SuppressWarnings("unchecked")
             Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext()
                             .getRequestAttribute(FieldValue_Base.SALESACC_REQKEY);
-            if (values == null || (values != null && !values.containsKey(_parameter.getInstance()))) {
+            if (values == null || values != null && !values.containsKey(_parameter.getInstance())) {
                 values = new HashMap<Instance, String>();
                 Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, values);
                 @SuppressWarnings("unchecked")

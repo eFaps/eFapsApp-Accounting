@@ -43,6 +43,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -120,8 +121,8 @@ public abstract class FieldUpdate_Base
             final String[] ratesInv = _parameter.getParameterValues("rate_" + postfix + RateUI.INVERTEDSUFFIX);
 
             final int pos = getSelectedRow(_parameter);
-            final DecimalFormat rateFormater = getFormater(0, 8);
-            final DecimalFormat formater = getFormater(2, 2);
+            final DecimalFormat rateFormater = NumberFormatter.get().getFormatter(0, 8);
+            final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
             final BigDecimal amount = amounts[pos].isEmpty() ? BigDecimal.ZERO
                                                            : (BigDecimal) rateFormater.parse(amounts[pos]);
             BigDecimal rate = rates[pos].isEmpty() ? BigDecimal.ZERO
@@ -179,7 +180,7 @@ public abstract class FieldUpdate_Base
             final RateInfo rate = evaluateRate(_parameter, periodInstance, date,
                             Instance.get(CIERP.Currency.getType(), currIds[pos]));
             final DecimalFormat rateFormater = rate.getFormatter().getFrmt4RateUI();
-            final DecimalFormat formater = getFormater(2, 2);
+            final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
             final BigDecimal amountRate = amounts[pos].isEmpty() ? BigDecimal.ZERO
                             : (BigDecimal) rateFormater.parse(amounts[pos]);
 
@@ -322,8 +323,8 @@ public abstract class FieldUpdate_Base
             final String[] ratesInv = _parameter.getParameterValues("rate_" + postfix + RateUI.INVERTEDSUFFIX);
 
             final int pos = getSelectedRow(_parameter);
-            final DecimalFormat rateFormater = getFormater(0, 8);
-            final DecimalFormat formater = getFormater(2, 2);
+            final DecimalFormat rateFormater = NumberFormatter.get().getFormatter(0, 8);
+            final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
             final BigDecimal amount = amounts[pos].isEmpty() ? BigDecimal.ZERO
                                                            : (BigDecimal) rateFormater.parse(amounts[pos]);
             BigDecimal rate = rates[pos].isEmpty() ? BigDecimal.ONE

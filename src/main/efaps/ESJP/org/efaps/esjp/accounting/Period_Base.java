@@ -52,6 +52,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Import_Base.ImportAccount;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.common.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
@@ -101,6 +102,8 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATESTOCK, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATERETPER, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATESECURITIES, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
+                        SummarizeDefintion.CASEUSER.name());
     }
 
     /**

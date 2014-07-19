@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -72,6 +73,7 @@ import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.Period_Base;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -151,6 +153,9 @@ public abstract class Transaction_Base
         }
         return new Return();
     }
+
+
+
 
     /**
      * Numbering of the transaction.
@@ -299,19 +304,6 @@ public abstract class Transaction_Base
         }
         Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY, instance);
         return new Return();
-    }
-
-    /**
-     * @return a formater used to format bigdecimal for the user interface
-     * @param _maxFrac maximum Faction, null to deactivate
-     * @param _minFrac minimum Faction, null to activate
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getFormater(final Integer _minFrac,
-                                        final Integer _maxFrac)
-        throws EFapsException
-    {
-        return NumberFormatter.get().getFormatter(_minFrac, _maxFrac);
     }
 
     /**
@@ -697,6 +689,35 @@ public abstract class Transaction_Base
         return contacts.autoComplete4Contact(_parameter);
     }
 
+
+    protected boolean summarizeTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final SummarizeDefintion summarize = SummarizeDefintion.valueOf(props.getProperty(
+                        AccountingSettings.PERIOD_SUMMARIZETRANS, SummarizeDefintion.NEVER.name()));
+        switch (summarize) {
+            case NEVER:
+                ret = false;
+                break;
+            case ALWAYS:
+                ret = true;
+                break;
+            case CASEUSER:
+            case CASE:
+            case USER:
+                ret = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Summarize"));
+                break;
+            default:
+                ret = false;
+                break;
+        }
+        return ret;
+    }
+
+
     /**
      * Executed the command on the button.
      *
@@ -709,7 +730,7 @@ public abstract class Transaction_Base
     {
         final Return ret = new Return();
         final StringBuilder js = getScript4ExecuteButton(_parameter,
-                        DocumentInfo.getCombined(evalDocuments(_parameter), false));
+                        DocumentInfo.getCombined(evalDocuments(_parameter), summarizeTransaction(_parameter)));
         ret.put(ReturnValues.SNIPLETT, js.toString());
         return ret;
     }
