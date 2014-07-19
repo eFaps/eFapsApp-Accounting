@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -36,12 +37,17 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -299,6 +305,47 @@ public abstract class FieldUpdate_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    /**
+     * Method is executed on update trigger for the case dropdown.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return list for update trigger
+     * @throws EFapsException on error
+     */
+    public Return update4Case(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        ret.put(ReturnValues.VALUES, list);
+        final SummarizeDefintion summarizeDef = new Period().getSummarizeDefintion(_parameter);
+        final StringBuilder js = new StringBuilder();
+        switch (summarizeDef) {
+            case CASEUSER:
+            case CASE:
+                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+                final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
+                print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+                print.executeWithoutAccessCheck();
+                final Boolean summarize = print.getAttribute(CIAccounting.CaseAbstract.Summarize);
+
+                final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
+                                .checkbox4Summarize.name;
+                js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
+                    .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize))
+                    .append("); \n")
+                    .append("});\n");
+                final Map<String, Object> map = new HashMap<>();
+                list.add(map);
+                InterfaceUtils.appendScript4FieldUpdate(map,
+                                InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMATTR));
+                break;
+            default:
+                break;
+        }
+        return ret;
     }
 
     /**

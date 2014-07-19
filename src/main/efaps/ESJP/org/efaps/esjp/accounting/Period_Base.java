@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -327,6 +328,16 @@ public abstract class Period_Base
             }
         }
         return ret;
+    }
+
+
+    public SummarizeDefintion getSummarizeDefintion(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance periodInst = evaluateCurrentPeriod(_parameter);
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        return SummarizeDefintion.valueOf(props.getProperty(
+                        AccountingSettings.PERIOD_SUMMARIZETRANS, SummarizeDefintion.NEVER.name()));
     }
 
 

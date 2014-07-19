@@ -34,7 +34,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -689,15 +688,11 @@ public abstract class Transaction_Base
         return contacts.autoComplete4Contact(_parameter);
     }
 
-
     protected boolean summarizeTransaction(final Parameter _parameter)
         throws EFapsException
     {
         boolean ret = false;
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-        final SummarizeDefintion summarize = SummarizeDefintion.valueOf(props.getProperty(
-                        AccountingSettings.PERIOD_SUMMARIZETRANS, SummarizeDefintion.NEVER.name()));
+        final SummarizeDefintion summarize = new Period().getSummarizeDefintion(_parameter);
         switch (summarize) {
             case NEVER:
                 ret = false;
