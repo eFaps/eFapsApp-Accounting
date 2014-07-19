@@ -135,7 +135,7 @@ public abstract class Payroll_Base
 
             // make the classifications
             final Create create = new Create();
-            create.connectDoc2Transaction(_parameter, insert.getInstance(), _docInst);
+            create.connectDocs2Transaction(_parameter, insert.getInstance(), _docInst);
 
             // Payroll might not be installed so no CITypes are used
             //Payroll_CasePositionCalc

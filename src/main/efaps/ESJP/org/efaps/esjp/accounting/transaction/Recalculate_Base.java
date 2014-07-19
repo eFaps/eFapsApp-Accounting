@@ -306,7 +306,7 @@ public abstract class Recalculate_Base
                     insert.execute();
 
                     final Instance instance = insert.getInstance();
-                    new Create().connectDoc2Transaction(_parameter, instance, docInst);
+                    new Create().connectDocs2Transaction(_parameter, instance, docInst);
 
                     final Insert insert2 = new Insert(CIAccounting.TransactionPositionCredit);
                     insert2.add(CIAccounting.TransactionPositionCredit.TransactionLink, instance.getId());
@@ -804,7 +804,7 @@ public abstract class Recalculate_Base
                                     new Object[] {BigDecimal.ONE, BigDecimal.ONE});
                     classInsert.execute();
 
-                    new Create().connectDoc2Transaction(_parameter, instance, instDoc);
+                    new Create().connectDocs2Transaction(_parameter, instance, instDoc);
                 }
             }
         }

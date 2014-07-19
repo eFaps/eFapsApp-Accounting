@@ -28,6 +28,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Transaction2DocDocumentTable</name>
+        <field name="position">
+            <property name="Attribute">Position</property>
+            <property name="Label">Accounting_Transaction2Object/Position.Label</property>
+        </field>
         <field name="type">
             <property name="Select">linkto[ToLinkAbstract].type.label</property>
             <property name="Label">Accounting_Transaction2DocDocumentTable.type.Label</property>

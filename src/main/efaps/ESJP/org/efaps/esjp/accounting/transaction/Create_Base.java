@@ -23,7 +23,9 @@ package org.efaps.esjp.accounting.transaction;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -49,6 +51,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
+import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -59,6 +62,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -146,6 +150,27 @@ public abstract class Create_Base
     }
 
     /**
+     * Get the list of documents.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return List of document instances
+     * @throws EFapsException on error
+     */
+    protected List<Instance> getDocInstsFromUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] docOids = _parameter.getParameterValues("document");
+        final List<Instance> ret = new ArrayList<>();
+        for (final String docOid : docOids) {
+            final Instance docInst = Instance.get(docOid);
+            if (docInst.isValid()) {
+                ret.add(docInst);
+            }
+        }
+        return ret;
+    }
+
+    /**
      * Called from event for creation of a transaction with a document.
      *
      * @param _parameter Parameter as passed from the eFaps API
@@ -157,11 +182,11 @@ public abstract class Create_Base
     {
 
         final Instance instance = createBaseTrans(_parameter, _parameter.getParameterValue("description"));
-        final Instance docInst = Instance.get(_parameter.getParameterValue("document"));
-        connectDoc2Transaction(_parameter, instance, docInst);
-        setStatus4Doc(_parameter, docInst);
+        final List<Instance> docInsts = getDocInstsFromUI(_parameter);
+        connectDocs2Transaction(_parameter, instance, docInsts.toArray(new Instance[docInsts.size()]));
+        setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
 
-        if (_parameter.getParameterValue("payment") != null) {
+        /*if (_parameter.getParameterValue("payment") != null) {
             final boolean setPayStatus = "true".equals(_parameter.getParameterValue("paymentStatus"));
 
             for (final String paymentOid : _parameter.getParameterValues("payment")) {
@@ -182,7 +207,7 @@ public abstract class Create_Base
                     update.executeWithoutTrigger();
                 }
             }
-        }
+        }*/
         add2Create4Doc(_parameter);
         return new Return();
     }
@@ -197,27 +222,26 @@ public abstract class Create_Base
     public Return create4External(final Parameter _parameter)
         throws EFapsException
     {
-        Instance docInst = Instance.get(_parameter.getParameterValue("document"));
+        final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         String descr = "";
-        if (!docInst.isValid()) {
-            docInst = _parameter.getInstance();
-            final PrintQuery print = new PrintQuery(docInst);
+        if (docInsts.isEmpty()) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
             print.addAttribute(CIAccounting.ExternalVoucher.Revision);
             print.execute();
             final String revision = print.<String>getAttribute(CIAccounting.ExternalVoucher.Revision);
             if (revision != null) {
                 descr = revision + " - ";
             }
+            docInsts.add(_parameter.getInstance());
         }
         descr = descr  + _parameter.getParameterValue("description");
 
         final Instance instance = createBaseTrans(_parameter, descr);
 
-        if (docInst != null && docInst.isValid()) {
-            connectDoc2Transaction(_parameter, instance, docInst);
-            connectDoc2PurchaseRecord(_parameter, docInst);
-            setStatus4Doc(_parameter, docInst);
-        }
+        connectDocs2Transaction(_parameter, instance, docInsts.toArray(new Instance[docInsts.size()]));
+        connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+
         return new Return();
     }
 
@@ -330,8 +354,8 @@ public abstract class Create_Base
                         insertPosition4Massiv(_parameter, docInfo, transInst, CIAccounting.TransactionPositionDebit,
                                         account);
                     }
-                    connectDoc2Transaction(_parameter, transInst, docInfo.getInstance());
-                    setStatus4Payment(_parameter, docInfo.getInstance());
+                    connectDocs2Transaction(_parameter, transInst, docInfo.getInstance());
+                    setStatus4Payments(_parameter, docInfo.getInstance());
                 }
             }
         }
@@ -350,9 +374,9 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Instance instance = createBaseTrans(_parameter, _parameter.getParameterValue("description"));
-        final Instance payDocInst = Instance.get(_parameter.getParameterValue("document"));
-        connectDoc2Transaction(_parameter, instance, payDocInst);
-        setStatus4Payment(_parameter, payDocInst);
+        final List<Instance> docInsts = getDocInstsFromUI(_parameter);
+        connectDocs2Transaction(_parameter, instance,  docInsts.toArray(new Instance[docInsts.size()]));
+        setStatus4Payments(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         return new Return();
     }
 
@@ -423,7 +447,7 @@ public abstract class Create_Base
                 for (final AccountInfo account : doc.getDebitAccounts()) {
                     insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionDebit, account);
                 }
-                connectDoc2Transaction(_parameter, transInst, docInst);
+                connectDocs2Transaction(_parameter, transInst, docInst);
             }
         }
         return new Return();
@@ -505,7 +529,7 @@ public abstract class Create_Base
                     // is does not sum to 0 but is less then the max defined
                     final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
                     final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT);
-                    final BigDecimal diffMin = (diffMinStr != null && !diffMinStr.isEmpty())
+                    final BigDecimal diffMin = diffMinStr != null && !diffMinStr.isEmpty()
                                     ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
                     if ((checkCrossTotal.compareTo(debit) != 0 || checkCrossTotal.compareTo(credit) != 0)
                                     && debit.subtract(credit).abs().compareTo(diffMin) < 0) {
@@ -538,8 +562,8 @@ public abstract class Create_Base
 
                 if (valid) {
                     createTrans4DocMassive(_parameter, doc, periodInst, desc);
-                    setStatus4Doc(_parameter, doc.getInstance());
-                    connectDoc2PurchaseRecord(_parameter, doc.getInstance());
+                    setStatus4Docs(_parameter, doc.getInstance());
+                    connectDocs2PurchaseRecord(_parameter, doc.getInstance());
                 }
             }
         }
@@ -552,11 +576,12 @@ public abstract class Create_Base
      * @param _docInstances docuemtn instances
      * @throws EFapsException on error
      */
-    public void connectDoc2Transaction(final Parameter _parameter,
-                                       final Instance _transInst,
-                                       final Instance... _docInstances)
+    public void connectDocs2Transaction(final Parameter _parameter,
+                                        final Instance _transInst,
+                                        final Instance... _docInstances)
         throws EFapsException
     {
+        int i = 1;
         for (final Instance docInst : _docInstances) {
             if (docInst.isValid()) {
                 final Insert insert;
@@ -565,9 +590,11 @@ public abstract class Create_Base
                 } else {
                     insert = new Insert(CIAccounting.Transaction2SalesDocument);
                 }
+                insert.add(CIAccounting.Transaction2ERPDocument.Position, i);
                 insert.add(CIAccounting.Transaction2ERPDocument.FromLink, _transInst);
                 insert.add(CIAccounting.Transaction2ERPDocument.ToLinkAbstract, docInst);
                 insert.execute();
+                i++;
             }
         }
     }
@@ -578,16 +605,18 @@ public abstract class Create_Base
      * @param _payDocInst   Instance of the PaymentDocument the Status willl be set
      * @throws EFapsException on error
      */
-    protected void setStatus4Payment(final Parameter _parameter,
-                                     final Instance _payDocInst)
+    protected void setStatus4Payments(final Parameter _parameter,
+                                      final Instance... _payDocInst)
         throws EFapsException
     {
-        // update the status
-        final Status status = Status.find(_payDocInst.getType().getStatusAttribute().getLink().getUUID(), "Booked");
-        if (status != null) {
-            final Update update = new Update(_payDocInst);
-            update.add(CIERP.PaymentDocumentAbstract.StatusAbstract, status.getId());
-            update.execute();
+        for (final Instance instance : _payDocInst) {
+            // update the status
+            final Status status = Status.find(instance.getType().getStatusAttribute().getLink().getUUID(), "Booked");
+            if (status != null) {
+                final Update update = new Update(instance);
+                update.add(CIERP.PaymentDocumentAbstract.StatusAbstract, status.getId());
+                update.execute();
+            }
         }
     }
 
@@ -620,22 +649,24 @@ public abstract class Create_Base
             print.execute();
             parent = print.<Instance>getSelect(selPeriodInst);
         }
-        final Insert insert = new Insert(CIAccounting.Transaction);
-        insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
-        insert.add(CIAccounting.Transaction.Description, _description);
-        insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodLink, parent);
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
-        insert.add(CIAccounting.Transaction.Identifier, Transaction.IDENTTEMP);
-        insert.execute();
-        final Instance instance = insert.getInstance();
 
-        final int pos = insertPositions(_parameter, instance, "Debit", null, 1);
-        insertPositions(_parameter, instance, "Credit", null, pos);
+        final TransInfo transInfo = new TransInfo();
+        transInfo.setType(CIAccounting.Transaction.getType())
+            .setName(_parameter.getParameterValue("name"))
+            .setDescription(_description)
+            .setDate( DateTimeUtil.translateFromUI(_parameter.getParameterValue("date")))
+            .setStatus(Status.find(CIAccounting.TransactionStatus.Open))
+            .setIdentifier(Transaction.IDENTTEMP)
+            .setPeriodInst(parent);
 
-        insertReportRelation(_parameter, instance);
+        analysePositions(_parameter, transInfo, "Debit", null);
+        analysePositions(_parameter, transInfo, "Credit", null);
 
-        return instance;
+        transInfo.create(_parameter);
+
+        insertReportRelation(_parameter, transInfo.getInstance());
+
+        return transInfo.getInstance();
     }
 
     /**
@@ -644,20 +675,22 @@ public abstract class Create_Base
      * @param _instance instance of the document
      * @throws EFapsException   on error
      */
-    protected void connectDoc2PurchaseRecord(final Parameter _parameter,
-                                             final Instance _instance)
+    protected void connectDocs2PurchaseRecord(final Parameter _parameter,
+                                              final Instance... _docInsts)
         throws EFapsException
     {
         final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
         if (purchaseRecInst.isValid()) {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
-            queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.ToLink, _instance);
-            final InstanceQuery query = queryBldr.getQuery();
-            if (query.executeWithoutAccessCheck().isEmpty()) {
-                final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
-                purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst);
-                purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, _instance);
-                purInsert.execute();
+            for (final Instance docInst : _docInsts) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
+                queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                final InstanceQuery query = queryBldr.getQuery();
+                if (query.executeWithoutAccessCheck().isEmpty()) {
+                    final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
+                    purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst);
+                    purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                    purInsert.execute();
+                }
             }
         }
     }
@@ -668,27 +701,29 @@ public abstract class Create_Base
      * @param _instance     instance of the document
      * @throws EFapsException on error
      */
-    protected void setStatus4Doc(final Parameter _parameter,
-                                 final Instance _instance)
+    protected void setStatus4Docs(final Parameter _parameter,
+                                  final Instance... _instance)
         throws EFapsException
     {
         final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
-        if (setStatus) {
-            final Update update = new Update(_instance);
-            update.add(CIERP.DocumentAbstract.StatusAbstract,
-                            Status.find(_instance.getType().getStatusAttribute().getLink().getUUID(), "Booked"));
-            update.execute();
-        } else {
-            final PrintQuery print = new PrintQuery(_instance);
-            print.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
-            print.executeWithoutAccessCheck();
-            final Status status = Status.get(print.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
-            if ("Digitized".equals(status.getKey())) {
-                final Status newStatus = Status.find(status.getStatusGroup().getUUID(), "Open");
-                if (newStatus != null) {
-                    final Update update = new Update(_instance);
-                    update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
-                    update.execute();
+        for (final Instance instance : _instance) {
+            if (setStatus) {
+                final Update update = new Update(instance);
+                update.add(CIERP.DocumentAbstract.StatusAbstract,
+                                Status.find(instance.getType().getStatusAttribute().getLink().getUUID(), "Booked"));
+                update.execute();
+            } else {
+                final PrintQuery print = new PrintQuery(instance);
+                print.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
+                print.executeWithoutAccessCheck();
+                final Status status = Status.get(print.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
+                if ("Digitized".equals(status.getKey())) {
+                    final Status newStatus = Status.find(status.getStatusGroup().getUUID(), "Open");
+                    if (newStatus != null) {
+                        final Update update = new Update(instance);
+                        update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
+                        update.execute();
+                    }
                 }
             }
         }
@@ -721,6 +756,144 @@ public abstract class Create_Base
             insert.add(CIAccounting.ReportSubJournal2Transaction.FromLink, repInst.getId());
             insert.add(CIAccounting.ReportSubJournal2Transaction.ToLink, _transactionInstance.getId());
             insert.execute();
+        }
+    }
+
+
+    public void analysePositions(final Parameter _parameter,
+                                 final TransInfo _transInfo,
+                                 final String _postFix,
+                                 final String[] _accountOids)
+        throws EFapsException
+    {
+
+        final String[] accountOids = _accountOids == null
+                        ? _parameter.getParameterValues("accountLink_" + _postFix) : _accountOids;
+        final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
+        final String[] types = _parameter.getParameterValues("type_" + _postFix);
+        final String[] rateCurIds = _parameter.getParameterValues("rateCurrencyLink_" + _postFix);
+        final String[] acc2accOids = _parameter.getParameterValues("acc2acc_" + _postFix);
+        final String[] label2projectOids = _parameter.getParameterValues("labelLink_" + _postFix);
+        final DecimalFormat formater = new Transaction().getFormater(null, null);
+        try {
+            Instance inst = _parameter.getCallInstance();
+            if (!inst.getType().isKindOf(CIAccounting.Period.getType())) {
+                inst = new Period().evaluateCurrentPeriod(_parameter);
+            }
+            final Instance curInstance = new Period().getCurrency(inst).getInstance();
+            if (amounts != null) {
+                for (int i = 0; i < amounts.length; i++) {
+                    final Instance rateCurrInst = CurrencyInst.get(Long.parseLong(rateCurIds[i])).getInstance();
+                    final Instance accInst = Instance.get(accountOids[i]);
+                    final Object[] rateObj = new Transaction().getRateObject(_parameter, "_" + _postFix, i);
+                    final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                                    BigDecimal.ROUND_HALF_UP);
+                    final Type type = Type.get(Long.parseLong(types[i]));
+
+                    final BigDecimal rateAmount = ((BigDecimal) formater.parse(amounts[i]))
+                                    .setScale(6, BigDecimal.ROUND_HALF_UP);
+                    final boolean isDebitTrans = type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid);
+                    final BigDecimal amount = rateAmount.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
+
+                    final PositionInfo pos  = new PositionInfo();
+                    _transInfo.addPosition(pos);
+                    pos.setType(type)
+                        .setAccInst(accInst)
+                        .setCurrInst(curInstance)
+                        .setRateCurrInst(rateCurrInst)
+                        .setRate(rateObj)
+                        .setRateAmount( isDebitTrans ? rateAmount.negate() : rateAmount)
+                        .setAmount( isDebitTrans ? amount.negate() : amount)
+                        .setOrder(i);
+
+                    if (label2projectOids != null) {
+                        final Instance labelInst = Instance.get(label2projectOids[i]);
+                        if (labelInst.isValid()) {
+                            pos.setLabelInst(labelInst)
+                                .setLabelRelType(_postFix.equalsIgnoreCase("Debit")
+                                                ? CIAccounting.LabelProject2PositionDebit.getType()
+                                                : CIAccounting.LabelProject2PositionCredit.getType());
+                        }
+                    }
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
+                    queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, accInst);
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    final SelectBuilder selAcc = SelectBuilder.get()
+                                    .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).instance();
+                    multi.addSelect(selAcc);
+                    multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+                                      CIAccounting.Account2AccountAbstract.Denominator,
+                                      CIAccounting.Account2AccountAbstract.Deactivatable);
+                    multi.execute();
+                    final int y = 1;
+                    while (multi.next()) {
+                        final Instance instance = multi.getCurrentInstance();
+                        final PositionInfo connPos  = new PositionInfo();
+                        Boolean deactivatable = multi
+                                        .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
+                        if (deactivatable == null) {
+                            deactivatable = false;
+                        }
+                        // if cannot be deactivated or selected in the UserInterface
+                        if (!deactivatable || acc2accOids != null && deactivatable
+                                        &&  Arrays.asList(acc2accOids).contains(instance.getOid())) {
+                            final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
+                                            CIAccounting.Account2AccountAbstract.Numerator));
+                            final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
+                                            CIAccounting.Account2AccountAbstract.Denominator));
+
+                            BigDecimal amount2 = amount.multiply(numerator).divide(denominator,
+                                            BigDecimal.ROUND_HALF_UP);
+                            BigDecimal rateAmount2 = rateAmount.multiply(numerator).divide(denominator,
+                                            BigDecimal.ROUND_HALF_UP);
+
+                            if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
+                                connPos.setType(type);
+                            } else if (instance.getType().getUUID()
+                                            .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
+                                if (type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
+                                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                                } else {
+                                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                                }
+                                amount2 = amount2.negate();
+                            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
+                                if (isDebitTrans) {
+                                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                                } else {
+                                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                                    amount2 = amount2.negate();
+                                    rateAmount2 = rateAmount2.negate();
+                                }
+                            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
+                                if (isDebitTrans) {
+                                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                                    amount2 = amount2.negate();
+                                    rateAmount2 = rateAmount2.negate();
+                                } else {
+                                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                                }
+                            }
+                            if (connPos.getType() == null) {
+                                Create_Base.LOG.error("Missing definition");
+                            } else {
+                                connPos.setOrder(i)
+                                    .setConnOrder(y)
+                                    .setAccInst( multi.<Instance>getSelect(selAcc))
+                                    .setCurrInst(curInstance)
+                                    .setRateCurrInst(rateCurrInst)
+                                    .setRate(rateObj)
+                                    .setAmount(amount2)
+                                    .setRateAmount(rateAmount2);
+                                _transInfo.addPosition(connPos);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (final ParseException e) {
+            throw new EFapsException(Transaction_Base.class, "insertPositions", e);
         }
     }
 
@@ -812,9 +985,9 @@ public abstract class Create_Base
                         if (deactivatable == null) {
                             deactivatable = false;
                         }
-                        // if not deactivatable or selected in the UserInterface
-                        if (!deactivatable || (acc2accOids != null && deactivatable
-                                        &&  Arrays.asList(acc2accOids).contains(instance.getOid()))) {
+                        // if cannot be deactivated or selected in the UserInterface
+                        if (!deactivatable || acc2accOids != null && deactivatable
+                                        &&  Arrays.asList(acc2accOids).contains(instance.getOid())) {
                             final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
                                             CIAccounting.Account2AccountAbstract.Numerator));
                             final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
@@ -1063,7 +1236,7 @@ public abstract class Create_Base
         insert.execute();
 
         final Instance transInst = insert.getInstance();
-        connectDoc2Transaction(_parameter, transInst, _doc.getInstance());
+        connectDocs2Transaction(_parameter, transInst, _doc.getInstance());
         for (final AccountInfo account : _doc.getCreditAccounts()) {
             insertPosition4Massiv(_parameter, _doc, transInst, CIAccounting.TransactionPositionCredit, account);
         }

@@ -55,6 +55,12 @@
             <sqltable>Accounting_Transaction2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>Position</name>
+            <type>Integer</type>
+            <sqltable>Accounting_Transaction2ObjectSQLTable</sqltable>
+            <sqlcolumn>POS</sqlcolumn>
+        </attribute>
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>

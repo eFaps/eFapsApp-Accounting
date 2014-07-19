@@ -26,26 +26,21 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>20d0c477-ce98-403e-92e1-a22b057bba1c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionTree</name>
-        <!-- targets -->
         <target>
             <menu>Accounting_TransactionTree_Menu</menu>
             <form>Accounting_TransactionForm</form>
         </target>
-        <!-- type tree for -->
         <type>Accounting_Transaction</type>
-
         <childs>
             <child>Accounting_TransactionTree_Position</child>
+            <child>Accounting_TransactionTree_Documents</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

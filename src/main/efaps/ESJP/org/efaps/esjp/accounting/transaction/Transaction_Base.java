@@ -229,7 +229,7 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Long previous = Long.parseLong(_previousName);
-        final Long current = (_instName != null && !_instName.isEmpty()) ? Long.parseLong(_instName) : -1;
+        final Long current = _instName != null && !_instName.isEmpty() ? Long.parseLong(_instName) : -1;
         final String ret = String.valueOf(previous + 1);
         if (previous + 1 != current || _setStatus) {
             final Update update = new Update(_transInst);
@@ -730,7 +730,7 @@ public abstract class Transaction_Base
             final Instance docInst = Instance.get(docOid);
             final DocumentInfo docInfo = new DocumentInfo();
             if (caseInst.isValid()
-                        || (docInst.isValid() && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType()))) {
+                        || docInst.isValid() && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
             try {
                 ret.add(docInfo);
                 final String curr = _parameter.getParameterValue("currencyExternal");
@@ -1070,7 +1070,7 @@ public abstract class Transaction_Base
                         .append(getTableRemoveScript(_parameter, tableName));
         final StringBuilder onJs = new StringBuilder();
         final Collection<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        final int i = 0;
+        int i = 0;
         for (final AccountInfo account : _accounts) {
             final Map<String, Object> map = new HashMap<String, Object>();
             values.add(map);
@@ -1088,6 +1088,7 @@ public abstract class Transaction_Base
                                 .append(_postFix).append("')[").append(i).append("].innerHTML='")
                                 .append(account.getLink().toString().replaceAll("'", "\\\\\\'")).append("';");
             }
+            i++;
         }
         ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs));
         return ret;

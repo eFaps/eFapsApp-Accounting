@@ -310,7 +310,7 @@ public class ImportDetails
 
             if (_docMap != null) {
                 final Instance instance = insert.getInstance();
-                new Create().connectDoc2Transaction(_parameter, instance, doc.getInstance());
+                new Create().connectDocs2Transaction(_parameter, instance, doc.getInstance());
             }
 
             final Map<String, Account> accounts = doc.getAccounts();
