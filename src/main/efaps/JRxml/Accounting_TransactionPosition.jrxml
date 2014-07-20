@@ -1,88 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionPosition" pageWidth="539" pageHeight="595" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" language="groovy">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="UUID" value="ec7b256b-3c41-4a70-ba82-927a4489e393"/>
-		<property name="Expand" value="Accounting_TransactionPositionAbstract\TransactionLink"/>
-		<property name="expandChildTypes" value="true"/>
-	</parameter>
-	<field name="accountName" class="java.lang.String">
-		<property name="Select" value="linkto[AccountLink].attribute[Name]"/>
-	</field>
-	<field name="accountDesc" class="java.lang.String">
-		<property name="Select" value="linkto[AccountLink].attribute[Description]"/>
-	</field>
-	<field name="rate" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Rate].value"/>
-	</field>
-	<field name="typeUUID" class="java.util.UUID">
-		<property name="Select" value="type.uuid"/>
-	</field>
-	<field name="amount" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Amount]"/>
-	</field>
-	<variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionPosition" pageWidth="539" pageHeight="595" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" language="groovy" uuid="ec7b256b-3c41-4a70-ba82-927a4489e393">
+    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+        <property name="Expand" value="Accounting_TransactionPositionAbstract\TransactionLink"/>
+        <property name="expandChildTypes" value="true"/>
+    </parameter>
+    <field name="accountName" class="java.lang.String">
+        <property name="Select" value="linkto[AccountLink].attribute[Name]"/>
+    </field>
+    <field name="accountDesc" class="java.lang.String">
+        <property name="Select" value="linkto[AccountLink].attribute[Description]"/>
+    </field>
+    <field name="rate" class="java.math.BigDecimal">
+        <property name="Select" value="attribute[Rate].value"/>
+    </field>
+    <field name="typeUUID" class="java.util.UUID">
+        <property name="Select" value="type.uuid"/>
+    </field>
+    <field name="amount" class="java.math.BigDecimal">
+        <property name="Select" value="attribute[Amount]"/>
+    </field>
+    <variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
 ? BigDecimal.ZERO
 : $F{amount}.abs()]]></variableExpression>
-	</variable>
-	<variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
+    </variable>
+    <variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
 ? $F{amount}.abs()
 : BigDecimal.ZERO]]></variableExpression>
-	</variable>
-	<detail>
-		<band height="13" splitType="Stretch">
-			<textField isStretchWithOverflow="true">
-				<reportElement x="0" y="0" width="110" height="13"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{accountName}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement x="335" y="0" width="80" height="13">
-					<printWhenExpression><![CDATA[new Boolean(!$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1")))]]></printWhenExpression>
-				</reportElement>
-				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{amount}.abs()]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.######">
-				<reportElement x="495" y="0" width="40" height="13"/>
-				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rate}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement x="415" y="0" width="80" height="13">
-					<printWhenExpression><![CDATA[new Boolean($F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1")))]]></printWhenExpression>
-				</reportElement>
-				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{amount}.abs()]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement x="110" y="0" width="229" height="13"/>
-				<textElement>
-					<font isItalic="false"/>
-				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{accountDesc}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
-	<columnFooter>
-		<band height="29">
-			<textField pattern="#,##0.00">
-				<reportElement x="335" y="4" width="80" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{debitSum}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement x="415" y="4" width="80" height="20"/>
-				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{creditSum}]]></textFieldExpression>
-			</textField>
-			<line>
-				<reportElement x="0" y="0" width="535" height="1"/>
-			</line>
-		</band>
-	</columnFooter>
+    </variable>
+    <detail>
+        <band height="13" splitType="Stretch">
+            <textField isStretchWithOverflow="true">
+                <reportElement x="0" y="0" width="110" height="13"/>
+                <textElement/>
+                <textFieldExpression class="java.lang.String"><![CDATA[$F{accountName}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="335" y="0" width="80" height="13">
+                    <printWhenExpression><![CDATA[new Boolean(!$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1")))]]></printWhenExpression>
+                </reportElement>
+                <textElement/>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{amount}.abs()]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.######">
+                <reportElement x="495" y="0" width="40" height="13"/>
+                <textElement/>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rate}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="415" y="0" width="80" height="13">
+                    <printWhenExpression><![CDATA[new Boolean($F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1")))]]></printWhenExpression>
+                </reportElement>
+                <textElement/>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{amount}.abs()]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true">
+                <reportElement x="110" y="0" width="229" height="13"/>
+                <textElement>
+                    <font isItalic="false"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String"><![CDATA[$F{accountDesc}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="29">
+            <textField pattern="#,##0.00">
+                <reportElement x="335" y="4" width="80" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{debitSum}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="415" y="4" width="80" height="20"/>
+                <textElement/>
+                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{creditSum}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="0" width="535" height="1"/>
+            </line>
+        </band>
+    </columnFooter>
 </jasperReport>

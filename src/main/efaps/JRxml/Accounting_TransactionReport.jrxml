@@ -1,177 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="786" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="5aef460d-9789-4b5c-a53f-90b6a7b80d40">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<style name="TableHeading" mode="Transparent" forecolor="#000000" backcolor="#CCCCCC" fill="Solid" hAlign="Left" vAlign="Top" markup="styled" isBlankWhenNull="false" fontName="SansSerif" fontSize="12" isBold="true" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false">
-		<pen lineWidth="1.0"/>
-		<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-			<pen lineWidth="1.0"/>
-			<topPen lineWidth="1.0" lineStyle="Solid"/>
-			<leftPen lineWidth="1.0"/>
-			<bottomPen lineWidth="1.0"/>
-			<rightPen lineWidth="0.0" lineStyle="Solid"/>
-		</box>
-	</style>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="UUID" value="a6e45e30-afe3-4a6b-9260-aabbc7f3ffcd"/>
-	</parameter>
-	<parameter name="CompanyName" class="java.lang.String"/>
-	<parameter name="CompanyTaxNum" class="java.lang.String"/>
-	<field name="description" class="java.lang.String">
-		<property name="Key" value="description"/>
-	</field>
-	<field name="amountDebit" class="java.math.BigDecimal">
-		<property name="Key" value="amountDebit"/>
-	</field>
-	<field name="amountCredit" class="java.math.BigDecimal">
-		<property name="Key" value="amountCredit"/>
-	</field>
-	<field name="date" class="org.joda.time.DateTime">
-		<property name="Key" value="date"/>
-	</field>
-	<field name="accountName" class="java.lang.String">
-		<property name="Key" value="accountName"/>
-	</field>
-	<field name="accountDescription" class="java.lang.String">
-		<property name="Key" value="accountDescription"/>
-	</field>
-	<pageHeader>
-		<band height="66">
-			<textField>
-				<reportElement uuid="a8f2b379-5411-4140-b68a-0d7581f934e1" style="TableHeading" positionType="Float" mode="Opaque" x="0" y="50" width="95" height="16" backcolor="#CCCCCC">
-					<property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
-				</reportElement>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement>
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="4a310b54-1142-4f0a-8099-86a9dcbce9dc" style="TableHeading" positionType="Float" mode="Opaque" x="353" y="50" width="233" height="16" backcolor="#CCCCCC"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement verticalAlignment="Middle">
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="fdad305f-d85a-421e-926e-99dd51ea6fc8" style="TableHeading" positionType="Float" mode="Opaque" x="95" y="50" width="258" height="16"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement>
-					<font size="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="d584ed15-e7d5-465d-a075-93ed5663a4e4" style="TableHeading" positionType="Float" mode="Opaque" x="687" y="50" width="99" height="16">
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement>
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="59142c50-055e-49c7-9e67-102e80c37c43" style="TableHeading" positionType="Float" mode="Opaque" x="587" y="50" width="100" height="16"/>
-				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement>
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="dc573b65-c91a-4aff-9fcf-8d19cb1f153f" x="687" y="0" width="30" height="14">
-					<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
-				</reportElement>
-				<textElement/>
-				<text><![CDATA[Lima,]]></text>
-			</staticText>
-			<textField pattern="dd.MM.yyyy">
-				<reportElement uuid="e4e00e6f-a74a-4a4d-bd5c-cc53b4294e20" isPrintRepeatedValues="false" x="717" y="0" width="69" height="14"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="61fc89b4-7579-41eb-9f6b-218ff0bde197" x="0" y="16" width="120" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[RUC:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement uuid="857c1f91-1067-45f1-b003-fa75794cc812" x="0" y="0" width="120" height="16">
-					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-				</reportElement>
-				<textElement>
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[EMPRESA:]]></text>
-			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="80cff3af-7cbd-4db9-8e47-44078098c442" x="120" y="16" width="482" height="16"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="ca2ed607-1ce4-4a68-b9e9-e72773ebef2c" x="120" y="0" width="482" height="16"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageHeader>
-	<detail>
-		<band height="18">
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="f83998df-2bdf-4a7a-97cf-2527504bf819" mode="Transparent" x="353" y="0" width="233" height="16"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="929ee1a2-1e4b-4c65-9a18-544c0a21b7da" mode="Transparent" x="586" y="0" width="100" height="16"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{amountDebit}.abs()]]></textFieldExpression>
-			</textField>
-			<textField pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement uuid="de02873e-1cf0-4149-b47f-41fd4f7fd0c2" mode="Transparent" x="686" y="0" width="100" height="16"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{amountCredit}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="63475b2e-b75c-497b-9f06-b64490e28cd5" mode="Transparent" x="0" y="0" width="95" height="16"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="12894acd-c52d-4ddb-998a-59e9518adabc" mode="Transparent" x="95" y="0" width="63" height="16"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement uuid="a4fcc0a0-6ad8-4d3d-8e30-16278aebd169" mode="Transparent" x="158" y="0" width="195" height="16"/>
-				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{accountDescription}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="786" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="a6e45e30-afe3-4a6b-9260-aabbc7f3ffcd">
+    <style name="TableHeading" mode="Transparent" forecolor="#000000" backcolor="#CCCCCC" fill="Solid" hAlign="Left" vAlign="Top" markup="styled" isBlankWhenNull="false" fontName="SansSerif" fontSize="12" isBold="true" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false">
+        <pen lineWidth="1.0"/>
+        <box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+            <pen lineWidth="1.0"/>
+            <topPen lineWidth="1.0" lineStyle="Solid"/>
+            <leftPen lineWidth="1.0"/>
+            <bottomPen lineWidth="1.0"/>
+            <rightPen lineWidth="0.0" lineStyle="Solid"/>
+        </box>
+    </style>
+    <parameter name="CompanyName" class="java.lang.String"/>
+    <parameter name="CompanyTaxNum" class="java.lang.String"/>
+    <field name="description" class="java.lang.String">
+        <property name="Key" value="description"/>
+    </field>
+    <field name="amountDebit" class="java.math.BigDecimal">
+        <property name="Key" value="amountDebit"/>
+    </field>
+    <field name="amountCredit" class="java.math.BigDecimal">
+        <property name="Key" value="amountCredit"/>
+    </field>
+    <field name="date" class="org.joda.time.DateTime">
+        <property name="Key" value="date"/>
+    </field>
+    <field name="accountName" class="java.lang.String">
+        <property name="Key" value="accountName"/>
+    </field>
+    <field name="accountDescription" class="java.lang.String">
+        <property name="Key" value="accountDescription"/>
+    </field>
+    <pageHeader>
+        <band height="66">
+            <textField>
+                <reportElement uuid="a8f2b379-5411-4140-b68a-0d7581f934e1" style="TableHeading" positionType="Float" mode="Opaque" x="0" y="50" width="95" height="16" backcolor="#CCCCCC">
+                    <property name="net.sf.jasperreports.export.pdf.tag.table" value="start"/>
+                </reportElement>
+                <box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+                    <rightPen lineWidth="1.0"/>
+                </box>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.date}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="4a310b54-1142-4f0a-8099-86a9dcbce9dc" style="TableHeading" positionType="Float" mode="Opaque" x="353" y="50" width="233" height="16" backcolor="#CCCCCC"/>
+                <box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+                    <rightPen lineWidth="1.0"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.description}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="fdad305f-d85a-421e-926e-99dd51ea6fc8" style="TableHeading" positionType="Float" mode="Opaque" x="95" y="50" width="258" height="16"/>
+                <box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+                    <rightPen lineWidth="1.0"/>
+                </box>
+                <textElement>
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.accountName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="d584ed15-e7d5-465d-a075-93ed5663a4e4" style="TableHeading" positionType="Float" mode="Opaque" x="687" y="50" width="99" height="16">
+                    <property name="local_mesure_unity" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.y" value="px"/>
+                </reportElement>
+                <box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+                    <rightPen lineWidth="1.0"/>
+                </box>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.credit}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="59142c50-055e-49c7-9e67-102e80c37c43" style="TableHeading" positionType="Float" mode="Opaque" x="587" y="50" width="100" height="16"/>
+                <box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+                    <rightPen lineWidth="1.0"/>
+                </box>
+                <textElement>
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$R{Accounting_Transaction.jrxml.debit}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement uuid="dc573b65-c91a-4aff-9fcf-8d19cb1f153f" x="687" y="0" width="30" height="14">
+                    <printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals( new Integer(1) ))]]></printWhenExpression>
+                </reportElement>
+                <textElement/>
+                <text><![CDATA[Lima,]]></text>
+            </staticText>
+            <textField pattern="dd.MM.yyyy">
+                <reportElement uuid="e4e00e6f-a74a-4a4d-bd5c-cc53b4294e20" isPrintRepeatedValues="false" x="717" y="0" width="69" height="14"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement uuid="61fc89b4-7579-41eb-9f6b-218ff0bde197" x="0" y="16" width="120" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[RUC:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement uuid="857c1f91-1067-45f1-b003-fa75794cc812" x="0" y="0" width="120" height="16">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EMPRESA:]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="80cff3af-7cbd-4db9-8e47-44078098c442" x="120" y="16" width="482" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement uuid="ca2ed607-1ce4-4a68-b9e9-e72773ebef2c" x="120" y="0" width="482" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <detail>
+        <band height="18">
+            <textField isBlankWhenNull="true">
+                <reportElement uuid="f83998df-2bdf-4a7a-97cf-2527504bf819" mode="Transparent" x="353" y="0" width="233" height="16"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement uuid="929ee1a2-1e4b-4c65-9a18-544c0a21b7da" mode="Transparent" x="586" y="0" width="100" height="16"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{amountDebit}.abs()]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement uuid="de02873e-1cf0-4149-b47f-41fd4f7fd0c2" mode="Transparent" x="686" y="0" width="100" height="16"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{amountCredit}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement uuid="63475b2e-b75c-497b-9f06-b64490e28cd5" mode="Transparent" x="0" y="0" width="95" height="16"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement uuid="12894acd-c52d-4ddb-998a-59e9518adabc" mode="Transparent" x="95" y="0" width="63" height="16"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement uuid="a4fcc0a0-6ad8-4d3d-8e30-16278aebd169" mode="Transparent" x="158" y="0" width="195" height="16"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[$F{accountDescription}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
 </jasperReport>

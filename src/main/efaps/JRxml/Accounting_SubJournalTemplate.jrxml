@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.1.2-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_SubJournalTemplate" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="822" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="eab70bb6-cc48-455c-bdbf-c24b52eb7710">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_SubJournalTemplate" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="822" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="111310c3-1801-4370-a578-60b64bcc791c">
     <property name="com.jaspersoft.studio.unit." value="pixel"/>
     <property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
     <property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -11,9 +11,6 @@
     <property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
     <property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
     <property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="pageFooter"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="UUID" value="111310c3-1801-4370-a578-60b64bcc791c"/>
-    </parameter>
     <parameter name="CompanyName" class="java.lang.String">
         <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
     </parameter>
