@@ -356,6 +356,7 @@ public abstract class DocumentInfo_Base
         }
         boolean add = true;
         if (isSummarize()) {
+            _accInfo.setAmountRate(null); // reset the amount rate
             for (final AccountInfo acc : _accounts) {
                 if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getInstance4Currency()
                                 .equals(_accInfo.getRateInfo().getInstance4Currency())) {
@@ -707,10 +708,10 @@ public abstract class DocumentInfo_Base
             ret.setCaseInst(_docInfos.iterator().next().getCaseInst());
             for (final DocumentInfo documentInfo : _docInfos) {
                 for (final AccountInfo accInfo : documentInfo.getCreditAccounts()) {
-                    ret.addCredit(accInfo);
+                    ret.add(ret.getCreditAccounts(), accInfo);
                 }
                 for (final AccountInfo accInfo : documentInfo.getDebitAccounts()) {
-                    ret.addDebit(accInfo);
+                    ret.add(ret.getDebitAccounts(), accInfo);
                 }
             }
         }
