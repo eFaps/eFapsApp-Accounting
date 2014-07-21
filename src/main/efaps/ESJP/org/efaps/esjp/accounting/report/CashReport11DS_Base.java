@@ -22,6 +22,8 @@ package org.efaps.esjp.accounting.report;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,6 +31,8 @@ import java.util.Properties;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -40,6 +44,7 @@ import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -74,7 +79,18 @@ public abstract class CashReport11DS_Base
     {
         super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
 
+        final DateTime dateFrom = new DateTime(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_PReportCash11ReportForm.dateFrom.name));
+        final DateTime dateTo = new DateTime(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_PReportCash11ReportForm.dateTo.name));
+
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+
+        final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
+        transAttrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
+                        dateTo.withTimeAtStartOfDay().plusDays(1));
+        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                        transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID));
 
         final List<Instance> accInsts = getAccountInst(_parameter);
         if (accInsts.isEmpty()) {
@@ -103,14 +119,38 @@ public abstract class CashReport11DS_Base
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
         multi.execute();
         final List<DataBean> values = new ArrayList<>();
+        final DataBean411 carryOver = new DataBean411();
+        carryOver.setAmount(BigDecimal.ZERO);
+        carryOver.setTransDescr(DBProperties.getProperty(CashReport11DS.class.getName() + ".CarryOver"));
         while (multi.next()) {
-            final DataBean411 bean = new DataBean411();
-            bean.setTransDate(multi.<DateTime>getSelect(selTransDate));
-            bean.setTransDescr(multi.<String>getSelect(selTransDescr));
-            bean.setAccName(multi.<String>getSelect(selAccName));
-            bean.setAccDescr(multi.<String>getSelect(selAccDescr));
-            bean.setAmount(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
-            values.add(bean);
+            final DateTime date = multi.<DateTime>getSelect(selTransDate);
+            final BigDecimal amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+            if (date.isBefore(dateFrom)) {
+                carryOver.setAmount(carryOver.getAmount().add(amount));
+            } else {
+                final DataBean411 bean = new DataBean411();
+                bean.setTransDate(date);
+                bean.setTransDescr(multi.<String>getSelect(selTransDescr));
+                bean.setAccName(multi.<String>getSelect(selAccName));
+                bean.setAccDescr(multi.<String>getSelect(selAccDescr));
+                bean.setAmount(amount);
+                values.add(bean);
+            }
+        }
+        final ComparatorChain<DataBean> chain = new ComparatorChain<>();
+        chain.addComparator(new Comparator<DataBean>() {
+
+            @Override
+            public int compare(final DataBean _arg0,
+                               final DataBean _arg1)
+            {
+                return _arg0.getTransDate().compareTo(_arg1.getTransDate());
+            }
+
+        });
+        Collections.sort(values, chain);
+        if (carryOver.getAmount().compareTo(BigDecimal.ZERO) != 0) {
+            values.add(0, carryOver);
         }
         setData(values);
     }

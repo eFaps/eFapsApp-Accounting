@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5f754b70-1745-4d43-a741-a6cb15b4c5d6</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_PReportCash11ReportForm</name>
+        <field name="mime">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_PReportCash11ReportForm.mime.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getMimeFieldValueUI"
+                name="Accounting_PReportCash11ReportForm.mime.UI_FIELD_VALUE"
+                program="org.efaps.esjp.ui.print.UserInterface"/>
+        </field>
+        <field name="dateFrom">
+            <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
+                name="Accounting_PReportCash11ReportForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.accounting.report.Report"/>
+        </field>
+        <field name="dateTo">
+            <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
+                name="Accounting_PReportCash11ReportForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.accounting.report.Report"/>
+        </field>
+    </definition>
+</ui-form>
