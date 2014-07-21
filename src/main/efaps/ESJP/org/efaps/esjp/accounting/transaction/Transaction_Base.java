@@ -69,7 +69,6 @@ import org.efaps.db.Update;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
-import org.efaps.esjp.accounting.Period_Base;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
@@ -1159,7 +1158,7 @@ public abstract class Transaction_Base
         DateTime fromDate = null;
         DateTime toDate = null;
         if (periodInst.getType().isKindOf(CIAccounting.Period.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, Period_Base.CACHEKEY);
+            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
             print.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.ToDate);
             print.execute();
             fromDate = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
@@ -1174,7 +1173,7 @@ public abstract class Transaction_Base
             toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
             periodInst = print.getSelect(selPeriod);
         } else if (periodInst.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, Period_Base.CACHEKEY);
+            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
             final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodLink);
             final SelectBuilder selInst = new SelectBuilder(selPeriod).instance();
             final SelectBuilder selDateFrom = new SelectBuilder(selPeriod).attribute(CIAccounting.Period.FromDate);

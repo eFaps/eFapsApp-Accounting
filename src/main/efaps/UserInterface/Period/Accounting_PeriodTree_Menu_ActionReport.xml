@@ -19,22 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>71d92e78-568c-43fd-bc62-132a2fb20a4f</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_Menu_ActionReport</name>
-        <!-- childs -->
         <childs>
             <child>Accounting_PeriodTree_Menu_ActionReport_Journal</child>
-            <child>Accounting_PeriodTree_Menu_ActionReport_JournalGainLoss</child>            
+            <child>Accounting_PeriodTree_Menu_ActionReport_JournalGainLoss</child>
             <child>Accounting_PeriodTree_Menu_ActionReport_ExternalVoucherJournal</child>
             <child>Accounting_PeriodTree_Menu_ActionReport_DocTransactions</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Cash11</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Cash12</child>
         </childs>
     </definition>
-
 </ui-menu>

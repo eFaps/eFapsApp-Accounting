@@ -84,7 +84,7 @@ public abstract class Period_Base
     /**
      * CacheKey for Periods.
      */
-    public static final String CACHEKEY = Period.class.getName() + ".CacheKey";
+    protected static final String CACHEKEY = Period.class.getName() + ".CacheKey";
 
     /**
      * Default setting to be added on creation of a period.

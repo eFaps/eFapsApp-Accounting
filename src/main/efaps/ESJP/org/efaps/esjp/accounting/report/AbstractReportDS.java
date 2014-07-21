@@ -18,10 +18,12 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.accounting;
+
+package org.efaps.esjp.accounting.report;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,14 +33,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("1c1f748a-9724-4f22-bf15-e6f9cb0a8c61")
+@EFapsUUID("38e78f5d-b8cf-4bb7-a94d-9adfb0201af8")
 @EFapsRevision("$Rev$")
-public class Period
-    extends Period_Base
+public abstract class AbstractReportDS
+    extends AbstractReportDS_Base
 {
-    /**
-     * CacheKey for Periods.
-     */
-    public static final String CACHEKEY = Period_Base.CACHEKEY;
 
 }
