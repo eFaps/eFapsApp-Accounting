@@ -125,4 +125,6 @@ public interface AccountingSettings
      * Defintions of the Summarixe mechanism.
      */
     String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
+
+    String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";
 }

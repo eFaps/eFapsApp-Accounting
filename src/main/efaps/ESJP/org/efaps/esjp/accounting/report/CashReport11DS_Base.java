@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -31,24 +32,35 @@ import net.sf.jasperreports.engine.JasperReport;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: CashReport11DS_Base.java 13378 2014-07-21 19:12:12Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("eb9fc10d-915a-4a29-8e40-513f077aae7d")
 @EFapsRevision("$Rev$")
 public abstract class CashReport11DS_Base
     extends AbstractCashReportDS
 {
+    /**
+     * Logger for this instance.
+     */
+    private static Logger LOG = LoggerFactory.getLogger(CashReport11DS.class);
 
     /**
      * {@inheritDoc}
@@ -61,7 +73,21 @@ public abstract class CashReport11DS_Base
         throws EFapsException
     {
         super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
+
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+
+        final List<Instance> accInsts = getAccountInst(_parameter);
+        if (accInsts.isEmpty()) {
+            LOG.error("Missing configuration '{}' for this report.", AccountingSettings.PERIOD_REPORT11ACCOUNT);
+        } else {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInsts.toArray());
+
+            queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                            attrQueryBldr.getAttributeQuery(CIAccounting.TransactionPositionAbstract.TransactionLink));
+            queryBldr.addWhereAttrNotEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInsts.toArray());
+        }
+
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selAcc = SelectBuilder.get().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
         final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
@@ -87,6 +113,45 @@ public abstract class CashReport11DS_Base
             values.add(bean);
         }
         setData(values);
+    }
+
+    protected List<Instance> getAccountInst(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final String accName = props.getProperty(AccountingSettings.PERIOD_REPORT11ACCOUNT);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance inst = multi.getCurrentInstance();
+            ret.add(inst);
+            ret.addAll(getAccountInst(_parameter, inst));
+        }
+        return ret;
+    }
+
+    protected List<Instance> getAccountInst(final Parameter _parameter,
+                                            final Instance _parentInst)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.ParentLink, _parentInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance inst = multi.getCurrentInstance();
+            ret.add(inst);
+            ret.addAll(getAccountInst(_parameter, inst));
+        }
+        return ret;
     }
 
     public static class DataBean411
