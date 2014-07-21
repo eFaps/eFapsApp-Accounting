@@ -1038,7 +1038,7 @@ public abstract class Transaction_Base
             final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
             final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.Period2Account);
             accQueryBldr.addWhereAttrEqValue(CIAccounting.Period2Account.SalesAccountLink, _salesAccInst);
-            accQueryBldr.addWhereAttrEqValue(CIAccounting.Period2Account.ToLink, periodInst);
+            accQueryBldr.addWhereAttrEqValue(CIAccounting.Period2Account.PeriodLink, periodInst);
             final MultiPrintQuery accMulti = accQueryBldr.getPrint();
             final SelectBuilder selAccInst = SelectBuilder.get().linkto(
                             CIAccounting.Period2Account.FromAccountAbstractLink).instance();

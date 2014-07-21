@@ -41,7 +41,7 @@
             <table>Accounting_Period2AccountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Accounting_Period2Account</property>
-                <property name="LinkFrom">ToLink</property>
+                <property name="LinkFrom">PeriodLink</property>
             </evaluate>
         </target>
         <!-- properties -->

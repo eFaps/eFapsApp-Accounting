@@ -91,7 +91,7 @@ public abstract class Account_Base
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period2Account);
         queryBldr.addWhereAttrEqValue(CIAccounting.Period2Account.FromLink, _parameter.getInstance());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selInst = new SelectBuilder().linkto(CIAccounting.Period2Account.ToLink).instance();
+        final SelectBuilder selInst = new SelectBuilder().linkto(CIAccounting.Period2Account.PeriodLink).instance();
         multi.addSelect(selInst);
         multi.execute();
         final Instance accInst = multi.<Instance>getSelect(selInst);
@@ -117,8 +117,8 @@ public abstract class Account_Base
         print.execute();
         final Boolean summary = print.<Boolean>getAttribute(CIAccounting.AccountAbstract.Summary);
         final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
-        if ((summary != null && !summary && !inverse)
-                        || (summary != null && summary && inverse)) {
+        if (summary != null && !summary && !inverse
+                        || summary != null && summary && inverse) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -259,7 +259,7 @@ public abstract class Account_Base
             if (showPeriod) {
                 final Company company = multi.<Company>getAttribute(CIAccounting.AccountAbstract.Company);
                 description = description + " - " + multi.<String>getSelect(selPeriod)
-                                + (company == null ? "" : (" - " + company.getName()));
+                                + (company == null ? "" : " - " + company.getName());
             }
             final String choice;
             if (nameSearch) {
@@ -586,8 +586,8 @@ public abstract class Account_Base
             sumBooked = sumBooked.add(newbooked);
             sumReport = sumReport.add(newReport);
         }
-        if ((sumBooked.compareTo(booked) != 0)
-                        || (report != null && sumReport.compareTo(report) != 0)) {
+        if (sumBooked.compareTo(booked) != 0
+                        || report != null && sumReport.compareTo(report) != 0) {
             final Update update = new Update(_instance);
             update.add(CIAccounting.AccountAbstract.SumBooked, sumBooked);
             update.add(CIAccounting.AccountAbstract.SumReport, sumReport);
@@ -616,8 +616,8 @@ public abstract class Account_Base
         if (value != null && !Display.NONE.equals(fieldvalue.getDisplay())) {
             BigDecimal retValue = null;
             fieldvalue.setValue(null);
-            if (("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1)
-                            || (!"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1)) {
+            if ("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1
+                            || !"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1) {
                 retValue = value.abs();
             }
             ret.put(ReturnValues.VALUES, retValue);

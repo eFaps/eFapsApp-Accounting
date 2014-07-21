@@ -41,7 +41,7 @@
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>ToLink</name>
+            <name>PeriodLink</name>
             <type>Link</type>
             <typelink>Accounting_Period</typelink>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
