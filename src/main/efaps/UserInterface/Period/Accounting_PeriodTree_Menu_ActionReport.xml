@@ -35,6 +35,22 @@
             <child>Accounting_PeriodTree_Menu_ActionReport_DocTransactions</child>
             <child>Accounting_PeriodTree_Menu_ActionReport_Cash11</child>
             <child>Accounting_PeriodTree_Menu_ActionReport_Cash12</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance302</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance303</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance304</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance305</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance306</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance307</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance308</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance309</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance310</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance311</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance312</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance313</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance314</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance315</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance316</child>
+            <child>Accounting_PeriodTree_Menu_ActionReport_Balance317</child>
         </childs>
     </definition>
 </ui-menu>
