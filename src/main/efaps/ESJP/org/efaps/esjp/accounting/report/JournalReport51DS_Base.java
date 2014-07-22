@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,13 +47,15 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: JournalReport51DS_Base.java 13383 2014-07-22 02:47:47Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("9994200b-40b2-466a-b1fe-bfd6e927e92e")
 @EFapsRevision("$Rev$")
 public abstract class JournalReport51DS_Base
     extends AbstractReportDS
 {
+
     @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
@@ -86,29 +89,45 @@ public abstract class JournalReport51DS_Base
         final SelectBuilder selTransOID = new SelectBuilder(selTrans).oid();
         final SelectBuilder selTransDescr = new SelectBuilder(selTrans)
                         .attribute(CIAccounting.TransactionAbstract.Description);
+        final SelectBuilder selTransIdentifier = new SelectBuilder(selTrans)
+        .attribute(CIAccounting.TransactionAbstract.Identifier);
         final SelectBuilder selTransName = new SelectBuilder(selTrans)
                         .attribute(CIAccounting.TransactionAbstract.Name);
         final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(CIAccounting.TransactionAbstract.Date);
 
-        multi.addSelect(selAccName, selAccDescr, selTransOID, selTransName, selTransDescr, selTransDate);
+        multi.addSelect(selAccName, selAccDescr, selTransIdentifier, selTransOID, selTransName, selTransDescr,
+                        selTransDate);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
                         CIAccounting.TransactionPositionAbstract.Position);
         multi.execute();
         final List<DataBean> values = new ArrayList<>();
+        final Map<String, DataBean> map = new HashMap<>();
         while (multi.next()) {
-            final DataBean bean = new DataBean();
-            bean.setTransOID(multi.<String>getSelect(selTransOID));
-            bean.setTransName(multi.<String>getSelect(selTransName));
-            bean.setTransDate(multi.<DateTime>getSelect(selTransDate));
-            bean.setTransDescr(multi.<String>getSelect(selTransDescr));
-            bean.setAccName(multi.<String>getSelect(selAccName));
-            bean.setAccDescr(multi.<String>getSelect(selAccDescr));
-            bean.setAmount(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
-            bean.setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position));
-            values.add(bean);
+            final String transOID = multi.<String>getSelect(selTransOID);
+            final DataBean bean;
+            if (map.containsKey(transOID)) {
+                bean = map.get(transOID);
+            } else {
+                bean = new DataBean();
+                values.add(bean);
+                map.put(transOID, bean);
+                bean.setTransOID(transOID);
+                bean.setTransName(multi.<String>getSelect(selTransName));
+                bean.setTransDate(multi.<DateTime>getSelect(selTransDate));
+                bean.setTransDescr(multi.<String>getSelect(selTransDescr));
+                bean.setTransIdentifier(multi.<String>getSelect(selTransIdentifier));
+            }
+            final DetailBean detailBean = new DetailBean();
+            detailBean.setAccName(multi.<String>getSelect(selAccName));
+            detailBean.setAccDescr(multi.<String>getSelect(selAccDescr));
+            detailBean.setAmount(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
+            detailBean.setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position));
+            bean.addDetail(detailBean);
         }
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-        chain.addComparator(new Comparator<DataBean>() {
+        chain.addComparator(new Comparator<DataBean>()
+        {
+
             @Override
             public int compare(final DataBean _arg0,
                                final DataBean _arg1)
@@ -116,7 +135,9 @@ public abstract class JournalReport51DS_Base
                 return _arg0.getTransName().compareTo(_arg1.getTransName());
             }
         });
-        chain.addComparator(new Comparator<DataBean>() {
+        chain.addComparator(new Comparator<DataBean>()
+        {
+
             @Override
             public int compare(final DataBean _arg0,
                                final DataBean _arg1)
@@ -131,17 +152,7 @@ public abstract class JournalReport51DS_Base
             public int compare(final DataBean _o1,
                                final DataBean _o2)
             {
-                return _o1.getTransOID().compareTo(_o2.getTransOID());
-            }
-        });
-        chain.addComparator(new Comparator<DataBean>()
-        {
-
-            @Override
-            public int compare(final DataBean _o1,
-                               final DataBean _o2)
-            {
-                return _o1.getPosition().compareTo(_o2.getPosition());
+                return _o1.getTransIdentifier().compareTo(_o2.getTransIdentifier());
             }
         });
 
@@ -149,17 +160,41 @@ public abstract class JournalReport51DS_Base
         setData(values);
     }
 
-
     public static class DataBean
     {
+
         private String transOID;
         private String transName;
         private DateTime transDate;
         private String transDescr;
-        private String accName;
-        private String accDescr;
-        private BigDecimal amount;
-        private Integer position;
+        private String transIdentifier;
+
+        private List<DetailBean> details = new ArrayList<>();
+
+
+        public BigDecimal getDebit()
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            for (final DetailBean bean : this.details) {
+                if (bean.getAmount().compareTo(BigDecimal.ZERO) < 0) {
+                    ret = ret.add(bean.getAmount().abs());
+                }
+            }
+            return ret;
+
+        }
+
+        public BigDecimal getCredit()
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            for (final DetailBean bean : this.details) {
+                if (bean.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                    ret = ret.add(bean.getAmount());
+                }
+            }
+            return ret;
+        }
+
         /**
          * Getter method for the instance variable {@link #transDate}.
          *
@@ -168,6 +203,14 @@ public abstract class JournalReport51DS_Base
         public DateTime getTransDate()
         {
             return this.transDate;
+        }
+
+        /**
+         * @param _detailBean
+         */
+        public void addDetail(final DetailBean _detailBean)
+        {
+            getDetails().add(_detailBean);
         }
 
         /**
@@ -199,6 +242,106 @@ public abstract class JournalReport51DS_Base
         {
             this.transDescr = _transDescr;
         }
+
+        /**
+         * Getter method for the instance variable {@link #transName}.
+         *
+         * @return value of instance variable {@link #transName}
+         */
+        public String getTransName()
+        {
+            return this.transName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transName}.
+         *
+         * @param _transName value for instance variable {@link #transName}
+         */
+        public void setTransName(final String _transName)
+        {
+            this.transName = _transName;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #transOID}.
+         *
+         * @return value of instance variable {@link #transOID}
+         */
+        public String getTransOID()
+        {
+            return this.transOID;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transOID}.
+         *
+         * @param _transOID value for instance variable {@link #transOID}
+         */
+        public void setTransOID(final String _transOID)
+        {
+            this.transOID = _transOID;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #details}.
+         *
+         * @return value of instance variable {@link #details}
+         */
+        public List<DetailBean> getDetails()
+        {
+            Collections.sort(this.details, new Comparator<DetailBean>()
+            {
+                @Override
+                public int compare(final DetailBean _arg0,
+                                   final DetailBean _arg1)
+                {
+                    return _arg0.getPosition().compareTo(_arg1.getPosition());
+                }
+            });
+            return this.details;
+        }
+
+        /**
+         * Setter method for instance variable {@link #details}.
+         *
+         * @param _details value for instance variable {@link #details}
+         */
+        public void setDetails(final List<DetailBean> _details)
+        {
+            this.details = _details;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #transIdentifier}.
+         *
+         * @return value of instance variable {@link #transIdentifier}
+         */
+        public String getTransIdentifier()
+        {
+            return this.transIdentifier;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #transIdentifier}.
+         *
+         * @param _transIdentifier value for instance variable {@link #transIdentifier}
+         */
+        public void setTransIdentifier(final String _transIdentifier)
+        {
+            this.transIdentifier = _transIdentifier;
+        }
+    }
+
+    public static class DetailBean
+    {
+
+        private String accName;
+        private String accDescr;
+        private Integer position;
+        private BigDecimal amount;
 
         /**
          * Getter method for the instance variable {@link #accName}.
@@ -241,6 +384,26 @@ public abstract class JournalReport51DS_Base
         }
 
         /**
+         * Getter method for the instance variable {@link #position}.
+         *
+         * @return value of instance variable {@link #position}
+         */
+        public Integer getPosition()
+        {
+            return this.position;
+        }
+
+        /**
+         * Setter method for instance variable {@link #position}.
+         *
+         * @param _position value for instance variable {@link #position}
+         */
+        public void setPosition(final Integer _position)
+        {
+            this.position = _position;
+        }
+
+        /**
          * Getter method for the instance variable {@link #amount}.
          *
          * @return value of instance variable {@link #amount}
@@ -259,72 +422,5 @@ public abstract class JournalReport51DS_Base
         {
             this.amount = _amount;
         }
-
-
-        /**
-         * Getter method for the instance variable {@link #transName}.
-         *
-         * @return value of instance variable {@link #transName}
-         */
-        public String getTransName()
-        {
-            return this.transName;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #transName}.
-         *
-         * @param _transName value for instance variable {@link #transName}
-         */
-        public void setTransName(final String _transName)
-        {
-            this.transName = _transName;
-        }
-
-
-        /**
-         * Getter method for the instance variable {@link #transOID}.
-         *
-         * @return value of instance variable {@link #transOID}
-         */
-        public String getTransOID()
-        {
-            return this.transOID;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #transOID}.
-         *
-         * @param _transOID value for instance variable {@link #transOID}
-         */
-        public void setTransOID(final String _transOID)
-        {
-            this.transOID = _transOID;
-        }
-
-
-        /**
-         * Getter method for the instance variable {@link #position}.
-         *
-         * @return value of instance variable {@link #position}
-         */
-        public Integer getPosition()
-        {
-            return this.position;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #position}.
-         *
-         * @param _position value for instance variable {@link #position}
-         */
-        public void setPosition(final Integer _position)
-        {
-            this.position = _position;
-        }
     }
-
 }
