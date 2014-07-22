@@ -108,6 +108,35 @@ public abstract class Period_Base
                         SummarizeDefintion.CASEUSER.name());
     }
 
+
+    public Return accessCheck4SummarizeTrans(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        final SummarizeDefintion summarize = getSummarizeDefintion(_parameter);
+        boolean access;
+        switch (summarize) {
+            case NEVER:
+            case ALWAYS:
+                access = false;
+                break;
+            case CASE:
+            case CASEUSER:
+            case USER:
+                access = true;
+                break;
+            default:
+                access = false;
+                break;
+        }
+        if (!inverse && access || inverse && !access) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+
     /**
      * Called on a command to create a new period including account table and
      * reports.

@@ -44,6 +44,7 @@ import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
@@ -699,8 +700,14 @@ public abstract class Transaction_Base
             case ALWAYS:
                 ret = true;
                 break;
-            case CASEUSER:
             case CASE:
+                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+                final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
+                print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+                print.executeWithoutAccessCheck();
+                ret = BooleanUtils.isTrue(print.<Boolean>getAttribute(CIAccounting.CaseAbstract.Summarize));
+                break;
+            case CASEUSER:
             case USER:
                 ret = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Summarize"));
                 break;
@@ -723,8 +730,6 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
-
-
 
         final StringBuilder js = getScript4ExecuteButton(_parameter,
                         DocumentInfo.getCombined(evalDocuments(_parameter), summarizeTransaction(_parameter)));

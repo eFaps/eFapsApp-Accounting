@@ -43,9 +43,23 @@
                 <property name="case">true</property>
             </trigger>
         </field>
-         <field name="caseGroup" character="Group">
+        <field name="caseGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Inverse">true</property>
+            </trigger>
+        </field>
+        <field name="caseGroup2" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">4</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
         </field>
          <field name="document">
             <property name="ModeCreate">READONLY</property>
@@ -95,6 +109,10 @@
             <property name="Label">Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
         </field>
         <field name="purchaseRecord">
             <property name="ModeCreate">EDITABLE</property>
@@ -223,6 +241,14 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.sumTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="javacript">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getJavaScriptFieldValue"
+                name="Accounting_TransactionCreate4DocForm.javacript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
         </field>
     </definition>
 </ui-form>

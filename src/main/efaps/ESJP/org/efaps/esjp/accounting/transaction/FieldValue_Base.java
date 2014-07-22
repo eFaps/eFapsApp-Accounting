@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -55,6 +56,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -62,15 +64,20 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -98,7 +105,13 @@ public abstract class FieldValue_Base
     /**
      * Key for the map to be stored in the request.
      */
-    public static final String SALESACC_REQKEY = "org.efaps.esjp.accounting.transaction.FieldValue.reqMap4SalesAccount";
+    protected static final String SALESACC_REQKEY = FieldValue.class.getName() + ".SalesAccountRequestKey";
+
+    /**
+     * Key for the map to be stored in the request.
+     */
+    protected static final String CASE_REQKEY = FieldValue.class.getName() + ".CaseRequestKey";
+
 
     /**
      * @param _parameter Parameter as passed from the eFaps API
@@ -202,8 +215,13 @@ public abstract class FieldValue_Base
                     final String cross = DBProperties
                                     .getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Cross");
                     final String net = DBProperties.getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Net");
-
+                    boolean first = true;
                     for (final DropDownPosition pos : _values) {
+                        if (first) {
+                            // store the selected
+                            Context.getThreadContext().setRequestAttribute(CASE_REQKEY, pos.getValue());
+                            first = false;
+                        }
                         final String strTmp = pos.getOption().toString();
                         if (StringUtils.endsWith(strTmp, trueStr)) {
                             pos.setOption(StringUtils.substringBeforeLast(strTmp, trueStr) + cross);
@@ -446,10 +464,8 @@ public abstract class FieldValue_Base
             current = span;
             i++;
         }
-        html.append(table.toHtml());
-        html.append("<script type=\"text/javascript\">")
-            .append(getScript(_parameter, docs))
-            .append("</script>");
+        html.append(table.toHtml())
+            .append(InterfaceUtils.wrappInScriptTag(_parameter, getScript(_parameter, docs), true, 0));
 
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
@@ -837,9 +853,9 @@ public abstract class FieldValue_Base
                                       final List<DocumentInfo> _docs)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final boolean script = !"true".equalsIgnoreCase((String) props.get("noScript"));
+        final boolean script = !"true".equalsIgnoreCase(getProperty(_parameter, "noScript"));
         final StringBuilder ret = new StringBuilder();
+
         if (script) {
             for (final DocumentInfo doc : _docs) {
 
@@ -1136,8 +1152,8 @@ public abstract class FieldValue_Base
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         if (!Display.NONE.equals(fieldValue.getDisplay())) {
             @SuppressWarnings("unchecked")
-            Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext()
-                            .getRequestAttribute(FieldValue_Base.SALESACC_REQKEY);
+            Map<Instance, String> values = (Map<Instance, String>)
+            Context.getThreadContext().getRequestAttribute(FieldValue_Base.SALESACC_REQKEY);
             if (values == null || values != null && !values.containsKey(_parameter.getInstance())) {
                 values = new HashMap<Instance, String>();
                 Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, values);
@@ -1167,4 +1183,38 @@ public abstract class FieldValue_Base
         }
         return ret;
     }
+
+
+    public Return getJavaScriptFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder js = new StringBuilder();
+        final SummarizeDefintion summarizeDef = new Period().getSummarizeDefintion(_parameter);
+        if (SummarizeDefintion.CASE.equals(summarizeDef) || SummarizeDefintion.CASEUSER.equals(summarizeDef)) {
+            final Instance caseInst = Instance
+                            .get((String) Context.getThreadContext().getRequestAttribute(CASE_REQKEY));
+            if (caseInst.isValid()) {
+                final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
+                print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+                print.executeWithoutAccessCheck();
+                final Boolean summarize = print.getAttribute(CIAccounting.CaseAbstract.Summarize);
+                final StringBuilder caseJs = new StringBuilder();
+                final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
+                                .checkbox4Summarize.name;
+                caseJs.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
+                    .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize)).append("); \n");
+                if (SummarizeDefintion.CASE.equals(summarizeDef)) {
+                    caseJs.append(" domAttr.set(node, \"disabled\", \"disabled\"); \n");
+                }
+                caseJs.append("});\n");
+                js.append(InterfaceUtils.wrapInDojoRequire(_parameter, caseJs, DojoLibs.QUERY, DojoLibs.DOMATTR));
+            }
+        }
+        if (js.length() > 0) {
+            ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 0));
+        }
+        return ret;
+    }
+
 }

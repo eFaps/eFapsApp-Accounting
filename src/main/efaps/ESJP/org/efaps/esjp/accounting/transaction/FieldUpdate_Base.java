@@ -322,28 +322,26 @@ public abstract class FieldUpdate_Base
         ret.put(ReturnValues.VALUES, list);
         final SummarizeDefintion summarizeDef = new Period().getSummarizeDefintion(_parameter);
         final StringBuilder js = new StringBuilder();
-        switch (summarizeDef) {
-            case CASEUSER:
-            case CASE:
-                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-                final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
-                print.addAttribute(CIAccounting.CaseAbstract.Summarize);
-                print.executeWithoutAccessCheck();
-                final Boolean summarize = print.getAttribute(CIAccounting.CaseAbstract.Summarize);
+        if (SummarizeDefintion.CASE.equals(summarizeDef) || SummarizeDefintion.CASEUSER.equals(summarizeDef)) {
+            final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
+            final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
+            print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+            print.executeWithoutAccessCheck();
+            final Boolean summarize = print.getAttribute(CIAccounting.CaseAbstract.Summarize);
 
-                final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
-                                .checkbox4Summarize.name;
-                js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
-                    .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize))
-                    .append("); \n")
-                    .append("});\n");
-                final Map<String, Object> map = new HashMap<>();
-                list.add(map);
-                InterfaceUtils.appendScript4FieldUpdate(map,
-                                InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMATTR));
-                break;
-            default:
-                break;
+            final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
+                            .checkbox4Summarize.name;
+            js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
+                .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize)).append("); \n");
+            if (SummarizeDefintion.CASE.equals(summarizeDef)) {
+                js.append(" domAttr.set(node, \"disabled\", \"disabled\"); \n");
+            }
+            js.append("});\n");
+
+            final Map<String, Object> map = new HashMap<>();
+            list.add(map);
+            InterfaceUtils.appendScript4FieldUpdate(map,
+                            InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMATTR));
         }
         return ret;
     }
