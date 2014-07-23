@@ -22,8 +22,24 @@
 package org.efaps.esjp.accounting.report.balance;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
+
+import org.efaps.admin.event.Parameter;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.report.AbstractReportDS;
+import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -32,120 +48,61 @@ import org.efaps.esjp.accounting.report.AbstractReportDS;
  * @author The eFaps Team
  * @version $Id$
  */
-public abstract class AbstractBalanceReportDS_Base
+public abstract class AbstractBalanceReportDS_Base<T extends AbstractDataBean>
     extends AbstractReportDS
 {
 
 
-    public abstract static class DataBean
+    @Override
+    public void init(final JasperReport _jasperReport,
+                     final Parameter _parameter,
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
+        throws EFapsException
     {
-        private String accOID;
+        super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
+        final List<Instance> accInst = getAccountInst(_parameter, getKey(_parameter));
 
-        private String accName;
-
-        private String accDesc;
-
-        private BigDecimal amount;
-
-
-        /**
-         * Getter method for the instance variable {@link #accName}.
-         *
-         * @return value of instance variable {@link #accName}
-         */
-        public String getAccName()
-        {
-            return this.accName;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #accName}.
-         *
-         * @param _accName value for instance variable {@link #accName}
-         */
-        public void setAccName(final String _accName)
-        {
-            this.accName = _accName;
-        }
-
-
-        /**
-         * Getter method for the instance variable {@link #accDesc}.
-         *
-         * @return value of instance variable {@link #accDesc}
-         */
-        public String getAccDesc()
-        {
-            return this.accDesc;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #accDesc}.
-         *
-         * @param _accDesc value for instance variable {@link #accDesc}
-         */
-        public void setAccDesc(final String _accDesc)
-        {
-            this.accDesc = _accDesc;
-        }
-
-
-        /**
-         * Getter method for the instance variable {@link #amount}.
-         *
-         * @return value of instance variable {@link #amount}
-         */
-        public BigDecimal getAmount()
-        {
-            return this.amount;
-        }
-
-
-        /**
-         * Setter method for instance variable {@link #amount}.
-         *
-         * @param _amount value for instance variable {@link #amount}
-         */
-        public void setAmount(final BigDecimal _amount)
-        {
-            this.amount = _amount;
-        }
-
-        /**
-         * Setter method for instance variable {@link #amount}.
-         *
-         * @param _amount value for instance variable {@link #amount}
-         */
-        public void add(final BigDecimal _amount)
-        {
-            if (this.amount == null) {
-                this.amount = BigDecimal.ZERO;
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInst.toArray());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selAcc = SelectBuilder.get().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
+        final SelectBuilder selAccOID = new SelectBuilder(selAcc).oid();
+        final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
+        final SelectBuilder selAccDescr = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Description);
+        multi.addSelect(selAccOID, selAccName, selAccDescr);
+        multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+        multi.execute();
+        final List<AbstractDataBean> values = new ArrayList<>();
+        final Map<String, AbstractDataBean> map = new HashMap<>();
+        while (multi.next()) {
+            final String accOID = multi.getSelect(selAccOID);
+            final AbstractDataBean bean;
+            if (map.containsKey(accOID)) {
+                bean = map.get(accOID);
+            } else {
+                bean = getBean(_parameter);
+                bean.setAccName(multi.<String>getSelect(selAccName));
+                bean.setAccDesc(multi.<String>getSelect(selAccDescr));
+                map.put(accOID, bean);
+                values.add(bean);
             }
-            this.amount = this.amount.add(_amount);
+            bean.add(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
         }
+        Collections.sort(values, new Comparator<AbstractDataBean>(){
 
-        /**
-         * Getter method for the instance variable {@link #accOID}.
-         *
-         * @return value of instance variable {@link #accOID}
-         */
-        public String getAccOID()
-        {
-            return this.accOID;
-        }
-
-
-
-        /**
-         * Setter method for instance variable {@link #accOID}.
-         *
-         * @param _accOID value for instance variable {@link #accOID}
-         */
-        public void setAccOID(final String _accOID)
-        {
-            this.accOID = _accOID;
-        }
+            @Override
+            public int compare(final AbstractDataBean _arg0,
+                               final AbstractDataBean _arg1)
+            {
+                return _arg0.getAccName().compareTo(_arg1.getAccName());
+            }});
+        setData(values);
     }
+
+
+    public abstract T getBean(final Parameter _parameter) throws EFapsException;
+
+    public abstract String getKey(final Parameter _parameter) throws EFapsException;
+
 }

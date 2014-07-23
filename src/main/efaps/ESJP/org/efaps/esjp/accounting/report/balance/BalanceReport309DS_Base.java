@@ -20,6 +20,11 @@
 
 package org.efaps.esjp.accounting.report.balance;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.esjp.accounting.report.balance.BalanceReport309DS_Base.Bean309;
+import org.efaps.esjp.accounting.util.AccountingSettings;
+import org.efaps.util.EFapsException;
+
 
 /**
  * TODO comment!
@@ -28,8 +33,32 @@ package org.efaps.esjp.accounting.report.balance;
  * @version $Id$
  */
 public abstract class BalanceReport309DS_Base
-    extends AbstractBalanceReportDS
-
+    extends AbstractBalanceReportDS<Bean309>
 {
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Bean309 getBean(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Bean309();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getKey(final Parameter _parameter)
+        throws EFapsException
+    {
+        return AccountingSettings.PERIOD_REPORT309ACCOUNT;
+    }
+
+    public static class Bean309
+        extends AbstractDataBean
+    {
+
+    }
 }

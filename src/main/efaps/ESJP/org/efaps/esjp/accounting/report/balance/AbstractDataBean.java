@@ -22,15 +22,14 @@
 package org.efaps.esjp.accounting.report.balance;
 
 
-
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  * @version $Id$
  */
-public abstract class AbstractBalanceReportDS<T extends AbstractDataBean>
-    extends AbstractBalanceReportDS_Base<T>
+public abstract class AbstractDataBean
+    extends AbstractDataBean_Base
 {
 
 }
