@@ -30,18 +30,17 @@
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00038</specification>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_LabelProject2PositionAbstract</name>
-        <parent>Accounting_Label2PositionAbstract</parent>
+        <name>Accounting_TransactionPosition2LabelProject</name>
+        <parent>Accounting_TransactionPosition2LabelAbstract</parent>
         <purpose abstract="true"/>
         <attribute>
-            <name>FromLabelLink</name>
+            <name>ToLabelProjectLink</name>
             <type>Link</type>
             <typelink>Accounting_LabelProject</typelink>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

@@ -136,6 +136,16 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Width">4</property>
         </field>
+        <field name="docLink_Credit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionCreditTable.docLink_Debit.Label</property>
+            <property name="Required">true</property>
+            <property name="Width">2</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getDocLinkFieldValue"
+                name="Accounting_TransactionPositionDebitTable.docLink_Debit.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
         <field name="labelLink_Credit">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionPositionAbstract/labelLink.Label</property>
@@ -145,6 +155,16 @@
                 method="getLabelFieldValue"
                 name="Accounting_TransactionPositionCreditTable.labelLink_Credit.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
+        </field>
+        <field name="remark_Credit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionCreditTable.remark.Label</property>
+            <property name="Attribute">Remark</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheckByConfig"
+                name="Accounting_TransactionPositionCreditTable.remark_Credit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Key">ActivateRemark4TransPos</property>
+            </trigger>
         </field>
         <field name="account2account_Credit">
             <property name="ModeCreate">READONLY</property>

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -26,17 +26,15 @@
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8ce18d70-38af-41da-9815-f91b6d25153c</uuid>
+    <uuid>810b40f2-bb80-4614-93db-c91905f28167</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Label2PositionSQLTable</name>
+        <name>Accounting_TransactionPosition2ObjectSQLTable</name>
         <typeid-column>TYPEID</typeid-column>
         <database>
-            <table-name>T_ACCLABLE2POS</table-name>
-            <!-- columns -->
+            <table-name>T_ACCTRANSACTIONPOS2OBJ</table-name>
             <column name="TYPEID"   type="INTEGER"   not-null="true" />
             <column name="FROMID"   type="INTEGER"   not-null="true" />
             <column name="TOID"     type="INTEGER"   not-null="true" />
@@ -44,10 +42,9 @@
             <column name="CREATED"  type="DATETIME"  not-null="true" />
             <column name="MODIFIER" type="INTEGER"   not-null="true" />
             <column name="MODIFIED" type="DATETIME"  not-null="true" />
-            <foreign name="T_ACCLABLE2POS_FK_FROMID" key="FROMID"	reference="T_ACCLABEL(ID)" />
-            <foreign name="T_ACCLABLE2POS_FK_TOID"   key="TOID"     reference="T_ACCTRANSACTIONPOS(ID)" />
-            <foreign name="T_ACCLABLE2POS_FK_CRTR"   key="CREATOR"  reference="T_USERPERSON(ID)" />
-            <foreign name="T_ACCLABLE2POS_FK_MDFR"   key="MODIFIER" reference="T_USERPERSON(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS2OBJ_FK_FROMID" key="FROMID"    reference="T_ACCTRANSACTIONPOS(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS2OBJ_FK_CRTR"   key="CREATOR"   reference="T_USERPERSON(ID)" />
+            <foreign name="T_ACCTRANSACTIONPOS2OBJ_FK_MDFR"   key="MODIFIER"  reference="T_USERPERSON(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>

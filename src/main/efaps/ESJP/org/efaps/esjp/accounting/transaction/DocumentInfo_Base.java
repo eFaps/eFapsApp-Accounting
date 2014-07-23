@@ -144,7 +144,7 @@ public abstract class DocumentInfo_Base
     /**
      * Constructor.
      */
-    public DocumentInfo_Base()
+    protected DocumentInfo_Base()
     {
         this(null);
     }
@@ -152,7 +152,7 @@ public abstract class DocumentInfo_Base
     /**
      * @param _instance Instance of the Document
      */
-    public DocumentInfo_Base(final Instance _instance)
+    protected DocumentInfo_Base(final Instance _instance)
     {
         setInstance(_instance);
     }
@@ -709,9 +709,15 @@ public abstract class DocumentInfo_Base
             for (final DocumentInfo documentInfo : _docInfos) {
                 for (final AccountInfo accInfo : documentInfo.getCreditAccounts()) {
                     ret.add(ret.getCreditAccounts(), accInfo);
+                    if (!_summarize) {
+                        accInfo.setDocLink(documentInfo.getInstance());
+                    }
                 }
                 for (final AccountInfo accInfo : documentInfo.getDebitAccounts()) {
                     ret.add(ret.getDebitAccounts(), accInfo);
+                    if (!_summarize) {
+                        accInfo.setDocLink(documentInfo.getInstance());
+                    }
                 }
             }
         }

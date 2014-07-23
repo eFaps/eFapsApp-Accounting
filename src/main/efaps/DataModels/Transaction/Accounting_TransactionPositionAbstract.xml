@@ -83,7 +83,8 @@
             <typelink>ERP_Currency</typelink>
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
@@ -101,7 +102,8 @@
             <typelink>ERP_Currency</typelink>
             <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
             <sqlcolumn>RATECURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Accounting_TransactionPositionAbstract.CurrencyId.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
@@ -116,6 +118,12 @@
                 name="Sales_PositionAbstract.Rate.RATE_VALUE" event="RATE_VALUE" />
             <property name="CurrencyAttribute4Rate">RateCurrencyLink</property>
             <property name="TargetCurrencyAttribute4Rate">CurrencyLink</property>
+        </attribute>
+         <attribute>
+            <name>Remark</name>
+            <type>String</type>
+            <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
+            <sqlcolumn>REMARK</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>

@@ -104,6 +104,11 @@ public interface AccountingSettings
     /**
      * Activate the Exchange mechanism.
      */
+    String PERIOD_ACTIVAREMARK4TRANSPOS = "ActivateRemark4TransPos";
+
+    /**
+     * Activate the Exchange mechanism.
+     */
     String PERIOD_ACTIVATEVIEWS = "ActivateViews";
 
     /**

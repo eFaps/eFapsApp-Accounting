@@ -37,20 +37,21 @@
         <typeid-column>TYPEID</typeid-column>
         <database>
             <table-name>T_ACCTRANSACTIONPOS</table-name>
-            <column name="TYPEID"           type="INTEGER"  not-null="true" />
-            <column name="TRANSACTIONID"    type="INTEGER"  not-null="true" />
-            <column name="ACCOUNTID"        type="INTEGER"  not-null="true" />
-            <column name="POS"              type="INTEGER"  not-null="true" />
-            <column name="AMOUNT"           type="DECIMAL"                  length="12" scale="2" />
-            <column name="CURRENCYID"       type="INTEGER"  not-null="true" />
-            <column name="RATECURRENCYID"   type="INTEGER"  not-null="true" />
-            <column name="RATE"             type="DECIMAL"  not-null="true" length="14" scale="6" />
-            <column name="RATEDENOM"        type="DECIMAL"                  length="14" scale="6" />
-            <column name="RATEAMOUNT"       type="DECIMAL"                  length="12" scale="2" />
-            <column name="CREATOR"          type="INTEGER"  not-null="true" />
-            <column name="CREATED"          type="DATETIME" not-null="true" />
-            <column name="MODIFIER"         type="INTEGER"  not-null="true" />
-            <column name="MODIFIED"         type="DATETIME" not-null="true" />
+            <column name="TYPEID"           type="INTEGER"      not-null="true" />
+            <column name="TRANSACTIONID"    type="INTEGER"      not-null="true" />
+            <column name="ACCOUNTID"        type="INTEGER"      not-null="true" />
+            <column name="POS"              type="INTEGER"      not-null="true" />
+            <column name="AMOUNT"           type="DECIMAL"                      length="12" scale="2" />
+            <column name="CURRENCYID"       type="INTEGER"      not-null="true" />
+            <column name="RATECURRENCYID"   type="INTEGER"      not-null="true" />
+            <column name="RATE"             type="DECIMAL"      not-null="true" length="14" scale="6" />
+            <column name="RATEDENOM"        type="DECIMAL"                      length="14" scale="6" />
+            <column name="RATEAMOUNT"       type="DECIMAL"                      length="12" scale="2" />
+            <column name="REMARK"           type="STRING_SHORT"                 length="128"/>
+            <column name="CREATOR"          type="INTEGER"      not-null="true" />
+            <column name="CREATED"          type="DATETIME"     not-null="true" />
+            <column name="MODIFIER"         type="INTEGER"      not-null="true" />
+            <column name="MODIFIED"         type="DATETIME"     not-null="true" />
             <foreign name="T_ACCTRANSACTIONPOS_FK_REPORTID"     key="TRANSACTIONID"  reference="T_ACCTRANSACTION(ID)" />
             <foreign name="T_ACCTRANSACTIONPOS_FK_ACCOUNTID"    key="ACCOUNTID"      reference="T_ACCACCOUNT(ID)" />
             <foreign name="T_ACCTRANSACTIONPOS_CURRENCYID"      key="CURRENCYID"     reference="T_ERPCUR(ID)" />

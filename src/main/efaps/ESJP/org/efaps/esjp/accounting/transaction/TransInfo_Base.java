@@ -64,13 +64,13 @@ public abstract class TransInfo_Base
 
     private final List<PositionInfo> postions = new ArrayList<>();
 
-
     public void create(final Parameter _parameter)
         throws EFapsException
     {
         final ComparatorChain<PositionInfo> chain = new ComparatorChain<PositionInfo>();
         chain.addComparator(new Comparator<PositionInfo>()
         {
+
             @Override
             public int compare(final PositionInfo _o1,
                                final PositionInfo _o2)
@@ -88,6 +88,7 @@ public abstract class TransInfo_Base
         });
         chain.addComparator(new Comparator<PositionInfo>()
         {
+
             @Override
             public int compare(final PositionInfo _o1,
                                final PositionInfo _o2)
@@ -98,6 +99,7 @@ public abstract class TransInfo_Base
 
         chain.addComparator(new Comparator<PositionInfo>()
         {
+
             @Override
             public int compare(final PositionInfo _o1,
                                final PositionInfo _o2)
@@ -129,7 +131,26 @@ public abstract class TransInfo_Base
             posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, pos.getAmount());
             posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, pos.getRateAmount());
             posInsert.execute();
+            pos.setInstance(posInsert.getInstance());
             i++;
+        }
+        // connect labels
+        for (final PositionInfo pos : this.postions) {
+            if (pos.getLabelInst() != null && pos.getLabelInst().isValid() && pos.getLabelRelType() != null) {
+                final Insert relInsert = new Insert(pos.getLabelRelType());
+                relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
+                relInsert.add(CIAccounting.TransactionPosition2LabelAbstract.ToLinkAbstract, pos.getLabelInst());
+                relInsert.execute();
+            }
+        }
+        // connect docs
+        for (final PositionInfo pos : this.postions) {
+            if (pos.getDocInst() != null && pos.getDocInst().isValid() && pos.getDocRelType() != null) {
+                final Insert relInsert = new Insert(pos.getDocRelType());
+                relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
+                relInsert.add(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract, pos.getDocInst());
+                relInsert.execute();
+            }
         }
     }
 
@@ -289,7 +310,6 @@ public abstract class TransInfo_Base
         return this;
     }
 
-
     /**
      * Getter method for the instance variable {@link #instance}.
      *
@@ -318,6 +338,7 @@ public abstract class TransInfo_Base
 
     public static class PositionInfo
     {
+        private Instance instance;
 
         private Integer order = 0;
 
@@ -335,11 +356,17 @@ public abstract class TransInfo_Base
 
         private Type labelRelType;
 
+        private Instance docInst;
+
+        private Type docRelType;
+
         private Object rate;
 
         private BigDecimal rateAmount;
 
         private BigDecimal amount;
+
+
 
         /**
          * Getter method for the instance variable {@link #labelInst}.
@@ -575,6 +602,69 @@ public abstract class TransInfo_Base
             this.connOrder = _connOrder;
             return this;
         }
+
+        /**
+         * Getter method for the instance variable {@link #docRelType}.
+         *
+         * @return value of instance variable {@link #docRelType}
+         */
+        public Type getDocRelType()
+        {
+            return this.docRelType;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docRelType}.
+         *
+         * @param _docRelType value for instance variable {@link #docRelType}
+         */
+        public PositionInfo setDocRelType(final Type _docRelType)
+        {
+            this.docRelType = _docRelType;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         */
+        public PositionInfo setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #instance}.
+         *
+         * @param _instance value for instance variable {@link #instance}
+         */
+        public void setInstance(final Instance _instance)
+        {
+            this.instance = _instance;
+        }
+
 
         @Override
         public String toString()

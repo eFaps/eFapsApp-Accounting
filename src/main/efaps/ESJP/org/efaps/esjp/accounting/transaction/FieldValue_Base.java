@@ -76,6 +76,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -133,6 +134,38 @@ public abstract class FieldValue_Base
             }
         };
         return field.dropDownFieldValue(_parameter);
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return values for dropdown
+     * @throws EFapsException on error
+     */
+    public Return getDocLinkFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+                final String[] oids = _parameter.getParameterValues("selectedRow");
+                final List<DropDownPosition> values = new ArrayList<>();
+                int i = 1;
+                for (final String oid : oids) {
+                    if (Instance.get(oid).isValid()) {
+                        values.add(new DropDownPosition(oid, i + "."));
+                        i++;
+                    }
+                }
+                if (values.size() > 1) {
+                    values.add(0, new DropDownPosition("", "-"));
+                }
+                ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
+            } else {
+                ret.put(ReturnValues.SNIPLETT, "");
+            }
+        }
+         return ret;
     }
 
     /**
@@ -431,9 +464,6 @@ public abstract class FieldValue_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         final String[] oids = _parameter.getParameterValues("selectedRow");
-        _parameter.getParameterValue("date");
-        new DateTime(_parameter.getParameterValue("date"));
-        new DateTime().withTimeAtStartOfDay();
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
         final Table table = new Table();

@@ -1116,6 +1116,10 @@ public abstract class Transaction_Base
                                 .append(_postFix).append("')[").append(i).append("].innerHTML='")
                                 .append(account.getLink().toString().replaceAll("'", "\\\\\\'")).append("';");
             }
+
+            if (account.getDocLink() != null && account.getDocLink().isValid()) {
+                onJs.append(getSetFieldValue(i, "docLink_" + _postFix, account.getDocLink().getOid()));
+            }
             i++;
         }
         ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs));

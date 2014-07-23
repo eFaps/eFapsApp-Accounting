@@ -69,6 +69,21 @@
             <property name="Select">linkto[AccountLink].attribute[Description]</property>
             <property name="Label">Accounting_TransactionPositionTable.description.Label</property>
         </field>
+        <field name="remark">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionCreditTable.remark.Label</property>
+            <property name="Attribute">Remark</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheckByConfig"
+                name="Accounting_TransactionPositionTable.remark.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Key">ActivateRemark4TransPos</property>
+            </trigger>
+        </field>
+        <field name="docLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionCreditTable.docLink.Label</property>
+            <property name="Select">linkfrom[Accounting_TransactionPosition2ERPDocument#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name]</property>
+        </field>
         <field name="rateAmount">
             <property name="Attribute">RateAmount</property>
             <property name="Label">Accounting_TransactionPositionAbstract/RateAmount.Label</property>

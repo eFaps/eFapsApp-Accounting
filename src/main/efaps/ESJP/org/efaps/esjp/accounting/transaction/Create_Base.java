@@ -774,7 +774,8 @@ public abstract class Create_Base
         final String[] types = _parameter.getParameterValues("type_" + _postFix);
         final String[] rateCurIds = _parameter.getParameterValues("rateCurrencyLink_" + _postFix);
         final String[] acc2accOids = _parameter.getParameterValues("acc2acc_" + _postFix);
-        final String[] label2projectOids = _parameter.getParameterValues("labelLink_" + _postFix);
+        final String[] labelLinkOids = _parameter.getParameterValues("labelLink_" + _postFix);
+        final String[] docLinkOids = _parameter.getParameterValues("docLink_" + _postFix);
         final DecimalFormat formater = NumberFormatter.get().getFormatter();
         try {
             Instance inst = _parameter.getCallInstance();
@@ -807,13 +808,31 @@ public abstract class Create_Base
                         .setAmount( isDebitTrans ? amount.negate() : amount)
                         .setOrder(i);
 
-                    if (label2projectOids != null) {
-                        final Instance labelInst = Instance.get(label2projectOids[i]);
+                    if (labelLinkOids != null) {
+                        final Instance labelInst = Instance.get(labelLinkOids[i]);
                         if (labelInst.isValid()) {
                             pos.setLabelInst(labelInst)
                                 .setLabelRelType(_postFix.equalsIgnoreCase("Debit")
-                                                ? CIAccounting.LabelProject2PositionDebit.getType()
-                                                : CIAccounting.LabelProject2PositionCredit.getType());
+                                                ? CIAccounting.TransactionPositionDebit2LabelProject.getType()
+                                                : CIAccounting.TransactionPositionCredit2LabelProject.getType());
+                        }
+                    }
+
+                    if (docLinkOids != null) {
+                        final Instance docInst = Instance.get(docLinkOids[i]);
+                        if (docInst.isValid()) {
+                            final DocumentInfo docInfoTmp = new DocumentInfo(docInst);
+                            if (docInfoTmp.isSumsDoc()) {
+                                pos.setDocInst(docInst)
+                                    .setDocRelType(_postFix.equalsIgnoreCase("Debit")
+                                                ? CIAccounting.TransactionPositionDebit2SalesDocument.getType()
+                                                : CIAccounting.TransactionPositionCredit2SalesDocument.getType());
+                            } else {
+                                pos.setDocInst(docInst)
+                                .setDocRelType(_postFix.equalsIgnoreCase("Debit")
+                                            ? CIAccounting.TransactionPositionDebit2PaymentDocument.getType()
+                                            : CIAccounting.TransactionPositionCredit2PaymentDocument.getType());
+                            }
                         }
                     }
 
@@ -957,12 +976,12 @@ public abstract class Create_Base
                     if (label2projectOids != null) {
                         final Long id2Label = Instance.get(label2projectOids[i]).getId();
                         if (id2Label != 0) {
-                            Insert insert2Position = new Insert(CIAccounting.LabelProject2PositionCredit);
+                            Insert insert2Position = new Insert(CIAccounting.TransactionPositionCredit2LabelProject);
                             if (_postFix.equalsIgnoreCase("Debit")) {
-                                insert2Position = new Insert(CIAccounting.LabelProject2PositionDebit);
+                                insert2Position = new Insert(CIAccounting.TransactionPositionDebit2LabelProject);
                             }
-                            insert2Position.add(CIAccounting.LabelProject2PositionAbstract.FromLabelLink, id2Label);
-                            insert2Position.add(CIAccounting.LabelProject2PositionAbstract.ToPositionAbstractLink,
+                            insert2Position.add(CIAccounting.TransactionPosition2LabelProject.ToLinkAbstract, id2Label);
+                            insert2Position.add(CIAccounting.TransactionPosition2LabelProject.FromLinkAbstract,
                                             posInstance);
                             insert2Position.execute();
                         }

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,68 +20,63 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d48b8c9f-6c93-4491-b52c-fb1a57da98c6</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5cb01acf-16bf-455c-86a2-358743d2dd4c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-    <specification></specification>
-
+    <specification>DM00038</specification>
     <definition>
-
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Label2PositionAbstract</name>
-        <purpose abstract="true"/>
-
+        <name>Accounting_TransactionPosition2ObjectAbstract</name>
+        <purpose abstract="true" />
         <attribute>
             <name>Type</name>
             <type>Type</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>TYPEID</sqlcolumn>
         </attribute>
         <attribute>
             <name>OID</name>
             <type>OID</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>TYPEID,ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ID</name>
             <type>Long</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>ToPositionAbstractLink</name>
+            <name>FromLinkAbstract</name>
             <type>Link</type>
             <typelink>Accounting_TransactionPositionAbstract</typelink>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>CREATOR</sqlcolumn>
         </attribute>
         <attribute>
             <name>Created</name>
             <type>Created</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>CREATED</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modifier</name>
             <type>ModifierLink</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIER</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modified</name>
             <type>Modified</type>
-            <sqltable>Accounting_Label2PositionSQLTable</sqltable>
+            <sqltable>Accounting_TransactionPosition2ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
     </definition>

@@ -60,9 +60,8 @@ public abstract class AccountInfo_Base
     private String description;
 
     /**
-     * Amount of this account. The Part editable for through
-     * the User meaning that it can be in other currencies
-     * than the base currency for the period.
+     * Amount of this account. The Part editable for through the User meaning
+     * that it can be in other currencies than the base currency for the period.
      */
     private BigDecimal amount;
 
@@ -77,8 +76,8 @@ public abstract class AccountInfo_Base
     private RateInfo rateInfo;
 
     /**
-     * The Amount of this account converted into the base
-     * currency for this period  by applying the exchange rate.
+     * The Amount of this account converted into the base currency for this
+     * period by applying the exchange rate.
      */
     private BigDecimal amountRate;
 
@@ -87,18 +86,20 @@ public abstract class AccountInfo_Base
      */
     private StringBuilder link;
 
+    private Instance docLink;
+
     /**
      *
      */
-    public AccountInfo_Base()
+    protected AccountInfo_Base()
     {
         this(null);
     }
 
     /**
-     *@param _instance Instance.
+     * @param _instance Instance.
      */
-    public AccountInfo_Base(final Instance _instance)
+    protected AccountInfo_Base(final Instance _instance)
     {
         this(_instance, null);
     }
@@ -109,8 +110,8 @@ public abstract class AccountInfo_Base
      * @param _instance Instance.
      * @param _amount amount.
      */
-    public AccountInfo_Base(final Instance _instance,
-                            final BigDecimal _amount)
+    protected AccountInfo_Base(final Instance _instance,
+                               final BigDecimal _amount)
     {
         this.instance = _instance;
         this.amount = _amount == null ? BigDecimal.ZERO : _amount;
@@ -269,10 +270,10 @@ public abstract class AccountInfo_Base
      * @param _link value for instance variable {@link #link}
      * @return this for chaining
      */
-    public AccountInfo_Base setLink(final StringBuilder _link)
+    public AccountInfo setLink(final StringBuilder _link)
     {
         this.link = _link;
-        return this;
+        return (AccountInfo) this;
     }
 
     /**
@@ -315,10 +316,10 @@ public abstract class AccountInfo_Base
      * @param _name value for instance variable {@link #name}
      * @return this for chaining
      */
-    public AccountInfo_Base setName(final String _name)
+    public AccountInfo setName(final String _name)
     {
         this.name = _name;
-        return this;
+        return (AccountInfo) this;
     }
 
     /**
@@ -327,14 +328,36 @@ public abstract class AccountInfo_Base
      * @param _description value for instance variable {@link #description}
      * @return this for chaining
      */
-    public AccountInfo_Base setDescription(final String _description)
+    public AccountInfo setDescription(final String _description)
     {
         this.description = _description;
-        return this;
+        return (AccountInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #docInfo}.
+     *
+     * @return value of instance variable {@link #docInfo}
+     */
+    public Instance getDocLink()
+    {
+        return this.docLink;
+    }
+
+    /**
+     * Setter method for instance variable {@link #docLink}.
+     *
+     * @param _docInfo value for instance variable {@link #docLink}
+     */
+    public AccountInfo setDocLink(final Instance _docLink)
+    {
+        this.docLink = _docLink;
+        return (AccountInfo) this;
     }
 
     /**
      * Init.
+     *
      * @throws EFapsException on error
      */
     protected void init()

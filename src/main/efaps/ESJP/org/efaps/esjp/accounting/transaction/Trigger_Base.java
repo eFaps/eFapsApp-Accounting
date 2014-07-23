@@ -265,8 +265,8 @@ public abstract class Trigger_Base
     protected void deleteRelations(final Instance _instance)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Label2PositionAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Label2PositionAbstract.ToPositionAbstractLink, _instance.getId());
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPosition2ObjectAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, _instance);
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         while (query.next()) {
@@ -274,5 +274,4 @@ public abstract class Trigger_Base
             del.execute();
         }
     }
-
 }
