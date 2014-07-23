@@ -21,7 +21,10 @@
 
 package org.efaps.esjp.accounting.report;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -32,8 +35,11 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.AbstractBeanCollectionDataSource;
 import org.efaps.esjp.erp.util.ERP;
@@ -85,4 +91,48 @@ public abstract class AbstractReportDS_Base
         print.execute();
         _jrParameters.put("Period", print.getAttribute(CIAccounting.Period.Name));
     }
+
+
+    protected List<Instance> getAccountInst(final Parameter _parameter,
+                                            final String _key)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final String accNameStr = props.getProperty(_key, "NN");
+        final String[] accNameAr = accNameStr.split(";");
+        for (final String accName : accNameAr) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            while (query.next()) {
+                final Instance inst = query.getCurrentValue();
+                ret.add(inst);
+                ret.addAll(getAccountInst(_parameter, inst));
+            }
+        }
+        return ret;
+    }
+
+    protected List<Instance> getAccountInst(final Parameter _parameter,
+                                            final Instance _parentInst)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.ParentLink, _parentInst);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        while (query.next()) {
+            final Instance inst = query.getCurrentValue();
+            ret.add(inst);
+            ret.addAll(getAccountInst(_parameter, inst));
+        }
+        return ret;
+    }
+
 }

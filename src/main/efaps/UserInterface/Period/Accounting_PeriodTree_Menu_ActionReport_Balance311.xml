@@ -35,7 +35,7 @@
             <form>Accounting_PReportBalance311ReportForm</form>
             <execute program="org.efaps.esjp.common.jasperreport.StandartReport">
                <property name="JasperReport">Accounting_Balance311</property>
-                <property name="DataSourceClass">org.efaps.esjp.accounting.report.balanceBalanceReport311DS</property>
+                <property name="DataSourceClass">org.efaps.esjp.accounting.report.balance.BalanceReport311DS</property>
                 <property name="FileName">LIBRO INVENTARIOS Y BALANCES 3.11</property>
             </execute>
             <validate method="validateDates" program="org.efaps.esjp.accounting.report.Report"/>

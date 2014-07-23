@@ -85,7 +85,7 @@
                         value="px" />
                 </reportElement>
                 <textElement verticalAlignment="Middle" />
-                <text><![CDATA[FORMATO 1.1: "LIBRO CAJA Y BANCOS - DETALLE DE LOS MOVIMIENTOS DEL EFECTIVO"]]></text>
+                <text><![CDATA[FORMATO 3.16: "LIBRO DE INVENTARIOS Y BALANCES - DETALLE DEL SALDO DE LA CUENTA 50 - CAPITAL"]]></text>
             </staticText>
             <staticText>
                 <reportElement
@@ -108,7 +108,7 @@
                         value="px" />
                 </reportElement>
                 <textElement verticalAlignment="Middle" />
-                <text><![CDATA[PERÍODO:]]></text>
+                <text><![CDATA[EJERCICIO:]]></text>
             </staticText>
             <staticText>
                 <reportElement

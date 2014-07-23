@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -40,8 +39,6 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.accounting.Period;
-import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -92,7 +89,7 @@ public abstract class CashReport11DS_Base
         queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
                         transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID));
 
-        final List<Instance> accInsts = getAccountInst(_parameter);
+        final List<Instance> accInsts = getAccountInst(_parameter, AccountingSettings.PERIOD_REPORT11ACCOUNT);
         if (accInsts.isEmpty()) {
             LOG.error("Missing configuration '{}' for this report.", AccountingSettings.PERIOD_REPORT11ACCOUNT);
         } else {
@@ -155,44 +152,7 @@ public abstract class CashReport11DS_Base
         setData(values);
     }
 
-    protected List<Instance> getAccountInst(final Parameter _parameter)
-        throws EFapsException
-    {
-        final List<Instance> ret = new ArrayList<>();
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
 
-        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-        final String accName = props.getProperty(AccountingSettings.PERIOD_REPORT11ACCOUNT);
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-
-        multi.executeWithoutAccessCheck();
-        while (multi.next()) {
-            final Instance inst = multi.getCurrentInstance();
-            ret.add(inst);
-            ret.addAll(getAccountInst(_parameter, inst));
-        }
-        return ret;
-    }
-
-    protected List<Instance> getAccountInst(final Parameter _parameter,
-                                            final Instance _parentInst)
-        throws EFapsException
-    {
-        final List<Instance> ret = new ArrayList<>();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.ParentLink, _parentInst);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.executeWithoutAccessCheck();
-        while (multi.next()) {
-            final Instance inst = multi.getCurrentInstance();
-            ret.add(inst);
-            ret.addAll(getAccountInst(_parameter, inst));
-        }
-        return ret;
-    }
 
     public static class DataBean411
         extends DataBean

@@ -50,7 +50,6 @@
             <child>Accounting_PeriodTree_Menu_ActionReport_Balance314</child>
             <child>Accounting_PeriodTree_Menu_ActionReport_Balance315</child>
             <child>Accounting_PeriodTree_Menu_ActionReport_Balance316</child>
-            <child>Accounting_PeriodTree_Menu_ActionReport_Balance317</child>
         </childs>
     </definition>
 </ui-menu>

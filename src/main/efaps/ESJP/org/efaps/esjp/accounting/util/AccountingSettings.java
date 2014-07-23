@@ -127,4 +127,23 @@ public interface AccountingSettings
     String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
 
     String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";
+
+    String PERIOD_REPORT302ACCOUNT = "ReportBalance302Account";
+    String PERIOD_REPORT303ACCOUNT = "ReportBalance303Account";
+    String PERIOD_REPORT304ACCOUNT = "ReportBalance304Account";
+    String PERIOD_REPORT305ACCOUNT = "ReportBalance305Account";
+    String PERIOD_REPORT306ACCOUNT = "ReportBalance306Account";
+    String PERIOD_REPORT307ACCOUNT = "ReportBalance307Account";
+    String PERIOD_REPORT308ACCOUNT = "ReportBalance308Account";
+    String PERIOD_REPORT309ACCOUNT = "ReportBalance309Account";
+    String PERIOD_REPORT310ACCOUNT = "ReportBalance310Account";
+    String PERIOD_REPORT311ACCOUNT = "ReportBalance311Account";
+    String PERIOD_REPORT312ACCOUNT = "ReportBalance312Account";
+    String PERIOD_REPORT313ACCOUNT = "ReportBalance313Account";
+    String PERIOD_REPORT314ACCOUNT = "ReportBalance314Account";
+    String PERIOD_REPORT315ACCOUNT = "ReportBalance315Account";
+    String PERIOD_REPORT316ACCOUNT = "ReportBalance316Account";
+
+
+
 }
