@@ -104,7 +104,7 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT304ACCOUNT, "14");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT305ACCOUNT, "16");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT306ACCOUNT, "19");
-        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT307ACCOUNT, "21;21");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT307ACCOUNT, "21;22");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT308ACCOUNT, "31");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT309ACCOUNT, "34");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_REPORT310ACCOUNT, "40");
