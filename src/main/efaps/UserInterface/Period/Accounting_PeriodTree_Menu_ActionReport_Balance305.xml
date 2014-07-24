@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>89e69456-d7ee-45f1-8f45-00378584d95d</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -39,6 +41,13 @@
                 <property name="FileName">LIBRO INVENTARIOS Y BALANCES 3.5</property>
             </execute>
             <validate method="validateDates" program="org.efaps.esjp.accounting.report.Report"/>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheckByConfig"
+                name="Accounting_PeriodTree_Menu_ActionReport_Balance305.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="CheckOnContains">true</property>
+                <property name="Key">ReportBalance305Account</property>
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>

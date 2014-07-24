@@ -41,6 +41,13 @@
                 <property name="FileName">LIBRO INVENTARIOS Y BALANCES 3.2</property>
             </execute>
             <validate method="validateDates" program="org.efaps.esjp.accounting.report.Report"/>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheckByConfig"
+                name="Accounting_PeriodTree_Menu_ActionReport_Balance302.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="CheckOnContains">true</property>
+                <property name="Key">ReportBalance302Account</property>
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
