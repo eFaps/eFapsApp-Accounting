@@ -36,6 +36,7 @@
 	<field name="docName" class="java.lang.String"/>
 	<field name="docNum" class="java.lang.String"/>
 	<field name="docReg" class="java.lang.String"/>
+	<field name="transIdentifier" class="java.lang.String"/>
 	<variable name="debitSum" class="java.math.BigDecimal" resetType="Page" calculation="Sum">
 		<variableExpression><![CDATA[$F{debit}]]></variableExpression>
 	</variable>
@@ -436,6 +437,18 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{docName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="12" forecolor="#6B6B6B" uuid="3b98b6a7-2986-44d6-8591-cd7797dbf447">
+					<printWhenExpression><![CDATA[new Boolean( $F{transName} == null 
+	||  ($F{transName}!= null && $F{transName}.isEmpty())
+)]]></printWhenExpression>
+				</reportElement>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" markup="none">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transIdentifier}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
