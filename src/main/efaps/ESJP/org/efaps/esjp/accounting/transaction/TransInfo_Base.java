@@ -130,6 +130,7 @@ public abstract class TransInfo_Base
             posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, pos.getRate());
             posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, pos.getAmount());
             posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, pos.getRateAmount());
+            posInsert.add(CIAccounting.TransactionPositionAbstract.Remark, pos.getRemark());
             posInsert.execute();
             pos.setInstance(posInsert.getInstance());
             i++;
@@ -366,7 +367,7 @@ public abstract class TransInfo_Base
 
         private BigDecimal amount;
 
-
+        private String remark;
 
         /**
          * Getter method for the instance variable {@link #labelInst}.
@@ -665,11 +666,32 @@ public abstract class TransInfo_Base
             this.instance = _instance;
         }
 
-
         @Override
         public String toString()
         {
             return ToStringBuilder.reflectionToString(this);
+        }
+
+        /**
+         * Getter method for the instance variable {@link #remark}.
+         *
+         * @return value of instance variable {@link #remark}
+         */
+        public String getRemark()
+        {
+            return this.remark;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #remark}.
+         *
+         * @param _remark value for instance variable {@link #remark}
+         */
+        public PositionInfo setRemark(final String _remark)
+        {
+            this.remark = _remark;
+            return this;
         }
     }
 }

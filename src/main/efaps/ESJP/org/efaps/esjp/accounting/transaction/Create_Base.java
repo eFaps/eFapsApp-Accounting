@@ -776,6 +776,7 @@ public abstract class Create_Base
         final String[] acc2accOids = _parameter.getParameterValues("acc2acc_" + _postFix);
         final String[] labelLinkOids = _parameter.getParameterValues("labelLink_" + _postFix);
         final String[] docLinkOids = _parameter.getParameterValues("docLink_" + _postFix);
+        final String[] remarks = _parameter.getParameterValues("remark_" + _postFix);
         final DecimalFormat formater = NumberFormatter.get().getFormatter();
         try {
             Instance inst = _parameter.getCallInstance();
@@ -806,7 +807,8 @@ public abstract class Create_Base
                         .setRate(rateObj)
                         .setRateAmount( isDebitTrans ? rateAmount.negate() : rateAmount)
                         .setAmount( isDebitTrans ? amount.negate() : amount)
-                        .setOrder(i);
+                        .setOrder(i)
+                        .setRemark(remarks == null ? null : remarks[i]);;
 
                     if (labelLinkOids != null) {
                         final Instance labelInst = Instance.get(labelLinkOids[i]);

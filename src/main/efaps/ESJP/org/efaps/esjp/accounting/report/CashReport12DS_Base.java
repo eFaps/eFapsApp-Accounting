@@ -24,8 +24,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -36,6 +39,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -43,6 +47,8 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
@@ -107,21 +113,42 @@ public abstract class CashReport12DS_Base
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         transAttrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
                         dateTo.withTimeAtStartOfDay().plusDays(1));
-        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
-                        transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID));
+
+        final AttributeQuery transAttrQuery = transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID);
+        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, transAttrQuery);
 
         final Instance relinst = Instance.get(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_PReportCash12ReportForm.account.name));
         final PrintQuery print = new PrintQuery(relinst);
         final SelectBuilder selAccInst = SelectBuilder.get().linkto(CIAccounting.Period2Account.FromAccountAbstractLink)
                         .instance();
+        final SelectBuilder selSalesAccInst = SelectBuilder.get()
+                        .linkto(CIAccounting.Period2Account.SalesAccountLink)
+                        .instance();
         final SelectBuilder selSalesAccName = SelectBuilder.get()
                         .linkto(CIAccounting.Period2Account.SalesAccountLink)
                         .attribute(CISales.AccountAbstract.Name);
-        print.addSelect(selAccInst, selSalesAccName);
+        print.addSelect(selAccInst, selSalesAccInst, selSalesAccName);
         print.execute();
         final Instance accInst = print.<Instance>getSelect(selAccInst);
+        final Instance salesAccInst = print.<Instance>getSelect(selSalesAccInst);
         _jrParameters.put("AccountName", print.getSelect(selSalesAccName));
+
+        if (salesAccInst.getType().isKindOf(CISales.AccountCashDesk.getType())) {
+            final SelectBuilder selSalesAccFIValue = SelectBuilder.get()
+                            .linkto(CISales.AccountCashDesk.FinancialInstitute)
+                            .attribute(CISales.AttributeDefinitionFinancialInstitute.Value);
+            final SelectBuilder selSalesAccFImapKey = SelectBuilder.get()
+                            .linkto(CISales.AccountCashDesk.FinancialInstitute)
+                            .attribute(CISales.AttributeDefinitionFinancialInstitute.MappingKey);
+
+            final PrintQuery salesAccPrint = new PrintQuery(salesAccInst);
+            salesAccPrint.addSelect(selSalesAccFIValue, selSalesAccFImapKey);
+            salesAccPrint.execute();
+            final String fiMapKey = salesAccPrint.getSelect(selSalesAccFImapKey);
+            final String fiValue = salesAccPrint.getSelect(selSalesAccFIValue);
+            _jrParameters.put("Banc", fiMapKey + " - " + fiValue);
+        }
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         attrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInst);
@@ -130,7 +157,6 @@ public abstract class CashReport12DS_Base
                             attrQueryBldr.getAttributeQuery(CIAccounting.TransactionPositionAbstract.TransactionLink));
         queryBldr.addWhereAttrNotEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInst);
 
-
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selAcc = SelectBuilder.get().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
         final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
@@ -138,14 +164,17 @@ public abstract class CashReport12DS_Base
 
         final SelectBuilder selTrans = SelectBuilder.get().linkto(
                         CIAccounting.TransactionPositionAbstract.TransactionLink);
+        final SelectBuilder selTransInst = SelectBuilder.get().linkto(
+                        CIAccounting.TransactionPositionAbstract.TransactionLink).instance();
         final SelectBuilder selTransDescr = new SelectBuilder(selTrans)
                         .attribute(CIAccounting.TransactionAbstract.Description);
         final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(CIAccounting.TransactionAbstract.Date);
 
-        multi.addSelect(selAccName, selAccDescr, selTransDescr, selTransDate);
+        multi.addSelect(selAccName, selAccDescr, selTransInst, selTransDescr, selTransDate);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
         multi.execute();
         final List<DataBean> values = new ArrayList<>();
+        final Map<Instance, Set<DataBean412>> map = new HashMap<>();
         final DataBean412 carryOver = new DataBean412();
         carryOver.setAmount(BigDecimal.ZERO);
         carryOver.setTransDescr(DBProperties.getProperty(CashReport12DS.class.getName() + ".CarryOver"));
@@ -155,6 +184,7 @@ public abstract class CashReport12DS_Base
             if (date.isBefore(dateFrom)) {
                 carryOver.setAmount(carryOver.getAmount().add(amount));
             } else {
+                final Instance transInst = multi.getSelect(selTransInst);
                 final DataBean412 bean = new DataBean412();
                 bean.setTransDate(date);
                 bean.setTransDescr(multi.<String>getSelect(selTransDescr));
@@ -162,6 +192,39 @@ public abstract class CashReport12DS_Base
                 bean.setAccDescr(multi.<String>getSelect(selAccDescr));
                 bean.setAmount(amount);
                 values.add(bean);
+                Set<DataBean412> beans;
+                if (!map.containsKey(transInst)) {
+                    map.put(transInst, new HashSet<DataBean412>());
+                }
+                beans = map.get(transInst);
+                beans.add(bean);
+            }
+        }
+
+        final QueryBuilder relQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+        relQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2ERPDocument.FromLink, transAttrQuery);
+        final MultiPrintQuery relMulti = relQueryBldr.getPrint();
+        final SelectBuilder transSel = SelectBuilder.get().linkto(CIAccounting.Transaction2ERPDocument.FromLink)
+                        .instance();
+        final SelectBuilder docContactNameSel = SelectBuilder.get()
+                        .linkto(CIAccounting.Transaction2ERPDocument.ToLinkAbstract)
+                        .linkto(CIERP.DocumentAbstract.Contact)
+                        .attribute(CIContacts.ContactAbstract.Name);
+        final SelectBuilder docNameSel = SelectBuilder.get()
+                        .linkto(CIAccounting.Transaction2ERPDocument.ToLinkAbstract)
+                        .attribute(CIERP.DocumentAbstract.Name);
+        relMulti.addSelect(transSel, docNameSel, docContactNameSel);
+        relMulti.execute();
+        while (relMulti.next()) {
+            final Instance transInst = relMulti.getSelect(transSel);
+            if (map.containsKey(transInst)) {
+                final String docContactName = relMulti.getSelect(docContactNameSel);
+                final String docName = relMulti.getSelect(docNameSel);
+                final Set<DataBean412> beans = map.get(transInst);
+                for (final DataBean412 bean : beans) {
+                    bean.addDocContactName(docContactName);
+                    bean.addCode(docName);
+                }
             }
         }
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
@@ -202,6 +265,23 @@ public abstract class CashReport12DS_Base
         }
 
         /**
+         * @param _docName
+         */
+        public void addCode(final String _docName)
+        {
+            setCode(getCode() == null ? _docName : getCode() + ", " + _docName);
+        }
+
+        /**
+         * @param _docContactName
+         */
+        public void addDocContactName(final String _docContactName)
+        {
+            setDocContactName(getDocContactName() == null ? _docContactName : getDocContactName() + ", "
+                            + _docContactName);
+        }
+
+        /**
          * Setter method for instance variable {@link #paymentMean}.
          *
          * @param _paymentMean value for instance variable {@link #paymentMean}
@@ -231,7 +311,6 @@ public abstract class CashReport12DS_Base
             this.docContactName = _docContactName;
         }
 
-
         /**
          * Getter method for the instance variable {@link #code}.
          *
@@ -241,7 +320,6 @@ public abstract class CashReport12DS_Base
         {
             return this.code;
         }
-
 
         /**
          * Setter method for instance variable {@link #code}.

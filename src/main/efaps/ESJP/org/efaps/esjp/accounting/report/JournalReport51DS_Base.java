@@ -153,7 +153,9 @@ public abstract class JournalReport51DS_Base
             public int compare(final DataBean _arg0,
                                final DataBean _arg1)
             {
-                return _arg0.getTransName().compareTo(_arg1.getTransName());
+                final String arg0 = _arg0.getTransName().isEmpty() ? "XXXXXXXX" : _arg0.getTransName();
+                final String arg1 = _arg1.getTransName().isEmpty() ? "XXXXXXXX" : _arg1.getTransName();
+                return arg0.compareTo(arg1);
             }
         });
         chain.addComparator(new Comparator<DataBean>()
