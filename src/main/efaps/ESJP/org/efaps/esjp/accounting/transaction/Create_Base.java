@@ -217,20 +217,31 @@ public abstract class Create_Base
         final List<DocumentInfo> docInfos = evalDocuments(_parameter);
         final DateTime date = new DateTime(_parameter.getParameterValue("date"));
         final boolean useDate = Boolean.parseBoolean(_parameter.getParameterValue("useDate"));
-        if (summarizeTransaction(_parameter)) {
-            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, true);
-            final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo);
+        final boolean oneTransPerDoc = Boolean.parseBoolean(_parameter.getParameterValue("oneTransPerDoc"));
+
+        if (!oneTransPerDoc) {
+            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, summarizeTransaction(_parameter));
+            docInfo.setDate(date);
+            final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);
             if (useDate) {
                 transinfo.setDate(date);
             }
             transinfo.create(_parameter);
+            final List<Instance> docInsts = getDocInstsFromDocInfoList(_parameter, docInfos);
+            connectDocs2Transaction(_parameter, transinfo.getInstance(),
+                            docInsts.toArray(new Instance[docInsts.size()]));
+            connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+            setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         } else {
-            for (final DocumentInfo docInfo :  docInfos) {
-                final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo);
+            for (final DocumentInfo docInfo : docInfos) {
+                final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
                 if (useDate) {
                     transinfo.setDate(date);
                 }
                 transinfo.create(_parameter);
+                connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
+                connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
+                setStatus4Docs(_parameter, docInfo.getInstance());
             }
         }
         return new Return();
@@ -607,6 +618,26 @@ public abstract class Create_Base
             if (docInst.isValid()) {
                 ret.add(docInst);
             }
+        }
+        return ret;
+    }
+
+
+    /**
+     * Get the list of documents.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return List of document instances
+     * @throws EFapsException on error
+     */
+    protected List<Instance> getDocInstsFromDocInfoList(final Parameter _parameter,
+                                                        final List<DocumentInfo> _docInfos)
+        throws EFapsException
+    {
+
+        final List<Instance> ret = new ArrayList<>();
+        for (final DocumentInfo docInfo : _docInfos) {
+            ret.add(docInfo.getInstance());
         }
         return ret;
     }

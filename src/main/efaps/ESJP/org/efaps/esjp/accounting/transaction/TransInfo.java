@@ -38,9 +38,10 @@ public class TransInfo
      * @return
      */
     public static TransInfo get4DocInfo(final Parameter _parameter,
-                                        final DocumentInfo _docInfo)
+                                        final DocumentInfo _docInfo,
+                                        final boolean _setDocInst)
         throws EFapsException
     {
-        return TransInfo_Base.get4DocInfo(_parameter, _docInfo);
+        return TransInfo_Base.get4DocInfo(_parameter, _docInfo, _setDocInst);
     }
 }

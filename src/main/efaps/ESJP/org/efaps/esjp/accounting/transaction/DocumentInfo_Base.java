@@ -704,6 +704,7 @@ public abstract class DocumentInfo_Base
             ret = _docInfos.iterator().next();
         } else {
             ret = new DocumentInfo();
+            ret.setRateInfo(_docInfos.iterator().next().getRateInfo());
             ret.setSummarize(_summarize);
             ret.setCaseInst(_docInfos.iterator().next().getCaseInst());
             for (final DocumentInfo documentInfo : _docInfos) {

@@ -344,7 +344,8 @@ public abstract class TransInfo_Base
 
 
     protected static TransInfo get4DocInfo(final Parameter _parameter,
-                                           final DocumentInfo _docInfo)
+                                           final DocumentInfo _docInfo,
+                                           final boolean _setDocInst)
         throws EFapsException
     {
         final Period period = new Period();
@@ -359,11 +360,14 @@ public abstract class TransInfo_Base
             .setDate(_docInfo.getDate());
         int i = 0;
         for (final AccountInfo accInfo : _docInfo.getDebitAccounts()) {
+            if (_setDocInst) {
+                accInfo.setDocLink(_docInfo.getInstance());
+            }
             final PositionInfo pos = get4AccountInfo(_parameter,
                             CIAccounting.TransactionPositionDebit.getType(), accInfo)
-                            .setRateCurrInst(_docInfo.getRateCurrInst())
-                            .setCurrInst(currInst.getInstance())
-                            .setOrder(i);
+                    .setRateCurrInst(_docInfo.getRateCurrInst())
+                    .setCurrInst(currInst.getInstance())
+                    .setOrder(i);
             ret.addPosition(pos);
             for (final PositionInfo relPosInfo : getRelPosInfos(accInfo,
                             CIAccounting.TransactionPositionDebit.getType())) {
@@ -378,6 +382,9 @@ public abstract class TransInfo_Base
         }
         i = 0;
         for (final AccountInfo accInfo : _docInfo.getCreditAccounts()) {
+            if (_setDocInst) {
+                accInfo.setDocLink(_docInfo.getInstance());
+            }
             final PositionInfo pos = get4AccountInfo(_parameter,
                             CIAccounting.TransactionPositionCredit.getType(), accInfo)
                             .setRateCurrInst(_docInfo.getRateCurrInst())
@@ -422,9 +429,9 @@ public abstract class TransInfo_Base
             final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
                                 CIAccounting.Account2AccountAbstract.Denominator));
 
-            BigDecimal amount = _accInfo.getAmount().multiply(numerator).divide(denominator,
+            BigDecimal amount = _accInfo.getAmountRate().multiply(numerator).divide(denominator,
                                 BigDecimal.ROUND_HALF_UP);
-            BigDecimal rateAmount = _accInfo.getAmountRate().multiply(numerator).divide(denominator,
+            BigDecimal rateAmount = _accInfo.getAmount().multiply(numerator).divide(denominator,
                                 BigDecimal.ROUND_HALF_UP);
             if (isDebitTrans) {
                 amount = amount.negate();
@@ -479,11 +486,11 @@ public abstract class TransInfo_Base
         final PositionInfo ret = new PositionInfo()
             .setAccInst(_accInfo.getInstance())
             .setAmount(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
-                            ? _accInfo.getAmount().negate() : _accInfo.getAmount())
+                            ? _accInfo.getAmountRate().negate() : _accInfo.getAmountRate())
             .setType(_type)
             .setCurrInst(_accInfo.getCurrInstance())
             .setRateAmount(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
-                            ? _accInfo.getAmountRate().negate() : _accInfo.getAmountRate())
+                            ? _accInfo.getAmount().negate() : _accInfo.getAmount())
             .setRate(_accInfo.getRateInfo().getRateObject());
         if (_accInfo.getDocLink() != null && _accInfo.getDocLink().isValid()) {
             final DocumentInfo docInfoTmp = new DocumentInfo(_accInfo.getDocLink());
