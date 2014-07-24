@@ -33,6 +33,9 @@
 	</field>
 	<field name="debit" class="java.math.BigDecimal"/>
 	<field name="credit" class="java.math.BigDecimal"/>
+	<field name="docName" class="java.lang.String"/>
+	<field name="docNum" class="java.lang.String"/>
+	<field name="docReg" class="java.lang.String"/>
 	<variable name="debitSum" class="java.math.BigDecimal" resetType="Page" calculation="Sum">
 		<variableExpression><![CDATA[$F{debit}]]></variableExpression>
 	</variable>
@@ -397,9 +400,10 @@
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement>
+				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
+				<textFieldExpression><![CDATA[$F{docReg}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="350" y="0" width="50" height="12" isPrintWhenDetailOverflows="true" uuid="59ed8202-185a-4f84-8b4e-b601d22603b0">
@@ -415,6 +419,7 @@
 				<textElement>
 					<font size="8"/>
 				</textElement>
+				<textFieldExpression><![CDATA[$F{docNum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="400" y="0" width="90" height="12" isPrintWhenDetailOverflows="true" uuid="b3d37456-cef8-4942-9e1c-e74f339d592e">
@@ -430,6 +435,7 @@
 				<textElement>
 					<font size="8"/>
 				</textElement>
+				<textFieldExpression><![CDATA[$F{docName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

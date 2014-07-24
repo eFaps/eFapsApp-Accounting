@@ -35,10 +35,13 @@ import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -76,8 +79,9 @@ public abstract class JournalReport51DS_Base
                         dateTo.withTimeAtStartOfDay().plusDays(1));
         transAttrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date,
                         dateFrom.withTimeAtStartOfDay().minusSeconds(1));
-        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
-                        transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID));
+        final AttributeQuery transAttrQuery = transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID);
+
+        queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, transAttrQuery);
 
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selAcc = SelectBuilder.get().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
@@ -124,6 +128,23 @@ public abstract class JournalReport51DS_Base
             detailBean.setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position));
             bean.addDetail(detailBean);
         }
+
+        final QueryBuilder relQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+        relQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2ERPDocument.FromLink, transAttrQuery);
+        final MultiPrintQuery relMulti = relQueryBldr.getPrint();
+        final SelectBuilder transSel = SelectBuilder.get().linkto(CIAccounting.Transaction2ERPDocument.FromLink)
+                        .instance();
+        final SelectBuilder docNameSel = SelectBuilder.get()
+                        .linkto(CIAccounting.Transaction2ERPDocument.ToLinkAbstract)
+                        .attribute(CIERP.DocumentAbstract.Name);
+        relMulti.addSelect(transSel, docNameSel);
+        relMulti.execute();
+        while (relMulti.next()) {
+            final Instance transInst = relMulti.getSelect(transSel);
+            final DataBean bean = map.get(transInst.getOid());
+            bean.addDoc(relMulti.<String>getSelect(docNameSel));
+        }
+
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<DataBean>()
         {
@@ -169,8 +190,11 @@ public abstract class JournalReport51DS_Base
         private String transDescr;
         private String transIdentifier;
 
-        private List<DetailBean> details = new ArrayList<>();
+        private String docReg;
+        private String docNum;
+        private String docName;
 
+        private List<DetailBean> details = new ArrayList<>();
 
         public BigDecimal getDebit()
         {
@@ -182,6 +206,18 @@ public abstract class JournalReport51DS_Base
             }
             return ret;
 
+        }
+
+        /**
+         * @param _select
+         */
+        public void addDoc(final String _docName)
+        {
+            if (getDocName() == null) {
+                setDocName(_docName);
+            } else {
+                setDocName(getDocName() + ", " + _docName);
+            }
         }
 
         public BigDecimal getCredit()
@@ -292,6 +328,7 @@ public abstract class JournalReport51DS_Base
         {
             Collections.sort(this.details, new Comparator<DetailBean>()
             {
+
                 @Override
                 public int compare(final DetailBean _arg0,
                                    final DetailBean _arg1)
@@ -312,7 +349,6 @@ public abstract class JournalReport51DS_Base
             this.details = _details;
         }
 
-
         /**
          * Getter method for the instance variable {@link #transIdentifier}.
          *
@@ -323,15 +359,75 @@ public abstract class JournalReport51DS_Base
             return this.transIdentifier;
         }
 
-
         /**
          * Setter method for instance variable {@link #transIdentifier}.
          *
-         * @param _transIdentifier value for instance variable {@link #transIdentifier}
+         * @param _transIdentifier value for instance variable
+         *            {@link #transIdentifier}
          */
         public void setTransIdentifier(final String _transIdentifier)
         {
             this.transIdentifier = _transIdentifier;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docReg}.
+         *
+         * @return value of instance variable {@link #docReg}
+         */
+        public String getDocReg()
+        {
+            return this.docReg;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docReg}.
+         *
+         * @param _docReg value for instance variable {@link #docReg}
+         */
+        public void setDocReg(final String _docReg)
+        {
+            this.docReg = _docReg;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docNum}.
+         *
+         * @return value of instance variable {@link #docNum}
+         */
+        public String getDocNum()
+        {
+            return this.docNum;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docNum}.
+         *
+         * @param _docNum value for instance variable {@link #docNum}
+         */
+        public void setDocNum(final String _docNum)
+        {
+            this.docNum = _docNum;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docName}.
+         *
+         * @return value of instance variable {@link #docName}
+         */
+        public String getDocName()
+        {
+            return this.docName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docName}.
+         *
+         * @param _docName value for instance variable {@link #docName}
+         */
+        public void setDocName(final String _docName)
+        {
+            this.docName = _docName;
         }
     }
 
