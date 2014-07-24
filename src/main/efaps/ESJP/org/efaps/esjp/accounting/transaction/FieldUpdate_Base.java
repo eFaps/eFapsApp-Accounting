@@ -88,18 +88,17 @@ public abstract class FieldUpdate_Base
         final String accountOID = accountOIDs[pos];
         final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         final Instance accInst = Instance.get(accountOID);
-        final PrintQuery print = new PrintQuery(accInst);
-        print.addAttribute(CIAccounting.AccountAbstract.Description);
-        print.execute();
-        final StringBuilder inner = new Transaction().getLinkString(accInst, "_" + postfix);
+
+        final AccountInfo accInfo = new AccountInfo();
+        accInfo.setInstance(accInst).setPostFix("_" + postfix);;
 
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        map.put("description" + (postfix.equals("") ? "" : "_" + postfix),
-                        print.getAttribute(CIAccounting.AccountAbstract.Description));
+        map.put("description" + (postfix.equals("") ? "" : "_" + postfix), accInfo.getDescription());
         final StringBuilder js = new StringBuilder();
-        js.append("var rv = \"").append(inner).append("\";").append("document.getElementsByName('account2account_")
-                        .append(postfix).append("')[").append(pos).append("].innerHTML=rv;");
+        js.append("var rv = \"").append(accInfo.getLinkHtml()).append("\";")
+            .append("document.getElementsByName('account2account_")
+            .append(postfix).append("')[").append(pos).append("].innerHTML=rv;");
         InterfaceUtils.appendScript4FieldUpdate(map, js);
         list.add(map);
         final Return retVal = new Return();

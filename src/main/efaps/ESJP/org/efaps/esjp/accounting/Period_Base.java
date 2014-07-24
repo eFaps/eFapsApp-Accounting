@@ -356,6 +356,7 @@ public abstract class Period_Base
     {
         Instance ret = (Instance) Context.getThreadContext()
                         .getSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY);
+
         if (ret == null && _parameter.getInstance() != null && _parameter.getInstance().isValid()) {
             final Instance inst = _parameter.getInstance();
             if (inst.getType().isKindOf(CIAccounting.Period.getType())) {

@@ -33,9 +33,16 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -45,6 +52,10 @@ import org.joda.time.DateTime;
  */
 public abstract class TransInfo_Base
 {
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(TransInfo.class);
 
     private Type type;
 
@@ -125,8 +136,8 @@ public abstract class TransInfo_Base
             posInsert.add(CIAccounting.TransactionPositionAbstract.Position, i);
             posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
             posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, pos.getAccInst());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, pos.currInst);
-            posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, pos.rateCurrInst);
+            posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, pos.getCurrInst());
+            posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, pos.getRateCurrInst());
             posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, pos.getRate());
             posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, pos.getAmount());
             posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, pos.getRateAmount());
@@ -155,10 +166,10 @@ public abstract class TransInfo_Base
         }
     }
 
-    public TransInfo_Base addPosition(final PositionInfo _posInfo)
+    public TransInfo addPosition(final PositionInfo _posInfo)
     {
         this.postions.add(_posInfo);
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -176,10 +187,10 @@ public abstract class TransInfo_Base
      *
      * @param _periodInst value for instance variable {@link #periodInst}
      */
-    public TransInfo_Base setPeriodInst(final Instance _periodInst)
+    public TransInfo setPeriodInst(final Instance _periodInst)
     {
         this.periodInst = _periodInst;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -197,10 +208,10 @@ public abstract class TransInfo_Base
      *
      * @param _identifier value for instance variable {@link #identifier}
      */
-    public TransInfo_Base setIdentifier(final String _identifier)
+    public TransInfo setIdentifier(final String _identifier)
     {
         this.identifier = _identifier;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -218,10 +229,10 @@ public abstract class TransInfo_Base
      *
      * @param _date value for instance variable {@link #date}
      */
-    public TransInfo_Base setDate(final DateTime _date)
+    public TransInfo setDate(final DateTime _date)
     {
         this.date = _date;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -240,10 +251,10 @@ public abstract class TransInfo_Base
      *
      * @param _status value for instance variable {@link #status}
      */
-    public TransInfo_Base setStatus(final Status _status)
+    public TransInfo setStatus(final Status _status)
     {
         this.status = _status;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -261,10 +272,10 @@ public abstract class TransInfo_Base
      *
      * @param _name value for instance variable {@link #name}
      */
-    public TransInfo_Base setName(final String _name)
+    public TransInfo setName(final String _name)
     {
         this.name = _name;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -282,10 +293,10 @@ public abstract class TransInfo_Base
      *
      * @param _description value for instance variable {@link #description}
      */
-    public TransInfo_Base setDescription(final String _description)
+    public TransInfo setDescription(final String _description)
     {
         this.description = _description;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -305,10 +316,10 @@ public abstract class TransInfo_Base
      * @return this for chaining
      *
      */
-    public TransInfo_Base setType(final Type _type)
+    public TransInfo setType(final Type _type)
     {
         this.type = _type;
-        return this;
+        return (TransInfo) this;
     }
 
     /**
@@ -329,6 +340,166 @@ public abstract class TransInfo_Base
     public void setInstance(final Instance _instance)
     {
         this.instance = _instance;
+    }
+
+
+    protected static TransInfo get4DocInfo(final Parameter _parameter,
+                                           final DocumentInfo _docInfo)
+        throws EFapsException
+    {
+        final Period period = new Period();
+        final Instance periodInst = period.evaluateCurrentPeriod(_parameter);
+        final CurrencyInst currInst = period.getCurrency(periodInst);
+        final TransInfo ret = new TransInfo()
+            .setType(CIAccounting.Transaction.getType())
+            .setStatus(Status.find(CIAccounting.TransactionStatus.Open))
+            .setIdentifier(Transaction.IDENTTEMP)
+            .setPeriodInst(periodInst)
+            .setDescription(_docInfo.getDescription(_parameter))
+            .setDate(_docInfo.getDate());
+        int i = 0;
+        for (final AccountInfo accInfo : _docInfo.getDebitAccounts()) {
+            final PositionInfo pos = get4AccountInfo(_parameter,
+                            CIAccounting.TransactionPositionDebit.getType(), accInfo)
+                            .setRateCurrInst(_docInfo.getRateCurrInst())
+                            .setCurrInst(currInst.getInstance())
+                            .setOrder(i);
+            ret.addPosition(pos);
+            for (final PositionInfo relPosInfo : getRelPosInfos(accInfo,
+                            CIAccounting.TransactionPositionDebit.getType())) {
+                relPosInfo.setCurrInst(pos.getCurrInst())
+                    .setRateCurrInst(pos.getRateCurrInst())
+                    .setRate(pos.getRate())
+                    .setCurrInst(currInst.getInstance())
+                    .setOrder(i);
+                ret.addPosition(relPosInfo);
+            }
+            i++;
+        }
+        i = 0;
+        for (final AccountInfo accInfo : _docInfo.getCreditAccounts()) {
+            final PositionInfo pos = get4AccountInfo(_parameter,
+                            CIAccounting.TransactionPositionCredit.getType(), accInfo)
+                            .setRateCurrInst(_docInfo.getRateCurrInst())
+                            .setCurrInst(currInst.getInstance())
+                            .setOrder(i);
+            ret.addPosition(pos);
+            for (final PositionInfo relPosInfo : getRelPosInfos(accInfo,
+                            CIAccounting.TransactionPositionCredit.getType())) {
+                relPosInfo.setCurrInst(pos.getCurrInst())
+                    .setRateCurrInst(pos.getRateCurrInst())
+                    .setCurrInst(currInst.getInstance())
+                    .setRate(pos.getRate())
+                    .setOrder(i);
+                ret.addPosition(relPosInfo);
+            }
+            i++;
+        }
+        return ret;
+    }
+
+    protected static List<PositionInfo> getRelPosInfos(final AccountInfo _accInfo,
+                                                       final Type _type)
+        throws EFapsException
+    {
+        final List<PositionInfo> ret = new ArrayList<>();
+        final boolean isDebitTrans = _type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, _accInfo.getInstance());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selAcc = SelectBuilder.get()
+                        .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).instance();
+        multi.addSelect(selAcc);
+        multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+                          CIAccounting.Account2AccountAbstract.Denominator);
+        multi.execute();
+        final int y = 1;
+        while (multi.next()) {
+            final Instance instance = multi.getCurrentInstance();
+            final PositionInfo connPos  = new PositionInfo();
+            final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
+                                CIAccounting.Account2AccountAbstract.Numerator));
+            final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
+                                CIAccounting.Account2AccountAbstract.Denominator));
+
+            BigDecimal amount = _accInfo.getAmount().multiply(numerator).divide(denominator,
+                                BigDecimal.ROUND_HALF_UP);
+            BigDecimal rateAmount = _accInfo.getAmountRate().multiply(numerator).divide(denominator,
+                                BigDecimal.ROUND_HALF_UP);
+            if (isDebitTrans) {
+                amount = amount.negate();
+                rateAmount = rateAmount.negate();
+            }
+            if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
+                    connPos.setType(_type);
+                } else if (instance.getType().getUUID()
+                                .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
+                    if (_type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
+                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                    } else {
+                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                    }
+                    amount = amount.negate();
+                } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
+                    if (isDebitTrans) {
+                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                    } else {
+                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                        amount = amount.negate();
+                        rateAmount = rateAmount.negate();
+                    }
+                } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
+                    if (isDebitTrans) {
+                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                        amount = amount.negate();
+                        rateAmount = rateAmount.negate();
+                    } else {
+                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                    }
+                }
+                if (connPos.getType() == null) {
+                    LOG.error("Missing definition");
+                } else {
+                    connPos.setConnOrder(y)
+                        .setAccInst(multi.<Instance>getSelect(selAcc))
+                        .setAmount(amount)
+                        .setRateAmount(rateAmount);
+                    ret.add(connPos);
+                }
+            }
+        return ret;
+    }
+
+
+    public static PositionInfo get4AccountInfo(final Parameter _parameter,
+                                               final Type _type,
+                                               final AccountInfo _accInfo)
+        throws EFapsException
+    {
+        final PositionInfo ret = new PositionInfo()
+            .setAccInst(_accInfo.getInstance())
+            .setAmount(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
+                            ? _accInfo.getAmount().negate() : _accInfo.getAmount())
+            .setType(_type)
+            .setCurrInst(_accInfo.getCurrInstance())
+            .setRateAmount(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
+                            ? _accInfo.getAmountRate().negate() : _accInfo.getAmountRate())
+            .setRate(_accInfo.getRateInfo().getRateObject());
+        if (_accInfo.getDocLink() != null && _accInfo.getDocLink().isValid()) {
+            final DocumentInfo docInfoTmp = new DocumentInfo(_accInfo.getDocLink());
+            if (docInfoTmp.isSumsDoc()) {
+                ret.setDocInst(_accInfo.getDocLink())
+                    .setDocRelType(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
+                                                ? CIAccounting.TransactionPositionDebit2SalesDocument.getType()
+                                                : CIAccounting.TransactionPositionCredit2SalesDocument.getType());
+            } else {
+                ret.setDocInst(_accInfo.getDocLink())
+                    .setDocRelType(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
+                                                ? CIAccounting.TransactionPositionDebit2PaymentDocument.getType()
+                                                : CIAccounting.TransactionPositionCredit2PaymentDocument.getType());
+            }
+        }
+        return ret;
     }
 
     @Override
@@ -682,7 +853,6 @@ public abstract class TransInfo_Base
             return this.remark;
         }
 
-
         /**
          * Setter method for instance variable {@link #remark}.
          *
@@ -693,5 +863,6 @@ public abstract class TransInfo_Base
             this.remark = _remark;
             return this;
         }
+
     }
 }

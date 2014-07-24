@@ -22,11 +22,16 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Account_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -84,9 +89,11 @@ public abstract class AccountInfo_Base
     /**
      * Link string.
      */
-    private StringBuilder link;
+    private StringBuilder linkHtml;
 
     private Instance docLink;
+
+    private String postFix;
 
     /**
      *
@@ -259,21 +266,47 @@ public abstract class AccountInfo_Base
      *
      * @return value of instance variable {@link #link}
      */
-    public StringBuilder getLink()
+    public StringBuilder getLinkHtml() throws EFapsException
     {
-        return this.link;
+        initLinkHtml();
+        return this.linkHtml;
     }
 
-    /**
-     * Setter method for instance variable {@link #link}.
-     *
-     * @param _link value for instance variable {@link #link}
-     * @return this for chaining
-     */
-    public AccountInfo setLink(final StringBuilder _link)
+    protected void initLinkHtml()
+        throws EFapsException
     {
-        this.link = _link;
-        return (AccountInfo) this;
+        if (this.linkHtml == null) {
+            this.linkHtml = new StringBuilder();
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, getInstance());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+                            CIAccounting.Account2AccountAbstract.Denominator,
+                            CIAccounting.Account2AccountAbstract.Deactivatable);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Account2AccountAbstract.ToAccountLink)
+                            .attribute(CIAccounting.AccountAbstract.Name);
+            multi.addSelect(sel);
+            multi.execute();
+
+            while (multi.next()) {
+                final String to = multi.<String>getSelect(sel);
+                final Boolean deactivatable = multi
+                                .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
+                final Integer numerator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
+                final Integer denominator = multi
+                                .<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
+                final BigDecimal percent = new BigDecimal(numerator).divide(new BigDecimal(denominator),
+                                BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
+                final Instance instance = multi.getCurrentInstance();
+                if (deactivatable != null && deactivatable) {
+                    this.linkHtml.append("<input type='checkbox' name='acc2acc").append(getPostFix())
+                                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>");
+                }
+                this.linkHtml.append(DBProperties.getFormatedDBProperty(
+                                Transaction.class.getName() + ".LinkString4" + instance.getType().getName(),
+                                new Object[] { percent, StringEscapeUtils.escapeEcmaScript(to) }));
+            }
+        }
     }
 
     /**
@@ -370,5 +403,27 @@ public abstract class AccountInfo_Base
             this.description = print.getAttribute(CIAccounting.AccountAbstract.Description);
             this.name = print.getAttribute(CIAccounting.AccountAbstract.Name);
         }
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #postFix}.
+     *
+     * @return value of instance variable {@link #postFix}
+     */
+    public String getPostFix()
+    {
+        return this.postFix;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #postFix}.
+     *
+     * @param _postFix value for instance variable {@link #postFix}
+     */
+    public void setPostFix(final String _postFix)
+    {
+        this.postFix = _postFix;
     }
 }

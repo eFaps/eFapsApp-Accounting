@@ -45,7 +45,6 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -403,50 +402,6 @@ public abstract class Transaction_Base
     }
 
     /**
-     * Make a string for the link of account2account.
-     *
-     * @param _accountInst instance of the account
-     * @param _postFix postfix
-     * @return StringBuilder
-     * @throws EFapsException on error
-     */
-    protected StringBuilder getLinkString(final Instance _accountInst,
-                                          final String _postFix)
-        throws EFapsException
-    {
-        final StringBuilder ret = new StringBuilder();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, _accountInst);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
-                        CIAccounting.Account2AccountAbstract.Denominator,
-                        CIAccounting.Account2AccountAbstract.Deactivatable);
-        final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Account2AccountAbstract.ToAccountLink)
-                        .attribute(CIAccounting.AccountAbstract.Name);
-        multi.addSelect(sel);
-        multi.execute();
-
-        while (multi.next()) {
-            final String to = multi.<String>getSelect(sel);
-            final Boolean deactivatable = multi
-                            .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
-            final Integer numerator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
-            final Integer denominator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
-            final BigDecimal percent = new BigDecimal(numerator).divide(new BigDecimal(denominator),
-                            BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
-            final Instance instance = multi.getCurrentInstance();
-            if (deactivatable != null && deactivatable) {
-                ret.append("<input type='checkbox' name='acc2acc").append(_postFix)
-                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>");
-            }
-            ret.append(DBProperties.getFormatedDBProperty(
-                            Transaction.class.getName() + ".LinkString4" + instance.getType().getName(),
-                            new Object[] { percent, StringEscapeUtils.escapeEcmaScript(to) }));
-        }
-        return ret;
-    }
-
-    /**
      * Calculate the sum for one of the tables.
      *
      * @param _parameter Parameter as passed from the eFaps API
@@ -748,68 +703,72 @@ public abstract class Transaction_Base
         final List<DocumentInfo> ret = new ArrayList<>();
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
 
-        final String[] docOids = _parameter.getParameterValues("document");
+        String[] docOids = _parameter.getParameterValues("document");
+        if (docOids == null) {
+            docOids = (String[]) Context.getThreadContext().getSessionAttribute("docOids");
+        }
         for (final String docOid : docOids) {
             final Instance docInst = Instance.get(docOid);
             final DocumentInfo docInfo = new DocumentInfo();
-            if (caseInst.isValid()
-                        || docInst.isValid() && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
-            try {
-                ret.add(docInfo);
-                final String curr = _parameter.getParameterValue("currencyExternal");
-                final String amountStr = _parameter.getParameterValue("amountExternal");
-                docInfo.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
-                final Instance currInst;
-                if (curr == null && amountStr == null) {
-                    docInfo.setInstance(docInst);
-                    boolean isCross = false;
-                    if (caseInst.isValid()) {
-                        final PrintQuery printCase = new CachedPrintQuery(caseInst, Case.CACHEKEY);
-                        printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
-                        printCase.execute();
-                        isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-                    }
-                    final PrintQuery print = new PrintQuery(docInst);
-                    final SelectBuilder sel;
-                    final String attrName;
-                    if (docInfo.isPaymentDoc()) {
-                        sel = SelectBuilder.get().linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
-                                        .instance();
-                        attrName = CISales.PaymentDocumentAbstract.Amount.name;
+            if (caseInst.isValid() || docInst.isValid()
+                            && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+                try {
+                    ret.add(docInfo);
+                    final String curr = _parameter.getParameterValue("currencyExternal");
+                    final String amountStr = _parameter.getParameterValue("amountExternal");
+                    docInfo.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
+                    final Instance currInst;
+                    if (curr == null && amountStr == null) {
+                        docInfo.setInstance(docInst);
+                        boolean isCross = false;
+                        if (caseInst.isValid()) {
+                            final PrintQuery printCase = new CachedPrintQuery(caseInst, Case.CACHEKEY);
+                            printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
+                            printCase.execute();
+                            isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
+                        }
+                        final PrintQuery print = new PrintQuery(docInst);
+                        final SelectBuilder sel;
+                        final String attrName;
+                        if (docInfo.isPaymentDoc()) {
+                            sel = SelectBuilder.get().linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
+                                            .instance();
+                            attrName = CISales.PaymentDocumentAbstract.Amount.name;
+                        } else {
+                            sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                            .instance();
+                            attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
+                                            : CISales.DocumentSumAbstract.RateNetTotal.name;
+                        }
+                        print.addSelect(sel);
+                        print.addAttribute(attrName);
+                        print.execute();
+                        currInst = print.<Instance>getSelect(sel);
+                        docInfo.setAmount(print.<BigDecimal>getAttribute(attrName));
                     } else {
-                        sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                                        .instance();
-                        attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                        : CISales.DocumentSumAbstract.RateNetTotal.name;
+                        docInfo.setAmount((BigDecimal) docInfo.getFormater().parse(
+                                        amountStr.isEmpty() ? "0" : amountStr));
+                        currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
                     }
-                    print.addSelect(sel);
-                    print.addAttribute(attrName);
-                    print.execute();
-                    currInst = print.<Instance>getSelect(sel);
-                    docInfo.setAmount(print.<BigDecimal>getAttribute(attrName));
-                } else {
-                    docInfo.setAmount((BigDecimal) docInfo.getFormater().parse(amountStr.isEmpty() ? "0" : amountStr));
-                    currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
+
+                    final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+                    docInfo.setDate(DateUtil.getDateFromParameter(dateStr));
+
+                    final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getDate(), currInst);
+                    docInfo.setRateInfo(rateInfo);
+
+                    add2Doc4Case(_parameter, docInfo);
+
+                    if (docInfo.getInstance() != null) {
+                        docInfo.setInvert(docInfo.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
+                        add2Doc4BankCash(_parameter, docInfo);
+                    }
+                    add2Doc4SalesTransaction(_parameter, docInfo);
+                    add2Doc4Payment(_parameter, docInfo);
+                } catch (final ParseException e) {
+                    throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
                 }
-
-                final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                docInfo.setDate(DateUtil.getDateFromParameter(dateStr));
-
-                final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getDate(), currInst);
-                docInfo.setRateInfo(rateInfo);
-
-                add2Doc4Case(_parameter, docInfo);
-
-                if (docInfo.getInstance() != null) {
-                    docInfo.setInvert(docInfo.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
-                    add2Doc4BankCash(_parameter, docInfo);
-                }
-                add2Doc4SalesTransaction(_parameter, docInfo);
-                add2Doc4Payment(_parameter, docInfo);
-            } catch (final ParseException e) {
-                throw new EFapsException(Transaction_Base.class, "executeButton.ParseException", e);
             }
-        }
         }
         return ret;
     }
@@ -867,19 +826,17 @@ public abstract class Transaction_Base
                                     .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
 
                     if (add) {
-                        String postFix;
                         final AccountInfo account = new AccountInfo(inst, accAmount);
                         account.setAmountRate(accAmountRate);
                         account.setRateInfo(rateInfo);
                         if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
                                         || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
-                            postFix = "_Credit";
+                            account.setPostFix("_Credit");
                             _doc.addCredit(account);
                         } else {
-                            postFix = "_Debit";
+                            account.setPostFix("_Debit");
                             _doc.addDebit(account);
                         }
-                        account.setLink(getLinkString(inst, postFix));
                     }
                 }
             }
@@ -1111,10 +1068,10 @@ public abstract class Transaction_Base
             map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());
 
-            if (account.getLink() != null && account.getLink().length() > 0) {
+            if (account.getLinkHtml() != null && account.getLinkHtml().length() > 0) {
                 onJs.append("document.getElementsByName('account2account_")
                                 .append(_postFix).append("')[").append(i).append("].innerHTML='")
-                                .append(account.getLink().toString().replaceAll("'", "\\\\\\'")).append("';");
+                                .append(account.getLinkHtml().toString().replaceAll("'", "\\\\\\'")).append("';");
             }
 
             if (account.getDocLink() != null && account.getDocLink().isValid()) {

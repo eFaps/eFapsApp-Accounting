@@ -18,9 +18,10 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.accounting.transaction;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -31,5 +32,15 @@ package org.efaps.esjp.accounting.transaction;
 public class TransInfo
     extends TransInfo_Base
 {
-
+    /**
+     * @param _parameter
+     * @param _docInfo
+     * @return
+     */
+    public static TransInfo get4DocInfo(final Parameter _parameter,
+                                        final DocumentInfo _docInfo)
+        throws EFapsException
+    {
+        return TransInfo_Base.get4DocInfo(_parameter, _docInfo);
+    }
 }
