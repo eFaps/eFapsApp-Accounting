@@ -23,6 +23,7 @@ package org.efaps.esjp.accounting.util;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.cache.CacheReloadException;
@@ -43,6 +44,22 @@ public final class Accounting
     private Accounting()
     {
     }
+
+    public enum SubJournalConfig
+        implements IEnum
+    {
+        /**Internal Report. */
+        INTERNAL,
+        /** Official Report. */
+        OFFICIAL;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
+
 
     public enum SummarizeDefintion
     {

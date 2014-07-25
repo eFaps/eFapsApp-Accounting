@@ -40,6 +40,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -145,6 +146,27 @@ public abstract class JournalReport51DS_Base
             bean.addDoc(relMulti.<String>getSelect(docNameSel));
         }
 
+        final QueryBuilder subJAttrQueryBldr = new QueryBuilder(CIAccounting.ReportSubJournal);
+        subJAttrQueryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.Config,
+                        Accounting.SubJournalConfig.OFFICIAL);
+        final QueryBuilder subJQueryBldr = new QueryBuilder(CIAccounting.ReportSubJournal2Transaction);
+        subJQueryBldr.addWhereAttrInQuery(CIAccounting.ReportSubJournal2Transaction.FromLink,
+                        subJAttrQueryBldr.getAttributeQuery(CIAccounting.ReportSubJournal.ID));
+        subJQueryBldr.addWhereAttrInQuery(CIAccounting.ReportSubJournal2Transaction.ToLink, transAttrQuery);
+        final MultiPrintQuery subJMulti = subJQueryBldr.getPrint();
+        final SelectBuilder transSel2 = SelectBuilder.get().linkto(CIAccounting.ReportSubJournal2Transaction.ToLink)
+                        .instance();
+        final SelectBuilder subJNameSel = SelectBuilder.get()
+                        .linkto(CIAccounting.ReportSubJournal2Transaction.FromLink)
+                        .attribute(CIAccounting.ReportSubJournal.Name);
+        subJMulti.addSelect(transSel2, subJNameSel);
+        subJMulti.execute();
+        while (subJMulti.next()) {
+            final Instance transInst = subJMulti.getSelect(transSel2);
+            final DataBean bean = map.get(transInst.getOid());
+            bean.addDocReg(subJMulti.<String>getSelect(subJNameSel));
+        }
+
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<DataBean>()
         {
@@ -219,6 +241,18 @@ public abstract class JournalReport51DS_Base
                 setDocName(_docName);
             } else {
                 setDocName(getDocName() + ", " + _docName);
+            }
+        }
+
+        /**
+         * @param _select
+         */
+        public void addDocReg(final String _docReg)
+        {
+            if (getDocReg() == null) {
+                setDocReg(_docReg);
+            } else {
+                setDocReg(getDocReg() + ", " + _docReg);
             }
         }
 

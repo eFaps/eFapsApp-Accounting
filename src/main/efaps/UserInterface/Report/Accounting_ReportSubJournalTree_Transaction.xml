@@ -19,8 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>cc335d93-04fe-41e5-962d-090436e15071</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -28,6 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportSubJournalTree_Transaction</name>
         <target>
+            <menu>Accounting_ReportSubJournalTree_Transaction_Menu</menu>
             <table>Accounting_ReportSubJournal2TransactionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type01">Accounting_ReportSubJournal2Transaction</property>

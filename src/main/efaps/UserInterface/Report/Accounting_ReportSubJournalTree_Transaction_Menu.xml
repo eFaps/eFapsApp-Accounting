@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,24 +20,16 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2a729072-eb25-4fd9-a7b9-4832e232755c</uuid>
+    <uuid>e87800b7-57ae-4d11-8372-ef52339c78ef</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportSubJournalTree_Menu_Action_Edit</name>
-        <access>
-            <role>Accounting_Admin</role>
-        </access>
-        <target>
-            <form>Accounting_ReportSubJournalForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <name>Accounting_ReportSubJournalTree_Transaction_Menu</name>
+        <childs>
+            <child>Accounting_ReportSubJournalTree_Transaction_Menu_Action</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

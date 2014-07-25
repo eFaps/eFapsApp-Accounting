@@ -19,26 +19,23 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>70f83198-bc9a-477e-9603-db28462f574b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportSubJournalTree</name>
-        <!-- targets -->
         <target>
             <menu>Accounting_ReportSubJournalTree_Menu</menu>
-            <form>Accounting_ReportForm</form>
+            <form>Accounting_ReportSubJournalForm</form>
         </target>
-        <!-- type tree for -->
         <type>Accounting_ReportSubJournal</type>
         <childs>
             <child>Accounting_ReportSubJournalTree_Transaction</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
