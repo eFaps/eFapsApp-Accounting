@@ -71,6 +71,7 @@
                 method="executeButton"
                 name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_CMD"
                 event="UI_FIELD_CMD">
+                <property name="WithoutDocument">true</property>
             </trigger>
         </field>
         <field name="checkbox4Account" >

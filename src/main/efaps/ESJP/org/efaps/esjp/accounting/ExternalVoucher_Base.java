@@ -64,6 +64,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
@@ -113,6 +114,7 @@ public abstract class ExternalVoucher_Base
         connect2DocumentType(_parameter, createdDoc);
 
         _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
+        ParameterUtil.setParmeterValue(_parameter, "document", createdDoc.getInstance().getOid());
         new Create().create4External(_parameter);
         return new Return();
     }

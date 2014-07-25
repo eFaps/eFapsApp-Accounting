@@ -702,11 +702,16 @@ public abstract class Transaction_Base
     {
         final List<DocumentInfo> ret = new ArrayList<>();
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-
-        String[] docOids = _parameter.getParameterValues("document");
-        if (docOids == null) {
-            docOids = (String[]) Context.getThreadContext().getSessionAttribute("docOids");
+        String[] docOids;
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "WithoutDocument"))) {
+            docOids = new String[] { "0.0" };
+        } else {
+            docOids = _parameter.getParameterValues("document");
+            if (docOids == null) {
+                docOids = (String[]) Context.getThreadContext().getSessionAttribute("docOids");
+            }
         }
+
         for (final String docOid : docOids) {
             final Instance docInst = Instance.get(docOid);
             final DocumentInfo docInfo = new DocumentInfo();

@@ -97,24 +97,8 @@ public abstract class Create_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance parent = _parameter.getCallInstance();
-
-        final Insert insert = new Insert(CIAccounting.Transaction);
-        insert.add(CIAccounting.Transaction.Name, _parameter.getParameterValue("name"));
-        insert.add(CIAccounting.Transaction.Description, _parameter.getParameterValue("description"));
-        insert.add(CIAccounting.Transaction.Date, _parameter.getParameterValue("date"));
-        insert.add(CIAccounting.Transaction.PeriodLink, parent.getId());
-        insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
-        insert.add(CIAccounting.Transaction.Identifier, Transaction.IDENTTEMP);
-        insert.execute();
-
-//        final Instance instance = insert.getInstance();
-//        final int pos = insertPositions(_parameter, instance, "Debit", null, 1);
-//        insertPositions(_parameter, instance, "Credit", null, pos);
-//        // create classifications
-//        new org.efaps.esjp.common.uiform.Create().insertClassification(_parameter, instance);
-//
-//        insertReportRelation(_parameter, instance);
+        final Instance transInst = createFromUI(_parameter);
+        insertReportRelation(_parameter, transInst);
         return new Return();
     }
 
@@ -202,12 +186,12 @@ public abstract class Create_Base
         throws EFapsException
     {
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
-        final Instance instance = createFromUI(_parameter);
+        final Instance transInst = createFromUI(_parameter);
 
-        connectDocs2Transaction(_parameter, instance, docInsts.toArray(new Instance[docInsts.size()]));
+        connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-
+        insertReportRelation(_parameter, transInst);
         return new Return();
     }
 

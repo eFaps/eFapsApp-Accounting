@@ -52,12 +52,12 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
+        <property name="HideDocLinK">true</property>
     </definition>
 </ui-command>
