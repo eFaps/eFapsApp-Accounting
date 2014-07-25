@@ -685,10 +685,12 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
-
-        final StringBuilder js = getScript4ExecuteButton(_parameter,
-                        DocumentInfo.getCombined(evalDocuments(_parameter), summarizeTransaction(_parameter)));
-        ret.put(ReturnValues.SNIPLETT, js.toString());
+        final List<DocumentInfo> docs = evalDocuments(_parameter);
+        if (docs != null && !docs.isEmpty()) {
+            final StringBuilder js = getScript4ExecuteButton(_parameter,
+                            DocumentInfo.getCombined(docs, summarizeTransaction(_parameter)));
+            ret.put(ReturnValues.SNIPLETT, js.toString());
+        }
         return ret;
     }
 
