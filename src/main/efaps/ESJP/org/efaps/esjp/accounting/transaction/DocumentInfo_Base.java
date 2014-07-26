@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -676,21 +677,36 @@ public abstract class DocumentInfo_Base
     public String getDescription(final Parameter _parameter)
         throws EFapsException
     {
-        final PrintQuery print = new CachedPrintQuery(getCaseInst(), Case.CACHEKEY);
-        print.addAttribute(CIAccounting.CaseAbstract.Label);
-        print.execute();
-
-        final String labelStr = print.<String>getAttribute(CIAccounting.CaseAbstract.Label);
+        String labelStr = "";
+        final Instance caseInstTmp = getCaseInst();
+        if (caseInstTmp != null && caseInstTmp.isValid()) {
+            final PrintQuery print = new CachedPrintQuery(caseInstTmp, Case.CACHEKEY);
+            print.addAttribute(CIAccounting.CaseAbstract.Label);
+            print.execute();
+            labelStr = print.<String>getAttribute(CIAccounting.CaseAbstract.Label);
+        } else {
+            labelStr = DBProperties.getProperty(DocumentInfo.class.getName() + "." +  getInstance().getType().getName()
+                            + ".description");
+        }
 
         final StrSubstitutor sub = new StrSubstitutor(getMap4Substitutor(_parameter));
         return sub.replace(labelStr);
     }
 
-
     public final Map<String, String> getMap4Substitutor(final Parameter _parameter)
+        throws EFapsException
     {
         final Map<String, String> ret = new HashMap<String, String>();
-        ret.put("date", _parameter.getParameterValue("date_eFapsDate"));
+        final String transdateStr = _parameter.getParameterValue("date");
+        DateTime transdate;
+        if (transdateStr == null) {
+            transdate = new DateTime();
+        } else {
+            transdate = new DateTime(transdateStr);
+        }
+
+        ret.put("date", transdate.toString(DateTimeFormat.mediumDate().withLocale(
+                                        Context.getThreadContext().getLocale())));
         return ret;
     }
 
