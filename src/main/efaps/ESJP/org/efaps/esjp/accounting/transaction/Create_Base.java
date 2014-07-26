@@ -58,11 +58,9 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -206,26 +204,30 @@ public abstract class Create_Base
         if (!oneTransPerDoc) {
             final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, summarizeTransaction(_parameter));
             docInfo.setDate(date);
-            final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);
-            if (useDate) {
-                transinfo.setDate(date);
-            }
-            transinfo.create(_parameter);
-            final List<Instance> docInsts = getDocInstsFromDocInfoList(_parameter, docInfos);
-            connectDocs2Transaction(_parameter, transinfo.getInstance(),
-                            docInsts.toArray(new Instance[docInsts.size()]));
-            connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-            setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-        } else {
-            for (final DocumentInfo docInfo : docInfos) {
-                final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
+            if (docInfo.isValid()) {
+                final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);
                 if (useDate) {
                     transinfo.setDate(date);
                 }
                 transinfo.create(_parameter);
-                connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
-                connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
-                setStatus4Docs(_parameter, docInfo.getInstance());
+                final List<Instance> docInsts = getDocInstsFromDocInfoList(_parameter, docInfos);
+                connectDocs2Transaction(_parameter, transinfo.getInstance(),
+                                docInsts.toArray(new Instance[docInsts.size()]));
+                connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+            }
+        } else {
+            for (final DocumentInfo docInfo : docInfos) {
+                if (docInfo.isValid()) {
+                    final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
+                    if (useDate) {
+                        transinfo.setDate(date);
+                    }
+                    transinfo.create(_parameter);
+                    connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
+                    connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
+                    setStatus4Docs(_parameter, docInfo.getInstance());
+                }
             }
         }
         return new Return();
@@ -298,57 +300,6 @@ public abstract class Create_Base
     }
 
     /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return new empty Return
-     * @throws EFapsException on error
-     */
-    public Return create4PaymentMassive(final Parameter _parameter)
-        throws EFapsException
-    {
-
-        final DateTime date = new DateTime(_parameter.getParameterValue(
-                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.date.name));
-        final boolean usedate = Boolean.parseBoolean(_parameter.getParameterValue(
-                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.useDate.name));
-        final String[] oidsPay = (String[]) Context.getThreadContext().getSessionAttribute(
-                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.document.name);
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-        for (final String oid : oidsPay) {
-            final Instance payDocInst = Instance.get(oid);
-            if (payDocInst.isValid()) {
-                final Parameter parameter = ParameterUtil.clone(_parameter, _parameter);
-                parameter.getParameters().put("document", new String[] { oid });
-                if (usedate) {
-                    parameter.getParameters().put("date_eFapsDate", new String[] { DateUtil.getDate4Parameter(date) });
-                }
-
-                final DocumentInfo docInfo = evalDocuments(parameter).get(0);
-                if (docInfo.isValid()) {
-                    final Insert insert = new Insert(CIAccounting.Transaction);
-                    insert.add(CIAccounting.Transaction.Description,
-                                    new FieldValue().getDescription(_parameter, docInfo.getInstance()));
-                    insert.add(CIAccounting.Transaction.Date, docInfo.getDate());
-                    insert.add(CIAccounting.Transaction.PeriodLink, periodInst);
-                    insert.add(CIAccounting.Transaction.Status, Status.find(CIAccounting.TransactionStatus.Open));
-                    insert.execute();
-                    final Instance transInst = insert.getInstance();
-                    for (final AccountInfo account : docInfo.getCreditAccounts()) {
-                        insertPosition4Massiv(_parameter, docInfo, transInst, CIAccounting.TransactionPositionCredit,
-                                        account);
-                    }
-                    for (final AccountInfo account : docInfo.getDebitAccounts()) {
-                        insertPosition4Massiv(_parameter, docInfo, transInst, CIAccounting.TransactionPositionDebit,
-                                        account);
-                    }
-                    connectDocs2Transaction(_parameter, transInst, docInfo.getInstance());
-                    setStatus4Payments(_parameter, docInfo.getInstance());
-                }
-            }
-        }
-        return new Return();
-    }
-
-    /**
      * Create a Transaction for a PaymentDocument.
      * Connects the PaymentDocument and the related Document with the transaction.
      *
@@ -363,6 +314,34 @@ public abstract class Create_Base
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         connectDocs2Transaction(_parameter, instance,  docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Payments(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return create4PaymentMassive(final Parameter _parameter)
+        throws EFapsException
+    {
+        final DateTime date = new DateTime(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.date.name));
+        final boolean usedate = Boolean.parseBoolean(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.useDate.name));
+        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+        for (final DocumentInfo docInfo : docInfos) {
+            if (docInfo.isValid()) {
+                final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
+                if (usedate) {
+                    transinfo.setDate(date);
+                }
+                transinfo.create(_parameter);
+                connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
+                connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
+                setStatus4Payments(_parameter, docInfo.getInstance());
+            }
+        }
         return new Return();
     }
 
