@@ -1,137 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 5.5.1-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="7e65f5a8-4957-4494-a75f-e437820b673b">
-    <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="Instance" value="true"/>
-        <property name="hasSubReport" value="true"/>
-    </parameter>
-    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
-    <parameter name="CompanyName" class="java.lang.String"/>
-    <parameter name="CompanyTaxNum" class="java.lang.String"/>
-    <field name="name" class="java.lang.String">
-        <property name="Select" value="attribute[Name]"/>
-    </field>
-    <field name="description" class="java.lang.String">
-        <property name="Select" value="attribute[Description]"/>
-    </field>
-    <field name="date" class="org.joda.time.DateTime">
-        <property name="Select" value="attribute[Date]"/>
-    </field>
-    <field name="externalTaxNumber" class="java.lang.String">
-        <property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
-    </field>
-    <field name="docTaxNumber" class="java.lang.String">
-        <property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
-    </field>
-    <field name="externalContact" class="java.lang.String">
-        <property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
-    </field>
-    <field name="docContact" class="java.lang.String">
-        <property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
-    </field>
-    <pageHeader>
-        <band height="52">
-            <textField pattern="dd/MM/yyyy">
-                <reportElement uuid="1f731de8-9bc4-4f64-9640-1efdb4ea22d3" x="439" y="32" width="100" height="20"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement uuid="2ff247bc-e32f-43ce-9ab7-4b61f6ff7f57" x="0" y="16" width="70" height="16">
-                    <printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
-                </reportElement>
-                <textElement>
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[RUC:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="a7efcc5e-239c-4927-8bd8-c305fe6b1132" x="0" y="0" width="70" height="16">
-                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
-                </reportElement>
-                <textElement>
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[EMPRESA:]]></text>
-            </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f" x="70" y="16" width="369" height="16"/>
-                <textElement textAlignment="Left" verticalAlignment="Top">
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement uuid="3eb75a7b-149c-4ebc-a756-74da899f703a" x="70" y="0" width="369" height="16"/>
-                <textElement textAlignment="Left" verticalAlignment="Top">
-                    <font size="11" isBold="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
-            </textField>
-        </band>
-    </pageHeader>
-    <columnHeader>
-        <band height="63">
-            <textField>
-                <reportElement uuid="4facec97-ee7c-4a40-b0b4-8734d96f8ec5" x="0" y="0" width="539" height="16"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement uuid="8898dbe2-28b7-4606-a863-39a03d070e90" x="0" y="16" width="439" height="16"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
-            </textField>
-            <textField pattern="dd/MM/yyyy">
-                <reportElement uuid="915e9910-f869-448c-b8bb-24f9494b1d97" x="439" y="16" width="100" height="16"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement uuid="5d85ea02-fba8-4f6a-8617-27b6f5b06675" x="0" y="50" width="110" height="13"/>
-                <textElement/>
-                <text><![CDATA[Cuenta]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="0341daa0-637e-4257-ae5f-711639da2b16" x="335" y="50" width="80" height="13"/>
-                <textElement/>
-                <text><![CDATA[Debito]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="a8a230fb-13f5-4c1a-a78e-faa8d5a9fe1a" x="415" y="50" width="80" height="13"/>
-                <textElement/>
-                <text><![CDATA[Credito]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="15d4ecb8-16bb-4646-8b32-0c0f54d1c3d3" x="495" y="50" width="44" height="13"/>
-                <textElement/>
-                <text><![CDATA[Cambio]]></text>
-            </staticText>
-            <staticText>
-                <reportElement uuid="7a15a6ff-f61f-48a8-b49e-85cf47f36cdb" x="110" y="50" width="225" height="13"/>
-                <textElement/>
-                <text><![CDATA[Descripción]]></text>
-            </staticText>
-            <textField>
-                <reportElement uuid="c349f470-4e42-4b60-9ecc-368dd8bca2c2" mode="Transparent" x="0" y="32" width="539" height="16"/>
-                <textElement/>
-                <textFieldExpression><![CDATA[($F{externalContact} != null && $F{externalContact}.length() > 0)
- ? $F{externalContact} + " - " + $F{externalTaxNumber}
- : $F{docContact} + " - " + $F{docTaxNumber}]]></textFieldExpression>
-            </textField>
-        </band>
-    </columnHeader>
-    <detail>
-        <band height="228" splitType="Stretch">
-            <subreport isUsingCache="false">
-                <reportElement uuid="b54fc070-b7fc-406b-9dc0-348f747cad06" x="0" y="0" width="539" height="228"/>
-                <subreportParameter name="EFAPS_DEFINITION"/>
-                <dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionPosition")]]></dataSourceExpression>
-                <subreportExpression><![CDATA["JasperReport.Accounting_TransactionPosition"]]></subreportExpression>
-            </subreport>
-        </band>
-    </detail>
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="Instance" value="true"/>
+		<property name="hasSubReport" value="true"/>
+	</parameter>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
+	<parameter name="Period" class="java.lang.String" isForPrompting="false">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<field name="name" class="java.lang.String">
+		<property name="Select" value="attribute[Name]"/>
+	</field>
+	<field name="identifier" class="java.lang.String">
+		<property name="Select" value="attribute[Identifier]"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="Select" value="attribute[Description]"/>
+	</field>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[Date]"/>
+	</field>
+	<field name="externalTaxNumber" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="docTaxNumber" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="externalContact" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
+	</field>
+	<field name="docContact" class="java.lang.String">
+		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
+	</field>
+	<pageHeader>
+		<band height="50">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="440" y="0" width="100" height="16" uuid="1f731de8-9bc4-4f64-9640-1efdb4ea22d3"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="16" width="70" height="16" uuid="2ff247bc-e32f-43ce-9ab7-4b61f6ff7f57">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RUC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="70" height="16" uuid="a7efcc5e-239c-4927-8bd8-c305fe6b1132">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPRESA:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="70" y="16" width="369" height="16" uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="70" y="0" width="369" height="16" uuid="3eb75a7b-149c-4ebc-a756-74da899f703a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="32" width="70" height="16" uuid="faa68e62-1973-4320-baa7-badb00ffe14f">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EJERCICIO:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="70" y="32" width="369" height="16" uuid="1b9d59b9-393c-4925-a359-d765fb3a8f35">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Period}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34">
+			<textField>
+				<reportElement x="110" y="0" width="140" height="16" uuid="4facec97-ee7c-4a40-b0b4-8734d96f8ec5"/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="16" width="439" height="16" uuid="8898dbe2-28b7-4606-a863-39a03d070e90"/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="439" y="16" width="100" height="16" uuid="915e9910-f869-448c-b8bb-24f9494b1d97"/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="110" height="16" uuid="d44caed8-4dd8-4e35-bc96-499afca442e6"/>
+				<text><![CDATA[Número Correlativo:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="250" y="0" width="60" height="16" uuid="c8e0daf7-7721-42d8-bd8a-01110a610a3e"/>
+				<text><![CDATA[Req. Unico:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="310" y="0" width="130" height="16" uuid="74be226a-05d8-4a8d-9b4a-b65bbb46eb10"/>
+				<textFieldExpression><![CDATA[$F{identifier}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="63" splitType="Stretch">
+			<subreport isUsingCache="false">
+				<reportElement x="0" y="0" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06"/>
+				<subreportParameter name="EFAPS_DEFINITION"/>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionPosition")]]></dataSourceExpression>
+				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionPosition"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="63" splitType="Stretch">
+			<subreport isUsingCache="false">
+				<reportElement x="0" y="0" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06"/>
+				<subreportParameter name="EFAPS_DEFINITION"/>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionDocuments")]]></dataSourceExpression>
+				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionDocuments"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
 </jasperReport>

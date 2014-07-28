@@ -1,84 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionPosition" pageWidth="539" pageHeight="595" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" language="groovy" uuid="ec7b256b-3c41-4a70-ba82-927a4489e393">
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="Expand" value="Accounting_TransactionPositionAbstract\TransactionLink"/>
-        <property name="expandChildTypes" value="true"/>
-    </parameter>
-    <field name="accountName" class="java.lang.String">
-        <property name="Select" value="linkto[AccountLink].attribute[Name]"/>
-    </field>
-    <field name="accountDesc" class="java.lang.String">
-        <property name="Select" value="linkto[AccountLink].attribute[Description]"/>
-    </field>
-    <field name="rate" class="java.math.BigDecimal">
-        <property name="Select" value="attribute[Rate].value"/>
-    </field>
-    <field name="typeUUID" class="java.util.UUID">
-        <property name="Select" value="type.uuid"/>
-    </field>
-    <field name="amount" class="java.math.BigDecimal">
-        <property name="Select" value="attribute[Amount]"/>
-    </field>
-    <variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
+<!-- Created with Jaspersoft Studio version 5.5.1-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionPosition" language="groovy" pageWidth="539" pageHeight="595" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ec7b256b-3c41-4a70-ba82-927a4489e393">
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="Types" value="Accounting_TransactionPositionAbstract"/>
+		<property name="LinkFroms" value="TransactionLink"/>
+		<property name="expandChildTypes" value="true"/>
+	</parameter>
+	<field name="accountName" class="java.lang.String">
+		<property name="Select" value="linkto[AccountLink].attribute[Name]"/>
+	</field>
+	<field name="accountDesc" class="java.lang.String">
+		<property name="Select" value="linkto[AccountLink].attribute[Description]"/>
+	</field>
+	<field name="rate" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[Rate].value"/>
+	</field>
+	<field name="typeUUID" class="java.util.UUID">
+		<property name="Select" value="type.uuid"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[Amount]"/>
+	</field>
+	<field name="position" class="java.lang.Integer">
+		<property name="Select" value="attribute[Position]"/>
+	</field>
+	<sortField name="position"/>
+	<variable name="debit" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
+? null
+: $F{amount}.abs()]]></variableExpression>
+	</variable>
+	<variable name="credit" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
+? $F{amount}.abs() 
+: null]]></variableExpression>
+	</variable>
+	<variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
 ? BigDecimal.ZERO
 : $F{amount}.abs()]]></variableExpression>
-    </variable>
-    <variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
+	</variable>
+	<variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
 ? $F{amount}.abs()
 : BigDecimal.ZERO]]></variableExpression>
-    </variable>
-    <detail>
-        <band height="13" splitType="Stretch">
-            <textField isStretchWithOverflow="true">
-                <reportElement x="0" y="0" width="110" height="13"/>
-                <textElement/>
-                <textFieldExpression class="java.lang.String"><![CDATA[$F{accountName}]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.00">
-                <reportElement x="335" y="0" width="80" height="13">
-                    <printWhenExpression><![CDATA[new Boolean(!$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1")))]]></printWhenExpression>
-                </reportElement>
-                <textElement/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{amount}.abs()]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.######">
-                <reportElement x="495" y="0" width="40" height="13"/>
-                <textElement/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rate}]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.00">
-                <reportElement x="415" y="0" width="80" height="13">
-                    <printWhenExpression><![CDATA[new Boolean($F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1")))]]></printWhenExpression>
-                </reportElement>
-                <textElement/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{amount}.abs()]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true">
-                <reportElement x="110" y="0" width="229" height="13"/>
-                <textElement>
-                    <font isItalic="false"/>
-                </textElement>
-                <textFieldExpression class="java.lang.String"><![CDATA[$F{accountDesc}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
-    <columnFooter>
-        <band height="29">
-            <textField pattern="#,##0.00">
-                <reportElement x="335" y="4" width="80" height="20"/>
-                <textElement/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{debitSum}]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.00">
-                <reportElement x="415" y="4" width="80" height="20"/>
-                <textElement/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{creditSum}]]></textFieldExpression>
-            </textField>
-            <line>
-                <reportElement x="0" y="0" width="535" height="1"/>
-            </line>
-        </band>
-    </columnFooter>
+	</variable>
+	<columnHeader>
+		<band height="16">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="80" height="16" uuid="7205aa65-8f1a-4285-a119-2026ddab4496">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Débito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="0" width="80" height="16" uuid="4cdd2963-342b-47a3-ac26-e8556914c22a">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Crédito]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="0" width="110" height="16" uuid="bfbd58d6-7039-4712-b828-2d83c14a5840">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Cuenta]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="270" y="0" width="269" height="16" uuid="8d163b46-b7f3-4f7e-8c9d-9c5878705945">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="13" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="80" height="13" uuid="6c76c4d5-cb85-474f-9e5c-749025ad9d7c"/>
+				<box rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{debit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="80" y="0" width="80" height="13" uuid="988caf1a-0fe2-4454-a326-4532757e1aa0"/>
+				<box rightPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" markup="none"/>
+				<textFieldExpression><![CDATA[$V{credit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="160" y="0" width="110" height="13" uuid="f957a8f5-93c2-4774-b7e7-8b6bd95b8324"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="270" y="0" width="269" height="13" uuid="1a0e550b-573b-4745-9ef3-08cc83048618"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font isItalic="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountDesc}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 </jasperReport>
