@@ -160,7 +160,9 @@
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDateFieldValue"
                 name="Accounting_TransactionCreate4DocForm.date.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
+                event="UI_FIELD_VALUE">
+                <property name="Select4Date">attribute[Created]</property>
+            </trigger>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Date"
                 name="Accounting_TransactionCreate4DocForm.date.UI_FIELD_UPDATE"

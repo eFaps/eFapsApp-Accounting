@@ -1140,20 +1140,34 @@ public abstract class FieldValue_Base
         // only for edit or create the date is set
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
                         || TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
-            final String selected = Context.getThreadContext().getParameter("selectedRow");
-            final Instance docInst = Instance.get(selected);
-            DateTime date = new DateTime();
-            if (docInst.isValid()) {
-                final PrintQuery print = new PrintQuery(docInst);
-                print.addAttribute(CISales.DocumentAbstract.Date);
-                print.executeWithoutAccessCheck();
-                date = print.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+            DateTime date = null;
+            final String[] oids = _parameter.getParameterValues("selectedRow");
+            if (oids != null) {
+                final String select4date = getProperty(_parameter, "Select4Date",
+                                SelectBuilder.get().attribute(CISales.DocumentAbstract.Date).toString());
+                for (final String docOid  :oids) {
+                    final Instance docInst = Instance.get(docOid);
+                    if (docInst.isValid()) {
+                        final PrintQuery print = new PrintQuery(docInst);
+                        print.addSelect(select4date);
+                        print.executeWithoutAccessCheck();
+                        final DateTime dateTmp = print.<DateTime>getSelect(select4date);
+                        if (date == null) {
+                            date = dateTmp;
+                        } else if (dateTmp.isAfter(date)){
+                            date = dateTmp;
+                        }
+                    }
+                }
             } else if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
                 final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
                 final Object objTmp = fieldValue.getValue();
                 if (objTmp != null && objTmp instanceof DateTime) {
                     date = (DateTime) objTmp;
                 }
+            }
+            if (date == null) {
+                date = new DateTime();
             }
             final DateTime[] dates = getDateMaxMin(_parameter);
             final DateTime fromDate = dates[0];
