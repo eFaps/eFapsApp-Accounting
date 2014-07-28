@@ -34,8 +34,10 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4PaymentForm</form>
-            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create" />
-            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction"/>
+            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create" >
+                <property name="JasperReport">Accounting_Transaction</property>
+            </execute>
+            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Validation"/>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_PeriodTree_Securities_Menu_Action_Register.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
@@ -46,6 +48,7 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="TargetShowFile">true</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>

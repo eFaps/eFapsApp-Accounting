@@ -127,6 +127,11 @@ public interface AccountingSettings
     String PERIOD_ACTIVATESECURITIES = "ActivateSecurities";
 
     /**
+     * Activate the mechanism for Retention and Perception.
+     */
+    String PERIOD_SHOWREPORT = "ShowReportOnCreate";
+
+    /**
      * Defintions of the Summarixe mechanism.
      */
     String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
@@ -148,7 +153,5 @@ public interface AccountingSettings
     String PERIOD_REPORT314ACCOUNT = "ReportBalance314Account";
     String PERIOD_REPORT315ACCOUNT = "ReportBalance315Account";
     String PERIOD_REPORT316ACCOUNT = "ReportBalance316Account";
-
-
 
 }

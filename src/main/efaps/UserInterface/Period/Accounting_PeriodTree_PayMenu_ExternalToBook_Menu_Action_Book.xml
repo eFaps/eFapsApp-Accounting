@@ -41,8 +41,10 @@
         <target>
             <form>Accounting_TransactionCreate4ExternalToBookForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
-                method="create4Doc" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="create4Doc" >
+                <property name="JasperReport">Accounting_Transaction</property>
+            </execute>
+            <validate program="org.efaps.esjp.accounting.transaction.Validation"
                 method="validate" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
@@ -51,10 +53,10 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
+        <property name="TargetShowFile">true</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1450</property>

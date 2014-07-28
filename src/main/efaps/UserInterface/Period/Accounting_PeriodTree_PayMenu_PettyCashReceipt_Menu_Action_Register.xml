@@ -36,8 +36,10 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4PettyCashReceiptForm</form>
-            <execute method="create4PettyCashReceipt" program="org.efaps.esjp.accounting.transaction.Create" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate">
+            <execute method="create4PettyCashReceipt" program="org.efaps.esjp.accounting.transaction.Create" >
+                <property name="JasperReport">Accounting_Transaction</property>
+            </execute>
+            <validate program="org.efaps.esjp.accounting.transaction.Validation" method="validate">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
@@ -46,11 +48,11 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="TargetShowFile">true</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>

@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.accounting.transaction;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -481,117 +483,6 @@ public abstract class Transaction_Base
         final boolean rInv = "true".equalsIgnoreCase(_parameter.getParameterValues("rate"
                         + _postfix + RateUI.INVERTEDSUFFIX)[_index]);
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
-    }
-
-    /**
-     * Executed as a validate event.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return validate(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final StringBuilder html = validateUsedName(_parameter);
-        if (evalValues(_parameter, "Debit") && evalValues(_parameter, "Credit")) {
-            final BigDecimal debit = getSum(_parameter, "Debit", null, null, null);
-            final BigDecimal credit = getSum(_parameter, "Credit", null, null, null);
-            if (credit.compareTo(BigDecimal.ZERO) == 0 && debit.compareTo(BigDecimal.ZERO) == 0) {
-                html.append(DBProperties.getProperty(Transaction.class.getName() + ".noCreateWithZeroTotal"));
-                ret.put(ReturnValues.SNIPLETT, html.toString());
-            } else if (credit.subtract(debit).compareTo(BigDecimal.ZERO) == 0) {
-                if (html.length() == 0) {
-                    ret.put(ReturnValues.TRUE, true);
-                } else {
-                    ret.put(ReturnValues.SNIPLETT, html.toString());
-                    ret.put(ReturnValues.TRUE, true);
-                }
-            } else {
-                Instance inst = _parameter.getCallInstance();
-                if (!inst.getType().getUUID().equals(CIAccounting.Period.uuid)) {
-                    inst = new Period().evaluateCurrentPeriod(_parameter);
-                }
-                final Instance currinst = new Period().getCurrency(inst).getInstance();
-                final PrintQuery query = new PrintQuery(currinst);
-                query.addAttribute("Symbol");
-                query.execute();
-                final String symbol = query.getAttribute("Symbol");
-                html.append("Debit: ").append(debit).append(symbol).append(" &lt;&gt; ").append("Credit: ")
-                                .append(credit).append(symbol);
-                ret.put(ReturnValues.SNIPLETT, html.toString());
-            }
-        } else {
-            ret.put(ReturnValues.SNIPLETT, "Check");
-        }
-        return ret;
-    }
-
-    /**
-     * Method to validate if the name of the external voucher was used.
-     *
-     * @param _parameter as passed from eFaps API.
-     * @return StringBuilder
-     * @throws EFapsException on error.
-     */
-    protected StringBuilder validateUsedName(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String types = (String) properties.get("Types");
-        final StringBuilder html = new StringBuilder();
-        if (types != null && Type.get(types).isKindOf(CIAccounting.ExternalVoucher.getType())) {
-            final Instance contact = Instance.get(_parameter.getParameterValue("contact"));
-            final String name = _parameter.getParameterValue("extName");
-            if (contact != null && contact.isValid() && name != null) {
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ExternalVoucher);
-                queryBldr.addWhereAttrEqValue(CIAccounting.ExternalVoucher.Contact, contact.getId());
-                queryBldr.addWhereAttrEqValue(CIAccounting.ExternalVoucher.Name, name);
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.execute();
-                if (multi.next()) {
-                    html.append(DBProperties.getProperty("org.efaps.esjp.accounting.transaction.usedName"));
-                }
-            }
-        }
-        return html;
-    }
-
-    /**
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _postFix postfix
-     * @return true
-     * @throws EFapsException on error
-     */
-    protected boolean evalValues(final Parameter _parameter,
-                                 final String _postFix)
-        throws EFapsException
-    {
-        boolean ret = true;
-        final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
-        final String[] rates = _parameter.getParameterValues("rate_" + _postFix);
-        final String[] accountOids = _parameter.getParameterValues("accountLink_" + _postFix);
-        final RateFormatter frmt = getRateFormatter(_parameter);
-        try {
-            if (amounts != null && accountOids != null) {
-                for (int i = 0; i < amounts.length; i++) {
-                    final String amount = amounts[i];
-                    final String accountOid = accountOids[i];
-                    final BigDecimal rate = amounts[i].length() > 0
-                                    ? (BigDecimal) frmt.getFrmt4RateUI().parse(rates[i]) : BigDecimal.ZERO;
-                    if (!(amount.length() > 0 && accountOid.length() > 0 && rate.compareTo(BigDecimal.ZERO) != 0)) {
-                        ret = false;
-                        break;
-                    }
-                }
-            } else {
-                ret = false;
-            }
-        } catch (final ParseException e) {
-            Transaction_Base.LOG.error("Catched ParserException", e);
-        }
-        return ret;
     }
 
     /**
@@ -1268,20 +1159,47 @@ public abstract class Transaction_Base
     public Return printReport(final Parameter _parameter)
         throws EFapsException
     {
-        final StandartReport report = new StandartReport();
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, getTransactionReport(_parameter, false));
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
 
-        final SystemConfiguration config = ERP.getSysConfig();
-        if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+    protected File getTransactionReport(final Parameter _parameter,
+                                        final boolean _checkConfig)
+        throws EFapsException
+    {
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        File ret = null;
+        if (!_checkConfig
+                        || "true".equalsIgnoreCase(props.getProperty(AccountingSettings.PERIOD_SHOWREPORT, "false"))) {
+            final StandartReport report = new StandartReport();
 
-            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
-                report.getJrParameters().put("CompanyName", companyName);
-                report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+            final SystemConfiguration config = ERP.getSysConfig();
+            if (config != null) {
+                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+                final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+                if (companyName != null && companyTaxNumb != null && !companyName.isEmpty()
+                                && !companyTaxNumb.isEmpty()) {
+                    report.getJrParameters().put("CompanyName", companyName);
+                    report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+                }
             }
-        }
+            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
+            print.addAttribute(CIAccounting.Period.Name);
+            print.execute();
+            report.getJrParameters().put("Period", print.getAttribute(CIAccounting.Period.Name));
 
-        return report.execute(_parameter);
+            final PrintQuery transPrint = new PrintQuery(_parameter.getInstance());
+            transPrint.addAttribute(CIAccounting.Transaction.Identifier);
+            if (transPrint.execute()) {
+                report.setFileName(CIAccounting.Transaction.getType().getLabel()
+                                + "_" + transPrint.getAttribute(CIAccounting.Transaction.Identifier));
+            }
+            ret = report.getFile(_parameter);
+        }
+        return ret;
     }
 
     /**

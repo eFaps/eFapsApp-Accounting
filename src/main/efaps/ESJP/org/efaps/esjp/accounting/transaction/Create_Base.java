@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.accounting.transaction;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -36,6 +37,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -58,6 +60,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -95,10 +98,18 @@ public abstract class Create_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance transInst = createFromUI(_parameter);
-        insertReportRelation(_parameter, transInst);
-        return new Return();
+        final Return ret = new Return();
+        final Instance instance = createFromUI(_parameter);
+        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, instance);
+
+        final File file = getTransactionReport(parameter, true);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
+
 
     /**
      * Method is used to create a transaction for a given account. e.g. the user
@@ -142,35 +153,19 @@ public abstract class Create_Base
     public Return create4Doc(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final Instance transInst = createFromUI(_parameter);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-
-        /*if (_parameter.getParameterValue("payment") != null) {
-            final boolean setPayStatus = "true".equals(_parameter.getParameterValue("paymentStatus"));
-
-            for (final String paymentOid : _parameter.getParameterValues("payment")) {
-                final Instance payInst = Instance.get(paymentOid);
-                Insert insert = null;
-                long statusId = 0;
-                if (CIAccounting.PaymentCheck.getType().equals(payInst.getType())) {
-                    insert = new Insert(CIAccounting.Document2PaymentDocument);
-                    statusId = Status.find(CIAccounting.PaymentDocumentStatus.uuid, "Closed").getId();
-                }
-                insert.add(CIAccounting.Document2PaymentDocument.FromLink, docInst.getId());
-                insert.add(CIAccounting.Document2PaymentDocument.ToLink, payInst.getId());
-                insert.executeWithoutAccessCheck();
-
-                if (setPayStatus) {
-                    final Update update = new Update(payInst);
-                    update.add(CIAccounting.PaymentDocumentAbstract.StatusAbstract, statusId);
-                    update.executeWithoutTrigger();
-                }
-            }
-        }*/
         add2Create4Doc(_parameter);
-        return new Return();
+        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
+        final File file = getTransactionReport(parameter, true);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
@@ -183,14 +178,21 @@ public abstract class Create_Base
     public Return create4External(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         final Instance transInst = createFromUI(_parameter);
-
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         insertReportRelation(_parameter, transInst);
-        return new Return();
+
+        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
+        final File file = getTransactionReport(parameter, true);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     public Return create4ExternalMassive(final Parameter _parameter)

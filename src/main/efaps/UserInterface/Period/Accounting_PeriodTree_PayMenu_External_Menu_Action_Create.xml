@@ -41,7 +41,7 @@
                 <property name="StatusGroup">Accounting_ExternalVoucherStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction" method="validate" >
+            <validate program="org.efaps.esjp.accounting.transaction.Validation" method="validate" >
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
             <validate program="org.efaps.esjp.accounting.ExternalVoucher" method="validate" index="1">
@@ -64,6 +64,7 @@
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
+        <property name="TargetShowFile">true</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1450</property>

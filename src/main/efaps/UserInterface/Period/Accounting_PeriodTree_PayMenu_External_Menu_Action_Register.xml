@@ -39,8 +39,10 @@
         <target>
             <form>Accounting_TransactionCreate4ExternalForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
-                method="create4External" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="create4External" >
+                <property name="JasperReport">Accounting_Transaction</property>
+            </execute>
+            <validate program="org.efaps.esjp.accounting.transaction.Validation"
                 method="validate" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
@@ -53,6 +55,7 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="TargetShowFile">true</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
