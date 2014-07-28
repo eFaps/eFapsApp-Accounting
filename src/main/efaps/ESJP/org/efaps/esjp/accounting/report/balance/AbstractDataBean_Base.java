@@ -22,6 +22,8 @@ package org.efaps.esjp.accounting.report.balance;
 
 import java.math.BigDecimal;
 
+import org.efaps.db.Instance;
+
 /**
  * TODO comment!
  *
@@ -31,7 +33,7 @@ import java.math.BigDecimal;
 public abstract class AbstractDataBean_Base
 {
 
-    private String accOID;
+    private Instance accIntance;
 
     private String accName;
 
@@ -119,16 +121,27 @@ public abstract class AbstractDataBean_Base
      */
     public String getAccOID()
     {
-        return this.accOID;
+        return this.getAccIntance() == null ? null : this.getAccIntance().getOid();
     }
 
     /**
-     * Setter method for instance variable {@link #accOID}.
+     * Getter method for the instance variable {@link #accIntance}.
      *
-     * @param _accOID value for instance variable {@link #accOID}
+     * @return value of instance variable {@link #accIntance}
      */
-    public void setAccOID(final String _accOID)
+    public Instance getAccIntance()
     {
-        this.accOID = _accOID;
+        return this.accIntance;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #accIntance}.
+     *
+     * @param _accIntance value for instance variable {@link #accIntance}
+     */
+    public void setAccIntance(final Instance _accIntance)
+    {
+        this.accIntance = _accIntance;
     }
 }

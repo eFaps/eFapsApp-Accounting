@@ -61,30 +61,31 @@ public abstract class AbstractBalanceReportDS_Base<T extends AbstractDataBean>
         throws EFapsException
     {
         super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
-        final List<Instance> accInst = getAccountInst(_parameter, getKey(_parameter));
+        final List<Instance> accInsts = getAccountInst(_parameter, getKey(_parameter));
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInst.toArray());
+        queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, accInsts.toArray());
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selAcc = SelectBuilder.get().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
-        final SelectBuilder selAccOID = new SelectBuilder(selAcc).oid();
+        final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
         final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
         final SelectBuilder selAccDescr = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Description);
-        multi.addSelect(selAccOID, selAccName, selAccDescr);
+        multi.addSelect(selAccInst, selAccName, selAccDescr);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
         multi.execute();
         final List<AbstractDataBean> values = new ArrayList<>();
-        final Map<String, AbstractDataBean> map = new HashMap<>();
+        final Map<Instance, AbstractDataBean> map = new HashMap<>();
         while (multi.next()) {
-            final String accOID = multi.getSelect(selAccOID);
+            final Instance accInst = multi.getSelect(selAccInst);
             final AbstractDataBean bean;
-            if (map.containsKey(accOID)) {
-                bean = map.get(accOID);
+            if (map.containsKey(accInst)) {
+                bean = map.get(accInst);
             } else {
                 bean = getBean(_parameter);
+                bean.setAccIntance(accInst);;
                 bean.setAccName(multi.<String>getSelect(selAccName));
                 bean.setAccDesc(multi.<String>getSelect(selAccDescr));
-                map.put(accOID, bean);
+                map.put(accInst, bean);
                 values.add(bean);
             }
             bean.add(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
@@ -100,9 +101,10 @@ public abstract class AbstractBalanceReportDS_Base<T extends AbstractDataBean>
         setData(values);
     }
 
+    public abstract T getBean(final Parameter _parameter)
+        throws EFapsException;
 
-    public abstract T getBean(final Parameter _parameter) throws EFapsException;
-
-    public abstract String getKey(final Parameter _parameter) throws EFapsException;
+    public abstract String getKey(final Parameter _parameter)
+        throws EFapsException;
 
 }
