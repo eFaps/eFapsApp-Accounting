@@ -208,6 +208,11 @@
             <property name="FilterType">PICKLIST</property>
             <property name="ModeSearch">READONLY</property>
         </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="Label">Sales_DocumentAbstract/Created.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
         <field name="docTaxInfo">
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Accounting_IncomingDocumentTable.docTaxInfo.Label</property>
