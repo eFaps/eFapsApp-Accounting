@@ -30,7 +30,6 @@
         <name>Accounting_IncomingRetentionMyDesk</name>
         <childs>
             <child>Sales_IncomingRetentionMyDesk</child>
-            <child>Sales_PaymentRetention_Report</child>
             <child>Sales_RetentionCertificateMyDesk</child>
             <child>Sales_IncomingRetentionCertificateMyDesk</child>
         </childs>
