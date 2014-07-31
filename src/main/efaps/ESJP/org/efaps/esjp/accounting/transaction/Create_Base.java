@@ -382,8 +382,6 @@ public abstract class Create_Base
                                     : new DateTime().withTime(0, 0, 0, 0);
 
         for (final String oid : oids) {
-            Context.getThreadContext()
-                 .setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY, _parameter.getInstance());
             final Instance docInst = Instance.get(oid);
             final String description = new FieldValue().getDescription(_parameter, docInst);
             final PrintQuery print = new PrintQuery(oid);

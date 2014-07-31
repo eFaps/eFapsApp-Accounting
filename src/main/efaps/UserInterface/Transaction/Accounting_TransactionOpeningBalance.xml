@@ -32,16 +32,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionOpeningBalance</name>
-        <!-- fields -->
-        <field name="setPeriod">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="setPeriodUIFieldValue"
-                name="Accounting_TransactionForm.setPeriod.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
-        </field>
         <field name="date">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>

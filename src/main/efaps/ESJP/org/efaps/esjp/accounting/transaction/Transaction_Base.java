@@ -110,11 +110,6 @@ public abstract class Transaction_Base
     extends CommonDocument
 {
     /**
-     * Key for the active Period to store it in the session.
-     */
-    public static final String PERIOD_SESSIONKEY = Transaction.class.getName() + ".ActiveAccountingPeriod";
-
-    /**
      * Temporary ident key for transactions.
      */
     protected static final String IDENTTEMP = "WMAFESMUDCHIPZAZG";
@@ -245,64 +240,6 @@ public abstract class Transaction_Base
             update.execute();
         }
         return ret;
-    }
-
-    /**
-     * Method is only used to store the calling Instance in the session ,so that
-     * it can be accessed from the subtables in this form.
-     *
-     * @param _parameter paremter as passed to an esjp
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return setPeriodUIFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        Instance instance = _parameter.getCallInstance();
-        if (instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())
-                        || instance.getType().isKindOf(CIAccounting.Transaction.getType())) {
-            final PrintQuery print = new PrintQuery(instance);
-            final SelectBuilder sel = new SelectBuilder().linkto(
-                            instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())
-                                            ? CIAccounting.AccountAbstract.PeriodAbstractLink
-                                            : CIAccounting.Transaction.PeriodLink).oid();
-            print.addSelect(sel);
-            print.execute();
-            instance = Instance.get(print.<String>getSelect(sel));
-        } else if (instance.getType().isKindOf(CIAccounting.ReportNodeAbstract.getType())) {
-            while (!instance.getType().isKindOf(CIAccounting.ReportNodeRoot.getType())) {
-                final PrintQuery print = new PrintQuery(instance);
-                final SelectBuilder sel = new SelectBuilder()
-                    .linkto(CIAccounting.ReportNodeTree.ParentLinkAbstract).oid();
-                print.addSelect(sel);
-                print.execute();
-                instance = Instance.get(print.<String>getSelect(sel));
-            }
-            final PrintQuery print = new PrintQuery(instance);
-            final SelectBuilder selPeriod = new SelectBuilder()
-                .linkto(CIAccounting.ReportNodeRoot.ReportLink)
-                .linkto(CIAccounting.ReportAbstract.PeriodLink).instance();
-            final SelectBuilder selReport = new SelectBuilder()
-                .linkto(CIAccounting.ReportNodeRoot.ReportLink).instance();
-            print.addSelect(selReport, selPeriod);
-            print.execute();
-            instance = print.<Instance>getSelect(selPeriod);
-            final Instance reportInst = print.<Instance>getSelect(selReport);
-            // for a multiple report there is no instance of a period in specific
-            if (reportInst.isValid() && reportInst.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
-                instance = reportInst;
-            }
-        } else if (instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-            final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
-            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
-                            .instance();
-            print.addSelect(selPeriodInst);
-            print.execute();
-            instance = print.<Instance>getSelect(selPeriodInst);
-
-        }
-        Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY, instance);
-        return new Return();
     }
 
     /**
@@ -767,7 +704,6 @@ public abstract class Transaction_Base
             multi.addSelect(selCurInst, selSalesAccInst);
             multi.addAttribute(CISales.TransactionAbstract.Amount);
             multi.execute();
-            new Period().evaluateCurrentPeriod(_parameter);
             while (multi.next()) {
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
                 final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
@@ -888,7 +824,7 @@ public abstract class Transaction_Base
      * @throws EFapsException on error
      */
     protected AccountInfo getTargetAccount4SalesAccount(final Parameter _parameter,
-                                                          final Instance _salesAccInst)
+                                                        final Instance _salesAccInst)
         throws EFapsException
     {
         final AccountInfo ret = new AccountInfo();

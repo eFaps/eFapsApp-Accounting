@@ -51,7 +51,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Import_Base.ImportAccount;
-import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -69,8 +68,9 @@ import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -87,6 +87,16 @@ public abstract class Period_Base
      * CacheKey for Periods.
      */
     protected static final String CACHEKEY = Period.class.getName() + ".CacheKey";
+
+    /**
+     * RequestKey for current Periods.
+     */
+    protected static final String REQKEY4CUR = Period.class.getName() + ".RequestKey4CurrentPeriod";
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Period.class);
 
     /**
      * Default setting to be added on creation of a period.
@@ -355,52 +365,116 @@ public abstract class Period_Base
     public Instance evaluateCurrentPeriod(final Parameter _parameter)
         throws EFapsException
     {
-        Instance ret = (Instance) Context.getThreadContext()
-                        .getSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY);
+        return evaluateCurrentPeriod(_parameter, _parameter.getInstance());
+    }
 
-        if (ret == null && _parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-            final Instance inst = _parameter.getInstance();
-            if (inst.getType().isKindOf(CIAccounting.Period.getType())) {
-                ret = inst;
-            } else if (inst.getType().isKindOf(CIAccounting.Account2ObjectAbstract.getType())) {
-                final PrintQuery print = new PrintQuery(inst);
-                final SelectBuilder sel = SelectBuilder.get()
-                                .linkto(CIAccounting.Account2ObjectAbstract.FromAccountAbstractLink)
-                                .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
-                print.addSelect(sel);
-                print.execute();
-                ret = print.<Instance>getSelect(sel);
-            } else  if (inst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
-                final PrintQuery print = new PrintQuery(inst);
-                final SelectBuilder sel = SelectBuilder.get()
-                                .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
-                print.addSelect(sel);
-                print.execute();
-                ret = print.<Instance>getSelect(sel);
-            } else  if (inst.getType().isKindOf(CIAccounting.Transaction.getType())) {
-                final PrintQuery print = new PrintQuery(inst);
-                final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.Transaction.PeriodLink)
-                                .instance();
-                print.addSelect(selPeriodInst);
-                print.execute();
-                ret = print.<Instance>getSelect(selPeriodInst);
-            } else  if (inst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-                final PrintQuery print = new CachedPrintQuery(inst, SubPeriod_Base.CACHEKEY);
-                final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
-                                .instance();
-                print.addSelect(selPeriodInst);
-                print.execute();
-                ret = print.<Instance>getSelect(selPeriodInst);
-            } else  if (inst.getType().isKindOf(CIAccounting.TransactionPositionAbstract.getType())) {
-                final PrintQuery print = new PrintQuery(inst);
-                final SelectBuilder selPeriodInst = SelectBuilder.get()
-                                .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
-                                .linkto(CIAccounting.Transaction.PeriodLink)
-                                .instance();
-                print.addSelect(selPeriodInst);
-                print.execute();
-                ret = print.<Instance>getSelect(selPeriodInst);
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _instance instance to be used explicitly
+     * @return the instance of the Period
+     * @throws EFapsException on error
+     */
+    public Instance evaluateCurrentPeriod(final Parameter _parameter,
+                                          final Instance _instance)
+        throws EFapsException
+    {
+        Instance ret = null;
+        if (Context.getThreadContext().containsRequestAttribute(Period.REQKEY4CUR)) {
+            ret = (Instance) Context.getThreadContext().getRequestAttribute(Period.REQKEY4CUR);
+        } else {
+            Instance instance = _instance;
+            // this happens only on create mode
+            if (instance != null && !instance.isValid()
+                            || instance == null && _parameter.getCallInstance() != null) {
+                instance = _parameter.getCallInstance();
             }
+
+            if (instance != null && instance.isValid()) {
+                if (instance.getType().isKindOf(CIAccounting.Period.getType())) {
+                    ret = instance;
+                } else if (instance.getType().isKindOf(CIAccounting.Account2ObjectAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder sel = SelectBuilder.get()
+                                    .linkto(CIAccounting.Account2ObjectAbstract.FromAccountAbstractLink)
+                                    .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
+                    print.addSelect(sel);
+                    print.execute();
+                    ret = print.<Instance>getSelect(sel);
+                } else if (instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder sel = SelectBuilder.get()
+                                    .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
+                    print.addSelect(sel);
+                    print.execute();
+                    ret = print.<Instance>getSelect(sel);
+                } else if (instance.getType().isKindOf(CIAccounting.Transaction.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.Transaction.PeriodLink)
+                                    .instance();
+                    print.addSelect(selPeriodInst);
+                    print.execute();
+                    ret = print.<Instance>getSelect(selPeriodInst);
+                } else if (instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+                    final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
+                    final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                                    .instance();
+                    print.addSelect(selPeriodInst);
+                    print.execute();
+                    ret = print.<Instance>getSelect(selPeriodInst);
+                } else if (instance.getType().isKindOf(CIAccounting.TransactionPositionAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder selPeriodInst = SelectBuilder.get()
+                                    .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
+                                    .linkto(CIAccounting.Transaction.PeriodLink)
+                                    .instance();
+                    print.addSelect(selPeriodInst);
+                    print.execute();
+                    ret = print.<Instance>getSelect(selPeriodInst);
+                } else if (instance.getType().isKindOf(CIAccounting.CaseAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder selPeriodInst = SelectBuilder.get()
+                                    .linkto(CIAccounting.CaseAbstract.PeriodAbstractLink).instance();
+                    print.addSelect(selPeriodInst);
+                    print.execute();
+                    ret = print.<Instance>getSelect(selPeriodInst);
+                } else if (instance.getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    print.addAttribute(CISales.PaymentDocumentIOAbstract.Date);
+                    print.executeWithoutAccessCheck();
+                    ret = getCurrentPeriodByDate(_parameter,
+                                    print.<DateTime>getAttribute(CISales.PaymentDocumentIOAbstract.Date));
+                }
+            }
+            // last way to get the valid period
+            if (ret == null) {
+                ret = getCurrentPeriodByDate(_parameter, new DateTime());
+            } else {
+                Context.getThreadContext().setRequestAttribute(Period.REQKEY4CUR, ret);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _date date the period will be searched for
+     * @return instance of the period
+     * @throws EFapsException on error
+     */
+    protected Instance getCurrentPeriodByDate(final Parameter _parameter,
+                                              final DateTime _date)
+        throws EFapsException
+    {
+        LOG.warn("Evaluation Period by date only!!!!!");
+        Instance ret = null;
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Period.Status, Status.find(CIAccounting.PeriodStatus.Open));
+        queryBldr.addWhereAttrGreaterValue(CIAccounting.Period.ToDate, _date);
+        queryBldr.addWhereAttrLessValue(CIAccounting.Period.FromDate, _date);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        if (query.next()) {
+            ret = query.getCurrentValue();
         }
         return ret;
     }

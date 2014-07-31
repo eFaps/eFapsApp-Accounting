@@ -32,13 +32,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4DocToBookForm</name>
-        <field name="setPeriod">
-            <property name="ModeCreate">HIDDEN</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="setPeriodUIFieldValue"
-                name="Accounting_TransactionCreate4DocToBookForm.setPeriod.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
-        </field>
          <field name="caseGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>

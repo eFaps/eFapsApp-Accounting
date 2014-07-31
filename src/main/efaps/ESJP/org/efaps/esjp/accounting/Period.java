@@ -41,4 +41,9 @@ public class Period
      */
     public static final String CACHEKEY = Period_Base.CACHEKEY;
 
+    /**
+     * RequestKey for current Periods.
+     */
+    public static final String REQKEY4CUR = Period_Base.REQKEY4CUR;
+
 }

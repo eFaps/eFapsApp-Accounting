@@ -20,24 +20,18 @@
   Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>82fb58f6-c92e-479b-975a-acb7b681888e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree</name>
-        <!-- targets -->
         <target>
             <menu>Accounting_SubPeriodTree_Menu</menu>
             <form>Accounting_SubPeriodForm</form>
-            <evaluate method="setPeriodInstance" program="org.efaps.esjp.accounting.SubPeriod"></evaluate>
         </target>
         <type>Accounting_SubPeriod</type>
-
         <childs>
             <child>Accounting_SubPeriodTree_AccountStructurBrowser</child>
             <child>Accounting_SubPeriodTree_Document</child>
@@ -48,8 +42,6 @@
             <child>Accounting_SubPeriodTree_PettyCashReceipt</child>
             <child>Accounting_SubPeriodTree_Report</child>
         </childs>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

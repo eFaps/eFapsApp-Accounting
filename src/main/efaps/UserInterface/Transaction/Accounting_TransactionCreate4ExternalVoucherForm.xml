@@ -32,18 +32,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4ExternalVoucherForm</name>
-        <field name="setPeriod">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="setPeriodUIFieldValue"
-                name="Accounting_TransactionCreate4ExternalForm.setPeriod.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="case">true</property>
-            </trigger>
-        </field>
-         <field name="caseGroup" character="Group">
+        <field name="caseGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">4</property>
         </field>

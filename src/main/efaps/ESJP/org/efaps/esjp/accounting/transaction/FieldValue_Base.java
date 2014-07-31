@@ -229,8 +229,7 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         Return ret = new Return();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String type = (String) properties.get("Type");
+        final String type = getProperty(_parameter,"Type");
         if (type != null) {
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
             _parameter.put(ParameterValues.INSTANCE, periodInstance);
@@ -280,7 +279,7 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         Instance inst = _parameter.getCallInstance();
-        if (!inst.getType().getUUID().equals(CIAccounting.Period)) {
+        if (!inst.getType().isKindOf(CIAccounting.Period.getType())) {
             inst = new Period().evaluateCurrentPeriod(_parameter);
         }
         final String baseCurName = new Period().getCurrency(inst).getName();
@@ -299,8 +298,7 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String type = (String) properties.get("Type");
+        final String type = getProperty(_parameter, "Type");
         ret.put(ReturnValues.VALUES, Type.get(type).getId());
         return ret;
     }

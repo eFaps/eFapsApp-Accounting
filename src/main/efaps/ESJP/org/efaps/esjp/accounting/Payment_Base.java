@@ -61,7 +61,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
@@ -290,7 +289,7 @@ public abstract class Payment_Base
                             } else {
                                 final BigDecimal[] rates = priceUtil.getRates(_parameter,
                                                 rateCurrInst,
-                                                Instance.get(CIERP.Currency.getType(), (currId).toString()));
+                                                Instance.get(CIERP.Currency.getType(), currId.toString()));
                                 temp = pos.multiply(rates[2]);
                             }
                             paid = paid.add(temp);
@@ -308,7 +307,7 @@ public abstract class Payment_Base
                         } else {
                             final BigDecimal[] rates = priceUtil.getRates(_parameter,
                                             rateCurrInst,
-                                            Instance.get(CIERP.Currency.getType(), (currId).toString()));
+                                            Instance.get(CIERP.Currency.getType(), currId.toString()));
                             paid = paid.add(temp.multiply(rates[2]));
                         }
                     }
@@ -687,24 +686,6 @@ public abstract class Payment_Base
         html.append("</select>");
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
-
-    /**
-     * Update the rate fields on change of the date value.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return list needed for field update event
-     * @throws EFapsException on error
-     */
-    public Return update4Period(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String periodOid = _parameter.getParameterValue("period");
-        final Instance periodInst = Instance.get(periodOid);
-        Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY,
-                        periodInst.isValid() ? periodInst : null);
         return ret;
     }
 

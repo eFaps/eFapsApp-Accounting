@@ -349,7 +349,8 @@ public abstract class TransInfo_Base
         throws EFapsException
     {
         final Period period = new Period();
-        final Instance periodInst = period.evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = period.evaluateCurrentPeriod(_parameter,
+                        _docInfo.getCaseInst() == null ? _docInfo.getInstance() : _docInfo.getCaseInst());
         final CurrencyInst currInst = period.getCurrency(periodInst);
         final TransInfo ret = new TransInfo()
             .setType(CIAccounting.Transaction.getType())

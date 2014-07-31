@@ -30,7 +30,6 @@ import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.Command;
@@ -40,8 +39,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
@@ -66,37 +63,6 @@ public abstract class SubPeriod_Base
      * CacheKey for SubPeriods.
      */
     public static final String CACHEKEY = SubPeriod.class.getName() + ".CacheKey";
-
-    /**
-     * Set the related period as an instance key.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return setPeriodInstance(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance subPeriodInst;
-        if (_parameter.getInstance() != null) {
-            subPeriodInst = _parameter.getInstance();
-        } else {
-            subPeriodInst = Instance.get((String) _parameter.get(ParameterValues.OTHERS));
-        }
-        final PrintQuery print = new CachedPrintQuery(subPeriodInst, SubPeriod_Base.CACHEKEY);
-        final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
-                        .instance();
-        print.addSelect(selPeriodInst);
-        print.execute();
-        final Instance periodInst = print.<Instance>getSelect(selPeriodInst);
-
-        if (periodInst != null && periodInst.isValid()) {
-            Context.getThreadContext().setSessionAttribute(Transaction_Base.PERIOD_SESSIONKEY, periodInst);
-        }
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, subPeriodInst);
-        return ret;
-    }
 
     /**
      * Called from a tree menu command to present the documents that are not
