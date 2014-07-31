@@ -42,7 +42,7 @@
             <form>Accounting_TransactionCreate4DocToBookForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
                 method="create4Doc" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
+            <validate program="org.efaps.esjp.accounting.transaction.Validation"
                 method="validate" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
