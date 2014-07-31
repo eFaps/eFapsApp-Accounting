@@ -31,6 +31,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_MyDesk</name>
+        <icon>Accounting_MyDeskImg</icon>
         <childs>
             <child>Accounting_PeriodMyDesk</child>
             <child>Accounting_SubPeriodMyDesk</child>
