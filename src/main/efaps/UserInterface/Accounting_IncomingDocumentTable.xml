@@ -103,6 +103,10 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="created">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Created</property>
             <property name="Label">Sales_DocumentAbstract/Created.Label</property>
             <property name="ModeSearch">READONLY</property>
@@ -201,6 +205,10 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="created">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Created</property>
             <property name="Label">Sales_DocumentAbstract/Created.Label</property>
             <property name="ModeSearch">READONLY</property>
