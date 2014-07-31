@@ -251,6 +251,17 @@ public abstract class Create_Base
      * @return new empty Return
      * @throws EFapsException on error.
      */
+    public Return create4IncomingExchange(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4Doc(_parameter);
+    }
+
+    /**
+     * @param _parameter as passed from the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error.
+     */
     public Return create4FundsToBeSettled(final Parameter _parameter)
         throws EFapsException
     {
