@@ -40,6 +40,7 @@
             <execute program="org.efaps.esjp.accounting.ExternalVoucher" method="create" >
                 <property name="StatusGroup">Accounting_ExternalVoucherStatus</property>
                 <property name="Status">Open</property>
+                <property name="JasperReport">Accounting_Transaction</property>
             </execute>
             <validate program="org.efaps.esjp.accounting.transaction.Validation" method="validate" >
                 <property name="Types">Accounting_ExternalVoucher</property>

@@ -115,8 +115,7 @@ public abstract class ExternalVoucher_Base
 
         _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
         ParameterUtil.setParmeterValue(_parameter, "document", createdDoc.getInstance().getOid());
-        new Create().create4External(_parameter);
-        return new Return();
+        return  new Create().create4External(_parameter);
     }
 
     /**
