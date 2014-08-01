@@ -22,46 +22,40 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>85e4d6bf-6811-409c-95fd-0e70822e1922</uuid>
+    <uuid>1a67fd76-da85-4fe3-8854-45018103528c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateDocument</name>
-
+        <name>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_GainLoss4DocumentAccountForm</form>
-            <execute method="createGainLoss4DocumentAccount"
-                program="org.efaps.esjp.accounting.transaction.Recalculate">
-            </execute>
+            <form>Accounting_TransactionRecalculateForm</form>
+            <execute method="recalculateRate"
+                program="org.efaps.esjp.accounting.transaction.Recalculate" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateDocument.UI_ACCESSCHECK.1"
+                name="Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateRate.UI_ACCESSCHECK.1"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 index="1">
                 <property name="Status">Open</property>
                 <property name="Select4Instance">linkto[PeriodLink].instance</property>
             </trigger>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateDocument.UI_ACCESSCHECK.2"
+                name="Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateRate.UI_ACCESSCHECK.2"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 index="2">
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">800</property>
-        <property name="AskUser">true</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
-        <property name="Label">Accounting_PeriodTree_DocsToBook_Menu_Action_RecalculateDocument.Label</property>
+        <property name="Label">Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate.Title</property>
     </definition>
 </ui-command>

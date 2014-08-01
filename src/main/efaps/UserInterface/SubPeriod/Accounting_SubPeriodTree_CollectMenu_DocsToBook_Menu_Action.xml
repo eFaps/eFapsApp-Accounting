@@ -19,22 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d608d5a4-aa35-4011-bf26-238994ab03a6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_DocsToBook_Menu_Action</name>
-        <!-- childs -->
+        <name>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action</name>
         <childs>
-            <child>Accounting_SubPeriodTree_DocsToBook_Menu_Action_Book</child>
-            <child>Accounting_SubPeriodTree_DocsToBook_Menu_Action_MassiveBook</child>
-            <child>Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateRate</child>
-            <child>Accounting_SubPeriodTree_DocsToBook_Menu_Action_RecalculateDocument</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action_Book</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateRate</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action_RecalculateDocument</child>
         </childs>
-        <property name="Label">Accounting_PeriodTree_DocsToBook_Menu_Action.Label</property>
+        <property name="Label">Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action.Label</property>
     </definition>
 </ui-menu>

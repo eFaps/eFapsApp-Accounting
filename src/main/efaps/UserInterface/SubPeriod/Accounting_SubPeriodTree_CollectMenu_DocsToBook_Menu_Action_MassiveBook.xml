@@ -22,15 +22,12 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>602578bc-6535-414c-91c2-797a38c2da16</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_DocsToBook_Menu_Action_MassiveBook</name>
-
+        <name>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -52,7 +49,6 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
@@ -62,6 +58,7 @@
         <property name="Submit">true</property>
         <property name="AskUser">true</property>
         <property name="SubmitSelectedRows">-1</property>
-        <property name="Label">Accounting_PeriodTree_DocsToBook_Menu_Action_MassiveBook.Label</property>
+        <property name="Label">Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_CollectMenu_DocsToBook_Menu_Action_MassiveBook.Title</property>
     </definition>
 </ui-command>

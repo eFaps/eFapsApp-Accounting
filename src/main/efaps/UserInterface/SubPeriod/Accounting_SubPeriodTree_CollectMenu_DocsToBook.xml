@@ -27,13 +27,13 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_DocsToBook</name>
+        <name>Accounting_SubPeriodTree_CollectMenu_DocsToBook</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_SubPeriodTree_DocsToBook_Menu</menu>
+            <menu>Accounting_SubPeriodTree_CollectMenu_DocsToBook_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getDocumentsToBook" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">Sales_DocumentSumAbstract</property>
@@ -55,9 +55,9 @@
                 <property name="Status06">Paid</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_PeriodTree_DocsToBook.Label</property>
+        <property name="Label">Accounting_SubPeriodTree_CollectMenu_DocsToBook.Label</property>
+        <property name="TargetTitle">Accounting_SubPeriodTree_CollectMenu_DocsToBook.Title</property>
     </definition>
 </ui-command>
