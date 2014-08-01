@@ -57,7 +57,7 @@
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_SubPeriodTree_CollectMenu_DocsToBook.Label</property>
-        <property name="TargetTitle">Accounting_SubPeriodTree_CollectMenu_DocsToBook.Title</property>
+        <property name="Label">Accounting_PeriodTree_CollectMenu_DocsToBook.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_CollectMenu_DocsToBook.Title</property>
     </definition>
 </ui-command>
