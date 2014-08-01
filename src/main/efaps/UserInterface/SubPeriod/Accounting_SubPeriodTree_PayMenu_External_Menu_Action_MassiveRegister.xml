@@ -22,33 +22,26 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>68ab4155-dc9c-4766-ad15-bd31c8e1199b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_External_Menu_Action_MassiveRegister</name>
-
+        <name>Accounting_SubPeriodTree_PayMenu_External_Menu_Action_MassiveRegister</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
             <form>Accounting_MassiveRegister4ExternalForm</form>
-            <execute method="create4DocMassive" program="org.efaps.esjp.accounting.transaction.Create"/>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_SubPeriodTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK.1"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                index="1">
+            <execute method="create4DocMassive" program="org.efaps.esjp.accounting.transaction.Create" />
+            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Accounting_SubPeriodTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK.1"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI" index="1">
                 <property name="Status">Open</property>
                 <property name="Select4Instance">linkto[PeriodLink].instance</property>
             </trigger>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_SubPeriodTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK.2"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                index="2">
+            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Accounting_SubPeriodTree_External_Menu_Action_MassiveRegister.UI_ACCESSCHECK.2"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI" index="2">
                 <property name="Status">Open</property>
             </trigger>
         </target>
@@ -62,6 +55,7 @@
         <property name="Submit">true</property>
         <property name="AskUser">true</property>
         <property name="SubmitSelectedRows">-1</property>
-        <property name="Label">Accounting_PeriodTree_External_Menu_Action_MassiveRegister.Label</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu_External_Menu_Action_MassiveRegister.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_External_Menu_Action_MassiveRegister.Title</property>
     </definition>
 </ui-command>

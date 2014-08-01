@@ -22,18 +22,16 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>584a6fbe-ef53-4c2c-93c9-65c196cac21c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_External_Menu_Action_Register</name>
+        <name>Accounting_SubPeriodTree_PayMenu_External_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
-        </access><!-- target definitions -->
+        </access>
         <target>
             <form>Accounting_TransactionCreate4ExternalForm</form>
             <execute method="create4External"
@@ -54,7 +52,6 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
@@ -62,6 +59,7 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
-        <property name="Label">Accounting_PeriodTree_External_Menu_Action_Register.Label</property>
+        <property name="Label">Accounting_SubPeriodTree_PayMenu_External_Menu_Action_Register.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_External_Menu_Action_Register.Title</property>
     </definition>
 </ui-command>

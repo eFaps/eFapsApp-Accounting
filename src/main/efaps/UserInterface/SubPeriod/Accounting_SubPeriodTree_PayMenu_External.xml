@@ -22,19 +22,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>adec5e94-d73a-477a-bd1e-d137521b0e20</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_External</name>
+        <name>Accounting_SubPeriodTree_PayMenu_External</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_SubPeriodTree_External_Menu</menu>
+            <menu>Accounting_SubPeriodTree_PayMenu_External_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getExternals" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type01">Sales_IncomingInvoice</property>
@@ -74,6 +73,7 @@
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_PeriodTree_External.Label</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu_External.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_External.Title</property>
     </definition>
 </ui-command>

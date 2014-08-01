@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,24 +22,24 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>82fb58f6-c92e-479b-975a-acb7b681888e</uuid>
+    <uuid>16c71585-5e1d-47f0-b383-9b34bedfc757</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree</name>
+        <name>Accounting_SubPeriodTree_PayMenu</name>
         <target>
-            <menu>Accounting_SubPeriodTree_Menu</menu>
-            <form>Accounting_SubPeriodForm</form>
+            <form>Accounting_SubPeriodTree_PayMenuForm</form>
         </target>
-        <type>Accounting_SubPeriod</type>
         <childs>
-            <child>Accounting_SubPeriodTree_AccountStructurBrowser</child>
-            <child>Accounting_SubPeriodTree_PayMenu</child>
-            <child>Accounting_SubPeriodTree_CollectMenu</child>
-            <child>Accounting_SubPeriodTree_Report</child>
+            <child>Accounting_SubPeriodTree_PayMenu_External</child>
+            <child>Accounting_SubPeriodTree_PayMenu_ExternalToBook</child>
+            <child>Accounting_SubPeriodTree_PayMenu_Payment</child>
+            <child>Accounting_SubPeriodTree_PayMenu_PettyCashReceipt</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu.Title</property>
     </definition>
 </ui-menu>

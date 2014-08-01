@@ -22,15 +22,12 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>b7b08d6c-a8f4-4a20-8984-d968a65a8853</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_External_Menu_Action_Create</name>
-
+        <name>Accounting_SubPeriodTree_PayMenu_External_Menu_Action_Create</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -41,8 +38,7 @@
                 <property name="StatusGroup">Accounting_ExternalVoucherStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validate"
-                program="org.efaps.esjp.accounting.transaction.Transaction">
+            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
             <validate program="org.efaps.esjp.accounting.ExternalVoucher" method="validate" index="1">
@@ -54,17 +50,13 @@
                 <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
                 <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
             </validate>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_SubPeriodTree_External_Menu_Action_Create.UI_ACCESSCHECK.1"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                index="1">
+            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Accounting_SubPeriodTree_External_Menu_Action_Create.UI_ACCESSCHECK.1"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI" index="1">
                 <property name="Status">Open</property>
                 <property name="Select4Instance">linkto[PeriodLink].instance</property>
             </trigger>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Accounting_SubPeriodTree_External_Menu_Action_Create.UI_ACCESSCHECK.2"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                index="2">
+            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Accounting_SubPeriodTree_External_Menu_Action_Create.UI_ACCESSCHECK.2"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI" index="2">
                 <property name="Status">Open</property>
             </trigger>
             <command>Sales_IncomingInvoice_ShowRevision</command>
@@ -76,6 +68,7 @@
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1450</property>
-        <property name="Label">Accounting_PeriodTree_External_Menu_Action_Create.Label</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu_External_Menu_Action_Create.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_External_Menu_Action_Create.Title</property>
     </definition>
 </ui-command>
