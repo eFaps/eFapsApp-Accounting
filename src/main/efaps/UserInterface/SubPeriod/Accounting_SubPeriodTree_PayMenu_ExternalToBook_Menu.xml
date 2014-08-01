@@ -22,18 +22,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>b1240545-b82b-464a-a834-3b6fec5bbce0</uuid>
+    <uuid>9780373e-9880-43c6-86b2-10568d8cb677</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_ExternalToBook_Menu_Action</name>
+        <name>Accounting_SubPeriodTree_PayMenu_ExternalToBook_Menu</name>
         <childs>
-            <child>Accounting_SubPeriodTree_ExternalToBook_Menu_Action_Book</child>
-            <child>Accounting_SubPeriodTree_ExternalToBook_Menu_Action_MassiveBook</child>
+            <child>Accounting_SubPeriodTree_PayMenu_ExternalToBook_Menu_Action</child>
         </childs>
-        <property name="Label">Accounting_PeriodTree_ExternalToBook_Menu_Action.Label</property>
     </definition>
 </ui-menu>

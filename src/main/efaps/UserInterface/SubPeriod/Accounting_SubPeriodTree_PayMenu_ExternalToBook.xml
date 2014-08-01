@@ -22,19 +22,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>aa424ad0-e7ab-435b-a426-f52afe5cf402</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_ExternalToBook</name>
+        <name>Accounting_SubPeriodTree_PayMenu_ExternalToBook</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_SubPeriodTree_ExternalToBook_Menu</menu>
+            <menu>Accounting_SubPeriodTree_PayMenu_ExternalToBook_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getExternalsToBook" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">ERP_DocumentAbstract</property>
@@ -52,9 +51,9 @@
                 <property name="Status06">!Booked</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_PeriodTree_ExternalToBook.Label</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu_ExternalToBook.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_ExternalToBook.Title</property>
     </definition>
 </ui-command>
