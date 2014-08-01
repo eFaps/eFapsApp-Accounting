@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,35 +22,32 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>9026a967-03d7-4ba5-ba49-c24a481b2b13</uuid>
+    <uuid>5a03e3ce-dcc9-43e3-8c02-d4ec6a3a30f3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_PettyCashReceipt_Menu_Action_Register</name>
+        <name>Accounting_SubPeriodTree_PayMenu_PettyCashReceipt</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4PettyCashReceiptForm</form>
-            <execute method="create4PettyCashReceipt"
-                program="org.efaps.esjp.accounting.ExternalVoucher" />
-            <validate method="validate"
-                program="org.efaps.esjp.accounting.transaction.Transaction">
-                <property name="Types">Accounting_ExternalVoucher</property>
-            </validate>
+            <menu>Accounting_SubPeriodTree_PayMenu_PettyCashReceipt_Menu</menu>
+            <table>Accounting_SubPeriodPettyCashReceiptTable</table>
+            <evaluate program="org.efaps.esjp.accounting.SubPeriod" method="getPettyCashReceipt">
+                <property name="PettyCashBalanceStatus">Verified</property>
+                <property name="Type01">Sales_PettyCashReceipt</property>
+                <property name="Type02">Sales_IncomingCreditNote</property>
+                <property name="StatusGroup01">Sales_PettyCashReceiptStatus</property>
+                <property name="Status01">Closed</property>
+                <property name="StatusGroup02">Sales_IncomingCreditNoteStatus</property>
+                <property name="Status02">Paid</property>
+            </evaluate>
         </target>
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_Transaction</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="Submit">true</property>
-        <property name="Label">Accounting_PeriodTree_PettyCashReceipt_Menu_Action_Register.Label</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu_PettyCashReceipt.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_PettyCashReceipt.Title</property>
     </definition>
 </ui-command>

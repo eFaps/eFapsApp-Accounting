@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,17 +22,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>1d047cfc-a770-46dc-897c-0bcc0a7137c1</uuid>
+    <uuid>d9be6cd8-4584-44ad-b7b2-118db4c412b6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_PettyCashReceipt_Menu_Action</name>
+        <name>Accounting_SubPeriodTree_PayMenu_PettyCashReceipt_Menu</name>
         <childs>
-            <child>Accounting_SubPeriodTree_PettyCashReceipt_Menu_Action_Register</child>
+            <child>Accounting_SubPeriodTree_PayMenu_PettyCashReceipt_Menu_Action</child>
         </childs>
-        <property name="Label">Accounting_PeriodTree_PettyCashReceipt_Menu_Action.Label</property>
     </definition>
 </ui-menu>
