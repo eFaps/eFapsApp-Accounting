@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.0.4-->
+<!-- Created with Jaspersoft Studio version 5.5.1-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="7e65f5a8-4957-4494-a75f-e437820b673b">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="Instance" value="true"/>
 		<property name="hasSubReport" value="true"/>
@@ -39,11 +48,11 @@
 		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
 	</field>
 	<pageHeader>
-		<band height="48">
+		<band height="100">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement uuid="2ff247bc-e32f-43ce-9ab7-4b61f6ff7f57" x="0" y="16" width="70" height="16">
+				<reportElement x="0" y="16" width="70" height="16" uuid="2ff247bc-e32f-43ce-9ab7-4b61f6ff7f57">
 					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -52,7 +61,7 @@
 				<text><![CDATA[RUC:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a7efcc5e-239c-4927-8bd8-c305fe6b1132" x="0" y="0" width="70" height="16">
+				<reportElement x="0" y="0" width="70" height="16" uuid="a7efcc5e-239c-4927-8bd8-c305fe6b1132">
 					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -61,21 +70,21 @@
 				<text><![CDATA[EMPRESA:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f" x="70" y="16" width="369" height="16"/>
+				<reportElement x="70" y="16" width="469" height="16" uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="3eb75a7b-149c-4ebc-a756-74da899f703a" x="70" y="0" width="369" height="16"/>
+				<reportElement x="70" y="0" width="469" height="16" uuid="3eb75a7b-149c-4ebc-a756-74da899f703a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="faa68e62-1973-4320-baa7-badb00ffe14f" x="0" y="32" width="70" height="16">
+				<reportElement x="0" y="32" width="70" height="16" uuid="faa68e62-1973-4320-baa7-badb00ffe14f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -87,7 +96,7 @@
 				<text><![CDATA[EJERCICIO:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="1b9d59b9-393c-4925-a359-d765fb3a8f35" x="70" y="32" width="369" height="16">
+				<reportElement x="70" y="32" width="469" height="16" uuid="1b9d59b9-393c-4925-a359-d765fb3a8f35">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -96,58 +105,54 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{Period}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="0" y="60" width="539" height="16" uuid="74be226a-05d8-4a8d-9b4a-b65bbb46eb10"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Voucher Asiento: " + $F{identifier}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MMMM, yyyy" isBlankWhenNull="true">
+				<reportElement x="0" y="76" width="539" height="16" uuid="3fb0f5d7-e340-476e-b055-9a515949b28e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="32">
+		<band height="54">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField>
-				<reportElement uuid="4facec97-ee7c-4a40-b0b4-8734d96f8ec5" x="110" y="0" width="140" height="16"/>
-				<textElement/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="110" y="16" width="140" height="16" isPrintWhenDetailOverflows="true" uuid="4facec97-ee7c-4a40-b0b4-8734d96f8ec5"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="8898dbe2-28b7-4606-a863-39a03d070e90" x="50" y="16" width="350" height="16"/>
-				<textElement/>
+				<reportElement x="110" y="32" width="429" height="16" uuid="8898dbe2-28b7-4606-a863-39a03d070e90"/>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="915e9910-f869-448c-b8bb-24f9494b1d97" x="460" y="16" width="79" height="16"/>
-				<textElement/>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="110" y="0" width="140" height="16" isPrintWhenDetailOverflows="true" uuid="915e9910-f869-448c-b8bb-24f9494b1d97"/>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="d44caed8-4dd8-4e35-bc96-499afca442e6" x="0" y="0" width="110" height="16"/>
-				<textElement/>
+				<reportElement x="0" y="16" width="110" height="16" uuid="d44caed8-4dd8-4e35-bc96-499afca442e6"/>
 				<text><![CDATA[Número Correlativo:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="c8e0daf7-7721-42d8-bd8a-01110a610a3e" x="250" y="0" width="100" height="16"/>
-				<textElement/>
-				<text><![CDATA[Voucher Asiento:]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="74be226a-05d8-4a8d-9b4a-b65bbb46eb10" x="350" y="0" width="110" height="16"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{identifier}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement uuid="2d741008-dcc2-4548-be61-f4ca3395d3b1" x="0" y="16" width="50" height="16">
+				<reportElement x="0" y="32" width="110" height="16" uuid="2d741008-dcc2-4548-be61-f4ca3395d3b1">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
-				<textElement/>
 				<text><![CDATA[Glosa:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="1dbb4ad4-4123-495f-82d6-5ab34156847b" x="400" y="16" width="60" height="16">
+				<reportElement x="0" y="0" width="110" height="16" uuid="1dbb4ad4-4123-495f-82d6-5ab34156847b">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement/>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 		</band>
@@ -156,7 +161,7 @@
 		<band height="63" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<subreport isUsingCache="false">
-				<reportElement uuid="b54fc070-b7fc-406b-9dc0-348f747cad06" x="0" y="0" width="539" height="60">
+				<reportElement x="0" y="0" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 				</reportElement>
 				<subreportParameter name="EFAPS_DEFINITION"/>
@@ -164,27 +169,30 @@
 				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionPosition"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="63" splitType="Stretch">
+		<band height="93" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<subreport isUsingCache="false">
-				<reportElement uuid="b54fc070-b7fc-406b-9dc0-348f747cad06" x="0" y="0" width="539" height="60"/>
+				<reportElement x="0" y="30" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionDocuments")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionDocuments"]]></subreportExpression>
 			</subreport>
+			<staticText>
+				<reportElement x="0" y="10" width="139" height="20" uuid="a45af7cb-383a-4fe3-8c7a-29bb2a2a63f3"/>
+				<text><![CDATA[Documento Relacionados:]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="20">
+		<band height="41">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="1f731de8-9bc4-4f64-9640-1efdb4ea22d3" x="440" y="0" width="100" height="16"/>
-				<textElement/>
+				<reportElement x="440" y="0" width="99" height="16" uuid="1f731de8-9bc4-4f64-9640-1efdb4ea22d3"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="f93e4a40-8798-47d8-94ab-2913dd7a5ef0" x="205" y="0" width="84" height="16">
+				<reportElement x="205" y="0" width="84" height="16" uuid="f93e4a40-8798-47d8-94ab-2913dd7a5ef0">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 				</reportElement>
@@ -192,7 +200,7 @@
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}+ " / "]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement uuid="36b516ad-294f-46fd-b76e-c1ad0a45b013" x="289" y="0" width="40" height="16">
+				<reportElement x="289" y="0" width="40" height="16" uuid="36b516ad-294f-46fd-b76e-c1ad0a45b013">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -201,6 +209,16 @@
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="0" width="539" height="1" uuid="52182206-031c-45a4-beb4-0b310a456158">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</pageFooter>
 </jasperReport>

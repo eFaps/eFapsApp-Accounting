@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 5.5.1-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionDocuments" language="groovy" pageWidth="539" pageHeight="595" columnWidth="539" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ec7b256b-3c41-4a70-ba82-927a4489e393">
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="Types" value="Accounting_Transaction2ERPDocument"/>
@@ -21,16 +21,16 @@
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="linkto[ToLinkAbstract].attribute[Date]"/>
 	</field>
-	<field name="status" class="java.lang.Long">
-		<property name="Select" value="linkto[ToLinkAbstract].attribute[StatusAbstract]"/>
+	<field name="contactName" class="java.lang.String">
+		<property name="Select" value="linkto[ToLinkAbstract].linkto[Contact].attribute[Name]"/>
 	</field>
 	<sortField name="position"/>
 	<columnHeader>
-		<band height="16">
+		<band height="12">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement uuid="17efa365-203c-4b41-a076-bc5b91c6a0b4" x="0" y="0" width="80" height="16">
+				<reportElement mode="Opaque" x="0" y="0" width="80" height="12" backcolor="#BFBFBF" uuid="17efa365-203c-4b41-a076-bc5b91c6a0b4">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -45,10 +45,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[TIPO]]></text>
+				<text><![CDATA[Tipo]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="b2416132-d8e9-4dfd-a32e-6421839e83fb" x="80" y="0" width="80" height="16">
+				<reportElement mode="Opaque" x="80" y="0" width="80" height="12" backcolor="#BFBFBF" uuid="b2416132-d8e9-4dfd-a32e-6421839e83fb">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -67,12 +67,13 @@
 				<text><![CDATA[Nº]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="0f8b2e8a-8a37-4b8f-93dd-6c169665c0e6" x="160" y="0" width="100" height="16">
+				<reportElement mode="Opaque" x="160" y="0" width="100" height="12" backcolor="#BFBFBF" uuid="0f8b2e8a-8a37-4b8f-93dd-6c169665c0e6">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
 				</reportElement>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -83,10 +84,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[CÓDIGO]]></text>
+				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3ad7ee3f-2a9f-4bed-8b71-eb3d04713210" x="260" y="0" width="90" height="16">
+				<reportElement mode="Opaque" x="260" y="0" width="90" height="12" backcolor="#BFBFBF" uuid="3ad7ee3f-2a9f-4bed-8b71-eb3d04713210">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -102,10 +103,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[FECHA]]></text>
+				<text><![CDATA[Fecha]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="501cbb42-ce3c-4db8-b894-fa5f24c92035" x="350" y="0" width="189" height="16">
+				<reportElement mode="Opaque" x="350" y="0" width="189" height="12" backcolor="#BFBFBF" uuid="501cbb42-ce3c-4db8-b894-fa5f24c92035">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -121,16 +122,16 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<text><![CDATA[CONTACTO]]></text>
+				<text><![CDATA[Contacto]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="16">
+		<band height="12">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="8e2f3ca1-eb8e-4eba-ab16-54e4f30d0f5f" stretchType="RelativeToBandHeight" x="0" y="0" width="80" height="16">
+				<reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="80" height="12" uuid="8e2f3ca1-eb8e-4eba-ab16-54e4f30d0f5f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -150,7 +151,7 @@
 				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e2c04456-11f9-4303-bd00-26ba8be8a14f" stretchType="RelativeToBandHeight" x="80" y="0" width="80" height="16">
+				<reportElement stretchType="RelativeToBandHeight" x="80" y="0" width="80" height="12" uuid="e2c04456-11f9-4303-bd00-26ba8be8a14f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -168,7 +169,7 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="58650b3d-431f-46b4-b2af-fe5b96375601" stretchType="RelativeToBandHeight" x="160" y="0" width="100" height="16">
+				<reportElement stretchType="RelativeToBandHeight" x="160" y="0" width="100" height="12" uuid="58650b3d-431f-46b4-b2af-fe5b96375601">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -186,7 +187,7 @@
 				<textFieldExpression><![CDATA[$F{revision}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yy" isBlankWhenNull="true">
-				<reportElement uuid="bdcb9b35-f0ab-47e1-a6a6-346e9ff07591" stretchType="RelativeToBandHeight" x="260" y="0" width="90" height="16">
+				<reportElement stretchType="RelativeToBandHeight" x="260" y="0" width="90" height="12" uuid="bdcb9b35-f0ab-47e1-a6a6-346e9ff07591">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -204,7 +205,7 @@
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e633b10f-68cc-43be-8ae8-dcc6e4103ca8" stretchType="RelativeToBandHeight" x="350" y="0" width="189" height="16">
+				<reportElement stretchType="RelativeToBandHeight" x="350" y="0" width="189" height="12" uuid="e633b10f-68cc-43be-8ae8-dcc6e4103ca8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -219,7 +220,7 @@
 				<textElement>
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
