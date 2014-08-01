@@ -27,13 +27,13 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_Payment</name>
+        <name>Accounting_SubPeriodTree_PayMenu_Payment</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_SubPeriodTree_Payment_Menu</menu>
+            <menu>Accounting_SubPeriodTree_PayMenu_Payment_Menu</menu>
             <table>Accounting_SubPeriodPaymentDocumentTable</table>
             <evaluate method="getPaymentToBook" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">Sales_PaymentDocumentIOAbstract</property>
@@ -69,8 +69,9 @@
                 <property name="Status15">Closed</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
+        <property name="Label">Accounting_PeriodTree_PayMenu_Payment.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_PayMenu_Payment.Title</property>
     </definition>
 </ui-command>
