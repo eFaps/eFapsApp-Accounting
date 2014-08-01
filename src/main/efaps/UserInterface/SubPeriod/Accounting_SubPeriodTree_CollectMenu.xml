@@ -32,11 +32,9 @@
             <form>Accounting_SubPeriodTree_CollectMenuForm</form>
         </target>
         <childs>
-            <child>Accounting_PeriodTree_CollectMenu_Document</child>
-            <child>Accounting_PeriodTree_CollectMenu_DocsToBook</child>
-            <child>Accounting_PeriodTree_CollectMenu_IncomingExchange</child>
-            <child>Accounting_PeriodTree_CollectMenu_Securities</child>
-            <child>Accounting_PeriodTree_CollectMenu_Payment</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_Document</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_DocsToBook</child>
+            <child>Accounting_SubPeriodTree_CollectMenu_Payment</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

@@ -22,19 +22,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>c007fbb6-c9ab-4c88-84aa-3a4b6e83b7b6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_SubPeriodTree_Document</name>
+        <name>Accounting_SubPeriodTree_CollectMenu_Document</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_SubPeriodTree_Document_Menu</menu>
+            <menu>Accounting_SubPeriodTree_CollectMenu_Document_Menu</menu>
             <table>Accounting_SubPeriodDocumentSumTable</table>
             <evaluate method="getDocuments" program="org.efaps.esjp.accounting.SubPeriod">
                 <property name="Type">Sales_DocumentSumAbstract</property>
@@ -64,9 +63,9 @@
                 <property name="Status12">Digitized</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Accounting_PeriodTree_Document.Label</property>
+        <property name="Label">Accounting_PeriodTree_CollectMenu_Document.Label</property>
+        <property name="TargetTitle">Accounting_PeriodTree_CollectMenu_Document.Title</property>
     </definition>
 </ui-command>
