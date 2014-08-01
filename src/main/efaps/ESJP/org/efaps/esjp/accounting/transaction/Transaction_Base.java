@@ -470,6 +470,11 @@ public abstract class Transaction_Base
         return contacts.autoComplete4Contact(_parameter);
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return true if summarize
+     * @throws EFapsException on error
+     */
     protected boolean summarizeTransaction(final Parameter _parameter)
         throws EFapsException
     {
@@ -484,7 +489,7 @@ public abstract class Transaction_Base
                 break;
             case CASE:
                 final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-                final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
+                final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
                 print.addAttribute(CIAccounting.CaseAbstract.Summarize);
                 print.executeWithoutAccessCheck();
                 ret = BooleanUtils.isTrue(print.<Boolean>getAttribute(CIAccounting.CaseAbstract.Summarize));
@@ -499,7 +504,6 @@ public abstract class Transaction_Base
         }
         return ret;
     }
-
 
     /**
      * Executed the command on the button.
@@ -687,9 +691,8 @@ public abstract class Transaction_Base
                                             final DocumentInfo _doc)
         throws EFapsException
     {
-        if (_doc.getInstance() != null && _doc.getInstance().isValid()
-                        && _doc.getInstance().getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
-
+        if (_doc.isPaymentDoc()) {
+            _doc.setSummarize(false);
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
             attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
@@ -701,13 +704,18 @@ public abstract class Transaction_Base
                             .instance();
             final SelectBuilder selSalesAccInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
                             .instance();
-            multi.addSelect(selCurInst, selSalesAccInst);
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Payment)
+                            .linkto(CISales.Payment.CreateDocument)
+                            .instance();
+            multi.addSelect(selCurInst, selSalesAccInst, selDocInst);
             multi.addAttribute(CISales.TransactionAbstract.Amount);
             multi.execute();
             while (multi.next()) {
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
                 final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
                 final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).addAmount(amount);
+                final Instance docInst = multi.getSelect(selDocInst);
+                account.setDocLink(docInst);
                 account.setRateInfo(_doc.getRateInfo());
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
                     _doc.addDebit(account);
@@ -729,8 +737,7 @@ public abstract class Transaction_Base
                                    final DocumentInfo _doc)
         throws EFapsException
     {
-        if (_doc.getInstance() != null && _doc.getInstance().isValid()
-                        && _doc.getInstance().getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
+        if (_doc.isPaymentDoc()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
             queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, _doc.getInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -745,7 +752,7 @@ public abstract class Transaction_Base
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 if (docInst.isValid()) {
-
+                    _doc.addDocInst(docInst);
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                     attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst);
                     final AttributeQuery attrQuery = attrQueryBldr
@@ -772,7 +779,7 @@ public abstract class Transaction_Base
                             dateTmp = date;
                             final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
                             final AccountInfo acc = new AccountInfo().setInstance(accInst)
-                                            .addAmount(_doc.getAmount()).setRateInfo(_doc.getRateInfo());
+                                            .addAmount(_doc.getAmount4Doc(docInst)).setRateInfo(_doc.getRateInfo());
                             if (outDoc) {
                                 _doc.addDebit(acc);
                             } else {
@@ -1101,6 +1108,12 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _checkConfig validate the config
+     * @return file
+     * @throws EFapsException on error
+     */
     protected File getTransactionReport(final Parameter _parameter,
                                         final boolean _checkConfig)
         throws EFapsException

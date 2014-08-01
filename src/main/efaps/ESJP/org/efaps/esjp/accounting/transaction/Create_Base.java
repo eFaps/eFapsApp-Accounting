@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
@@ -323,11 +324,25 @@ public abstract class Create_Base
     public Return create4Payment(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance instance = createFromUI(_parameter);
+        final Return ret = new Return();
+        final Instance transInst = createFromUI(_parameter);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
-        connectDocs2Transaction(_parameter, instance,  docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Payments(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-        return new Return();
+
+        // evaluate for the documents the payment belongs to
+        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+        for (final DocumentInfo docInfo : docInfos) {
+            CollectionUtils.addAll(docInsts, docInfo.getDocInsts(false));
+        }
+        connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
+
+        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
+        final File file = getTransactionReport(parameter, true);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
@@ -350,7 +365,7 @@ public abstract class Create_Base
                     transinfo.setDate(date);
                 }
                 transinfo.create(_parameter);
-                connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
+                connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getDocInsts(true));
                 connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
                 setStatus4Payments(_parameter, docInfo.getInstance());
             }

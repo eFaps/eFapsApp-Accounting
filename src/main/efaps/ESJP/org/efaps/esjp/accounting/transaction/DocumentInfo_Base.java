@@ -25,11 +25,13 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -69,6 +71,9 @@ public abstract class DocumentInfo_Base
      */
     private Instance instance;
 
+    /**
+     * Instance of the applied Case.
+     */
     private Instance caseInst;
 
     /**
@@ -141,6 +146,9 @@ public abstract class DocumentInfo_Base
      * Summarize or not.
      */
     private boolean summarize = true;
+
+
+    private final Set<Instance> docInsts = new HashSet<>();
 
     /**
      * Constructor.
@@ -711,6 +719,69 @@ public abstract class DocumentInfo_Base
     }
 
 
+    /**
+     * Getter method for the instance variable {@link #caseInst}.
+     *
+     * @return value of instance variable {@link #caseInst}
+     */
+    public Instance getCaseInst()
+    {
+        return this.caseInst;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #caseInst}.
+     *
+     * @param _caseInst value for instance variable {@link #caseInst}
+     */
+    public void setCaseInst(final Instance _caseInst)
+    {
+        this.caseInst = _caseInst;
+    }
+
+    /**
+     * @param _docInst
+     */
+    public void addDocInst(final Instance _docInst)
+    {
+        this.docInsts.add(_docInst);
+    }
+
+    /**
+     * @_include include the instance of this info also
+     * @return array of instances to be connected
+     */
+    public Instance[] getDocInsts(final boolean _include)
+    {
+        Instance[] ret = this.docInsts.toArray(new Instance[this.docInsts.size()]);
+        if (_include) {
+            ret = ArrayUtils.add(ret, this.instance);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _docInst
+     * @return
+     */
+    public BigDecimal getAmount4Doc(final Instance _docInst)
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final AccountInfo accInfo : getDebitAccounts()) {
+            if (_docInst.equals(accInfo.getDocLink())) {
+                ret = ret.add(accInfo.getAmount());
+            }
+        }
+        for (final AccountInfo accInfo : getCreditAccounts()) {
+            if (_docInst.equals(accInfo.getDocLink())) {
+                ret = ret.add(accInfo.getAmount());
+            }
+        }
+        return ret;
+    }
+
+
     protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
                                               final boolean _summarize)
         throws EFapsException
@@ -739,27 +810,5 @@ public abstract class DocumentInfo_Base
             }
         }
         return ret;
-    }
-
-
-    /**
-     * Getter method for the instance variable {@link #caseInst}.
-     *
-     * @return value of instance variable {@link #caseInst}
-     */
-    public Instance getCaseInst()
-    {
-        return this.caseInst;
-    }
-
-
-    /**
-     * Setter method for instance variable {@link #caseInst}.
-     *
-     * @param _caseInst value for instance variable {@link #caseInst}
-     */
-    public void setCaseInst(final Instance _caseInst)
-    {
-        this.caseInst = _caseInst;
     }
 }
