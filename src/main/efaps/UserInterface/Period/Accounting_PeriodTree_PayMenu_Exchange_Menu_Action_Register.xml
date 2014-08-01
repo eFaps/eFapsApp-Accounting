@@ -47,7 +47,6 @@
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
@@ -56,6 +55,5 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">1</property>
     </definition>
 </ui-command>
