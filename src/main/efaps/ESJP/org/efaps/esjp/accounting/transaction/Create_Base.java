@@ -185,7 +185,6 @@ public abstract class Create_Base
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-        insertReportRelation(_parameter, transInst);
 
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
         final File file = getTransactionReport(parameter, true);
