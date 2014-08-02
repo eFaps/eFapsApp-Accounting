@@ -28,16 +28,23 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportSubJournal2TransactionTable</name>
-        <!-- fields -->
         <field name="number">
             <property name="Attribute">Number</property>
             <property name="Label">Accounting_ReportSubJournal2Transaction/Number.Label</property>
         </field>
-        <field name="description">
+         <field name="name">
+            <property name="Select">linkto[ToLinkAbstract].attribute[Name]</property>
+            <property name="Label">Accounting_Transaction/Name.Label</property>
+        </field>
+        <field name="identifier">
             <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
+            <property name="Select">linkto[ToLinkAbstract].attribute[Identifier]</property>
+            <property name="Label">Accounting_Transaction/Identifier.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="description">
             <property name="Select">linkto[ToLinkAbstract].attribute[Description]</property>
             <property name="Label">Accounting_Transaction/Description.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="date">
             <property name="Select">linkto[ToLinkAbstract].attribute[Date]</property>

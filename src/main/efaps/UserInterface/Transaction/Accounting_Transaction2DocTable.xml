@@ -36,6 +36,10 @@
             <property name="Select">linkto[FromLinkAbstract].attribute[Name]</property>
             <property name="Label">Accounting_Transaction/Name.Label</property>
         </field>
+        <field name="identifier">
+            <property name="Attribute">linkto[FromLinkAbstract].attribute[Identifier]</property>
+            <property name="Label">Accounting_Transaction/Identifier.Label</property>
+        </field>
         <field name="description">
             <property name="SelectAlternateOID">linkto[FromLinkAbstract].oid</property>
             <property name="Select">linkto[FromLinkAbstract].attribute[Description]</property>

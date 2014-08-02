@@ -278,5 +278,18 @@
                 <property name="LinkFrom">FromLinkAbstract</property>
             </evaluate>
         </field>
+         <field name="subJournalHeading" character="Heading">
+            <property name="Level">2</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Accounting_TransactionForm.subJournalHeading.Heading</property>
+        </field>
+        <field name="subJournalTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <table>Accounting_Transaction2SubJournalTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">Accounting_ReportSubJournal2Transaction</property>
+                <property name="LinkFrom01">ToLink</property>
+            </evaluate>
+        </field>
     </definition>
 </ui-form>
