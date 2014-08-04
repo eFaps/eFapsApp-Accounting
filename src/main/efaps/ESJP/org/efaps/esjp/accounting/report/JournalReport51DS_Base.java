@@ -160,11 +160,13 @@ public abstract class JournalReport51DS_Base
                         .linkto(CIAccounting.ReportSubJournal2Transaction.FromLink)
                         .attribute(CIAccounting.ReportSubJournal.Name);
         subJMulti.addSelect(transSel2, subJNameSel);
+        subJMulti.addAttribute(CIAccounting.ReportSubJournal2Transaction.Number);
         subJMulti.execute();
         while (subJMulti.next()) {
             final Instance transInst = subJMulti.getSelect(transSel2);
             final DataBean bean = map.get(transInst.getOid());
             bean.addDocReg(subJMulti.<String>getSelect(subJNameSel));
+            bean.addDocNum(subJMulti.<String>getAttribute(CIAccounting.ReportSubJournal2Transaction.Number));
         }
 
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
@@ -253,6 +255,18 @@ public abstract class JournalReport51DS_Base
                 setDocReg(_docReg);
             } else {
                 setDocReg(getDocReg() + ", " + _docReg);
+            }
+        }
+
+        /**
+         * @param _select
+         */
+        public void addDocNum(final String _docNum)
+        {
+            if (getDocNum() == null) {
+                setDocNum(_docNum);
+            } else {
+                setDocNum(getDocNum() + ", " + _docNum);
             }
         }
 
