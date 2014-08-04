@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -46,8 +47,12 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
+import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.EFapsException;
@@ -146,7 +151,6 @@ public abstract class DocumentInfo_Base
      * Summarize or not.
      */
     private boolean summarize = true;
-
 
     private final Set<Instance> docInsts = new HashSet<>();
 
@@ -781,6 +785,46 @@ public abstract class DocumentInfo_Base
         return ret;
     }
 
+    /**
+     * Setter method for instance variable {@link #rounding}.
+     *
+     * @param _rounding value for instance variable {@link #rounding}
+     */
+    public void applyRounding(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (!isValid()) {
+            final Period period = new Period();
+            final Instance periodInst = period.evaluateCurrentPeriod(_parameter);
+            // is does not sum to 0 but is less then the max defined
+            final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+            final BigDecimal diffMax = new BigDecimal(props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT,
+                            "0"));
+            final BigDecimal diff = getDebitSum().subtract(getCreditSum());
+            boolean debit;
+            if (diffMax.compareTo(diff.abs()) > 0) {
+                debit = diff.compareTo(BigDecimal.ZERO) < 0;
+                AccountInfo accInfo;
+                if (debit) {
+                    accInfo = AccountInfo_Base.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGDEBIT);
+                } else {
+                    accInfo = AccountInfo_Base.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGCREDIT);
+                }
+                if (accInfo != null) {
+                    accInfo.setAmount(diff.abs());
+                    accInfo.setAmountRate(diff.abs());
+                    final CurrencyInst currInst = period.getCurrency(periodInst);
+                    accInfo.setCurrInstance(currInst.getInstance());
+                    accInfo.setRateInfo(RateInfo.getDummyRateInfo());
+                    if (debit) {
+                        addDebit(accInfo);
+                    } else {
+                        addCredit(accInfo);
+                    }
+                }
+            }
+        }
+    }
 
     protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
                                               final boolean _summarize)

@@ -518,8 +518,9 @@ public abstract class Transaction_Base
         final Return ret = new Return();
         final List<DocumentInfo> docs = evalDocuments(_parameter);
         if (docs != null && !docs.isEmpty()) {
-            final StringBuilder js = getScript4ExecuteButton(_parameter,
-                            DocumentInfo.getCombined(docs, summarizeTransaction(_parameter)));
+            final DocumentInfo docInfo = DocumentInfo.getCombined(docs, summarizeTransaction(_parameter));
+            docInfo.applyRounding(_parameter);
+            final StringBuilder js = getScript4ExecuteButton(_parameter, docInfo);
             ret.put(ReturnValues.SNIPLETT, js.toString());
         }
         return ret;

@@ -21,9 +21,11 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.util.Properties;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
@@ -33,6 +35,8 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Account_Base;
+import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -425,5 +429,25 @@ public abstract class AccountInfo_Base
     public void setPostFix(final String _postFix)
     {
         this.postFix = _postFix;
+    }
+
+
+    protected static AccountInfo get4Config(final Parameter _parameter,
+                                            final String _key)
+        throws EFapsException
+    {
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        AccountInfo ret = null;
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final String name = props.getProperty(_key);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, name);
+        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            ret = new AccountInfo(multi.getCurrentInstance());
+        }
+        return ret;
     }
 }
