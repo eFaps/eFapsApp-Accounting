@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -34,9 +35,13 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.TransPosOrder;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
@@ -73,52 +78,14 @@ public abstract class TransInfo_Base
 
     private Instance instance;
 
+    private Integer currentGroup = 0;
+
     private final List<PositionInfo> postions = new ArrayList<>();
 
     public void create(final Parameter _parameter)
         throws EFapsException
     {
-        final ComparatorChain<PositionInfo> chain = new ComparatorChain<PositionInfo>();
-        chain.addComparator(new Comparator<PositionInfo>()
-        {
-
-            @Override
-            public int compare(final PositionInfo _o1,
-                               final PositionInfo _o2)
-            {
-                int ret;
-                if (_o1.getType().equals(_o2.getType())) {
-                    ret = 0;
-                } else if (_o1.getType().equals(CIAccounting.TransactionPositionDebit.getType())) {
-                    ret = -1;
-                } else {
-                    ret = 1;
-                }
-                return ret;
-            }
-        });
-        chain.addComparator(new Comparator<PositionInfo>()
-        {
-
-            @Override
-            public int compare(final PositionInfo _o1,
-                               final PositionInfo _o2)
-            {
-                return _o1.getOrder().compareTo(_o2.getOrder());
-            }
-        });
-
-        chain.addComparator(new Comparator<PositionInfo>()
-        {
-
-            @Override
-            public int compare(final PositionInfo _o1,
-                               final PositionInfo _o2)
-            {
-                return _o1.getConnOrder().compareTo(_o2.getConnOrder());
-            }
-        });
-        Collections.sort(this.postions, chain);
+        sort(_parameter);
 
         final Insert insert = new Insert(getType());
         insert.add(CIAccounting.Transaction.Name, getName());
@@ -164,6 +131,110 @@ public abstract class TransInfo_Base
                 relInsert.execute();
             }
         }
+    }
+
+
+    protected void sort(final Parameter _parameter) throws EFapsException
+    {
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final TransPosOrder posOrder = TransPosOrder.valueOf(props.getProperty(AccountingSettings.PERIOD_TRANSPOSORDER,
+                        TransPosOrder.DEBITCREDITGROUP.name()));
+        final ComparatorChain<PositionInfo> chain = new ComparatorChain<PositionInfo>();
+
+        // if grouping is wanted
+        if (posOrder.equals(TransPosOrder.DEBITCREDITGROUP) || posOrder.equals(TransPosOrder.CREDITDEBITGROUP)
+                        || posOrder.equals(TransPosOrder.NAMEGROUP)) {
+            chain.addComparator(new Comparator<PositionInfo>()
+            {
+                @Override
+                public int compare(final PositionInfo _o1,
+                                   final PositionInfo _o2)
+                {
+                    return _o1.getGroupId().compareTo(_o2.getGroupId());
+                }
+            });
+        }
+
+        if (posOrder.equals(TransPosOrder.DEBITCREDITGROUP) || posOrder.equals(TransPosOrder.DEBITCREDIT)) {
+            chain.addComparator(new Comparator<PositionInfo>()
+            {
+                @Override
+                public int compare(final PositionInfo _o1,
+                                   final PositionInfo _o2)
+                {
+                    int ret;
+                    if (_o1.getType().equals(_o2.getType())) {
+                        ret = 0;
+                    } else if (_o1.getType().equals(CIAccounting.TransactionPositionDebit.getType())) {
+                        ret = -1;
+                    } else {
+                        ret = 1;
+                    }
+                    return ret;
+                }
+            });
+        } else if (posOrder.equals(TransPosOrder.CREDITDEBIT) || posOrder.equals(TransPosOrder.CREDITDEBITGROUP)) {
+            chain.addComparator(new Comparator<PositionInfo>()
+            {
+                @Override
+                public int compare(final PositionInfo _o1,
+                                   final PositionInfo _o2)
+                {
+                    int ret;
+                    if (_o1.getType().equals(_o2.getType())) {
+                        ret = 0;
+                    } else if (_o1.getType().equals(CIAccounting.TransactionPositionDebit.getType())) {
+                        ret = 1;
+                    } else {
+                        ret = -1;
+                    }
+                    return ret;
+                }
+            });
+        }
+
+        if (posOrder.equals(TransPosOrder.NAME) || posOrder.equals(TransPosOrder.NAMEGROUP)) {
+            chain.addComparator(new Comparator<PositionInfo>()
+            {
+
+                @Override
+                public int compare(final PositionInfo _o1,
+                                   final PositionInfo _o2)
+                {
+                    int ret = 0;
+                    try {
+                        ret = _o1.getAccName().compareTo(_o2.getAccName());
+                    } catch (final EFapsException e) {
+                        LOG.warn("Catched error during sorting", e);
+                    }
+                    return ret;
+                }
+            });
+        } else {
+            chain.addComparator(new Comparator<PositionInfo>()
+            {
+
+                @Override
+                public int compare(final PositionInfo _o1,
+                                   final PositionInfo _o2)
+                {
+                    return _o1.getOrder().compareTo(_o2.getOrder());
+                }
+            });
+
+            chain.addComparator(new Comparator<PositionInfo>()
+            {
+
+                @Override
+                public int compare(final PositionInfo _o1,
+                                   final PositionInfo _o2)
+                {
+                    return _o1.getConnOrder().compareTo(_o2.getConnOrder());
+                }
+            });
+        }
+        Collections.sort(this.postions, chain);
     }
 
     public TransInfo addPosition(final PositionInfo _posInfo)
@@ -342,6 +413,11 @@ public abstract class TransInfo_Base
         this.instance = _instance;
     }
 
+    public Integer getNextGroup()
+    {
+        this.currentGroup++;
+        return this.currentGroup;
+    }
 
     protected static TransInfo get4DocInfo(final Parameter _parameter,
                                            final DocumentInfo _docInfo,
@@ -370,14 +446,19 @@ public abstract class TransInfo_Base
                     .setCurrInst(currInst.getInstance())
                     .setOrder(i);
             ret.addPosition(pos);
-            for (final PositionInfo relPosInfo : getRelPosInfos(accInfo,
-                            CIAccounting.TransactionPositionDebit.getType())) {
-                relPosInfo.setCurrInst(pos.getCurrInst())
-                    .setRateCurrInst(pos.getRateCurrInst())
-                    .setRate(pos.getRate())
-                    .setCurrInst(currInst.getInstance())
-                    .setOrder(i);
-                ret.addPosition(relPosInfo);
+            final List<PositionInfo> relPosInfos = getRelPosInfos(accInfo,
+                            CIAccounting.TransactionPositionDebit.getType());
+            if (!relPosInfos.isEmpty()) {
+                final Integer group = ret.getNextGroup();
+                for (final PositionInfo relPosInfo : relPosInfos) {
+                    relPosInfo.setCurrInst(pos.getCurrInst())
+                        .setRateCurrInst(pos.getRateCurrInst())
+                        .setRate(pos.getRate())
+                        .setCurrInst(currInst.getInstance())
+                        .setOrder(i)
+                        .setGroupId(group);
+                    ret.addPosition(relPosInfo);
+                }
             }
             i++;
         }
@@ -392,14 +473,19 @@ public abstract class TransInfo_Base
                             .setCurrInst(currInst.getInstance())
                             .setOrder(i);
             ret.addPosition(pos);
-            for (final PositionInfo relPosInfo : getRelPosInfos(accInfo,
-                            CIAccounting.TransactionPositionCredit.getType())) {
-                relPosInfo.setCurrInst(pos.getCurrInst())
-                    .setRateCurrInst(pos.getRateCurrInst())
-                    .setCurrInst(currInst.getInstance())
-                    .setRate(pos.getRate())
-                    .setOrder(i);
-                ret.addPosition(relPosInfo);
+            final List<PositionInfo> relPosInfos = getRelPosInfos(accInfo,
+                            CIAccounting.TransactionPositionDebit.getType());
+            if (!relPosInfos.isEmpty()) {
+                final Integer group = ret.getNextGroup();
+                for (final PositionInfo relPosInfo : relPosInfos) {
+                    relPosInfo.setCurrInst(pos.getCurrInst())
+                        .setRateCurrInst(pos.getRateCurrInst())
+                        .setCurrInst(currInst.getInstance())
+                        .setRate(pos.getRate())
+                        .setOrder(i)
+                        .setGroupId(group);
+                    ret.addPosition(relPosInfo);
+                }
             }
             i++;
         }
@@ -421,7 +507,7 @@ public abstract class TransInfo_Base
         multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                           CIAccounting.Account2AccountAbstract.Denominator);
         multi.execute();
-        final int y = 1;
+        int y = 1;
         while (multi.next()) {
             final Instance instance = multi.getCurrentInstance();
             final PositionInfo connPos  = new PositionInfo();
@@ -474,6 +560,7 @@ public abstract class TransInfo_Base
                         .setRateAmount(rateAmount);
                     ret.add(connPos);
                 }
+                y++;
             }
         return ret;
     }
@@ -524,9 +611,13 @@ public abstract class TransInfo_Base
 
         private Integer connOrder = 0;
 
+        private Integer groupId = 0;
+
         private Type type;
 
         private Instance accInst;
+
+        private String accName;
 
         private Instance currInst;
 
@@ -845,12 +936,6 @@ public abstract class TransInfo_Base
             this.instance = _instance;
         }
 
-        @Override
-        public String toString()
-        {
-            return ToStringBuilder.reflectionToString(this);
-        }
-
         /**
          * Getter method for the instance variable {@link #remark}.
          *
@@ -872,5 +957,59 @@ public abstract class TransInfo_Base
             return this;
         }
 
+        /**
+         * Getter method for the instance variable {@link #groupId}.
+         *
+         * @return value of instance variable {@link #groupId}
+         */
+        public Integer getGroupId()
+        {
+            return this.groupId;
+        }
+
+        /**
+         * Setter method for instance variable {@link #groupId}.
+         *
+         * @param _groupId value for instance variable {@link #groupId}
+         */
+        public PositionInfo setGroupId(final Integer _groupId)
+        {
+            this.groupId = _groupId;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #accName}.
+         *
+         * @return value of instance variable {@link #accName}
+         */
+        public String getAccName()
+            throws EFapsException
+        {
+            if (this.accName == null && getAccInst() != null && getAccInst().isValid()) {
+                final PrintQuery print = new PrintQuery(getAccInst());
+                print.addAttribute(CIAccounting.AccountAbstract.Name);
+                print.executeWithoutAccessCheck();
+                this.accName = print.getAttribute(CIAccounting.AccountAbstract.Name);
+            }
+            return this.accName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #accName}.
+         *
+         * @param _accName value for instance variable {@link #accName}
+         */
+        public PositionInfo setAccName(final String _accName)
+        {
+            this.accName = _accName;
+            return this;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this);
+        }
     }
 }

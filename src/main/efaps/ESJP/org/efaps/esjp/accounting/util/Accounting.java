@@ -60,7 +60,6 @@ public final class Accounting
         }
     }
 
-
     public enum SummarizeDefintion
     {
         /** Never summarize for this period. Default if not set. */
@@ -75,6 +74,21 @@ public final class Accounting
         CASEUSER;
     }
 
+    public enum TransPosOrder
+    {
+        /** Sort by first Debit and than Credit over all positions by their sequences. */
+        DEBITCREDIT,
+        /** Sort by first Credit and than Debit over all positions by their sequences. */
+        CREDITDEBIT,
+        /** Sort by first Debit and than Credit and group than by "SubTransactions". */
+        DEBITCREDITGROUP,
+        /** Sort by first Credit and than DEBIT and group than by "SubTransactions". */
+        CREDITDEBITGROUP,
+        /** Sort by over all positions by the name of the account. */
+        NAME,
+        /** Sort positions by the name of the account and group than by "SubTransactions". */
+        NAMEGROUP;;
+    }
     /**
      * @return the SystemConfigruation for Accounting
      * @throws CacheReloadException on error

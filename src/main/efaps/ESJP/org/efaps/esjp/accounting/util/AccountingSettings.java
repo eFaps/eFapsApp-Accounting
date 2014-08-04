@@ -132,19 +132,21 @@ public interface AccountingSettings
     String PERIOD_SHOWREPORT = "ShowReportOnCreate";
 
     /**
-     * Defintions of the Summarixe mechanism.
+     * Definitions of the Summarize mechanism.
      */
     String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
 
     /**
-     * Defintions of the Summarixe mechanism.
+     * Name of the SubJournal to be applied for PaymentOut.
      */
     String PERIOD_SUBJOURNAL4PAYOUT = "SubJournal4PaymentOut";
 
     /**
-     * Defintions of the Summarixe mechanism.
+     * Name of the SubJournal to be applied for PaymentIn.
      */
     String PERIOD_SUBJOURNAL4PAYIN = "SubJournal4PaymentIn";
+
+    String PERIOD_TRANSPOSORDER = "TransPosOrder";
 
     String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";
 

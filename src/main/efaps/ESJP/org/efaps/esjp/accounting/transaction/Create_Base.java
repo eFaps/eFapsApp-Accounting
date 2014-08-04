@@ -885,7 +885,8 @@ public abstract class Create_Base
                                       CIAccounting.Account2AccountAbstract.Denominator,
                                       CIAccounting.Account2AccountAbstract.Deactivatable);
                     multi.execute();
-                    final int y = 1;
+                    int y = 1;
+                    final int group = _transInfo.getNextGroup();
                     while (multi.next()) {
                         final Instance instance = multi.getCurrentInstance();
                         final PositionInfo connPos  = new PositionInfo();
@@ -939,6 +940,7 @@ public abstract class Create_Base
                             } else {
                                 connPos.setOrder(i)
                                     .setConnOrder(y)
+                                    .setGroupId(group)
                                     .setAccInst( multi.<Instance>getSelect(selAcc))
                                     .setCurrInst(curInstance)
                                     .setRateCurrInst(rateCurrInst)
@@ -947,6 +949,7 @@ public abstract class Create_Base
                                     .setRateAmount(rateAmount2);
                                 _transInfo.addPosition(connPos);
                             }
+                            y++;
                         }
                     }
                 }
