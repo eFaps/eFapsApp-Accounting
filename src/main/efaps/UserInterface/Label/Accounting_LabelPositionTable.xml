@@ -40,28 +40,28 @@
             <property name="Label">Accounting_Label2PositionTable/Type.Label</property>
         </field>
         <field name="amount">
-            <property name="Select">linkto[ToPositionAbstractLink].attribute[Amount].format[#,###.00]</property>
+            <property name="Select">linkto[FromLinkAbstract].attribute[Amount]</property>
             <property name="Label">Accounting_TransactionPositionTable.amount.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="currencySymbol">
-            <property name="Select">linkto[ToPositionAbstractLink].linkto[CurrencyLink].attribute[Symbol]</property>
+            <property name="Select">linkto[FromLinkAbstract].linkto[CurrencyLink].attribute[Symbol]</property>
             <property name="Label">Accounting_TransactionPositionTable.currencySymbol.Label</property>
         </field>
         <field name="accountLink">
-            <property name="SelectAlternateOID">linkto[ToPositionAbstractLink].linkto[AccountLink].oid</property>
-            <property name="Select">linkto[ToPositionAbstractLink].linkto[AccountLink].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkto[FromLinkAbstract].linkto[AccountLink].oid</property>
+            <property name="Select">linkto[FromLinkAbstract].linkto[AccountLink].attribute[Name]</property>
             <property name="Label">Accounting_TransactionPositionTable.accountLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="description">
-            <property name="SelectAlternateOID">linkto[ToPositionAbstractLink].linkto[AccountLink].oid</property>
-            <property name="Select">linkto[ToPositionAbstractLink].linkto[AccountLink].attribute[Description]</property>
+            <property name="SelectAlternateOID">linkto[FromLinkAbstract].linkto[AccountLink].oid</property>
+            <property name="Select">linkto[FromLinkAbstract].linkto[AccountLink].attribute[Description]</property>
             <property name="Label">Accounting_TransactionPositionTable.description.Label</property>
         </field>
         <field name="transactionLink">
-            <property name="SelectAlternateOID">linkto[ToPositionAbstractLink].linkto[TransactionLink].oid</property>
-            <property name="Select">linkto[ToPositionAbstractLink].linkto[TransactionLink].attribute[Description]</property>
+            <property name="SelectAlternateOID">linkto[FromLinkAbstract].linkto[TransactionLink].oid</property>
+            <property name="Select">linkto[FromLinkAbstract].linkto[TransactionLink].attribute[Description]</property>
             <property name="Label">Accounting_TransactionPositionTable.transactionLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>

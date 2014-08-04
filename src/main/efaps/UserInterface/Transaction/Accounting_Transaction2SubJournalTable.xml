@@ -28,6 +28,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Transaction2SubJournalTable</name>
+        <field name="number">
+            <property name="Attribute">Number</property>
+            <property name="Label">Accounting_ReportSubJournal2Transaction/Number.Label</property>
+        </field>
         <field name="type">
             <property name="Select">linkto[FromLink].type.label</property>
             <property name="Label">Accounting_ReportSubJournal/Type.Label</property>

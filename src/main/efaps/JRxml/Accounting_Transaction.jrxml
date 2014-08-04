@@ -182,6 +182,17 @@
 				<text><![CDATA[Documento Relacionados:]]></text>
 			</staticText>
 		</band>
+		<band height="101">
+			<staticText>
+				<reportElement x="0" y="7" width="50" height="20" uuid="a31f9c29-155a-41e3-bbcf-6b4f287a4fad"/>
+				<text><![CDATA[Subdiario:]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="0" y="32" width="539" height="68" uuid="f23e51bf-6586-4fad-9baa-983a403a4c39"/>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionSubJournals")]]></dataSourceExpression>
+				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionSubJournals"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
 	<pageFooter>
 		<band height="41">

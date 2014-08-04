@@ -94,5 +94,9 @@
             <property name="Select">linkto[RateCurrencyLink].attribute[Symbol]</property>
             <property name="Label">Accounting_TransactionPositionAbstract/RateCurrencyLink.Label</property>
         </field>
+        <field name="labels">
+            <property name="Select">linkfrom[Accounting_TransactionPosition2LabelAbstract#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name]</property>
+            <property name="Label">Accounting_TransactionPositionTable.labels.Label</property>
+        </field>
     </definition>
 </ui-table>

@@ -25,6 +25,15 @@
 	<field name="position" class="java.lang.Integer">
 		<property name="Select" value="attribute[Position]"/>
 	</field>
+	<field name="label" class="java.lang.String">
+		<property name="Select" value="linkfrom[Accounting_TransactionPosition2LabelAbstract#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name]"/>
+	</field>
+	<field name="remark" class="java.lang.String">
+		<property name="Select" value="attribute[Remark]"/>
+	</field>
+	<field name="doc" class="java.lang.String">
+		<property name="Select" value="linkfrom[Accounting_TransactionPosition2ERPDocument#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name]"/>
+	</field>
 	<sortField name="position"/>
 	<variable name="debit" class="java.math.BigDecimal">
 		<variableExpression><![CDATA[$F{typeUUID}.equals(UUID.fromString("5336550c-3da0-41da-9b94-0f68788423b1"))
@@ -51,7 +60,7 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement mode="Opaque" x="240" y="12" width="40" height="12" backcolor="#BFBFBF" uuid="7205aa65-8f1a-4285-a119-2026ddab4496">
+				<reportElement mode="Opaque" x="458" y="12" width="40" height="12" backcolor="#BFBFBF" uuid="7205aa65-8f1a-4285-a119-2026ddab4496">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -71,7 +80,7 @@
 				<text><![CDATA[Debe]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="280" y="12" width="40" height="12" backcolor="#BFBFBF" uuid="4cdd2963-342b-47a3-ac26-e8556914c22a">
+				<reportElement mode="Opaque" x="498" y="12" width="40" height="12" backcolor="#BFBFBF" uuid="4cdd2963-342b-47a3-ac26-e8556914c22a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -109,7 +118,7 @@
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="50" y="12" width="190" height="12" backcolor="#BFBFBF" uuid="8d163b46-b7f3-4f7e-8c9d-9c5878705945">
+				<reportElement mode="Opaque" x="50" y="12" width="170" height="12" backcolor="#BFBFBF" uuid="8d163b46-b7f3-4f7e-8c9d-9c5878705945">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -129,7 +138,7 @@
 				<text><![CDATA[Denominación]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="320" y="12" width="50" height="12" backcolor="#BFBFBF" uuid="2e85290e-cf4f-4e78-bee6-a07c7e310e02">
+				<reportElement mode="Opaque" x="220" y="12" width="70" height="12" backcolor="#BFBFBF" uuid="2e85290e-cf4f-4e78-bee6-a07c7e310e02">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -150,7 +159,7 @@
 				<text><![CDATA[C.C.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="370" y="12" width="120" height="12" backcolor="#BFBFBF" uuid="8ba1699e-a28f-4e47-b882-ea510766e35f">
+				<reportElement mode="Opaque" x="290" y="12" width="120" height="12" backcolor="#BFBFBF" uuid="8ba1699e-a28f-4e47-b882-ea510766e35f">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -171,7 +180,7 @@
 				<text><![CDATA[Detalle]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="490" y="12" width="48" height="12" backcolor="#BFBFBF" uuid="abb9feff-b2f9-4053-839c-92628f473c2b">
+				<reportElement mode="Opaque" x="410" y="12" width="48" height="12" backcolor="#BFBFBF" uuid="abb9feff-b2f9-4053-839c-92628f473c2b">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -193,7 +202,7 @@
 				<text><![CDATA[Doc.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="0" y="0" width="240" height="12" backcolor="#BFBFBF" uuid="db29d035-fecb-4084-8b77-a633e420218e">
+				<reportElement mode="Opaque" x="0" y="0" width="220" height="12" backcolor="#BFBFBF" uuid="db29d035-fecb-4084-8b77-a633e420218e">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -210,7 +219,7 @@
 				<text><![CDATA[Cuenta contable asociado a la operación]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="240" y="0" width="80" height="12" backcolor="#BFBFBF" uuid="d6d5c906-2df4-4f6c-85c3-7919882e376b">
+				<reportElement mode="Opaque" x="458" y="0" width="80" height="12" backcolor="#BFBFBF" uuid="d6d5c906-2df4-4f6c-85c3-7919882e376b">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -230,7 +239,7 @@
 				<text><![CDATA[Movimiento]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="320" y="0" width="218" height="12" backcolor="#BFBFBF" uuid="ef8fc1a6-f4cd-493a-80f0-3255db35d608">
+				<reportElement mode="Opaque" x="220" y="0" width="238" height="12" backcolor="#BFBFBF" uuid="ef8fc1a6-f4cd-493a-80f0-3255db35d608">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -256,7 +265,7 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="240" y="0" width="40" height="12" uuid="6c76c4d5-cb85-474f-9e5c-749025ad9d7c">
+				<reportElement stretchType="RelativeToBandHeight" x="458" y="0" width="40" height="12" uuid="6c76c4d5-cb85-474f-9e5c-749025ad9d7c">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -273,7 +282,7 @@
 				<textFieldExpression><![CDATA[$V{debit}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="280" y="0" width="40" height="12" uuid="988caf1a-0fe2-4454-a326-4532757e1aa0">
+				<reportElement stretchType="RelativeToBandHeight" x="498" y="0" width="40" height="12" uuid="988caf1a-0fe2-4454-a326-4532757e1aa0">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -310,7 +319,7 @@
 				<textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToBandHeight" x="50" y="0" width="190" height="12" uuid="1a0e550b-573b-4745-9ef3-08cc83048618">
+				<reportElement stretchType="RelativeToBandHeight" x="50" y="0" width="170" height="12" uuid="1a0e550b-573b-4745-9ef3-08cc83048618">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -328,8 +337,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{accountDesc}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="320" y="0" width="50" height="12" uuid="27178a65-36c1-4f7f-84cd-76419eb89e93">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="220" y="0" width="70" height="12" uuid="27178a65-36c1-4f7f-84cd-76419eb89e93">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -345,10 +354,10 @@
 				<textElement>
 					<font size="8" isItalic="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{label}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="370" y="0" width="120" height="12" uuid="d387796c-8c25-4013-a63c-7065ec5ed94f">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="290" y="0" width="120" height="12" uuid="d387796c-8c25-4013-a63c-7065ec5ed94f">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -364,10 +373,10 @@
 				<textElement>
 					<font size="8" isItalic="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{remark}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement stretchType="RelativeToBandHeight" x="490" y="0" width="48" height="12" uuid="3df743cf-8429-4c8d-bbd9-4efc863e3ea9">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="410" y="0" width="48" height="12" uuid="3df743cf-8429-4c8d-bbd9-4efc863e3ea9">
 					<property name="local_mesure_unitx" value="pixel"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -383,7 +392,7 @@
 				<textElement>
 					<font size="8" isItalic="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{doc}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
@@ -392,7 +401,7 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="240" y="0" width="40" height="12" uuid="3093e0ec-0e37-4c6b-aad6-5d94ba2fda51">
+				<reportElement x="458" y="0" width="40" height="12" uuid="3093e0ec-0e37-4c6b-aad6-5d94ba2fda51">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -403,7 +412,7 @@
 				<textFieldExpression><![CDATA[$V{debitSum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement x="280" y="0" width="40" height="12" uuid="930fe43b-23a4-40e1-853b-e52548dc0382">
+				<reportElement x="498" y="0" width="40" height="12" uuid="930fe43b-23a4-40e1-853b-e52548dc0382">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -414,7 +423,7 @@
 				<textFieldExpression><![CDATA[$V{creditSum}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="50" y="0" width="190" height="12" uuid="ab3d84fe-7afd-4090-8c4d-30ccb8dd363a">
+				<reportElement x="410" y="0" width="48" height="12" uuid="ab3d84fe-7afd-4090-8c4d-30ccb8dd363a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>

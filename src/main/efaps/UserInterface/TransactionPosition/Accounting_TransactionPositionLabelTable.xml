@@ -36,17 +36,17 @@
         <name>Accounting_TransactionPositionLabelTable</name>
         <!-- fields -->
         <field name="name">
-            <property name="SelectAlternateOID">linkto[FromLabelLink].oid</property>
-            <property name="Select">linkto[FromLabelLink].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
+            <property name="Select">linkto[ToLinkAbstract].attribute[Name]</property>
             <property name="Label">Accounting_TransactionPositionLabelTable.name.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="description">
-            <property name="Select">linkto[FromLabelLink].attribute[Description]</property>
+            <property name="Select">linkto[ToLinkAbstract].attribute[Description]</property>
             <property name="Label">Accounting_TransactionPositionLabelTable.description.Label</property>
         </field>
         <field name="active">
-            <property name="Select">linkto[FromLabelLink].attribute[Active]</property>
+            <property name="Select">linkto[ToLinkAbstract].attribute[Active]</property>
             <property name="Label">Accounting_TransactionPositionLabelTable.active.Label</property>
         </field>
     </definition>

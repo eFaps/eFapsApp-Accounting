@@ -37,8 +37,8 @@
             <menu>Accounting_LabelTree_Position_Menu</menu>
             <table>Accounting_LabelPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_LabelProject2PositionAbstract</property>
-                <property name="LinkFroms">FromLabelLink</property>
+                <property name="Types">Accounting_TransactionPosition2LabelAbstract</property>
+                <property name="LinkFroms">ToLinkAbstract</property>
             </evaluate>
         </target>
         <!-- properties -->
