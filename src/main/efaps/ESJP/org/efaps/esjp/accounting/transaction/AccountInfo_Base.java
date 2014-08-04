@@ -275,7 +275,7 @@ public abstract class AccountInfo_Base
     protected void initLinkHtml()
         throws EFapsException
     {
-        if (this.linkHtml == null) {
+        if (this.linkHtml == null && getInstance() != null && getInstance().isValid()) {
             this.linkHtml = new StringBuilder();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, getInstance());

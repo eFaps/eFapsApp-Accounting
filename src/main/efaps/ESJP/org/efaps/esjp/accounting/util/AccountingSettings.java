@@ -136,6 +136,16 @@ public interface AccountingSettings
      */
     String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
 
+    /**
+     * Defintions of the Summarixe mechanism.
+     */
+    String PERIOD_SUBJOURNAL4PAYOUT = "SubJournal4PaymentOut";
+
+    /**
+     * Defintions of the Summarixe mechanism.
+     */
+    String PERIOD_SUBJOURNAL4PAYIN = "SubJournal4PaymentIn";
+
     String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";
 
     String PERIOD_REPORT302ACCOUNT = "ReportBalance302Account";

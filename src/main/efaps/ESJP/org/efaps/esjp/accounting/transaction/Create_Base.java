@@ -101,6 +101,7 @@ public abstract class Create_Base
     {
         final Return ret = new Return();
         final Instance instance = createFromUI(_parameter);
+        connect2SubJournal(_parameter, instance, null);
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, instance);
 
         final File file = getTransactionReport(parameter, true);
@@ -156,6 +157,7 @@ public abstract class Create_Base
     {
         final Return ret = new Return();
         final Instance transInst = createFromUI(_parameter);
+        connect2SubJournal(_parameter, transInst, null);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
@@ -182,6 +184,7 @@ public abstract class Create_Base
         final Return ret = new Return();
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         final Instance transInst = createFromUI(_parameter);
+        connect2SubJournal(_parameter, transInst, null);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
@@ -327,13 +330,16 @@ public abstract class Create_Base
         final Instance transInst = createFromUI(_parameter);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         setStatus4Payments(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-
+        for (final Instance docInst  : docInsts) {
+            connect2SubJournal(_parameter, transInst, docInst);
+        }
         // evaluate for the documents the payment belongs to
         final List<DocumentInfo> docInfos = evalDocuments(_parameter);
         for (final DocumentInfo docInfo : docInfos) {
             CollectionUtils.addAll(docInsts, docInfo.getDocInsts(false));
         }
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
+
 
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
         final File file = getTransactionReport(parameter, true);
@@ -365,8 +371,8 @@ public abstract class Create_Base
                 }
                 transinfo.create(_parameter);
                 connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getDocInsts(true));
-                connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
                 setStatus4Payments(_parameter, docInfo.getInstance());
+                connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
             }
         }
         return new Return();
@@ -678,8 +684,6 @@ public abstract class Create_Base
 
         transInfo.create(_parameter);
 
-        insertReportRelation(_parameter, transInfo.getInstance());
-
         return transInfo.getInstance();
     }
 
@@ -760,11 +764,31 @@ public abstract class Create_Base
      * @param _transactionInstance  instance of the Transaction
      * @throws EFapsException on error
      */
-    protected void insertReportRelation(final Parameter _parameter,
-                                        final Instance _transactionInstance)
+    protected void connect2SubJournal(final Parameter _parameter,
+                                      final Instance _transactionInstance,
+                                      final Instance _docInstance)
         throws EFapsException
     {
-        final Instance repInst = Instance.get(_parameter.getParameterValue("subJournal"));
+        Instance repInst = Instance.get(_parameter.getParameterValue("subJournal"));
+        if (!repInst.isValid() && _docInstance != null && _docInstance.isValid()
+                        && _docInstance.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType()))  {
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, _transactionInstance);
+            final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+            String journalname = "NONE";
+            if (_docInstance.getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
+                journalname = props.getProperty( AccountingSettings.PERIOD_SUBJOURNAL4PAYOUT, "NONE");
+            } else if (_docInstance.getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+                journalname = props.getProperty( AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "NONE");
+            }
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportSubJournal);
+            queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodLink, periodInst);
+            queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.Name, journalname);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                repInst = query.getCurrentValue();
+            }
+        }
         if (repInst.isValid()) {
             final Insert insert = new Insert(CIAccounting.ReportSubJournal2Transaction);
             insert.add(CIAccounting.ReportSubJournal2Transaction.FromLink, repInst.getId());
