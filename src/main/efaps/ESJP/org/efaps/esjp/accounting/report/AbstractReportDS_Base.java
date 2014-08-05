@@ -112,27 +112,42 @@ public abstract class AbstractReportDS_Base
             while (query.next()) {
                 final Instance inst = query.getCurrentValue();
                 ret.add(inst);
-                ret.addAll(getAccountInst(_parameter, inst));
+                ret.addAll(getAccountInst(_parameter, inst, true));
             }
         }
         return ret;
     }
 
     protected List<Instance> getAccountInst(final Parameter _parameter,
-                                            final Instance _parentInst)
+                                            final Instance _parentInst,
+                                            final boolean _includeSummary)
         throws EFapsException
     {
         final List<Instance> ret = new ArrayList<>();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.ParentLink, _parentInst);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.executeWithoutAccessCheck();
-        while (query.next()) {
-            final Instance inst = query.getCurrentValue();
-            ret.add(inst);
-            ret.addAll(getAccountInst(_parameter, inst));
+        boolean descend;
+        if (_includeSummary) {
+            descend = true;
+        } else {
+            final PrintQuery print = new PrintQuery(_parentInst);
+            print.addAttribute(CIAccounting.AccountAbstract.Summary);
+            print.execute();
+            descend = print.<Boolean>getAttribute(CIAccounting.AccountAbstract.Summary);
+        }
+        if (descend) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.ParentLink, _parentInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            while (query.next()) {
+                final Instance inst = query.getCurrentValue();
+                if (_includeSummary) {
+                    ret.add(inst);
+                }
+                ret.addAll(getAccountInst(_parameter, inst, _includeSummary));
+            }
+        } else {
+            ret.add(_parentInst);
         }
         return ret;
     }
-
 }

@@ -22,16 +22,15 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>4611fe8f-9fef-434b-a6e9-34672d014f58</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action</name>
         <childs>
             <child>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_PrintAccount</child>
+            <child>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_TrialBalanceReport</child>
             <child>Accounting_PeriodTree_AccountStructurBrowser_Menu_Action_Expand</child>
         </childs>
     </definition>
