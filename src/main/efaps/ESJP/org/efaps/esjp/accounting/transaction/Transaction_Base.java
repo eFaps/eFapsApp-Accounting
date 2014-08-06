@@ -623,7 +623,6 @@ public abstract class Transaction_Base
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
         if (caseInst.isValid()) {
             _doc.setCaseInst(caseInst);
-            final RateInfo rateInfo = _doc.getRateInfo();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
             queryBldr.addOrderByAttributeAsc(CIAccounting.Account2CaseAbstract.Order);
@@ -661,12 +660,11 @@ public abstract class Transaction_Base
                     }
 
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                    .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP);
-
+                                    .divide(_doc.getRate(_parameter), BigDecimal.ROUND_HALF_UP);
                     if (add) {
                         final AccountInfo account = new AccountInfo(inst, accAmount);
                         account.setAmountRate(accAmountRate);
-                        account.setRateInfo(rateInfo);
+                        account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                         if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
                                         || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
                             account.setPostFix("_Credit");
@@ -717,7 +715,7 @@ public abstract class Transaction_Base
                 final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).addAmount(amount);
                 final Instance docInst = multi.getSelect(selDocInst);
                 account.setDocLink(docInst);
-                account.setRateInfo(_doc.getRateInfo());
+                account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
                     _doc.addDebit(account);
                 } else {
@@ -780,7 +778,8 @@ public abstract class Transaction_Base
                             dateTmp = date;
                             final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
                             final AccountInfo acc = new AccountInfo().setInstance(accInst)
-                                            .addAmount(_doc.getAmount4Doc(docInst)).setRateInfo(_doc.getRateInfo());
+                                            .addAmount(_doc.getAmount4Doc(docInst))
+                                            .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                             if (outDoc) {
                                 _doc.addDebit(acc);
                             } else {
@@ -812,13 +811,13 @@ public abstract class Transaction_Base
             final BigDecimal amount = _doc.getAmount();
 
             final AccountInfo account = new AccountInfo(instance);
-            account.setRateInfo(_doc.getRateInfo());
+            account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
 
             if ("Credit".equals(addAccount)) {
-                account.setAmount(amount.subtract(_doc.getCreditSum()));
+                account.setAmount(amount.subtract(_doc.getCreditSum(_parameter)));
                 _doc.addCredit(account);
             } else {
-                account.setAmount(amount.subtract(_doc.getDebitSum()));
+                account.setAmount(amount.subtract(_doc.getDebitSum(_parameter)));
                 _doc.addDebit(account);
             }
         }
@@ -864,9 +863,9 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder()
-            .append(getSetFieldValue(0, "sumDebit", _doc.getDebitSumFormated()))
-            .append(getSetFieldValue(0, "sumCredit", _doc.getCreditSumFormated()))
-            .append(getSetFieldValue(0, "sumTotal", _doc.getDifferenceFormated()))
+            .append(getSetFieldValue(0, "sumDebit", _doc.getDebitSumFormated(_parameter)))
+            .append(getSetFieldValue(0, "sumCredit", _doc.getCreditSumFormated(_parameter)))
+            .append(getSetFieldValue(0, "sumTotal", _doc.getDifferenceFormated(_parameter)))
             .append(getSetSubJournalScript(_parameter, _doc))
             .append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
             .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
@@ -902,9 +901,9 @@ public abstract class Transaction_Base
 
             map.put("amount_" + _postFix, account.getAmountFormated());
             map.put("rateCurrencyLink_" + _postFix, account.getRateInfo().getCurrencyInst().getInstance().getId());
-            map.put("rate_" + _postFix, account.getRateInfo().getRateUIFrmt());
+            map.put("rate_" + _postFix, account.getRateUIFrmt(_parameter));
             map.put("rate_" + _postFix + RateUI.INVERTEDSUFFIX, account.getRateInfo().getCurrencyInst().isInvert());
-            map.put("amountRate_" + _postFix, account.getAmountRateFormated());
+            map.put("amountRate_" + _postFix, account.getAmountRateFormated(_parameter));
             map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());
 

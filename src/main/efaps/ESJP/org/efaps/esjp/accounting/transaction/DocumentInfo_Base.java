@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
@@ -60,17 +59,18 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DocumentInfo_Base.java 13528 2014-08-04 20:06:28Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("f6508096-b3a3-4b19-9b10-0290ad0571a6")
 @EFapsRevision("$Rev$")
 public abstract class DocumentInfo_Base
 {
+
     /**
      * Instance of this Document.
      */
@@ -87,8 +87,8 @@ public abstract class DocumentInfo_Base
     private boolean stockDoc;
 
     /**
-     * Did the Document pass the validation of the cost.
-     * (Every product has its cost assigned)
+     * Did the Document pass the validation of the cost. (Every product has its
+     * cost assigned)
      */
     private boolean costValidated;
 
@@ -171,7 +171,7 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @param _linkId   id of the Classification the amount is wanted for
+     * @param _linkId id of the Classification the amount is wanted for
      * @return Amount
      * @throws EFapsException on error
      */
@@ -314,7 +314,7 @@ public abstract class DocumentInfo_Base
      */
     public Set<AccountInfo> getDebitAccounts()
     {
-        return this.invert ?  this.creditAccounts : this.debitAccounts;
+        return this.invert ? this.creditAccounts : this.debitAccounts;
     }
 
     /**
@@ -362,9 +362,9 @@ public abstract class DocumentInfo_Base
     {
         if (_accInfo.getRateInfo() == null) {
             if (getRateInfo() != null) {
-                _accInfo.setRateInfo(getRateInfo());
+                _accInfo.setRateInfo(getRateInfo(), getRatePropKey());
             } else {
-                _accInfo.setRateInfo(RateInfo.getDummyRateInfo());
+                _accInfo.setRateInfo(RateInfo.getDummyRateInfo(), getRatePropKey());
             }
         }
         boolean add = true;
@@ -513,15 +513,15 @@ public abstract class DocumentInfo_Base
         return ret;
     }
 
-
     /**
      * @return the sum of credit accounts in base currency
      */
-    public BigDecimal getCreditSum()
+    public BigDecimal getCreditSum(final Parameter _parameter)
+        throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         for (final AccountInfo account : getCreditAccounts()) {
-            ret = ret.add(account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP));
+            ret = ret.add(account.getAmountRate(_parameter).setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
     }
@@ -530,10 +530,10 @@ public abstract class DocumentInfo_Base
      * @return the sum of credit accounts formated
      * @throws EFapsException on error
      */
-    public String getCreditSumFormated()
+    public String getCreditSumFormated(final Parameter _parameter)
         throws EFapsException
     {
-        return getFormater().format(getCreditSum());
+        return getFormater().format(getCreditSum(_parameter));
     }
 
     /**
@@ -551,11 +551,12 @@ public abstract class DocumentInfo_Base
     /**
      * @return the sum of all debit accounts in base currency
      */
-    public BigDecimal getDebitSum()
+    public BigDecimal getDebitSum(final Parameter _parameter)
+        throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         for (final AccountInfo account : getDebitAccounts()) {
-            ret = ret.add(account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP));
+            ret = ret.add(account.getAmountRate(_parameter).setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
     }
@@ -564,30 +565,31 @@ public abstract class DocumentInfo_Base
      * @return the sum of all debit accounts formated
      * @throws EFapsException on error
      */
-    public String getDebitSumFormated()
+    public String getDebitSumFormated(final Parameter _parameter)
         throws EFapsException
     {
-        return getFormater().format(getDebitSum());
+        return getFormater().format(getDebitSum(_parameter));
     }
 
     /**
-     * @return the difference between the sum of debit accounts and the sum
-     *         of credit accounts
+     * @return the difference between the sum of debit accounts and the sum of
+     *         credit accounts
      */
-    public BigDecimal getDifference()
+    public BigDecimal getDifference(final Parameter _parameter)
+        throws EFapsException
     {
-        return getDebitSum().subtract(getCreditSum()).abs();
+        return getDebitSum(_parameter).subtract(getCreditSum(_parameter)).abs();
     }
 
     /**
-     * @return the difference between the sum of debit accounts and the sum
-     *         of credit accounts formated
+     * @return the difference between the sum of debit accounts and the sum of
+     *         credit accounts formated
      * @throws EFapsException on error
      */
-    public String getDifferenceFormated()
+    public String getDifferenceFormated(final Parameter _parameter)
         throws EFapsException
     {
-        return getFormater().format(getDifference());
+        return getFormater().format(getDifference(_parameter));
     }
 
     /**
@@ -630,7 +632,6 @@ public abstract class DocumentInfo_Base
         this.paymentDoc = _paymentDoc;
     }
 
-
     /**
      * Setter method for instance variable {@link #stockDoc}.
      *
@@ -653,13 +654,15 @@ public abstract class DocumentInfo_Base
 
     /**
      * Valid means not zero and equal.
+     *
      * @return true if valid, else false
      */
-    public boolean isValid()
+    public boolean isValid(final Parameter _parameter)
+        throws EFapsException
     {
-        return getDebitSum().compareTo(BigDecimal.ZERO) != 0 && getDebitSum().compareTo(getCreditSum()) == 0;
+        return getDebitSum(_parameter).compareTo(BigDecimal.ZERO) != 0
+                        && getDebitSum(_parameter).compareTo(getCreditSum(_parameter)) == 0;
     }
-
 
     /**
      * Getter method for the instance variable {@link #summarize}.
@@ -670,7 +673,6 @@ public abstract class DocumentInfo_Base
     {
         return this.summarize;
     }
-
 
     /**
      * Setter method for instance variable {@link #summarize}.
@@ -697,7 +699,7 @@ public abstract class DocumentInfo_Base
             print.execute();
             labelStr = print.<String>getAttribute(CIAccounting.CaseAbstract.Label);
         } else {
-            labelStr = DBProperties.getProperty(DocumentInfo.class.getName() + "." +  getInstance().getType().getName()
+            labelStr = DBProperties.getProperty(DocumentInfo.class.getName() + "." + getInstance().getType().getName()
                             + ".description");
         }
 
@@ -718,10 +720,9 @@ public abstract class DocumentInfo_Base
         }
 
         ret.put("date", transdate.toString(DateTimeFormat.mediumDate().withLocale(
-                                        Context.getThreadContext().getLocale())));
+                        Context.getThreadContext().getLocale())));
         return ret;
     }
-
 
     /**
      * Getter method for the instance variable {@link #caseInst}.
@@ -732,7 +733,6 @@ public abstract class DocumentInfo_Base
     {
         return this.caseInst;
     }
-
 
     /**
      * Setter method for instance variable {@link #caseInst}.
@@ -786,6 +786,27 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * @return
+     */
+    public BigDecimal getRate(final Parameter _parameter)
+        throws EFapsException
+    {
+        return RateInfo.getRate(_parameter, getRateInfo(), getRatePropKey());
+    }
+
+    /**
+     * @return
+     */
+    public String getRatePropKey()
+    {
+        String ret = "";
+        if (getInstance() != null && getInstance().isValid()) {
+            ret = getInstance().getType().getName();
+        }
+        return ret;
+    }
+
+    /**
      * Setter method for instance variable {@link #rounding}.
      *
      * @param _rounding value for instance variable {@link #rounding}
@@ -793,14 +814,14 @@ public abstract class DocumentInfo_Base
     public void applyRounding(final Parameter _parameter)
         throws EFapsException
     {
-        if (!isValid()) {
+        if (!isValid(_parameter)) {
             final Period period = new Period();
             final Instance periodInst = period.evaluateCurrentPeriod(_parameter);
             // is does not sum to 0 but is less then the max defined
             final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
             final BigDecimal diffMax = new BigDecimal(props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT,
                             "0"));
-            final BigDecimal diff = getDebitSum().subtract(getCreditSum());
+            final BigDecimal diff = getDebitSum(_parameter).subtract(getCreditSum(_parameter));
             boolean debit;
             if (diffMax.compareTo(diff.abs()) > 0) {
                 debit = diff.compareTo(BigDecimal.ZERO) < 0;
@@ -815,7 +836,7 @@ public abstract class DocumentInfo_Base
                     accInfo.setAmountRate(diff.abs());
                     final CurrencyInst currInst = period.getCurrency(periodInst);
                     accInfo.setCurrInstance(currInst.getInstance());
-                    accInfo.setRateInfo(RateInfo.getDummyRateInfo());
+                    accInfo.setRateInfo(RateInfo.getDummyRateInfo(), null);
                     if (debit) {
                         addDebit(accInfo);
                     } else {

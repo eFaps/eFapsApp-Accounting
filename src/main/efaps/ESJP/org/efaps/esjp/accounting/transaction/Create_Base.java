@@ -209,7 +209,7 @@ public abstract class Create_Base
         if (!oneTransPerDoc) {
             final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, summarizeTransaction(_parameter));
             docInfo.setDate(date);
-            if (docInfo.isValid()) {
+            if (docInfo.isValid(_parameter)) {
                 final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);
                 if (useDate) {
                     transinfo.setDate(date);
@@ -223,7 +223,7 @@ public abstract class Create_Base
             }
         } else {
             for (final DocumentInfo docInfo : docInfos) {
-                if (docInfo.isValid()) {
+                if (docInfo.isValid(_parameter)) {
                     final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
                     if (useDate) {
                         transinfo.setDate(date);
@@ -364,7 +364,7 @@ public abstract class Create_Base
                         CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.useDate.name));
         final List<DocumentInfo> docInfos = evalDocuments(_parameter);
         for (final DocumentInfo docInfo : docInfos) {
-            if (docInfo.isValid()) {
+            if (docInfo.isValid(_parameter)) {
                 final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
                 if (usedate) {
                     transinfo.setDate(date);
@@ -424,9 +424,9 @@ public abstract class Create_Base
             if (doc.getInstance() != null) {
                 doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
             }
-            if (doc.isCostValidated() && doc.getDifference().compareTo(BigDecimal.ZERO) == 0
+            if (doc.isCostValidated() && doc.getDifference(_parameter).compareTo(BigDecimal.ZERO) == 0
                             && doc.getAmount().compareTo(BigDecimal.ZERO) != 0
-                            && doc.getCreditSum().compareTo(doc.getAmount()) == 0
+                            && doc.getCreditSum(_parameter).compareTo(doc.getAmount()) == 0
                             && validateDoc(_parameter, doc, oids)) {
                 final Insert insert = new Insert(CIAccounting.Transaction);
                 insert.add(CIAccounting.Transaction.Name, name);
@@ -534,7 +534,7 @@ public abstract class Create_Base
                             final AccountInfo account = getRoundingAccount(_parameter,
                                             AccountingSettings.PERIOD_ROUNDINGDEBIT);
                             account.setAmount(checkCrossTotal.subtract(debit));
-                            account.setRateInfo(acc.getRateInfo());
+                            account.setRateInfo(acc.getRateInfo(), instDoc.getType().getName());
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
                                             .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
                             account.setAmountRate(rateAmount);
@@ -546,7 +546,7 @@ public abstract class Create_Base
                                             AccountingSettings.PERIOD_ROUNDINGCREDIT);
                             doc.addCredit(account);
                             account.setAmount(checkCrossTotal.subtract(credit));
-                            account.setRateInfo(acc.getRateInfo());
+                            account.setRateInfo(acc.getRateInfo(), instDoc.getType().getName());
                             final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
                                             .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
                             account.setAmountRate(rateAmount);
@@ -1194,7 +1194,7 @@ public abstract class Create_Base
         final BigDecimal rateAmount = _account.getAmount();
         insert.add(CIAccounting.TransactionPositionAbstract.RateAmount,
                         isDebitTrans ? rateAmount.negate() :  rateAmount);
-        final BigDecimal amount = _account.getAmountRate().setScale(2, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal amount = _account.getAmountRate(_parameter).setScale(2, BigDecimal.ROUND_HALF_UP);
         insert.add(CIAccounting.TransactionPositionAbstract.Amount,
                         isDebitTrans ? amount.negate() : amount);
         insert.execute();

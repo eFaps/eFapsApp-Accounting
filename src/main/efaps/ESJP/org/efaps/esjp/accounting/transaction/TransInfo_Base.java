@@ -446,7 +446,7 @@ public abstract class TransInfo_Base
                     .setCurrInst(currInst.getInstance())
                     .setOrder(i);
             ret.addPosition(pos);
-            final List<PositionInfo> relPosInfos = getRelPosInfos(accInfo,
+            final List<PositionInfo> relPosInfos = getRelPosInfos(_parameter, accInfo,
                             CIAccounting.TransactionPositionDebit.getType());
             if (!relPosInfos.isEmpty()) {
                 final Integer group = ret.getNextGroup();
@@ -473,7 +473,7 @@ public abstract class TransInfo_Base
                             .setCurrInst(currInst.getInstance())
                             .setOrder(i);
             ret.addPosition(pos);
-            final List<PositionInfo> relPosInfos = getRelPosInfos(accInfo,
+            final List<PositionInfo> relPosInfos = getRelPosInfos(_parameter, accInfo,
                             CIAccounting.TransactionPositionDebit.getType());
             if (!relPosInfos.isEmpty()) {
                 final Integer group = ret.getNextGroup();
@@ -492,7 +492,8 @@ public abstract class TransInfo_Base
         return ret;
     }
 
-    protected static List<PositionInfo> getRelPosInfos(final AccountInfo _accInfo,
+    protected static List<PositionInfo> getRelPosInfos(final Parameter _parameter,
+                    final AccountInfo _accInfo,
                                                        final Type _type)
         throws EFapsException
     {
@@ -516,7 +517,7 @@ public abstract class TransInfo_Base
             final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
                                 CIAccounting.Account2AccountAbstract.Denominator));
 
-            BigDecimal amount = _accInfo.getAmountRate().multiply(numerator).divide(denominator,
+            BigDecimal amount = _accInfo.getAmountRate(_parameter).multiply(numerator).divide(denominator,
                                 BigDecimal.ROUND_HALF_UP);
             BigDecimal rateAmount = _accInfo.getAmount().multiply(numerator).divide(denominator,
                                 BigDecimal.ROUND_HALF_UP);
@@ -574,12 +575,12 @@ public abstract class TransInfo_Base
         final PositionInfo ret = new PositionInfo()
             .setAccInst(_accInfo.getInstance())
             .setAmount(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
-                            ? _accInfo.getAmountRate().negate() : _accInfo.getAmountRate())
+                            ? _accInfo.getAmountRate(_parameter).negate() : _accInfo.getAmountRate(_parameter))
             .setType(_type)
             .setCurrInst(_accInfo.getCurrInstance())
             .setRateAmount(_type.isKindOf(CIAccounting.TransactionPositionDebit.getType())
                             ? _accInfo.getAmount().negate() : _accInfo.getAmount())
-            .setRate(_accInfo.getRateInfo().getRateObject());
+            .setRate(_accInfo.getRateObject(_parameter));
         if (_accInfo.getDocLink() != null && _accInfo.getDocLink().isValid()) {
             final DocumentInfo docInfoTmp = new DocumentInfo(_accInfo.getDocLink());
             if (docInfoTmp.isSumsDoc()) {

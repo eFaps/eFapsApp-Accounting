@@ -99,6 +99,8 @@ public abstract class AccountInfo_Base
 
     private String postFix;
 
+    private String ratePropKey;
+
     /**
      *
      */
@@ -236,11 +238,12 @@ public abstract class AccountInfo_Base
      *
      * @return value of instance variable {@link #amountRate}
      */
-    public BigDecimal getAmountRate()
+    public BigDecimal getAmountRate(final Parameter _parameter)
+        throws EFapsException
     {
         if (this.amountRate == null && this.amount != null && this.rateInfo != null) {
             this.amountRate = this.amount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                            .divide(getRateInfo().getRate(), BigDecimal.ROUND_HALF_UP);
+                            .divide(getRate(_parameter), BigDecimal.ROUND_HALF_UP);
         }
         return this.amountRate;
     }
@@ -259,10 +262,10 @@ public abstract class AccountInfo_Base
      * @return amunt rate formated
      * @throws EFapsException on error
      */
-    public String getAmountRateFormated()
+    public String getAmountRateFormated(final Parameter _parameter)
         throws EFapsException
     {
-        return NumberFormatter.get().getFormatter(2, 2).format(getAmountRate());
+        return NumberFormatter.get().getFormatter(2, 2).format(getAmountRate(_parameter));
     }
 
     /**
@@ -329,10 +332,44 @@ public abstract class AccountInfo_Base
      * @param _rateInfo value for instance variable {@link #rateInfo}
      * @return this for chaining
      */
-    public AccountInfo setRateInfo(final RateInfo _rateInfo)
+    public AccountInfo setRateInfo(final RateInfo _rateInfo,
+                                   final String _ratePropKey)
     {
         this.rateInfo = _rateInfo;
+        this.ratePropKey = _ratePropKey;
         return (AccountInfo) this;
+    }
+
+
+    /**
+     * @param _parameter
+     * @return
+     */
+    public Object[] getRateObject(final Parameter _parameter) throws EFapsException
+    {
+        return RateInfo.getRateObject(_parameter, getRateInfo(), getRatePropKey());
+    }
+
+    public BigDecimal getRate(final Parameter _parameter) throws EFapsException
+    {
+        return RateInfo.getRate(_parameter, getRateInfo(), getRatePropKey());
+    }
+
+    public String getRateUIFrmt(final Parameter _parameter) throws EFapsException
+    {
+        return RateInfo.getRateUIFrmt(_parameter, getRateInfo(), getRatePropKey());
+    }
+
+
+
+    /**
+     * Getter method for the instance variable {@link #ratePropKey}.
+     *
+     * @return value of instance variable {@link #ratePropKey}
+     */
+    public String getRatePropKey()
+    {
+        return this.ratePropKey;
     }
 
     /**

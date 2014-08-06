@@ -954,7 +954,7 @@ public abstract class FieldValue_Base
                     final Instance accInst = Instance.get(_acountType.getType(), id);
                     if (accInst.isValid()) {
                         final AccountInfo account = new AccountInfo().setInstance(accInst).addAmount(_amount);
-                        account.setRateInfo(_rate);
+                        account.setRateInfo(_rate, _doc.getRatePropKey());
                         if (_debit) {
                             _doc.addDebit(account);
                         } else {
