@@ -25,8 +25,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -35,9 +39,11 @@ import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
@@ -66,7 +72,6 @@ public abstract class TrialBalanceDS_Base
     {
         super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
 
-        final List<DataBean> values = new ArrayList<>();
         final Map<Instance, DataBean> mapping = new HashMap<>();
         final List<Instance> instances = new ArrayList<Instance>();
 
@@ -76,6 +81,12 @@ public abstract class TrialBalanceDS_Base
                         CIFormAccounting.Accounting_PReportTrialBalanceForm.dateTo.name));
         final boolean includeInit = Boolean.parseBoolean(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_PReportTrialBalanceForm.includeInit.name));
+        int level = 2;
+        final String levelStr =_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_PReportTrialBalanceForm.level.name);
+        if (levelStr != null && !levelStr.isEmpty()) {
+            level =Integer.parseInt(levelStr);
+        }
 
         _jrParameters.put("IncludeInit", includeInit);
         _jrParameters.put("DateFrom", dateFrom);
@@ -118,7 +129,6 @@ public abstract class TrialBalanceDS_Base
                 bean = mapping.get(accInst);
             } else {
                 bean = new DataBean();
-                values.add(bean);
                 mapping.put(accInst, bean);
                 bean.setAccName(multi.<String>getSelect(selAccName));
                 bean.setAccDescr(multi.<String>getSelect(selAccDescr));
@@ -137,6 +147,25 @@ public abstract class TrialBalanceDS_Base
                 }
             }
         }
+        final List<DataBean> values;
+        if (level > 0) {
+            values = new ArrayList<>();
+            final Map<Instance, Leveler> accMap = new HashMap<>();
+            for (final Entry<Instance, DataBean> entry : mapping.entrySet()) {
+                final Leveler accInfo = getLeveler(_parameter).setInstance(entry.getKey()).setLevel(level);
+                if (accMap.containsKey(accInfo.getInstance())) {
+                    accMap.get(accInfo.getInstance()).addBean(entry.getValue());
+                } else {
+                    accInfo.addBean(entry.getValue());
+                    accMap.put(accInfo.getInstance(), accInfo);
+                }
+            }
+            for (final Leveler leveler : accMap.values()) {
+                values.add(leveler.getDataBean());
+            }
+        } else {
+            values = new ArrayList<>(mapping.values());
+        }
 
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<DataBean>()
@@ -150,9 +179,101 @@ public abstract class TrialBalanceDS_Base
             }
         });
         Collections.sort(values, chain);
-
         setData(values);
     }
+
+
+    protected Leveler getLeveler(final Parameter _parameter)
+    {
+        return new Leveler();
+    }
+
+
+    public static class Leveler
+    {
+        private Instance instance;
+
+        private final Set<DataBean> beans = new HashSet<>();
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * @return
+         */
+        public DataBean getDataBean()
+            throws EFapsException
+        {
+            final DataBean ret = new DataBean();
+            final PrintQuery print = new PrintQuery(getInstance());
+            print.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
+            print.execute();
+            ret.setAccDescr(print.<String>getAttribute(CIAccounting.AccountAbstract.Description));
+            ret.setAccName(print.<String>getAttribute(CIAccounting.AccountAbstract.Name));
+            for (final DataBean bean : this.beans) {
+                ret.addDebit(bean.getDebit());
+                ret.addCredit(bean.getCredit());
+                ret.addInitDebit(bean.getInitDebit());
+                ret.addInitCredit(bean.getInitCredit());
+            }
+            return ret;
+        }
+
+        /**
+         * @param _value
+         */
+        public void addBean(final DataBean _bean)
+        {
+            this.beans.add(_bean);
+        }
+
+        /**
+         * @param _level
+         * @return
+         */
+        public Leveler setLevel(final int _level)
+            throws EFapsException
+        {
+            int currentLevel = 0;
+            Instance childInst = getInstance();
+            final List<Instance> instances = new ArrayList<>();
+            while (childInst != null && childInst.isValid()) {
+                currentLevel++;
+                instances.add(childInst);
+                final PrintQuery print = new CachedPrintQuery(childInst).setLifespan(1).setLifespanUnit(
+                                TimeUnit.MINUTES);
+                final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.AccountAbstract.ParentLink)
+                                .instance();
+                print.addSelect(sel);
+                print.execute();
+                childInst = print.getSelect(sel);
+            }
+            if (currentLevel > _level) {
+                Collections.reverse(instances);
+                setInstance(instances.get(_level - 1));
+            }
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #instance}.
+         *
+         * @param _instance value for instance variable {@link #instance}
+         */
+        public Leveler setInstance(final Instance _instance)
+        {
+            this.instance = _instance;
+            return this;
+        }
+    }
+
 
     public static class DataBean
     {
@@ -180,10 +301,12 @@ public abstract class TrialBalanceDS_Base
          */
         public void addCredit(final BigDecimal _amount)
         {
-            if (this.credit == null) {
-                this.credit = BigDecimal.ZERO;
+            if (_amount != null) {
+                if (this.credit == null) {
+                    this.credit = BigDecimal.ZERO;
+                }
+                this.credit = this.credit.add(_amount.abs());
             }
-            this.credit = this.credit.add(_amount.abs());
         }
 
         /**
@@ -191,10 +314,12 @@ public abstract class TrialBalanceDS_Base
          */
         public void addDebit(final BigDecimal _amount)
         {
-            if (this.debit == null) {
-                this.debit = BigDecimal.ZERO;
+            if (_amount != null) {
+                if (this.debit == null) {
+                    this.debit = BigDecimal.ZERO;
+                }
+                this.debit = this.debit.add(_amount.abs());
             }
-            this.debit = this.debit.add(_amount.abs());
         }
 
         /**
@@ -202,10 +327,12 @@ public abstract class TrialBalanceDS_Base
          */
         public void addInitCredit(final BigDecimal _amount)
         {
-            if (this.initCredit == null) {
-                this.initCredit = BigDecimal.ZERO;
+            if (_amount != null) {
+                if (this.initCredit == null) {
+                    this.initCredit = BigDecimal.ZERO;
+                }
+                this.initCredit = this.initCredit.add(_amount.abs());
             }
-            this.initCredit = this.initCredit.add(_amount.abs());
         }
 
         /**
@@ -213,11 +340,13 @@ public abstract class TrialBalanceDS_Base
          */
         public void addInitDebit(final BigDecimal _amount)
         {
-            if (this.initDebit == null) {
-                this.initDebit = BigDecimal.ZERO;
+            if (_amount != null) {
+                if (this.initDebit == null) {
+                    this.initDebit = BigDecimal.ZERO;
+                }
+                this.initDebit = this.initDebit.add(_amount.abs());
             }
-            this.initDebit = this.initDebit.add(_amount.abs());
-        }
+ }
 
         /**
          * Setter method for instance variable {@link #accName}.
