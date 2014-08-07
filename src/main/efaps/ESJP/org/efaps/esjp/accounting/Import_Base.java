@@ -1158,7 +1158,7 @@ public abstract class Import_Base
             insert.add(CIAccounting.ReportNodeAbstract.ShowAllways, showAllways);
             insert.add(CIAccounting.ReportNodeAbstract.ShowSum, showSum);
 
-            if (CIAccounting.ReportNodeRoot.equals(Import_Base.TYPE2TYPE.get(type))) {
+            if (CIAccounting.ReportNodeRoot.getType().getUUID().equals(Import_Base.TYPE2TYPE.get(type))) {
                 if (_parentInst.isValid()) {
                     insert.add(CIAccounting.ReportNodeRoot.Number, number);
                     insert.add(CIAccounting.ReportNodeRoot.Label, value);
@@ -1168,7 +1168,7 @@ public abstract class Import_Base
                 } else {
                     Import_Base.LOG.error("Report Instance does not exist for '{}'- '{}' ", number, value);
                 }
-            } else if (CIAccounting.ReportNodeTree.equals(Import_Base.TYPE2TYPE.get(type))) {
+            } else if (CIAccounting.ReportNodeTree.getType().getUUID().equals(Import_Base.TYPE2TYPE.get(type))) {
                 if (_parentInst.isValid()) {
                     insert.add(CIAccounting.ReportNodeTree.Number, number);
                     insert.add(CIAccounting.ReportNodeTree.Label, value);
@@ -1178,7 +1178,7 @@ public abstract class Import_Base
                 } else {
                     Import_Base.LOG.error("Parent Node Instance does not exist for '{}'- '{}' ", number, value);
                 }
-            } else if (CIAccounting.ReportNodeAccount.equals(Import_Base.TYPE2TYPE.get(type))) {
+            } else if (CIAccounting.ReportNodeAccount.getType().getUUID().equals(Import_Base.TYPE2TYPE.get(type))) {
                 if (_parentInst.isValid()) {
                     insert.add(CIAccounting.ReportNodeAccount.ParentLink, _parentInst.getId());
                     if (_accounts.get(value) == null) {

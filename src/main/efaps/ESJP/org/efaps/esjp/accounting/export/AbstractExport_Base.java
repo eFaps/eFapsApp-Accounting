@@ -89,6 +89,12 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit.uuid, "Debit");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4Classification.uuid, "CreditClassification");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4Classification.uuid, "DebitClassification");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportAccount.uuid, "ReportAccount");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportBalance.uuid, "Balance");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportProfitLoss.uuid, "ProfitLoss");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeRoot.uuid, "Root");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeTree.uuid, "Tree");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeAccount.uuid, "Account");
     }
 
     /**
