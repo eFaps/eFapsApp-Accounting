@@ -74,7 +74,10 @@ public abstract class TrialBalanceDS_Base
                         CIFormAccounting.Accounting_PReportTrialBalanceForm.dateFrom.name));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_PReportTrialBalanceForm.dateTo.name));
+        final boolean includeInit = Boolean.parseBoolean(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_PReportTrialBalanceForm.includeInit.name));
 
+        _jrParameters.put("IncludeInit", includeInit);
         _jrParameters.put("DateFrom", dateFrom);
         _jrParameters.put("DateTo", dateTo);
 
@@ -88,21 +91,26 @@ public abstract class TrialBalanceDS_Base
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         attrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date, dateTo.plusDays(1));
-        attrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
-
+        if (!includeInit) {
+            attrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date, dateFrom.minusSeconds(1));
+        }
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
                         attrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID));
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, instances.toArray());
         final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selTrans = SelectBuilder.get().linkto(
+                        CIAccounting.TransactionPositionAbstract.TransactionLink);
+        final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(CIAccounting.TransactionAbstract.Date);
         final SelectBuilder selAcc = SelectBuilder.get().linkto(CIAccounting.TransactionPositionAbstract.AccountLink);
         final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
         final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Name);
         final SelectBuilder selAccDescr = new SelectBuilder(selAcc).attribute(CIAccounting.AccountAbstract.Description);
-        multi.addSelect(selAccInst, selAccName, selAccDescr);
+        multi.addSelect(selTransDate, selAccInst, selAccName, selAccDescr);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
         multi.execute();
         while (multi.next()) {
+            final DateTime date = multi.<DateTime>getSelect(selTransDate);
             final BigDecimal amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
             final Instance accInst = multi.getSelect(selAccInst);
             DataBean bean;
@@ -116,9 +124,17 @@ public abstract class TrialBalanceDS_Base
                 bean.setAccDescr(multi.<String>getSelect(selAccDescr));
             }
             if (multi.getCurrentInstance().getType().isKindOf(CIAccounting.TransactionPositionDebit.getType())) {
-                bean.addDebit(amount);
+                if (includeInit && date.isBefore(dateFrom.plusSeconds(1))) {
+                    bean.addInitDebit(amount);
+                } else {
+                    bean.addDebit(amount);
+                }
             } else {
-                bean.addCredit(amount);
+                if (includeInit && date.isBefore(dateFrom.plusSeconds(1))) {
+                    bean.addInitCredit(amount);
+                } else {
+                    bean.addCredit(amount);
+                }
             }
         }
 
@@ -145,6 +161,9 @@ public abstract class TrialBalanceDS_Base
         private String accDescr;
         private BigDecimal debit;
         private BigDecimal credit;
+
+        private BigDecimal initDebit;
+        private BigDecimal initCredit;
 
         /**
          * Getter method for the instance variable {@link #accName}.
@@ -176,6 +195,28 @@ public abstract class TrialBalanceDS_Base
                 this.debit = BigDecimal.ZERO;
             }
             this.debit = this.debit.add(_amount.abs());
+        }
+
+        /**
+         * @param _amount
+         */
+        public void addInitCredit(final BigDecimal _amount)
+        {
+            if (this.initCredit == null) {
+                this.initCredit = BigDecimal.ZERO;
+            }
+            this.initCredit = this.initCredit.add(_amount.abs());
+        }
+
+        /**
+         * @param _amount
+         */
+        public void addInitDebit(final BigDecimal _amount)
+        {
+            if (this.initDebit == null) {
+                this.initDebit = BigDecimal.ZERO;
+            }
+            this.initDebit = this.initDebit.add(_amount.abs());
         }
 
         /**
@@ -272,6 +313,102 @@ public abstract class TrialBalanceDS_Base
             final BigDecimal creditTmp = getCredit() == null ? BigDecimal.ZERO : getCredit();
             final BigDecimal diffTmp = creditTmp.subtract(debitTmp);
             return diffTmp.compareTo(BigDecimal.ZERO) > 0 ? diffTmp : null;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initDebtor}.
+         *
+         * @return value of instance variable {@link #initDebtor}
+         */
+        public BigDecimal getInitDebtor()
+        {
+            final BigDecimal debitTmp = getInitDebit() == null ? BigDecimal.ZERO : getInitDebit();
+            final BigDecimal creditTmp = getInitCredit() == null ? BigDecimal.ZERO : getInitCredit();
+            final BigDecimal diffTmp = debitTmp.subtract(creditTmp);
+            return diffTmp.compareTo(BigDecimal.ZERO) > 0 ? diffTmp : null;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initCreditor}.
+         *
+         * @return value of instance variable {@link #initCreditor}
+         */
+        public BigDecimal getInitCreditor()
+        {
+            final BigDecimal debitTmp = getInitDebit() == null ? BigDecimal.ZERO : getInitDebit();
+            final BigDecimal creditTmp = getInitCredit() == null ? BigDecimal.ZERO : getInitCredit();
+            final BigDecimal diffTmp = creditTmp.subtract(debitTmp);
+            return diffTmp.compareTo(BigDecimal.ZERO) > 0 ? diffTmp : null;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initDebtor}.
+         *
+         * @return value of instance variable {@link #initDebtor}
+         */
+        public BigDecimal getFinalDebtor()
+        {
+            final BigDecimal initDebitor = getInitDebtor() == null ? BigDecimal.ZERO : getInitDebtor();
+            final BigDecimal initCreditor = getInitCreditor() == null ? BigDecimal.ZERO : getInitCreditor();
+            final BigDecimal debitor = getDebtor() == null ? BigDecimal.ZERO : getDebtor();
+            final BigDecimal creditor = getCreditor() == null ? BigDecimal.ZERO : getCreditor();
+            final BigDecimal diffTmp = initDebitor.add(debitor).subtract(initCreditor).subtract(creditor);
+            return diffTmp.compareTo(BigDecimal.ZERO) > 0 ? diffTmp : null;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initDebtor}.
+         *
+         * @return value of instance variable {@link #initDebtor}
+         */
+        public BigDecimal getFinalCreditor()
+        {
+            final BigDecimal initDebitor = getInitDebtor() == null ? BigDecimal.ZERO : getInitDebtor();
+            final BigDecimal initCreditor = getInitCreditor() == null ? BigDecimal.ZERO : getInitCreditor();
+            final BigDecimal debitor = getDebtor() == null ? BigDecimal.ZERO : getDebtor();
+            final BigDecimal creditor = getCreditor() == null ? BigDecimal.ZERO : getCreditor();
+            final BigDecimal diffTmp = initCreditor.add(creditor).subtract(initDebitor).subtract(debitor);
+            return diffTmp.compareTo(BigDecimal.ZERO) > 0 ? diffTmp : null;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initDebit}.
+         *
+         * @return value of instance variable {@link #initDebit}
+         */
+        public BigDecimal getInitDebit()
+        {
+            return this.initDebit;
+        }
+
+        /**
+         * Setter method for instance variable {@link #initDebit}.
+         *
+         * @param _initDebit value for instance variable {@link #initDebit}
+         */
+        public void setInitDebit(final BigDecimal _initDebit)
+        {
+            this.initDebit = _initDebit;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initCredit}.
+         *
+         * @return value of instance variable {@link #initCredit}
+         */
+        public BigDecimal getInitCredit()
+        {
+            return this.initCredit;
+        }
+
+        /**
+         * Setter method for instance variable {@link #initCredit}.
+         *
+         * @param _initCredit value for instance variable {@link #initCredit}
+         */
+        public void setInitCredit(final BigDecimal _initCredit)
+        {
+            this.initCredit = _initCredit;
         }
     }
 }
