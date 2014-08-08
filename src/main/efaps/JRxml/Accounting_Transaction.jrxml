@@ -35,18 +35,6 @@
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="attribute[Date]"/>
 	</field>
-	<field name="externalTaxNumber" class="java.lang.String">
-		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
-	</field>
-	<field name="docTaxNumber" class="java.lang.String">
-		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
-	</field>
-	<field name="externalContact" class="java.lang.String">
-		<property name="Select" value="class[Accounting_TransactionClassExternal].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
-	</field>
-	<field name="docContact" class="java.lang.String">
-		<property name="Select" value="class[Accounting_TransactionClassDocument].linkto[DocumentLink].linkto[Contact].attribute[Name]"/>
-	</field>
 	<pageHeader>
 		<band height="100">
 			<property name="local_mesure_unitheight" value="pixel"/>
