@@ -22,15 +22,11 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>76893fdc-70df-47e5-b909-841a4df75753</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinitionTree_Case_Menu_Action_AddExisting</name>
@@ -40,14 +36,11 @@
         <target>
             <search>Accounting_ActionDefinitionTree_Case_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Accounting_ActionDefinition2Case</property>
+                <property name="ConnectChildAttribute">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute">FromLinkAbstract</property>
+                <property name="ConnectType">Accounting_ActionDefinition2Case4External</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
     </definition>
-
 </ui-command>

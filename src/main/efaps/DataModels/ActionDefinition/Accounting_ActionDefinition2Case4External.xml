@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,23 +20,22 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fdb18309-581b-4085-bb21-b2a4de524884</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>8b0caf87-9dee-4768-8b46-fa31b09300f4</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
+    <specification/>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_CaseSearch</name>
-        <target>
-            <form>Accounting_CaseForm</form>
-            <table>Accounting_CasePeriodTable</table>
-            <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Types">Accounting_CaseAbstract</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
-        </target>
-        <property name="TargetMode">search</property>
+        <name>Accounting_ActionDefinition2Case4External</name>
+        <parent>Accounting_ActionDefinition2Case</parent>
+         <attribute>
+            <name>Config</name>
+            <type>BitEnum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$ActDef2Case4ExternalConfig</className>
+            <sqltable>Accounting_ActionDefinition2ObjectExtSQLTable</sqltable>
+            <sqlcolumn>INT1</sqlcolumn>
+        </attribute>
     </definition>
-</ui-command>
+</datamodel-type>

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -22,15 +20,14 @@
  Last Changed By: $Author$
 
 -->
-
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>20619039-4a9f-4271-a117-2bf8183d8abb</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>82a60a72-25e0-4fc5-8c68-8e1b10b26b81</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_CaseTable</name>
+        <name>Accounting_CasePeriodTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_CaseAbstract/Type.Label</property>
@@ -57,6 +54,11 @@
             <property name="Attribute">IsCross</property>
             <property name="ModeSearch">READONLY</property>
             <property name="Label">Accounting_CaseAbstract/IsCross.Label</property>
+        </field>
+         <field name="periodAbstractLink">
+            <property name="Select">linkto[PeriodAbstractLink].attribute[Name]</property>
+            <property name="ModeSearch">READONLY</property>
+            <property name="Label">Accounting_CaseAbstract/PeriodAbstractLink.Label</property>
         </field>
     </definition>
 </ui-table>

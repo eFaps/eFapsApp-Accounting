@@ -22,35 +22,31 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>31881fd3-1a16-4b9b-872d-30236ccff415</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinition2CaseTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Accounting_Account2CaseAbstract/Type.Label</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="toLink">
-            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
-            <property name="Phrase">$&lt;linkto[ToLink].type.label&gt; -  $&lt;linkto[ToLink].attribute[Name]&gt;</property>
+            <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
+            <property name="Phrase">$&lt;linkto[ToLinkAbstract].type.label&gt; -  $&lt;linkto[ToLinkAbstract].attribute[Name]&gt;</property>
             <property name="Label">Accounting_ActionDefinitionPettyCash2Case/ToLink.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="periodLink">
-            <property name="SelectAlternateOID">linkto[ToLink].linkto[PeriodAbstractLink].oid</property>
-            <property name="Phrase">$&lt;linkto[ToLink].linkto[PeriodAbstractLink].attribute[Name]&gt;</property>
+            <property name="SelectAlternateOID">linkto[ToLinkAbstract].linkto[PeriodAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkto[ToLinkAbstract].linkto[PeriodAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Accounting_ActionDefinitionPettyCash2Case/PeriodLink.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>

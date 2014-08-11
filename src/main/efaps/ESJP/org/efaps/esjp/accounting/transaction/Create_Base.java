@@ -220,6 +220,7 @@ public abstract class Create_Base
                                 docInsts.toArray(new Instance[docInsts.size()]));
                 connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
                 setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                connect2SubJournal(_parameter, transinfo.getInstance(), null);
             }
         } else {
             for (final DocumentInfo docInfo : docInfos) {
@@ -232,6 +233,7 @@ public abstract class Create_Base
                     connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
                     connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
                     setStatus4Docs(_parameter, docInfo.getInstance());
+                    connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
                 }
             }
         }

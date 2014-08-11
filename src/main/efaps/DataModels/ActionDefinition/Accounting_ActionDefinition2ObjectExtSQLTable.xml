@@ -20,18 +20,19 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>89908db1-2021-4afd-8ef3-0ea77f557e3b</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
+    <uuid>7f8cfb0d-f83f-40f3-8fc1-904a84c22496</uuid>
+    <file-application>eFapsApp-Commons</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ConfigurationMyDesk</name>
-        <childs>
-            <child>Sales_TaxCategoryMyDesk</child>
-            <child>ERP_CurrencyMyDesk</child>
-            <child>ERP_DocumentTypeMyDesk</child>
-        </childs>
+        <name>Accounting_ActionDefinition2ObjectExtSQLTable</name>
+        <parent>ERP_ActionDefinition2ObjectSQLTable</parent>
+        <database>
+            <table-name>T_ACCACTDEF2OBJEXT</table-name>
+            <parent-table>T_ERPACTIONDEF2OBJECT</parent-table>
+            <column name="INT1" type="INTEGER"/>
+        </database>
     </definition>
-</ui-menu>
+</datamodel-sqltable>

@@ -33,6 +33,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinitionPettyCash</name>
-        <parent>Accounting_ActionDefinitionAbstract</parent>
+        <parent>ERP_ActionDefinitionAbstract</parent>
     </definition>
 </datamodel-type>

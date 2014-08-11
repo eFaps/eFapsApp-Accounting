@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -17,27 +15,21 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5317 $
- Last Changed:    $Date: 2010-08-16 11:43:42 -0500 (Mon, 16 Aug 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>1a7acff8-5764-407f-a48f-f46f0d4fe83a</uuid>
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c047aaff-ba2e-4c89-bcb6-8fe57b5dc645</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev: 5317 $</file-revision>
-
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinitionTree_Menu</name>
-        <!-- childs -->
+        <name>Accounting_ActionDefinition2Case4External_Menu_Action</name>
         <childs>
-            <child>Accounting_ActionDefinitionTree_Menu_Action</child>
+            <child>Accounting_ActionDefinition2Case4External_Menu_Action_Edit</child>
         </childs>
     </definition>
-
 </ui-menu>

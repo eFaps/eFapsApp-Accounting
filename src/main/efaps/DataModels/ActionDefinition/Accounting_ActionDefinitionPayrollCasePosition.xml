@@ -30,6 +30,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinitionPayrollCasePosition</name>
-        <parent>Accounting_ActionDefinitionAbstract</parent>
+        <parent>ERP_ActionDefinitionAbstract</parent>
     </definition>
 </datamodel-type>

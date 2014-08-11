@@ -23,7 +23,9 @@ package org.efaps.esjp.accounting.util;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.IBitEnum;
 import org.efaps.admin.datamodel.IEnum;
+import org.efaps.admin.datamodel.attributetype.BitEnumType;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.cache.CacheReloadException;
@@ -60,6 +62,35 @@ public final class Accounting
         }
     }
 
+    public enum ActDef2Case4ExternalConfig
+       implements IBitEnum
+    {
+        /** Internal Report. */
+        PURCHASERECORD,
+        /** Official Report. */
+        TRANSACTION,
+        /** Official Report. */
+        SUBJOURNAL;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
+
     public enum SummarizeDefintion
     {
         /** Never summarize for this period. Default if not set. */
@@ -89,6 +120,9 @@ public final class Accounting
         /** Sort positions by the name of the account and group than by "SubTransactions". */
         NAMEGROUP;;
     }
+
+
+
     /**
      * @return the SystemConfigruation for Accounting
      * @throws CacheReloadException on error

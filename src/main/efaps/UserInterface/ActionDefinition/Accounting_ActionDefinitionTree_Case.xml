@@ -26,7 +26,6 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>cda69309-ad64-4da9-8a8b-7a53b5f8f862</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -37,12 +36,11 @@
             <menu>Accounting_ActionDefinitionTree_Case_Menu</menu>
             <table>Accounting_ActionDefinition2CaseTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_ActionDefinition2Case</property>
-                <property name="LinkFroms">FromLinkAbstract</property>
+                <property name="Type">Accounting_ActionDefinition2Case</property>
+                <property name="LinkFrom">FromLinkAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

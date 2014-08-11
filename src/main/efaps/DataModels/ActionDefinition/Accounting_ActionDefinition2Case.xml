@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,31 +23,22 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5b4f8626-c8f8-44b5-823d-1ba5817631d1</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev: 5317 $</file-revision>
     <specification></specification>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinition2Case</name>
-        <parent>Accounting_ActionDefinition2ObjectAbstract</parent>
+        <parent>ERP_ActionDefinition2ObjectAbstract</parent>
+        <purpose abstract="true"/>
         <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Accounting_ActionDefinitionAbstract</typelink>
-            <sqltable>Accounting_ActionDefinition2ObjectSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
+            <name>ToLinkAbstract</name>
             <type>Link</type>
             <typelink>Accounting_CaseAbstract</typelink>
-            <sqltable>Accounting_ActionDefinition2ObjectSQLTable</sqltable>
+            <sqltable>ERP_ActionDefinition2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>
