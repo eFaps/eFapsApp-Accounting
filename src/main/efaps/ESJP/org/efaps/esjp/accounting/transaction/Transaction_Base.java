@@ -664,7 +664,11 @@ public abstract class Transaction_Base
                     if (add) {
                         final AccountInfo account = new AccountInfo(inst, accAmount);
                         account.setAmountRate(accAmountRate);
-                        account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                        if (_doc.getInstance() != null) {
+                            account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                        } else {
+                            account.setRateInfo(_doc.getRateInfo(), getProperty(_parameter, "Type4RateInfo"));
+                        }
                         if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
                                         || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
                             account.setPostFix("_Credit");

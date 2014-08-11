@@ -60,6 +60,7 @@
                 method="executeButton"
                 name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_CMD"
                 event="UI_FIELD_CMD">
+                <property name="Type4RateInfo">Accounting_ExternalVoucher</property>
                 <property name="WithoutDocument">true</property>
             </trigger>
         </field>
