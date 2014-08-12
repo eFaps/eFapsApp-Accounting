@@ -42,6 +42,9 @@
             <form>Accounting_TransactionForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create" method="create" >
                 <property name="JasperReport">Accounting_Transaction</property>
+                <property name="StatusGroup">Accounting_TransactionDocumentStatus</property>
+                <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
             <validate program="org.efaps.esjp.accounting.transaction.Validation"
                 method="validate" />

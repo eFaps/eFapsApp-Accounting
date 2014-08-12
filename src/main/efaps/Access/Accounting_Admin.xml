@@ -22,19 +22,14 @@
   Last Changed By: $Author$
 
 -->
-
-<access-set xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>02b0d425-4e1e-4b91-90b2-b7f7709432d2</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-
         <name>Accounting_Admin</name>
-
         <access-type>show</access-type>
         <access-type>read</access-type>
         <access-type>modify</access-type>
@@ -44,25 +39,24 @@
         <access-type>statusBoost</access-type>
         <access-type>statusModify</access-type>
         <access-type>delete</access-type>
-
         <type>Accounting_ExternalVoucher</type>
         <type>Accounting_PurchaseRecord</type>
-
+        <type>Accounting_TransactionDocument</type>
         <status group="Accounting_ExternalVoucherStatus">
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
             <key>Replaced</key>
         </status>
-
         <status group="Accounting_PurchaseRecordStatus">
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
         </status>
-
+        <status group="Accounting_TransactionDocumentStatus">
+            <key>Open</key>
+            <key>Booked</key>
+        </status>
         <role>Accounting_Admin</role>
     </definition>
 </access-set>
-
-

@@ -46,6 +46,12 @@
             <property name="Select">linkto[ToLinkAbstract].attribute[Revision]</property>
             <property name="Label">Accounting_Transaction2DocDocumentTable.revision.Label</property>
         </field>
+        <field name="contact">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[ToLinkAbstract].linkto[Contact].oid</property>
+            <property name="Select">linkto[ToLinkAbstract].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Accounting_Transaction2DocDocumentTable.contact.Label</property>
+        </field>
         <field name="date">
             <property name="Select">linkto[ToLinkAbstract].attribute[Date]</property>
             <property name="Label">Accounting_Transaction2DocDocumentTable.date.Label</property>

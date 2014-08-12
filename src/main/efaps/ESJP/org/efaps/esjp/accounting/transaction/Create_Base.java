@@ -54,6 +54,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
+import org.efaps.esjp.accounting.TransactionDocument;
 import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -100,9 +101,13 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance instance = createFromUI(_parameter);
-        connect2SubJournal(_parameter, instance, null);
-        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, instance);
+        final Instance transInst = createFromUI(_parameter);
+        connect2SubJournal(_parameter, transInst, null);
+
+        final CreatedDoc transDoc = new TransactionDocument().createDoc4Transaction(_parameter, transInst);
+        connectDocs2Transaction(_parameter, transInst, transDoc.getInstance());
+
+        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
 
         final File file = getTransactionReport(parameter, true);
         if (file != null) {
