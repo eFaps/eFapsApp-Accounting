@@ -19,29 +19,24 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>931f5aad-9ee6-439e-9f44-3b1060c3baec</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PurchaseRecordTree_Document_Menu_Action_Disconnect</name>
-        <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Accounting_PurchaseRecordTree_Document_Menu_Action_AddExisting.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <property name="Stati">Open</property>
+                <property name="Status">Open</property>
             </trigger>
         </target>
-
-        <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
     </definition>
-
 </ui-command>

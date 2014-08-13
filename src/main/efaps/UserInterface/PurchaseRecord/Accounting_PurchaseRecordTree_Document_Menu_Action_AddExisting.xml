@@ -19,16 +19,15 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0d4dea23-f410-478f-965b-a6611fb2dae8</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PurchaseRecordTree_Document_Menu_Action_AddExisting</name>
-        <!-- target definition -->
         <target>
             <form>Accounting_PurchaseRecordDocumentSelectForm</form>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
@@ -36,15 +35,12 @@
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectType">Accounting_PurchaseRecord2Document</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Accounting_PurchaseRecordTree_Document_Menu_Action_AddExisting.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <property name="Stati">Open</property>
+                <property name="Status">Open</property>
             </trigger>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">1200</property>

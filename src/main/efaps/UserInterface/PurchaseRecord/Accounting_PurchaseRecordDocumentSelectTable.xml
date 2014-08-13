@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>856e87c9-add5-49b3-aef2-ce128c5020ad</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -30,6 +32,11 @@
             <property name="Select">type.label</property>
             <property name="Label">ERP_DocumentAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="documentType">
+            <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
+            <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="ModeEdit">READONLY</property>

@@ -71,10 +71,23 @@ public abstract class PurchaseRecord_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
+                // not yet used in a purchaserecord
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                                 CIAccounting.PurchaseRecord2Document.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+
+                // only the ones that have a documentype assigned that is configured for puchaserecord
+                final QueryBuilder docTypeQueryBldr = new QueryBuilder(CIERP.DocumentType);
+                docTypeQueryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration,
+                                ERP.DocTypeConfiguration.PURCHASERECORD);
+
+                final QueryBuilder relQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                relQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract,
+                                docTypeQueryBldr.getAttributeQuery(CIERP.DocumentType.ID));
+                _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID,
+                                relQueryBldr.getAttributeQuery(
+                                                CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract));
             }
         };
         return multi.execute(_parameter);
