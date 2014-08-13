@@ -66,9 +66,12 @@
                 <property name="Status11">Paid</property>
                 <property name="StatusGroup12">Sales_ReminderStatus</property>
                 <property name="Status12">Digitized</property>
+                <property name="StatusGroup13">Sales_CollectionOrderStatus</property>
+                <property name="Status13">Open</property>
+                <property name="StatusGroup14">Sales_CollectionOrderStatus</property>
+                <property name="Status14">Approved</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>
