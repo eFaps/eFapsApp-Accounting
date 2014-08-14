@@ -98,6 +98,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_PaymentDocumentAbstractForm.account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.Account"
                 method="autoComplete4Account"
                 name="Accounting_PaymentCheckForm.account.UI_FIELD_AUTOCOMPLETE"
