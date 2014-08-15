@@ -67,6 +67,7 @@
         <field name="checkbox4Account" >
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.select4Account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
            <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
@@ -79,6 +80,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.subJournal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getSubJournalFieldValue"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.subJournal.UI_FIELD_VALUE"
@@ -120,6 +122,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.purchaseRecord.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getPurchaseRecordFieldValue"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.purchaseRecord.UI_FIELD_VALUE"
@@ -257,6 +260,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.currencyExternal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionCreate4ExternalForm.currencyExternal.UI_FIELD_VALUE"

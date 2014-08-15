@@ -96,6 +96,7 @@
         <field name="checkbox4Account" >
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4DocForm.select4Account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4StockToBookForm.checkbox4Account.UI_FIELD_VALUE"

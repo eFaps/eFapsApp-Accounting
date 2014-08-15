@@ -74,6 +74,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.select4Account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionForm.checkbox4Account.UI_FIELD_VALUE"
@@ -86,6 +87,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.subJournal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getSubJournalFieldValue"
                 name="Accounting_TransactionForm.subJournal.UI_FIELD_VALUE"
@@ -116,6 +118,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.currencyExternal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionForm.case.UI_FIELD_VALUE"

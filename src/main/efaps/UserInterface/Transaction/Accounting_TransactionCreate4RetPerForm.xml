@@ -106,6 +106,7 @@
         <field name="checkbox4Account">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4RetPerForm.select4Account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4RetPerForm.checkbox4Account.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
@@ -131,6 +132,7 @@
         <field name="docStatus">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4RetPerForm.docStatus.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4DocForm.docStatus.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field" />
