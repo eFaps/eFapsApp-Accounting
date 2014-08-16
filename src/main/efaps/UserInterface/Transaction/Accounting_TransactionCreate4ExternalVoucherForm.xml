@@ -80,7 +80,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.subJournal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getSubJournalFieldValue"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.subJournal.UI_FIELD_VALUE"

@@ -133,7 +133,7 @@ public abstract class FieldValue_Base
                 _queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodLink, periodInst.getId());
             }
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**
