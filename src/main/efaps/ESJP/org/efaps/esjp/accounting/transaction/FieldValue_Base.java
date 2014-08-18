@@ -215,7 +215,7 @@ public abstract class FieldValue_Base
                 }
             }
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**
@@ -263,7 +263,7 @@ public abstract class FieldValue_Base
                     }
                 };
             };
-            ret = field.dropDownFieldValue(_parameter);
+            ret = field.getOptionListFieldValue(_parameter);
         }
         return ret;
     }
