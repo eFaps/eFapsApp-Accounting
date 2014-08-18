@@ -63,7 +63,7 @@
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionForm.case.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4DocForm.case.UI_FIELD_VALUE"
@@ -102,7 +102,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.subJournal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getSubJournalFieldValue"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.subJournal.UI_FIELD_VALUE"
@@ -135,14 +135,15 @@
             </trigger>
         </field>
         <field name="checkbox4Account" >
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4DocForm.select4Account.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="checkboxFieldValue"
-                name="Accounting_TransactionCreate4DocForm.checkbox4Account.UI_FIELD_VALUE"
+                method="getDefault4BooleanValue"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="checked">true</property>
+                <property name="DefaultValue">true</property>
             </trigger>
         </field>
         <field name="descriptionGroup" character="Group">
@@ -163,13 +164,16 @@
             </trigger>
         </field>
         <field name="docStatus">
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4DocForm.docStatus.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="checkboxFieldValue"
-                name="Accounting_TransactionCreate4DocForm.docStatus.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
+                method="getDefault4BooleanValue"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DefaultValue">true</property>
+            </trigger>
         </field>
         <field name="transactionPositionDebit" character="Heading">
             <property name="Level">2</property>
