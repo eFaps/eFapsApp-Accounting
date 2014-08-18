@@ -462,6 +462,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="getJavaScript4TaxDocUIValue"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.taxDocJavaScript.UI_FIELD_VALUE"

@@ -36,6 +36,7 @@
         <name>Accounting_BookMassivForm</name>
         <field name="storeOIDS">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Accounting_BookMassivForm.storeOIDS.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>

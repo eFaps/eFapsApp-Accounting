@@ -38,6 +38,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getStoreOIDsFieldValue"
                 name="Accounting_GainLoss4SimpleAccountForm.javaScript.UI_Field_Value"
                 program="org.efaps.esjp.common.uiform.Field" />

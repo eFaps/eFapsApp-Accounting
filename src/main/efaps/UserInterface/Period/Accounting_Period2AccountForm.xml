@@ -45,6 +45,7 @@
             <property name="Phrase">$&lt;linkto[SalesAccountLink].attribute[Name]&gt; - $&lt;linkto[SalesAccountLink].linkto[CurrencyLink].attribute[Name]&gt;</property>
             <property name="Label">Accounting_Period2Account/SalesAccountLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink">
             <property name="ModeSearch">READONLY</property>

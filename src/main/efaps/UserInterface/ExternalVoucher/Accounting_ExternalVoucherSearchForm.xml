@@ -28,6 +28,7 @@
         <name>Accounting_ExternalVoucherSearchForm</name>
          <field name="jsLinkField">
             <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="getJSLinkField"
                 name="Accounting_ExternalVoucherSearchForm.jsLinkField.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="link">/servlet/static/org.efaps.ui.wicket.behaviors.FieldUpdate.js?</property>
@@ -51,6 +52,7 @@
         </field>
         <field name="javaScript">
             <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher" method="getJavaScript4Search"
                 name="Accounting_ExternalVoucherSearchForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>

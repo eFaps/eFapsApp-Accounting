@@ -32,6 +32,7 @@
         <field name="mime">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_Journal_CreateForm.mime.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="getMimeFieldValueUI"
                 name="Accounting_DocTransactionsForm.mime.UI_FIELD_VALUE"
@@ -60,6 +61,7 @@
         <field name="filterActive">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_DocTransactionsForm.filterActive.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_DocTransactionsForm.filterActive.UI_FIELD_VALUE"

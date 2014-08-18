@@ -38,6 +38,7 @@
         <field name="mime">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_Journal_CreateForm.mime.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.ui.print.UserInterface"
                 method="getMimeFieldValueUI"
                 name="Accounting_Journal_CreateForm.mime.UI_FIELD_VALUE"

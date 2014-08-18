@@ -84,6 +84,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_PaymentDocumentAbstractForm.period.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.Payment"
                 method="periodUIFieldValue"
                 name="Accounting_PaymentCheckForm.period.UI_FIELD_VALUE"

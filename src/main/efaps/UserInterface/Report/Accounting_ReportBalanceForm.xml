@@ -38,6 +38,7 @@
         <field name="reports">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_PeriodForm.reports.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger name="Accounting_ReportBalanceForm.reports.UI_FIELD_VALUE"
                      method="getFieldValueUI"
                      program="org.efaps.esjp.common.file.FileField"

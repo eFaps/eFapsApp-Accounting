@@ -32,6 +32,7 @@
         <name>Accounting_MassiveRegister4ExternalForm</name>
         <field name="docOids">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Accounting_MassiveRegister4DocumentForm.storeOIDS.UI_FIELD_VALUE"

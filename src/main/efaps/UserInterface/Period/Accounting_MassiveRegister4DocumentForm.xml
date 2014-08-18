@@ -32,6 +32,7 @@
         <name>Accounting_MassiveRegister4DocumentForm</name>
         <field name="storeOIDS">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Accounting_MassiveRegister4DocumentForm.storeOIDS.UI_FIELD_VALUE"
@@ -45,6 +46,7 @@
         <field name="useDate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_MassiveRegister4DocumentForm.useDate.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
@@ -55,6 +57,7 @@
         <field name="useRounding">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_MassiveRegister4DocumentForm.useRounding.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"

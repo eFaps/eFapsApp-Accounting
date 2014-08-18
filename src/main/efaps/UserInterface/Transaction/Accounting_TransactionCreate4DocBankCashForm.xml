@@ -95,6 +95,7 @@
         <field name="checkbox4Account" >
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4DocBankCashForm.select4Account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4DocBankCashForm.checkbox4Account.UI_FIELD_VALUE"
@@ -122,6 +123,7 @@
         <field name="docStatus">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4DocBankCashForm.docStatus.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4DocBankCashForm.docStatus.UI_FIELD_VALUE"
@@ -179,6 +181,7 @@
         <field name="payment">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4DocBankCashForm.payment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.Payment"
                 method="getPaymentFieldValue"
                 name="Accounting_TransactionCreate4ExternalToBookForm.payment.UI_FIELD_VALUE"
@@ -189,6 +192,7 @@
         <field name="paymentStatus">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4DocBankCashForm.paymentStatus.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4ExternalToBookForm.paymentStatus.UI_FIELD_VALUE"

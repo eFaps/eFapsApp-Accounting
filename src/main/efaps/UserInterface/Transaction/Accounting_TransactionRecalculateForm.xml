@@ -34,6 +34,7 @@
         <name>Accounting_TransactionRecalculateForm</name>
         <field name="docInst">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="setDocumentUIFieldValue"
                 name="Accounting_TransactionCreate4RecalculateRateForm.docInst.UI_FIELD_VALUE"
@@ -51,6 +52,7 @@
         <field name="rate">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionRecalculateForm.rate.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="setCurrencyRate"
                 name="Accounting_TransactionCreate4RecalculateRateForm.rate.UI_FIELD_VALUE"
@@ -59,6 +61,7 @@
         <field name="transactions">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionRecalculateForm.transactions.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.Recalculate"
                 method="transactionOnRecalculateFieldValue"
                 name="Accounting_TransactionCreate4RecalculateRateForm.transactions.UI_FIELD_VALUE"
