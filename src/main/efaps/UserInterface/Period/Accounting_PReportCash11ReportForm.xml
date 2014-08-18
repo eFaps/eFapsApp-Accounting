@@ -31,6 +31,7 @@
         <field name="mime">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Common_Main_PrintForm.mime.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getMimeFieldValueUI"
                 name="Accounting_PReportCash11ReportForm.mime.UI_FIELD_VALUE"
                 program="org.efaps.esjp.ui.print.UserInterface"/>

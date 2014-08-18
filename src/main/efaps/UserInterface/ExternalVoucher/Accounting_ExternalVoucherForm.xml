@@ -38,6 +38,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="activatePositionsCalculator"
                 name="Accounting_ExternalVoucherForm.activatePositionsCalculator.UI_FIELD_VALUE"
@@ -122,6 +123,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -279,6 +281,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="getJavaScriptUIValue"
                 name="Accounting_ExternalVoucherForm.javaScript.UI_FIELD_VALUE"
