@@ -113,6 +113,8 @@ public abstract class ExternalVoucher_Base
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
 
+        new IncomingInvoice().createUpdateTaxDoc(_parameter, createdDoc, false);
+
         _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
         ParameterUtil.setParmeterValue(_parameter, "document", createdDoc.getInstance().getOid());
         return  new Create().create4External(_parameter);
@@ -128,6 +130,7 @@ public abstract class ExternalVoucher_Base
     {
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
+        new IncomingInvoice().createUpdateTaxDoc(_parameter, editDoc, true);
         return new Return();
     }
 
@@ -484,15 +487,12 @@ public abstract class ExternalVoucher_Base
         for (int i = 0; i < accs.length; i++) {
             final String acc = accs[i];
             if (acc.equals(_accInst.getOid())) {
-                final Object[] rateObj = new Transaction().getRateObject(_parameter, "_" + _suffix, i);
-                final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                                BigDecimal.ROUND_HALF_UP);
                 BigDecimal rateAmount = ((BigDecimal) _formater.parse(amounts[i]))
                                                         .setScale(6, BigDecimal.ROUND_HALF_UP);
                 if ("Debit".equalsIgnoreCase(_suffix)) {
                     rateAmount = rateAmount.negate();
                 }
-                ret = ret.add(rateAmount.divide(rate, 12, BigDecimal.ROUND_HALF_UP));
+                ret = ret.add(rateAmount);
             }
         }
         return ret;
