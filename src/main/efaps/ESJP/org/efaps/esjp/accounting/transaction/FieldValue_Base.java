@@ -464,7 +464,7 @@ public abstract class FieldValue_Base
         final String[] oids = _parameter.getParameterValues("selectedRow");
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
-        final Table table = new Table();
+        final Table table = (Table) new Table().setStyle("width:450px;");
         for (final String oid : oids) {
             final Instance docInst = Instance.get(oid);
             if (docInst.isValid()) {
