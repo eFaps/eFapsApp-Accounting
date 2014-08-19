@@ -59,7 +59,7 @@
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4ExchangeForm.case.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4ExchangeForm.case.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
