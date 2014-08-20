@@ -65,12 +65,9 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,6 +172,55 @@ public abstract class Create_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return create4DocMassive(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+
+        final DateTime date = new DateTime(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.date.name));
+        final boolean useDate = Boolean.parseBoolean(_parameter
+                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.useDate.name));
+
+        final boolean oneTransPerDoc = Boolean.parseBoolean(_parameter.getParameterValue("oneTransPerDoc"));
+        if (!oneTransPerDoc) {
+            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, summarizeTransaction(_parameter));
+            docInfo.setDate(date);
+            if (docInfo.isValid(_parameter)) {
+                final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);
+                if (useDate) {
+                    transinfo.setDate(date);
+                }
+                transinfo.create(_parameter);
+                final List<Instance> docInsts = getDocInstsFromDocInfoList(_parameter, docInfos);
+                connectDocs2Transaction(_parameter, transinfo.getInstance(),
+                                docInsts.toArray(new Instance[docInsts.size()]));
+                setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                connect2SubJournal(_parameter, transinfo.getInstance(), null);
+            }
+        } else {
+            for (final DocumentInfo docInfo : docInfos) {
+                if (docInfo.isValid(_parameter)) {
+                    final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);
+                    if (useDate) {
+                        transinfo.setDate(date);
+                    }
+                    transinfo.create(_parameter);
+                    connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
+                    setStatus4Docs(_parameter, docInfo.getInstance());
+                    connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
+                }
+            }
+        }
+        return new Return();
+    }
+
 
     /**
      * Called from event for creation of a transaction with a external document.
@@ -451,123 +497,6 @@ public abstract class Create_Base
                     insertPosition4Massiv(_parameter, doc, transInst, CIAccounting.TransactionPositionDebit, account);
                 }
                 connectDocs2Transaction(_parameter, transInst, docInst);
-            }
-        }
-        return new Return();
-    }
-
-    /**
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return new empty Return
-     * @throws EFapsException on error
-     */
-    public Return create4DocMassive(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-        DateTime date = new DateTime(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.date.name));
-        final boolean useDateForm = Boolean.parseBoolean(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.useDate.name));
-        final boolean useRounding = Boolean.parseBoolean(_parameter
-                        .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.useRounding.name));
-        final String[] oidsDoc = (String[]) Context.getThreadContext()
-                        .getSessionAttribute(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.storeOIDS.name);
-        for (final String oid : oidsDoc) {
-            final Instance instDoc = Instance.get(oid);
-            if (instDoc.isValid()) {
-                final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-                final PrintQuery printCase = new PrintQuery(caseInst);
-                printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
-                printCase.execute();
-                final Boolean isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-                final String attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                : CISales.DocumentSumAbstract.RateNetTotal.name;
-                final PrintQuery print = new PrintQuery(instDoc);
-                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                                .instance();
-                print.addSelect(sel);
-                print.addAttribute(CISales.DocumentSumAbstract.Name,
-                                CISales.DocumentSumAbstract.Date);
-                print.addAttribute(attrName);
-                print.execute();
-
-                if (!useDateForm) {
-                    date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
-                }
-                final String name = print.<String>getAttribute(CISales.DocumentSumAbstract.Name);
-                final Instance currInst = print.<Instance>getSelect(sel);
-
-                final BigDecimal amount = print.<BigDecimal>getAttribute(attrName);
-                final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
-                final String dateStr = date.withChronology(Context.getThreadContext().getChronology())
-                                .toString(formatter.withLocale(Context.getThreadContext().getLocale()));
-                final StringBuilder val = new StringBuilder();
-                val.append(DBProperties.getProperty(instDoc.getType().getName() + ".Label")).append(" ")
-                                .append(name).append(" ").append(dateStr);
-                final String desc = val.toString();
-
-                final Transaction txn = new Transaction();
-                final RateInfo rate = txn.evaluateRate(_parameter, periodInst, date, currInst);
-                final DocumentInfo doc = new DocumentInfo(instDoc);
-                doc.setAmount(amount);
-                doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
-                doc.setDate(date);
-                doc.setRateInfo(rate);
-
-                new Transaction().add2Doc4Case(_parameter, doc);
-
-                // validate the transaction and if necessary create rounding
-                // parts
-                final PrintQuery checkPrint = new PrintQuery(doc.getInstance());
-                checkPrint.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                checkPrint.executeWithoutAccessCheck();
-
-                final BigDecimal checkCrossTotal = checkPrint
-                                .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                BigDecimal debit = doc.getRateDebitSum();
-                BigDecimal credit = doc.getRateCreditSum();
-
-                if (useRounding) {
-                    // is does not sum to 0 but is less then the max defined
-                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-                    final String diffMinStr = props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT);
-                    final BigDecimal diffMin = diffMinStr != null && !diffMinStr.isEmpty()
-                                    ? new BigDecimal(diffMinStr) : BigDecimal.ZERO;
-                    if ((checkCrossTotal.compareTo(debit) != 0 || checkCrossTotal.compareTo(credit) != 0)
-                                    && debit.subtract(credit).abs().compareTo(diffMin) < 0) {
-                        final AccountInfo acc = doc.getDebitAccounts().iterator().next();
-                        if (checkCrossTotal.compareTo(debit) > 0) {
-                            final AccountInfo account = getRoundingAccount(_parameter,
-                                            AccountingSettings.PERIOD_ROUNDINGDEBIT);
-                            account.setAmount(checkCrossTotal.subtract(debit));
-                            account.setRateInfo(acc.getRateInfo(), instDoc.getType().getName());
-                            final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
-                                            .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
-                            account.setAmountRate(rateAmount);
-                            doc.addDebit(account);
-                            debit = debit.add(checkCrossTotal.subtract(debit));
-                        }
-                        if (checkCrossTotal.compareTo(credit) > 0) {
-                            final AccountInfo account = getRoundingAccount(_parameter,
-                                            AccountingSettings.PERIOD_ROUNDINGCREDIT);
-                            doc.addCredit(account);
-                            account.setAmount(checkCrossTotal.subtract(credit));
-                            account.setRateInfo(acc.getRateInfo(), instDoc.getType().getName());
-                            final BigDecimal rateAmount = account.getAmount().setScale(12, BigDecimal.ROUND_HALF_UP)
-                                            .divide(rate.getRate(), 12, BigDecimal.ROUND_HALF_UP);
-                            account.setAmountRate(rateAmount);
-                            credit = credit.add(checkCrossTotal.subtract(credit));
-                        }
-                    }
-                }
-                final boolean valid = checkCrossTotal.compareTo(debit) == 0 && checkCrossTotal.compareTo(credit) == 0;
-
-                if (valid) {
-                    createTrans4DocMassive(_parameter, doc, periodInst, desc);
-                    setStatus4Docs(_parameter, doc.getInstance());
-                    connectDocs2PurchaseRecord(_parameter, doc.getInstance());
-                }
             }
         }
         return new Return();
