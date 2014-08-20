@@ -59,6 +59,9 @@ public abstract class OnAction_Base
         if (CISales.IncomingInvoice.equals(_typeClass.getCIType())) {
             final Action action = new Action();
             action.create4External(_parameter, _actionRelInst);
+        }else if (CISales.Invoice.equals(_typeClass.getCIType())) {
+            final Action action = new Action();
+            action.create4Doc(_parameter, _actionRelInst);
         }
     }
 

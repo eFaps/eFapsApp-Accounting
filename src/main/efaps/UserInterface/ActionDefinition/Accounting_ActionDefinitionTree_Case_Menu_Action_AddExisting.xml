@@ -36,9 +36,14 @@
         <target>
             <search>Accounting_ActionDefinitionTree_Case_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLinkAbstract</property>
-                <property name="ConnectParentAttribute">FromLinkAbstract</property>
-                <property name="ConnectType">Accounting_ActionDefinition2Case4External</property>
+                <property name="ConnectType01">Accounting_ActionDefinition2Case4External</property>
+                <property name="ConnectParentType01">Sales_ActionDefinitionIncomingInvoice</property>
+                <property name="ConnectChildAttribute01">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute01">FromLinkAbstract</property>
+                <property name="ConnectType02">Accounting_ActionDefinition2Case4Doc</property>
+                <property name="ConnectParentType02">Sales_ActionDefinitionInvoice</property>
+                <property name="ConnectChildAttribute02">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute02">FromLinkAbstract</property>
             </execute>
         </target>
         <property name="Target">modal</property>

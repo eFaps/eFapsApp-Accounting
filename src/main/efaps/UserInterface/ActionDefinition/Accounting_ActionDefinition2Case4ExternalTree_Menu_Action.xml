@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,9 +27,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinition2Case4External_Menu_Action</name>
+        <name>Accounting_ActionDefinition2Case4ExternalTree_Menu_Action</name>
         <childs>
-            <child>Accounting_ActionDefinition2Case4External_Menu_Action_Edit</child>
+            <child>Accounting_ActionDefinition2Case4ExternalTree_Menu_Action_Edit</child>
         </childs>
     </definition>
 </ui-menu>

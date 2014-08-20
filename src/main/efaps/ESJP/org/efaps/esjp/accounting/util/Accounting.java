@@ -91,6 +91,33 @@ public final class Accounting
         }
     }
 
+    public enum ActDef2Case4DocConfig
+         implements IBitEnum
+    {
+        /** Official Report. */
+        TRANSACTION,
+        /** Official Report. */
+        SUBJOURNAL;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
+
     public enum SummarizeDefintion
     {
         /** Never summarize for this period. Default if not set. */

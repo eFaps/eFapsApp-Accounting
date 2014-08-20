@@ -37,6 +37,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4ExternalConfig;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -58,7 +59,7 @@ public abstract class Action_Base
 {
 
     /**
-     * @param _parameter Parameter as passed by the efasp API
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _transactionInstance Instance of the Transaction the position will
      *            be connected to
      * @param _instAction Instance of the Action defining the positions
@@ -172,8 +173,9 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter
-     * @param _actionRelInst
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _actionRelInst relation Instance
+     * @throws EFapsException on error
      */
     public void create4External(final Parameter _parameter,
                                 final Instance _actionRelInst)
@@ -239,6 +241,61 @@ public abstract class Action_Base
 
                 if (configs.contains(ActDef2Case4ExternalConfig.PURCHASERECORD) && !executed) {
                     create.connectDocs2PurchaseRecord(_parameter, docInst);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _actionRelInst relation Instance
+     * @throws EFapsException on error
+     */
+    public void create4Doc(final Parameter _parameter,
+                           final Instance _actionRelInst)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_actionRelInst);
+        final SelectBuilder selActionInst = SelectBuilder.get()
+                        .linkto(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract).instance();
+        final SelectBuilder selDocInst = SelectBuilder.get()
+                        .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract).instance();
+        print.addSelect(selActionInst, selDocInst);
+        print.execute();
+        final Instance actionInst = print.getSelect(selActionInst);
+        final Instance docInst = print.getSelect(selDocInst);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4Doc);
+        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4Doc.FromLinkAbstract, actionInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCaseInst = SelectBuilder.get()
+                        .linkto(CIAccounting.ActionDefinition2Case4Doc.ToLinkAbstract).instance();
+        multi.addSelect(selCaseInst);
+        multi.addAttribute(CIAccounting.ActionDefinition2Case4Doc.Config);
+        if (multi.execute()) {
+            multi.next();
+            final List<ActDef2Case4DocConfig> configs = multi
+                            .getAttribute(CIAccounting.ActionDefinition2Case4Doc.Config);
+            if (configs != null) {
+                final Instance caseInst = multi.getSelect(selCaseInst);
+                // force the correct period by evaluating it now
+                new Period().evaluateCurrentPeriod(_parameter, caseInst);
+                final Parameter parameter = ParameterUtil.clone(_parameter, (Object) null);
+                final Create create = new Create();
+                if (configs.contains(ActDef2Case4DocConfig.TRANSACTION)) {
+                    ParameterUtil.setParmeterValue(parameter, "case", caseInst.getOid());
+                    ParameterUtil.setParmeterValue(parameter, "document", docInst.getOid());
+                    if (configs.contains(ActDef2Case4DocConfig.SUBJOURNAL)) {
+                        final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
+                        sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst);
+                        final MultiPrintQuery sjMulti = sjQueryBldr.getPrint();
+                        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.Report2Case.FromLink).oid();
+                        sjMulti.addSelect(sel);
+                        sjMulti.execute();
+                        if (sjMulti.next()) {
+                            ParameterUtil.setParmeterValue(parameter, "subJournal", sjMulti.<String>getSelect(sel));
+                        }
+                    }
+                    create.create4DocMassive(parameter);
                 }
             }
         }
