@@ -35,5 +35,12 @@
             <property name="Attribute">Config</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field name="toLink">
+            <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
+            <property name="Phrase">$&lt;linkto[ToLinkAbstract].type.label&gt; -  $&lt;linkto[ToLinkAbstract].attribute[Name]&gt;</property>
+            <property name="Label">Accounting_ActionDefinitionPettyCash2Case/ToLink.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
     </definition>
 </ui-form>

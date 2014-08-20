@@ -89,7 +89,9 @@ public abstract class TransInfo_Base
 
         final Insert insert = new Insert(getType());
         insert.add(CIAccounting.Transaction.Name, getName());
-        insert.add(CIAccounting.Transaction.Description, getDescription());
+        insert.add(CIAccounting.Transaction.Description,
+                        getDescription() == null || getDescription() != null && getDescription().isEmpty()
+                            ? "MISSING" : getDescription());
         insert.add(CIAccounting.Transaction.Date, getDate());
         insert.add(CIAccounting.Transaction.PeriodLink, getPeriodInst());
         insert.add(CIAccounting.Transaction.Status, getStatus());
