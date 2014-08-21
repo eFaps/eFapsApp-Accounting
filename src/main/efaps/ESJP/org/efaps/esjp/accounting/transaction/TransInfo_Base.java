@@ -32,12 +32,15 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.TransPosOrder;
@@ -85,54 +88,168 @@ public abstract class TransInfo_Base
     public void create(final Parameter _parameter)
         throws EFapsException
     {
-        sort(_parameter);
+        if (isValid()) {
+            sort(_parameter);
 
-        final Insert insert = new Insert(getType());
-        insert.add(CIAccounting.Transaction.Name, getName());
-        insert.add(CIAccounting.Transaction.Description,
-                        getDescription() == null || getDescription() != null && getDescription().isEmpty()
-                            ? "MISSING" : getDescription());
-        insert.add(CIAccounting.Transaction.Date, getDate());
-        insert.add(CIAccounting.Transaction.PeriodLink, getPeriodInst());
-        insert.add(CIAccounting.Transaction.Status, getStatus());
-        insert.add(CIAccounting.Transaction.Identifier, getIdentifier());
-        insert.execute();
-        setInstance(insert.getInstance());
+            final Insert insert = new Insert(getType());
+            insert.add(CIAccounting.Transaction.Name, getName());
+            insert.add(CIAccounting.Transaction.Description,
+                            getDescription() == null || getDescription() != null && getDescription().isEmpty()
+                                ? "MISSING" : getDescription());
+            insert.add(CIAccounting.Transaction.Date, getDate());
+            insert.add(CIAccounting.Transaction.PeriodLink, getPeriodInst());
+            insert.add(CIAccounting.Transaction.Status, getStatus());
+            insert.add(CIAccounting.Transaction.Identifier, getIdentifier());
+            insert.execute();
+            setInstance(insert.getInstance());
 
-        int i = 1;
-        for (final PositionInfo pos : this.postions) {
-            final Insert posInsert = new Insert(pos.getType());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.Position, i);
-            posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, pos.getAccInst());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, pos.getCurrInst());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, pos.getRateCurrInst());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, pos.getRate());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, pos.getAmount());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, pos.getRateAmount());
-            posInsert.add(CIAccounting.TransactionPositionAbstract.Remark, pos.getRemark());
-            posInsert.execute();
-            pos.setInstance(posInsert.getInstance());
-            i++;
-        }
-        // connect labels
-        for (final PositionInfo pos : this.postions) {
-            if (pos.getLabelInst() != null && pos.getLabelInst().isValid() && pos.getLabelRelType() != null) {
-                final Insert relInsert = new Insert(pos.getLabelRelType());
-                relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
-                relInsert.add(CIAccounting.TransactionPosition2LabelAbstract.ToLinkAbstract, pos.getLabelInst());
-                relInsert.execute();
+            int i = 1;
+            for (final PositionInfo pos : this.postions) {
+                final Insert posInsert = new Insert(pos.getType());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.Position, i);
+                posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.AccountLink, pos.getAccInst());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, pos.getCurrInst());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, pos.getRateCurrInst());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.Rate, pos.getRate());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.Amount, pos.getAmount());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.RateAmount, pos.getRateAmount());
+                posInsert.add(CIAccounting.TransactionPositionAbstract.Remark, pos.getRemark());
+                posInsert.execute();
+                pos.setInstance(posInsert.getInstance());
+                i++;
             }
-        }
-        // connect docs
-        for (final PositionInfo pos : this.postions) {
-            if (pos.getDocInst() != null && pos.getDocInst().isValid() && pos.getDocRelType() != null) {
-                final Insert relInsert = new Insert(pos.getDocRelType());
+            // connect labels
+            for (final PositionInfo pos : this.postions) {
+                if (pos.getLabelInst() != null && pos.getLabelInst().isValid() && pos.getLabelRelType() != null) {
+                    final Insert relInsert = new Insert(pos.getLabelRelType());
+                    relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
+                    relInsert.add(CIAccounting.TransactionPosition2LabelAbstract.ToLinkAbstract, pos.getLabelInst());
+                    relInsert.execute();
+                }
+            }
+            // connect docs
+            for (final PositionInfo pos : this.postions) {
+                if (pos.getDocInst() != null && pos.getDocInst().isValid() && pos.getDocRelType() != null) {
+                    final Insert relInsert = new Insert(pos.getDocRelType());
                 relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
                 relInsert.add(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract, pos.getDocInst());
                 relInsert.execute();
             }
         }
+        }
+    }
+
+    public void update(final Parameter _parameter)
+                    throws EFapsException
+    {
+        if (isValid()) {
+
+            final Update update = new Update(getInstance());
+            update.add(CIAccounting.Transaction.Description,
+                            getDescription() == null || getDescription() != null && getDescription().isEmpty()
+                                ? "MISSING" : getDescription());
+            update.add(CIAccounting.Transaction.Date, getDate());
+            update.execute();
+
+            final List<Instance> posInsts = new ArrayList<Instance>();
+            int i = 1;
+            for (final PositionInfo pos : this.postions) {
+                final Update posUpdate;
+                if (pos.getInstance() != null && pos.getInstance().isValid()) {
+                    posUpdate = new Update(pos.getInstance());
+                } else {
+                    posUpdate = new Insert(pos.getType());
+                    posUpdate.add(CIAccounting.TransactionPositionAbstract.Position, i);
+                    posUpdate.add(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
+                }
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.AccountLink, pos.getAccInst());
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, pos.getCurrInst());
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink, pos.getRateCurrInst());
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.Rate, pos.getRate());
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.Amount, pos.getAmount());
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.RateAmount, pos.getRateAmount());
+                posUpdate.add(CIAccounting.TransactionPositionAbstract.Remark, pos.getRemark());
+                posUpdate.execute();
+                pos.setInstance(posUpdate.getInstance());
+                i++;
+                posInsts.add(pos.getInstance());
+            }
+
+            // remove the ones that exist no more
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+            queryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
+            queryBldr.addWhereAttrNotEqValue(CIAccounting.TransactionPositionAbstract.ID, posInsts.toArray());
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                new Delete(query.getCurrentValue()).execute();
+            }
+            // correct the numbering
+            final QueryBuilder queryBldr2 = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+            queryBldr2.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
+            queryBldr2.addOrderByAttributeAsc(CIAccounting.TransactionPositionAbstract.Position);
+            final InstanceQuery query2 = queryBldr2.getQuery();
+            query2.execute();
+            int j = 1;
+            while (query2.next()) {
+                final Update update2 = new Update(query2.getCurrentValue());
+                update2.add(CIAccounting.TransactionPositionAbstract.Position, j);
+                update2.execute();
+                j++;
+            }
+
+            // connect labels
+            for (final PositionInfo pos : this.postions) {
+                // remove previos labels
+                final QueryBuilder labelQueryBldr = new QueryBuilder(CIAccounting.TransactionPosition2LabelAbstract);
+                labelQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract,
+                                pos.getInstance());
+                final InstanceQuery labelQuery = labelQueryBldr.getQuery();
+                labelQuery.execute();
+                while (labelQuery.next()) {
+                    new Delete(labelQuery.getCurrentValue()).execute();
+                }
+
+                if (pos.getLabelInst() != null && pos.getLabelInst().isValid() && pos.getLabelRelType() != null) {
+                    final Insert relInsert = new Insert(pos.getLabelRelType());
+                    relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
+                    relInsert.add(CIAccounting.TransactionPosition2LabelAbstract.ToLinkAbstract, pos.getLabelInst());
+                    relInsert.execute();
+                }
+            }
+            // connect docs
+            for (final PositionInfo pos : this.postions) {
+                // remove previos labels
+                final QueryBuilder docQueryBldr = new QueryBuilder(CIAccounting.TransactionPosition2ERPDocument);
+                docQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract,
+                                pos.getInstance());
+                final InstanceQuery docQuery = docQueryBldr.getQuery();
+                docQuery.execute();
+                while (docQuery.next()) {
+                    new Delete(docQuery.getCurrentValue()).execute();
+                }
+                if (pos.getDocInst() != null && pos.getDocInst().isValid() && pos.getDocRelType() != null) {
+                    final Insert relInsert = new Insert(pos.getDocRelType());
+                    relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
+                    relInsert.add(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract, pos.getDocInst());
+                    relInsert.execute();
+                }
+            }
+        }
+    }
+
+
+    /**
+     * @return
+     */
+    private boolean isValid()
+    {
+        BigDecimal amount = BigDecimal.ZERO;
+        for (final PositionInfo pos : this.postions) {
+            amount = amount.add(pos.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
+        }
+        return amount.compareTo(BigDecimal.ZERO) == 0;
     }
 
 
@@ -410,9 +527,10 @@ public abstract class TransInfo_Base
      *
      * @param _instance value for instance variable {@link #instance}
      */
-    public void setInstance(final Instance _instance)
+    public TransInfo setInstance(final Instance _instance)
     {
         this.instance = _instance;
+        return (TransInfo) this;
     }
 
     public Integer getNextGroup()

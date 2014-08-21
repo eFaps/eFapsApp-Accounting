@@ -64,6 +64,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.util.DateTimeUtil;
@@ -616,8 +617,8 @@ public abstract class Create_Base
             .setIdentifier(Transaction.IDENTTEMP)
             .setPeriodInst(periodInst);
 
-        analysePositionsFromUI(_parameter, transInfo, "Debit", null);
-        analysePositionsFromUI(_parameter, transInfo, "Credit", null);
+        analysePositionsFromUI(_parameter, transInfo, "Debit", null, true);
+        analysePositionsFromUI(_parameter, transInfo, "Credit", null, true);
 
         transInfo.create(_parameter);
 
@@ -725,9 +726,15 @@ public abstract class Create_Base
     public void analysePositionsFromUI(final Parameter _parameter,
                                        final TransInfo _transInfo,
                                        final String _postFix,
-                                       final String[] _accountOids)
+                                       final String[] _accountOids,
+                                       final boolean _executeRels)
         throws EFapsException
     {
+        @SuppressWarnings("unchecked")
+        final Map<String,String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+
+        final String[] rowKeys = InterfaceUtils.getRowKeys(_parameter, "amount_" + _postFix,
+                        "amount_Debit", "amount_Credit");
 
         final String[] accountOids = _accountOids == null
                         ? _parameter.getParameterValues("accountLink_" + _postFix) : _accountOids;
@@ -769,7 +776,8 @@ public abstract class Create_Base
                         .setRateAmount( isDebitTrans ? rateAmount.negate() : rateAmount)
                         .setAmount( isDebitTrans ? amount.negate() : amount)
                         .setOrder(i)
-                        .setRemark(remarks == null ? null : remarks[i]);;
+                        .setRemark(remarks == null ? null : remarks[i])
+                        .setInstance(Instance.get(oidMap.get(rowKeys[i])));
 
                     if (labelLinkOids != null) {
                         final Instance labelInst = Instance.get(labelLinkOids[i]);
@@ -798,82 +806,82 @@ public abstract class Create_Base
                             }
                         }
                     }
-
-                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
-                    queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, accInst);
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    final SelectBuilder selAcc = SelectBuilder.get()
-                                    .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).instance();
-                    multi.addSelect(selAcc);
-                    multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
-                                      CIAccounting.Account2AccountAbstract.Denominator,
-                                      CIAccounting.Account2AccountAbstract.Deactivatable);
-                    multi.execute();
-                    int y = 1;
-                    final int group = _transInfo.getNextGroup();
-                    while (multi.next()) {
-                        final Instance instance = multi.getCurrentInstance();
-                        final PositionInfo connPos  = new PositionInfo();
-                        Boolean deactivatable = multi
-                                        .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
-                        if (deactivatable == null) {
-                            deactivatable = false;
-                        }
-                        // if cannot be deactivated or selected in the UserInterface
-                        if (!deactivatable || acc2accOids != null && deactivatable
-                                        &&  Arrays.asList(acc2accOids).contains(instance.getOid())) {
-                            final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
-                                            CIAccounting.Account2AccountAbstract.Numerator));
-                            final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
-                                            CIAccounting.Account2AccountAbstract.Denominator));
-
-                            BigDecimal amount2 = amount.multiply(numerator).divide(denominator,
-                                            BigDecimal.ROUND_HALF_UP);
-                            BigDecimal rateAmount2 = rateAmount.multiply(numerator).divide(denominator,
-                                            BigDecimal.ROUND_HALF_UP);
-
-                            if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
-                                connPos.setType(type);
-                            } else if (instance.getType().getUUID()
-                                            .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
-                                if (type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
-                                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
-                                } else {
-                                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
-                                }
-                                amount2 = amount2.negate();
-                            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
-                                if (isDebitTrans) {
-                                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
-                                } else {
-                                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
-                                    amount2 = amount2.negate();
-                                    rateAmount2 = rateAmount2.negate();
-                                }
-                            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
-                                if (isDebitTrans) {
-                                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
-                                    amount2 = amount2.negate();
-                                    rateAmount2 = rateAmount2.negate();
-                                } else {
-                                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
-                                }
+                    if (_executeRels) {
+                        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
+                        queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, accInst);
+                        final MultiPrintQuery multi = queryBldr.getPrint();
+                        final SelectBuilder selAcc = SelectBuilder.get()
+                                        .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).instance();
+                        multi.addSelect(selAcc);
+                        multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+                                          CIAccounting.Account2AccountAbstract.Denominator,
+                                          CIAccounting.Account2AccountAbstract.Deactivatable);
+                        multi.execute();
+                        int y = 1;
+                        final int group = _transInfo.getNextGroup();
+                        while (multi.next()) {
+                            final Instance instance = multi.getCurrentInstance();
+                            final PositionInfo connPos  = new PositionInfo();
+                            Boolean deactivatable = multi
+                                            .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
+                            if (deactivatable == null) {
+                                deactivatable = false;
                             }
-                            if (connPos.getType() == null) {
-                                Create_Base.LOG.error("Missing definition");
-                            } else {
-                                connPos.setOrder(i)
-                                    .setConnOrder(y)
-                                    .setGroupId(group)
-                                    .setAccInst( multi.<Instance>getSelect(selAcc))
-                                    .setCurrInst(curInstance)
-                                    .setRateCurrInst(rateCurrInst)
-                                    .setRate(rateObj)
-                                    .setAmount(amount2)
-                                    .setRateAmount(rateAmount2);
-                                _transInfo.addPosition(connPos);
+                            // if cannot be deactivated or selected in the UserInterface
+                            if (!deactivatable || acc2accOids != null && deactivatable
+                                            &&  Arrays.asList(acc2accOids).contains(instance.getOid())) {
+                                final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
+                                                CIAccounting.Account2AccountAbstract.Numerator));
+                                final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
+                                                CIAccounting.Account2AccountAbstract.Denominator));
+
+                                BigDecimal amount2 = amount.multiply(numerator).divide(denominator,
+                                                BigDecimal.ROUND_HALF_UP);
+                                BigDecimal rateAmount2 = rateAmount.multiply(numerator).divide(denominator,
+                                                BigDecimal.ROUND_HALF_UP);
+
+                                if (instance.getType().isCIType(CIAccounting.Account2AccountCosting)) {
+                                    connPos.setType(type);
+                                } else if (instance.getType().isCIType(CIAccounting.Account2AccountCostingInverse)) {
+                                    if (type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
+                                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                                    } else {
+                                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                                    }
+                                    amount2 = amount2.negate();
+                                } else if (instance.getType().isCIType(CIAccounting.Account2AccountCredit)) {
+                                    if (isDebitTrans) {
+                                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                                    } else {
+                                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                                        amount2 = amount2.negate();
+                                        rateAmount2 = rateAmount2.negate();
+                                    }
+                                } else if (instance.getType().isCIType(CIAccounting.Account2AccountDebit)) {
+                                    if (isDebitTrans) {
+                                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                                        amount2 = amount2.negate();
+                                        rateAmount2 = rateAmount2.negate();
+                                    } else {
+                                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                                    }
+                                }
+                                if (connPos.getType() == null) {
+                                    Create_Base.LOG.error("Missing definition");
+                                } else {
+                                    connPos.setOrder(i)
+                                        .setConnOrder(y)
+                                        .setGroupId(group)
+                                        .setAccInst( multi.<Instance>getSelect(selAcc))
+                                        .setCurrInst(curInstance)
+                                        .setRateCurrInst(rateCurrInst)
+                                        .setRate(rateObj)
+                                        .setAmount(amount2)
+                                        .setRateAmount(rateAmount2);
+                                    _transInfo.addPosition(connPos);
+                                }
+                                y++;
                             }
-                            y++;
                         }
                     }
                 }
