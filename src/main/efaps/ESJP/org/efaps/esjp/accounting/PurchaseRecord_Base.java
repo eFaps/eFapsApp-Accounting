@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -22,8 +23,11 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -57,6 +61,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("2198d008-b65f-4d3c-b84d-48250c047708")
 @EFapsRevision("$Rev$")
 public abstract class PurchaseRecord_Base
+    extends CommonDocument
 {
 
     /**
@@ -101,14 +106,38 @@ public abstract class PurchaseRecord_Base
     public Return insertPostTrigger(final Parameter _parameter)
         throws EFapsException
     {
+        updatePurchaseRecord2Document(_parameter, _parameter.getInstance());
+        return new Return();
+    }
+
+    public Return updatePurchaseRecord(final Parameter _parameter)
+        throws EFapsException
+    {
         final Instance instance = _parameter.getInstance();
-        final PrintQuery print = new PrintQuery(instance);
-        final SelectBuilder selectDoc = new SelectBuilder().linkto(CIAccounting.PurchaseRecord2Document.ToLink).oid();
-        print.addSelect(selectDoc);
+        if (instance != null && instance.isValid() && CIAccounting.PurchaseRecord.isType(instance.getType())) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
+            queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.FromLink, instance);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                updatePurchaseRecord2Document(_parameter, query.getCurrentValue());
+            }
+        }
+        return new Return();
+    }
+
+    protected void updatePurchaseRecord2Document(final Parameter _parameter,
+                                                 final Instance _instance)
+        throws EFapsException
+    {
+        final SelectBuilder selectDocInst = new SelectBuilder()
+                        .linkto(CIAccounting.PurchaseRecord2Document.ToLink).instance();
+        final PrintQuery print = new PrintQuery(_instance);
+        print.addSelect(selectDocInst);
         print.execute();
-        final String docOid = print.<String>getSelect(selectDoc);
-        final Instance docInst = Instance.get(docOid);
-        if (docInst.isValid()) {
+
+        final Instance docInst = print.<Instance>getSelect(selectDocInst);
+        if (docInst != null && docInst.isValid()) {
             final PrintQuery printDocQuery = new PrintQuery(docInst);
             final SelectBuilder selDocTypeIns = new SelectBuilder()
                             .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
@@ -117,33 +146,46 @@ public abstract class PurchaseRecord_Base
             printDocQuery.executeWithoutAccessCheck();
             final Instance docTypeIns = printDocQuery.<Instance>getSelect(selDocTypeIns);
             if (docTypeIns != null && docTypeIns.isValid()) {
-                final Update update = new Update(instance);
-                update.add(CIAccounting.PurchaseRecord2Document.TypeLink, docTypeIns.getId());
+                final Update update = new Update(_instance);
+                update.add(CIAccounting.PurchaseRecord2Document.TypeLink, docTypeIns);
                 update.executeWithoutTrigger();
             }
 
             final QueryBuilder docAttrBldr = new QueryBuilder(CISales.Payment);
-            docAttrBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInst.getId());
+            docAttrBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInst);
             final AttributeQuery attrQuery = docAttrBldr.getAttributeQuery(CISales.Payment.TargetDocument);
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
             queryBldr.addWhereAttrInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.PaymentDetractionOut.Date, CISales.PaymentDetractionOut.Name,
+            multi.addAttribute(CISales.PaymentDetractionOut.Date,
+                            CISales.PaymentDetractionOut.Name,
                             CISales.PaymentDetractionOut.Amount);
             multi.executeWithoutAccessCheck();
+
+            Update update = new Update(_instance);
             if (multi.next()) {
                 final DateTime date = multi.<DateTime>getAttribute(CISales.PaymentDetractionOut.Date);
                 final String name = multi.<String>getAttribute(CISales.PaymentDetractionOut.Name);
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.PaymentDetractionOut.Amount);
-                final Update update = new Update(instance);
                 update.add(CIAccounting.PurchaseRecord2Document.DetractionName, name);
                 update.add(CIAccounting.PurchaseRecord2Document.DetractionDate, date);
                 update.add(CIAccounting.PurchaseRecord2Document.DetractionAmount, amount);
                 update.executeWithoutTrigger();
+            } else {
+                final DocTaxInfo docTaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, docInst);
+                if (docTaxInfo.isDetraction()) {
+                    update.add(CIAccounting.PurchaseRecord2Document.DetractionName,
+                                    DBProperties.getFormatedDBProperty(PurchaseRecord.class.getName()
+                                                    + ".detractionPlanned", (Object) docTaxInfo.getTaxAmount()));
+                } else {
+                    update = null;
+                }
+            }
+            if (update != null) {
+                update.executeWithoutTrigger();
             }
         }
-        return new Return();
     }
 
     public Return printReport(final Parameter _parameter)
