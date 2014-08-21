@@ -20,15 +20,16 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8b0caf87-9dee-4768-8b46-fa31b09300f4</uuid>
+    <uuid>a7c2623d-9372-4923-be69-d9db16d19db9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-    <specification/>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinition2Case4External</name>
-        <parent>Accounting_ActionDefinition2Case4IncomingAbstract</parent>
+        <name>Accounting_ActionDefinition2Case4PettyCashReceiptTree_Menu_Action</name>
+        <childs>
+            <child>Accounting_ActionDefinition2Case4PettyCashReceiptTree_Menu_Action_Edit</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>

@@ -22,13 +22,13 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8b0caf87-9dee-4768-8b46-fa31b09300f4</uuid>
+    <uuid>840fea6a-6a53-4005-9378-1030f2a8db0e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-    <specification/>
+    <specification />
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinition2Case4External</name>
+        <name>Accounting_ActionDefinition2Case4PettyCashReceipt</name>
         <parent>Accounting_ActionDefinition2Case4IncomingAbstract</parent>
     </definition>
 </datamodel-type>

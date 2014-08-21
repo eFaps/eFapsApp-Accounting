@@ -62,7 +62,7 @@ public final class Accounting
         }
     }
 
-    public enum ActDef2Case4ExternalConfig
+    public enum ActDef2Case4IncomingConfig
        implements IBitEnum
     {
         /** Internal Report. */

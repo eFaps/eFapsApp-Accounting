@@ -44,6 +44,10 @@
                 <property name="ConnectParentType02">Sales_ActionDefinitionInvoice</property>
                 <property name="ConnectChildAttribute02">ToLinkAbstract</property>
                 <property name="ConnectParentAttribute02">FromLinkAbstract</property>
+                <property name="ConnectType03">Accounting_ActionDefinition2Case4PettyCashReceipt</property>
+                <property name="ConnectParentType03">Sales_ActionDefinitionPettyCashReceipt</property>
+                <property name="ConnectChildAttribute03">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute03">FromLinkAbstract</property>
             </execute>
         </target>
         <property name="Target">modal</property>

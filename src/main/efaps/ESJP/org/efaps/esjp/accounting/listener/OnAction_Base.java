@@ -21,11 +21,15 @@
 
 package org.efaps.esjp.accounting.listener;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.accounting.transaction.Action;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.listener.ITypedClass;
 import org.efaps.esjp.erp.listener.IOnAction;
@@ -56,12 +60,52 @@ public abstract class OnAction_Base
                             final Instance _actionRelInst)
         throws EFapsException
     {
-        if (CISales.IncomingInvoice.equals(_typeClass.getCIType())) {
+        excuteAction(_parameter, _typeClass.getCIType().getType(), _actionRelInst);
+    }
+
+    /**
+     * Called after the update a Document. Searches for a relation to an actions
+     * an than executes it.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst instance of the relation created
+     * @throws EFapsException on error
+     */
+    @Override
+    public void onDocumentUpdate(final Parameter _parameter,
+                                 final Instance _docInst)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CIERP.ActionDefinition2DocumentAbstract);
+        queryBldr.addWhereAttrEqValue(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, _docInst);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            excuteAction(_parameter, _docInst.getType(), query.getCurrentValue());
+        }
+    }
+
+    /**
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _type type
+     * @param _actionRelInst instance of the relation created
+     * @throws EFapsException on error
+     */
+    protected void excuteAction(final Parameter _parameter,
+                                final Type _type,
+                                final Instance _actionRelInst)
+        throws EFapsException
+    {
+        if (CISales.IncomingInvoice.isType(_type)) {
             final Action action = new Action();
             action.create4External(_parameter, _actionRelInst);
-        }else if (CISales.Invoice.equals(_typeClass.getCIType())) {
+        } else if (CISales.Invoice.isType(_type)) {
             final Action action = new Action();
             action.create4Doc(_parameter, _actionRelInst);
+        } else if (CISales.PettyCashReceipt.isType(_type)) {
+            final Action action = new Action();
+            action.create4PettyCashReceipt(_parameter, _actionRelInst);
         }
     }
 

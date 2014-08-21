@@ -22,13 +22,21 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8b0caf87-9dee-4768-8b46-fa31b09300f4</uuid>
+    <uuid>1b5b5363-831b-467a-a4da-10bee6c26304</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification/>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinition2Case4External</name>
-        <parent>Accounting_ActionDefinition2Case4IncomingAbstract</parent>
+        <name>Accounting_ActionDefinition2Case4IncomingAbstract</name>
+        <parent>Accounting_ActionDefinition2Case</parent>
+        <purpose abstract="true"></purpose>
+         <attribute>
+            <name>Config</name>
+            <type>BitEnum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$ActDef2Case4IncomingConfig</className>
+            <sqltable>Accounting_ActionDefinition2ObjectExtSQLTable</sqltable>
+            <sqlcolumn>INT1</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

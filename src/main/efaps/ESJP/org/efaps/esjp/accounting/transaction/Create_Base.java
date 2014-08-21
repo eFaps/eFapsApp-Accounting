@@ -343,7 +343,7 @@ public abstract class Create_Base
     public Return create4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
-        return create4Doc(_parameter);
+        return create4External(_parameter);
     }
 
     /**
@@ -354,7 +354,7 @@ public abstract class Create_Base
     public Return create4PettyCashMassive(final Parameter _parameter)
         throws EFapsException
     {
-        return create4DocMassive(_parameter);
+        return create4ExternalMassive(_parameter);
     }
 
     /**
