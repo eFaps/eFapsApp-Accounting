@@ -151,10 +151,12 @@ public abstract class FieldValue_Base
                 final String[] oids = _parameter.getParameterValues("selectedRow");
                 final List<DropDownPosition> values = new ArrayList<>();
                 int i = 1;
-                for (final String oid : oids) {
-                    if (Instance.get(oid).isValid()) {
-                        values.add(new DropDownPosition(oid, i + "."));
-                        i++;
+                if (oids != null) {
+                    for (final String oid : oids) {
+                        if (Instance.get(oid).isValid()) {
+                            values.add(new DropDownPosition(oid, i + "."));
+                            i++;
+                        }
                     }
                 }
                 if (values.size() > 1) {
@@ -268,7 +270,6 @@ public abstract class FieldValue_Base
         return ret;
     }
 
-
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @return  default value for the currency field
@@ -278,11 +279,9 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        Instance inst = _parameter.getCallInstance();
-        if (!inst.getType().isKindOf(CIAccounting.Period.getType())) {
-            inst = new Period().evaluateCurrentPeriod(_parameter);
-        }
-        final String baseCurName = new Period().getCurrency(inst).getName();
+        final Period period = new Period();
+        final Instance inst = period.evaluateCurrentPeriod(_parameter);
+        final String baseCurName = period.getCurrency(inst).getName();
         ret.put(ReturnValues.VALUES, baseCurName);
         return ret;
     }

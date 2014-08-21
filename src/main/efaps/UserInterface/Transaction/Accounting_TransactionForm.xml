@@ -39,11 +39,11 @@
             <property name="GroupCount">4</property>
         </field>
         <field name="case">
-             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.case.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4ExternalForm.case.UI_FIELD_VALUE"
@@ -70,16 +70,18 @@
             </trigger>
         </field>
         <field name="checkbox4Account" >
-            <property name="ModeCreate">READONLY</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="Label">Accounting_TransactionForm.select4Account.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.select4Account.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="checkboxFieldValue"
-                name="Accounting_TransactionForm.checkbox4Account.UI_FIELD_VALUE"
+                method="getDefault4BooleanValue"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="checked">false</property>
+                <property name="DefaultValue">true</property>
             </trigger>
         </field>
         <field name="subJournal">
@@ -87,7 +89,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.subJournal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getSubJournalFieldValue"
                 name="Accounting_TransactionForm.subJournal.UI_FIELD_VALUE"
@@ -99,7 +101,6 @@
                 <property name="emptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
         </field>
-
         <field name="currencyGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
@@ -183,6 +184,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="identifier">
             <property name="Attribute">Identifier</property>
@@ -198,15 +200,18 @@
         <field name="status">
             <property name="ModeEdit">READONLY</property>
             <property name="Attribute">Status</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="period">
             <property name="SelectAlternateOID">linkto[PeriodLink].oid</property>
             <property name="Select">linkto[PeriodLink].attribute[Name]</property>
             <property name="Label">Accounting_TransactionForm.period.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="creator">
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
@@ -214,13 +219,16 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modifier">
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
@@ -228,10 +236,12 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="transactionPosition4View" character="Heading">
             <property name="Level">2</property>
@@ -250,7 +260,7 @@
             <property name="Level">2</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModePrint">NONE</property>
             <property name="Label">Accounting_TransactionForm.transactionPositionDebit.Heading</property>
         </field>
@@ -265,10 +275,20 @@
                 <property name="LinkFrom">TransactionLink</property>
             </evaluate>
         </field>
+        <field name="transactionPositionDebit4EditTable" character="Target">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <table>Accounting_TransactionPositionDebit4EditTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_TransactionPositionDebit</property>
+                <property name="LinkFrom">TransactionLink</property>
+            </evaluate>
+        </field>
         <field name="sumDebit">
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumDebit.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
@@ -276,7 +296,7 @@
             <property name="Level">2</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModePrint">NONE</property>
             <property name="Label">Accounting_TransactionForm.transactionPositionCredit.Heading</property>
         </field>
@@ -291,17 +311,27 @@
                 <property name="LinkFrom">TransactionLink</property>
             </evaluate>
         </field>
+        <field name="transactionPositionCredit4EditTable" character="Target">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <table>Accounting_TransactionPositionCredit4EditTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_TransactionPositionCredit</property>
+                <property name="LinkFrom">TransactionLink</property>
+            </evaluate>
+        </field>
         <field name="sumCredit">
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumCredit.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
