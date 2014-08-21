@@ -53,6 +53,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.PurchaseRecord;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.TransactionDocument;
 import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
@@ -633,20 +634,7 @@ public abstract class Create_Base
                                               final Instance... _docInsts)
         throws EFapsException
     {
-        final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
-        if (purchaseRecInst.isValid()) {
-            for (final Instance docInst : _docInsts) {
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
-                queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
-                final InstanceQuery query = queryBldr.getQuery();
-                if (query.executeWithoutAccessCheck().isEmpty()) {
-                    final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
-                    purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecInst);
-                    purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
-                    purInsert.execute();
-                }
-            }
-        }
+        new PurchaseRecord().connectDocuments(_parameter, _docInsts);
     }
 
     /**

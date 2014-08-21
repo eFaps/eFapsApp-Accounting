@@ -1,6 +1,7 @@
 package org.efaps.esjp.accounting;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
@@ -8,7 +9,9 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -48,7 +51,8 @@ import org.joda.time.DateTime;
  * TODO description!
  *
  * @author The eFasp Team
- * @version $Id$
+ * @version $Id: PurchaseRecord_Base.java 13599 2014-08-13 15:24:38Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("2198d008-b65f-4d3c-b84d-48250c047708")
 @EFapsRevision("$Rev$")
@@ -56,7 +60,7 @@ public abstract class PurchaseRecord_Base
 {
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @return Return containg the map for multi
      * @throws EFapsException on error
      */
@@ -77,7 +81,8 @@ public abstract class PurchaseRecord_Base
                                 CIAccounting.PurchaseRecord2Document.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
 
-                // only the ones that have a documentype assigned that is configured for puchaserecord
+                // only the ones that have a documentype assigned that is
+                // configured for puchaserecord
                 final QueryBuilder docTypeQueryBldr = new QueryBuilder(CIERP.DocumentType);
                 docTypeQueryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration,
                                 ERP.DocTypeConfiguration.PURCHASERECORD);
@@ -106,8 +111,8 @@ public abstract class PurchaseRecord_Base
         if (docInst.isValid()) {
             final PrintQuery printDocQuery = new PrintQuery(docInst);
             final SelectBuilder selDocTypeIns = new SelectBuilder()
-                        .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
-                        .linkto(CISales.Document2DocumentType.DocumentTypeLink).instance();
+                            .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
+                            .linkto(CISales.Document2DocumentType.DocumentTypeLink).instance();
             printDocQuery.addSelect(selDocTypeIns);
             printDocQuery.executeWithoutAccessCheck();
             final Instance docTypeIns = printDocQuery.<Instance>getSelect(selDocTypeIns);
@@ -159,4 +164,45 @@ public abstract class PurchaseRecord_Base
 
         return report.execute(_parameter);
     }
+
+    public void connectDocuments(final Parameter _parameter,
+                                 final Instance... _docInsts)
+        throws EFapsException
+    {
+        final Instance purchaseRecInst = Instance.get(_parameter.getParameterValue("purchaseRecord"));
+        if (purchaseRecInst.isValid()) {
+            connectDocuments(_parameter, purchaseRecInst, _docInsts);
+        }
+    }
+
+    public void connectDocuments(final Parameter _parameter,
+                                 final Instance _purchaseRecInst,
+                                 final Instance... _docInsts)
+        throws EFapsException
+    {
+        if (_purchaseRecInst != null && _docInsts != null && _purchaseRecInst.isValid()) {
+            for (final Instance docInst : _docInsts) {
+                final PrintQuery print = new PrintQuery(docInst);
+                final SelectBuilder sel = SelectBuilder.get()
+                                .linkfrom(CISales.Document2DocumentType.DocumentLink)
+                                .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                                .attribute(CIERP.DocumentType.Configuration);
+                print.addSelect(sel);
+                print.executeWithoutAccessCheck();
+                final List<ERP.DocTypeConfiguration> configs = print.getSelect(sel);
+                if (configs != null && configs.contains(ERP.DocTypeConfiguration.PURCHASERECORD)) {
+                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
+                    queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                    final InstanceQuery query = queryBldr.getQuery();
+                    if (query.executeWithoutAccessCheck().isEmpty()) {
+                        final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
+                        purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, _purchaseRecInst);
+                        purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                        purInsert.execute();
+                    }
+                }
+            }
+        }
+    }
+
 }
