@@ -94,6 +94,9 @@
              <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_InvoiceTree menu -->
             update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "55f86f49-d9a5-4654-9bdb-9d0b61e4b8e5", -1);
 
+             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_CollectionOrderTree menu -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "b8421e95-12d9-48dd-8a2e-1507779c60da", -1);
+
             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_CreditNoteTree menu -->
             update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "22a08697-2de1-4ef7-9dbb-10b2a61553cd", -1);
 
