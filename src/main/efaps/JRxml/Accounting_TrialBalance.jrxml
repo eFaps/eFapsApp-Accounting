@@ -920,15 +920,17 @@
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="12">
+		<band height="24">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
-				<reportElement x="0" y="0" width="565" height="12" uuid="25c44796-5699-410a-bc6a-106535a5bd3b">
+				<reportElement x="0" y="0" width="565" height="24" uuid="25c44796-5699-410a-bc6a-106535a5bd3b">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<printWhenExpression><![CDATA[$P{IncludeInit}]]></printWhenExpression>
 				</reportElement>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
@@ -1026,6 +1028,58 @@
 						<font size="7"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{finalCreditorSum}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="181" y="12" width="48" height="12" uuid="fde5a072-33aa-4adc-8f75-a477503e4bb3">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[new Boolean($V{initDebtorSum}.subtract($V{initCreditorSum}).compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+					</reportElement>
+					<box rightPadding="2"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{initDebtorSum}.subtract($V{initCreditorSum})]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="229" y="12" width="48" height="12" uuid="81747067-cec1-4e86-aa6b-bd8a56cffd5c">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[new Boolean($V{initDebtorSum}.subtract($V{initCreditorSum}).compareTo(BigDecimal.ZERO) < 0)]]></printWhenExpression>
+					</reportElement>
+					<box rightPadding="2"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{initDebtorSum}.subtract($V{initCreditorSum}).abs()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="517" y="12" width="48" height="12" uuid="1a72d311-2081-411c-9086-26baa75a76bb">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[new Boolean($V{finalDebtorSum}.subtract($V{finalCreditorSum}).compareTo(BigDecimal.ZERO) < 0)]]></printWhenExpression>
+					</reportElement>
+					<box rightPadding="2"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{finalDebtorSum}.subtract($V{finalCreditorSum}).abs()]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="469" y="12" width="48" height="12" uuid="9fbde756-14a3-413a-8353-6dd1038de63c">
+						<property name="local_mesure_unitwidth" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<printWhenExpression><![CDATA[new Boolean($V{finalDebtorSum}.subtract($V{finalCreditorSum}).compareTo(BigDecimal.ZERO) > 0)]]></printWhenExpression>
+					</reportElement>
+					<box rightPadding="2"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{finalDebtorSum}.subtract($V{finalCreditorSum})]]></textFieldExpression>
 				</textField>
 			</frame>
 			<frame>
