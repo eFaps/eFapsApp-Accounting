@@ -86,7 +86,8 @@ public abstract class Action_Base
         final QueryBuilder attrQueryBldr2 = new QueryBuilder(CIAccounting.ActionDefinition2Case);
         attrQueryBldr2.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case.FromLinkAbstract, _instAction.getId());
         attrQueryBldr2.addWhereAttrInQuery(CIAccounting.ActionDefinition2Case.ToLinkAbstract, attrQuery);
-        final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CIAccounting.ActionDefinition2Case.ToLinkAbstract);
+        final AttributeQuery attrQuery2 = attrQueryBldr2
+                        .getAttributeQuery(CIAccounting.ActionDefinition2Case.ToLinkAbstract);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
         queryBldr.addWhereAttrInQuery(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, attrQuery2);
@@ -152,7 +153,7 @@ public abstract class Action_Base
     }
 
     protected Instance getPeriodInstance(final Parameter _parameter,
-                                          final Instance _transactionInstance)
+                                         final Instance _transactionInstance)
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_transactionInstance);
@@ -173,7 +174,7 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
      */
@@ -190,7 +191,7 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
      */
@@ -260,7 +261,7 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
      */
@@ -277,7 +278,7 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
      */
@@ -285,6 +286,18 @@ public abstract class Action_Base
                            final Instance _actionRelInst)
         throws EFapsException
     {
+        final Parameter parameter = getParameter4Doc(_parameter, _actionRelInst);
+        if (parameter != null) {
+            final Create create = new Create();
+            create.create4DocMassive(parameter);
+        }
+    }
+
+    protected Parameter getParameter4Doc(final Parameter _parameter,
+                                         final Instance _actionRelInst)
+        throws EFapsException
+    {
+        Parameter ret = null;
         final PrintQuery print = new PrintQuery(_actionRelInst);
         final SelectBuilder selActionInst = SelectBuilder.get()
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract).instance();
@@ -294,26 +307,25 @@ public abstract class Action_Base
         print.execute();
         final Instance actionInst = print.getSelect(selActionInst);
         final Instance docInst = print.getSelect(selDocInst);
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4Doc);
-        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4Doc.FromLinkAbstract, actionInst);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4DocAbstract);
+        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4DocAbstract.FromLinkAbstract, actionInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selCaseInst = SelectBuilder.get()
-                        .linkto(CIAccounting.ActionDefinition2Case4Doc.ToLinkAbstract).instance();
+                        .linkto(CIAccounting.ActionDefinition2Case4DocAbstract.ToLinkAbstract).instance();
         multi.addSelect(selCaseInst);
-        multi.addAttribute(CIAccounting.ActionDefinition2Case4Doc.Config);
+        multi.addAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
         if (multi.execute()) {
             multi.next();
             final List<ActDef2Case4DocConfig> configs = multi
-                            .getAttribute(CIAccounting.ActionDefinition2Case4Doc.Config);
+                            .getAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
             if (configs != null) {
                 final Instance caseInst = multi.getSelect(selCaseInst);
                 // force the correct period by evaluating it now
                 new Period().evaluateCurrentPeriod(_parameter, caseInst);
-                final Parameter parameter = ParameterUtil.clone(_parameter, (Object) null);
-                final Create create = new Create();
+                ret = ParameterUtil.clone(_parameter, (Object) null);
                 if (configs.contains(ActDef2Case4DocConfig.TRANSACTION)) {
-                    ParameterUtil.setParmeterValue(parameter, "case", caseInst.getOid());
-                    ParameterUtil.setParmeterValue(parameter, "document", docInst.getOid());
+                    ParameterUtil.setParmeterValue(ret, "case", caseInst.getOid());
+                    ParameterUtil.setParmeterValue(ret, "document", docInst.getOid());
                     if (configs.contains(ActDef2Case4DocConfig.SUBJOURNAL)) {
                         final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
                         sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst);
@@ -322,12 +334,43 @@ public abstract class Action_Base
                         sjMulti.addSelect(sel);
                         sjMulti.execute();
                         if (sjMulti.next()) {
-                            ParameterUtil.setParmeterValue(parameter, "subJournal", sjMulti.<String>getSelect(sel));
+                            ParameterUtil.setParmeterValue(ret, "subJournal", sjMulti.<String>getSelect(sel));
                         }
                     }
-                    create.create4DocMassive(parameter);
+
                 }
             }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _actionRelInst
+     */
+    public void create4OthersPay(final Parameter _parameter,
+                                 final Instance _actionRelInst)
+        throws EFapsException
+    {
+        final Parameter parameter = getParameter4Doc(_parameter, _actionRelInst);
+        if (parameter != null) {
+            final Create create = new Create();
+            create.create4OthersPay( parameter);
+        }
+    }
+
+    /**
+     * @param _parameter
+     * @param _actionRelInst
+     */
+    public void create4OthersCollect(final Parameter _parameter,
+                                     final Instance _actionRelInst)
+        throws EFapsException
+    {
+        final Parameter parameter = getParameter4Doc(_parameter, _actionRelInst);
+        if (parameter != null) {
+            final Create create = new Create();
+            create.create4OthersCollect(parameter);
         }
     }
 }

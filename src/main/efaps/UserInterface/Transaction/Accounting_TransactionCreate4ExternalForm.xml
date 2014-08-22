@@ -54,7 +54,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.document.Label</property>
             <property name="UIType">SNIPPLET</property>
-            <property name="RowSpan">4</property>
+            <property name="RowSpan">3</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDocumentFieldValue"
                 name="Accounting_TransactionCreate4DocForm.document.UI_FIELD_VALUE"
