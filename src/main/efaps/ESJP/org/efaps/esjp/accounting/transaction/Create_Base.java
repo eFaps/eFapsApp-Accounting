@@ -149,6 +149,32 @@ public abstract class Create_Base
         return new Return();
     }
 
+
+    public Return create4OthersPay(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4External(_parameter);
+    }
+
+    public Return create4OthersPayMassiv(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4ExternalMassive(_parameter);
+    }
+
+    public Return create4OthersCollect(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4Doc(_parameter);
+    }
+
+    public Return create4OthersCollectMassiv(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4DocMassive(_parameter);
+    }
+
+
     /**
      * Called from event for creation of a transaction with a document.
      *

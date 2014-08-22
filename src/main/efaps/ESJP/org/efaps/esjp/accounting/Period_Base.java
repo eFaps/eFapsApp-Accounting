@@ -844,6 +844,27 @@ public abstract class Period_Base
     }
 
     /**
+     * Called from a tree menu command to present the documents that are not
+     * included in accounting yet.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getOthersPay(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint().execute(_parameter);
+    }
+
+    public Return getOthersCollect(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint().execute(_parameter);
+    }
+
+
+    /**
      * Recursive method to get a Type with his children and children children
      * as a simple set.
      * @param _parameter    Parameter as passed from the eFaps API

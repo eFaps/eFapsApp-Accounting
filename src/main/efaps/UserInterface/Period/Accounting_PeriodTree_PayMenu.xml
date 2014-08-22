@@ -39,6 +39,7 @@
             <child>Accounting_PeriodTree_PayMenu_Payment</child>
             <child>Accounting_PeriodTree_PayMenu_PettyCashReceipt</child>
             <child>Accounting_PeriodTree_PayMenu_FundsToBeSettled</child>
+            <child>Accounting_PeriodTree_PayMenu_Others</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
