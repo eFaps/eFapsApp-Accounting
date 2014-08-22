@@ -168,7 +168,7 @@ public abstract class Create_Base
         return create4Doc(_parameter);
     }
 
-    public Return create4OthersCollectMassiv(final Parameter _parameter)
+    public Return create4OthersCollectMassive(final Parameter _parameter)
         throws EFapsException
     {
         return create4DocMassive(_parameter);

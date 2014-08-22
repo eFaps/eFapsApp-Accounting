@@ -552,7 +552,10 @@ public abstract class FieldValue_Base
                                    final DocumentInfo _doc)
         throws EFapsException
     {
-        final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "noNetTotal"));
+        final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "NoNetTotal"));
+        final boolean showAction = !"true".equalsIgnoreCase(getProperty(_parameter, "NoAction"));
+        final boolean showNote = "true".equalsIgnoreCase(getProperty(_parameter, "ShowNote"));
+
         _doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
 
         final SelectBuilder accSel = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
@@ -593,7 +596,8 @@ public abstract class FieldValue_Base
 
         print.addAttribute(CISales.DocumentAbstract.Name,
                            CISales.DocumentAbstract.Date,
-                           CISales.DocumentAbstract.StatusAbstract);
+                           CISales.DocumentAbstract.StatusAbstract,
+                           CISales.DocumentAbstract.Note);
         print.addSelect(accDescSel, accNameSel, accInstSel, contNameSel);
         print.execute();
 
@@ -699,6 +703,28 @@ public abstract class FieldValue_Base
                         .addColumn(rateCross + " " + new CurrencyInst(curInst).getSymbol());
                 }
             }
+        }
+
+        if (showAction && !_doc.isPaymentDoc()) {
+            final QueryBuilder actionQueryBldr = new QueryBuilder(CIERP.ActionDefinition2DocumentAbstract);
+            actionQueryBldr.addWhereAttrEqValue(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract,
+                            _doc.getInstance());
+            final MultiPrintQuery actionMulti = actionQueryBldr.getPrint();
+            final SelectBuilder selName = SelectBuilder.get()
+                            .linkto(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract)
+                            .attribute(CIERP.ActionDefinitionAbstract.Name);
+            actionMulti.addSelect(selName);
+            actionMulti.execute();
+            while (actionMulti.next()) {
+                _table.addRow()
+                    .addColumn(DBProperties.getProperty(FieldValue.class.getName() + ".ActionInfo"))
+                    .addColumn(actionMulti.<String>getSelect(selName));
+            }
+        }
+
+        if (showNote) {
+            final String note = print.<String>getAttribute(CISales.DocumentAbstract.Note);
+            _table.addRow().addColumn(note);
         }
     }
 
