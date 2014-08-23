@@ -1280,7 +1280,13 @@ public abstract class FieldValue_Base
         return ret;
     }
 
-
+    /**
+     * Method is called from a hidden field to include javascript in the form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing the javascript
+     * @throws EFapsException on error
+     */
     public Return getJavaScriptFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -1307,6 +1313,28 @@ public abstract class FieldValue_Base
                 js.append(InterfaceUtils.wrapInDojoRequire(_parameter, caseJs, DojoLibs.QUERY, DojoLibs.DOMATTR));
             }
         }
+
+        final LabelDefinition labelDef = new Period().getLabelDefinition(_parameter);
+        if (LabelDefinition.BALANCE.equals(labelDef) || LabelDefinition.BALANCEREQUIRED.equals(labelDef)) {
+            final StringBuilder labelJs = new StringBuilder();
+            labelJs.append("topic.subscribe(\"eFaps/addRow/transactionPositionCreditTable\", function(){\n")
+                     .append("query(\"select[name^=\\\"labelLink\\\"]\").some(function(node){\n")
+                         .append("query(\"select[name^=\\\"labelLink\\\"]\").forEach(function(node2){\n")
+                             .append("node2.value=node.value\n")
+                          .append("});\n")
+                     .append("return false; });\n")
+                 .append("});\n")
+                 .append("topic.subscribe(\"eFaps/addRow/transactionPositionDebitTable\", function(){\n")
+                    .append("query(\"select[name^=\\\"labelLink\\\"]\").some(function(node){\n")
+                         .append("query(\"select[name^=\\\"labelLink\\\"]\").forEach(function(node2){\n")
+                             .append("node2.value=node.value\n")
+                          .append("});\n")
+                     .append("return false; });\n")
+                 .append("});\n");
+
+            js.append(InterfaceUtils.wrapInDojoRequire(_parameter, labelJs, DojoLibs.TOPIC, DojoLibs.QUERY));
+        }
+
         if (js.length() > 0) {
             ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 0));
         }

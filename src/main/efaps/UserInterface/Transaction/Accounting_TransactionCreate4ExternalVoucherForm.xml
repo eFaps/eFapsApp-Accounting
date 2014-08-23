@@ -469,5 +469,13 @@
                 name="Accounting_TransactionCreate4ExternalVoucherForm.taxDocJavaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"/>
         </field>
+        <field name="javacript">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="UIType">SNIPPLET</property>
+             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getJavaScriptFieldValue"
+                name="Accounting_TransactionCreate4ExternalVoucherForm.javacript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
     </definition>
 </ui-form>
