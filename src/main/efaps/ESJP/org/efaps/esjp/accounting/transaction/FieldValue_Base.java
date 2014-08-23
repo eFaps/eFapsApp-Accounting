@@ -62,7 +62,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
-import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
+import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
@@ -1148,7 +1149,16 @@ public abstract class FieldValue_Base
                     drP.setSelected(print.getCurrentInstance().equals(labelInst));
                     values.add(drP);
                 }
-                values.add(0, new DropDownPosition("", "-"));
+
+                final LabelDefinition labelDef = new Period().getLabelDefinition(_parameter);
+                switch (labelDef) {
+                    case BALANCE:
+                    case COST:
+                        values.add(0, new DropDownPosition("", "-"));
+                        break;
+                    default:
+                        break;
+                }
                 ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
             } else {
                 ret.put(ReturnValues.SNIPLETT, "");
@@ -1276,8 +1286,8 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final StringBuilder js = new StringBuilder();
-        final SummarizeDefintion summarizeDef = new Period().getSummarizeDefintion(_parameter);
-        if (SummarizeDefintion.CASE.equals(summarizeDef) || SummarizeDefintion.CASEUSER.equals(summarizeDef)) {
+        final SummarizeDefinition summarizeDef = new Period().getSummarizeDefinition(_parameter);
+        if (SummarizeDefinition.CASE.equals(summarizeDef) || SummarizeDefinition.CASEUSER.equals(summarizeDef)) {
             final Instance caseInst = Instance
                             .get((String) Context.getThreadContext().getRequestAttribute(CASE_REQKEY));
             if (caseInst.isValid()) {
@@ -1290,7 +1300,7 @@ public abstract class FieldValue_Base
                                 .checkbox4Summarize.name;
                 caseJs.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
                     .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize)).append("); \n");
-                if (SummarizeDefintion.CASE.equals(summarizeDef)) {
+                if (SummarizeDefinition.CASE.equals(summarizeDef)) {
                     caseJs.append(" domAttr.set(node, \"disabled\", \"disabled\"); \n");
                 }
                 caseJs.append("});\n");

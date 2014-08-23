@@ -137,6 +137,11 @@ public interface AccountingSettings
     String PERIOD_SUMMARIZETRANS = "SummarizeDefinition";
 
     /**
+     * Definitions of the Summarize mechanism.
+     */
+    String PERIOD_LABELDEF = "LabelDefinition";
+
+    /**
      * Name of the SubJournal to be applied for PaymentOut.
      */
     String PERIOD_SUBJOURNAL4PAYOUT = "SubJournal4PaymentOut";

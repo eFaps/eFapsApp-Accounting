@@ -118,7 +118,7 @@ public final class Accounting
         }
     }
 
-    public enum SummarizeDefintion
+    public enum SummarizeDefinition
     {
         /** Never summarize for this period. Default if not set. */
         NEVER,
@@ -130,6 +130,18 @@ public final class Accounting
         USER,
         /** Summarize is defined first by case but can be overwritten by the user. */
         CASEUSER;
+    }
+
+    public enum LabelDefinition
+    {
+        /** Never summarize for this period. Default if not set. */
+        COST,
+        /** Never summarize for this period. Default if not set. */
+        COSTREQUIRED,
+        /** Always summarize for this period. */
+        BALANCE,
+        /** Summarize is defined only by the cases. */
+        BALANCEREQUIRED;
     }
 
     public enum TransPosOrder

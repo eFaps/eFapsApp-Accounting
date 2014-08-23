@@ -52,7 +52,8 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Import_Base.ImportAccount;
 import org.efaps.esjp.accounting.util.Accounting;
-import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
+import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.access.AccessCheck4UI;
 import org.efaps.esjp.admin.common.SystemConf;
@@ -136,7 +137,8 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "??");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVAREMARK4TRANSPOS, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
-                        SummarizeDefintion.CASEUSER.name());
+                        SummarizeDefinition.CASEUSER.name());
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_LABELDEF, LabelDefinition.COST.name());
     }
 
 
@@ -145,7 +147,7 @@ public abstract class Period_Base
     {
         final Return ret = new Return();
         final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
-        final SummarizeDefintion summarize = getSummarizeDefintion(_parameter);
+        final SummarizeDefinition summarize = getSummarizeDefinition(_parameter);
         boolean access;
         switch (summarize) {
             case NEVER:
@@ -482,15 +484,23 @@ public abstract class Period_Base
     }
 
 
-    public SummarizeDefintion getSummarizeDefintion(final Parameter _parameter)
+    public SummarizeDefinition getSummarizeDefinition(final Parameter _parameter)
         throws EFapsException
     {
         final Instance periodInst = evaluateCurrentPeriod(_parameter);
         final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-        return SummarizeDefintion.valueOf(props.getProperty(
-                        AccountingSettings.PERIOD_SUMMARIZETRANS, SummarizeDefintion.NEVER.name()));
+        return SummarizeDefinition.valueOf(props.getProperty(
+                        AccountingSettings.PERIOD_SUMMARIZETRANS, SummarizeDefinition.NEVER.name()));
     }
 
+    public LabelDefinition getLabelDefinition(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance periodInst = evaluateCurrentPeriod(_parameter);
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        return LabelDefinition.valueOf(props.getProperty(
+                        AccountingSettings.PERIOD_LABELDEF, LabelDefinition.COST.name()));
+    }
 
     /**
      * Called from a tree menu command to present the documents that are not

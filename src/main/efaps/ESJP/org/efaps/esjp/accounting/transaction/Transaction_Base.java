@@ -73,7 +73,7 @@ import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
-import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -479,7 +479,7 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         boolean ret = false;
-        final SummarizeDefintion summarize = new Period().getSummarizeDefintion(_parameter);
+        final SummarizeDefinition summarize = new Period().getSummarizeDefinition(_parameter);
         switch (summarize) {
             case NEVER:
                 ret = false;

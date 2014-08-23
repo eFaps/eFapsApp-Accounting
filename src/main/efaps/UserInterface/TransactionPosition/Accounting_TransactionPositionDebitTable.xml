@@ -161,6 +161,12 @@
                 method="getLabelFieldValue"
                 name="Accounting_TransactionPositionDebitTable.labelLink_Debit.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Label"
+                name="Accounting_TransactionPositionDebitTable.labelLink_Credit.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                 <property name="TypePostfix">Debit</property>
+            </trigger>
         </field>
         <field name="remark_Debit">
             <property name="ModeCreate">EDITABLE</property>

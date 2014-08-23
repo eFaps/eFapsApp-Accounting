@@ -42,7 +42,8 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
-import org.efaps.esjp.accounting.util.Accounting.SummarizeDefintion;
+import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -319,9 +320,9 @@ public abstract class FieldUpdate_Base
         final Return ret = new Return();
         final List<Map<String, Object>> list = new ArrayList<>();
         ret.put(ReturnValues.VALUES, list);
-        final SummarizeDefintion summarizeDef = new Period().getSummarizeDefintion(_parameter);
+        final SummarizeDefinition summarizeDef = new Period().getSummarizeDefinition(_parameter);
         final StringBuilder js = new StringBuilder();
-        if (SummarizeDefintion.CASE.equals(summarizeDef) || SummarizeDefintion.CASEUSER.equals(summarizeDef)) {
+        if (SummarizeDefinition.CASE.equals(summarizeDef) || SummarizeDefinition.CASEUSER.equals(summarizeDef)) {
             final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
             final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
             print.addAttribute(CIAccounting.CaseAbstract.Summarize);
@@ -332,7 +333,7 @@ public abstract class FieldUpdate_Base
                             .checkbox4Summarize.name;
             js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
                 .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize)).append("); \n");
-            if (SummarizeDefintion.CASE.equals(summarizeDef)) {
+            if (SummarizeDefinition.CASE.equals(summarizeDef)) {
                 js.append(" domAttr.set(node, \"disabled\", \"disabled\"); \n");
             }
             js.append("});\n");
@@ -431,6 +432,46 @@ public abstract class FieldUpdate_Base
                     .append("')[").append(i).append("].value='").append(rate.getCurrencyInst().isInvert())
                     .append("';");
             }
+        }
+        return ret;
+    }
+
+    /**
+     * Method is executed on update trigger for the account field in the debit
+     * and credit table inside the transaction form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return list for update trigger
+     * @throws EFapsException on error
+     */
+    public Return update4Label(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final LabelDefinition labelDef = new Period().getLabelDefinition(_parameter);
+        switch (labelDef) {
+            case BALANCE:
+            case BALANCEREQUIRED:
+                final List<Map<String, Object>> list = new ArrayList<>();
+                ret.put(ReturnValues.VALUES, list);
+                final String postfix = getProperty(_parameter, "TypePostfix");
+
+                final StringBuilder js = new StringBuilder();
+                final String fieldName = "labelLink_";
+
+                final int selected = getSelectedRow(_parameter);
+                final String value = _parameter.getParameterValues(fieldName + postfix)[selected];
+
+                js.append(" query(\"select[name^=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
+                                .append(" node.value='").append(value).append("'; \n").append("});\n");
+
+                final Map<String, Object> map = new HashMap<>();
+                list.add(map);
+                InterfaceUtils.appendScript4FieldUpdate(map,
+                                InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY));
+                break;
+            default:
+                break;
         }
         return ret;
     }
