@@ -836,7 +836,7 @@ public abstract class DocumentInfo_Base
                     accInfo.setAmountRate(diff.abs());
                     final CurrencyInst currInst = period.getCurrency(periodInst);
                     accInfo.setCurrInstance(currInst.getInstance());
-                    accInfo.setRateInfo(RateInfo.getDummyRateInfo(), null);
+                    accInfo.setRateInfo(RateInfo.getDummyRateInfo(), "");
                     if (debit) {
                         addDebit(accInfo);
                     } else {

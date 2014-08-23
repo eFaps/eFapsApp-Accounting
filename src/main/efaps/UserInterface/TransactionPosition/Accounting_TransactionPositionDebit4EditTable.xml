@@ -82,7 +82,8 @@
             <property name="Required">true</property>
             <property name="Width">1</property>
             <property name="Columns">8</property>
-            <trigger event="UI_FIELD_UPDATE" method="update4Rate" name="Accounting_TransactionPositionCreditTable.rate_Debit.UI_FIELD_UPDATE"
+            <trigger event="UI_FIELD_UPDATE" method="update4Rate"
+                name="Accounting_TransactionPositionCreditTable.rate_Debit.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.accounting.transaction.FieldUpdate">
                 <property name="TypePostfix">Debit</property>
             </trigger>
@@ -125,6 +126,25 @@
             <property name="Label">Accounting_TransactionPositionTable.description.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Width">4</property>
+        </field>
+        <field name="docLink_Debit">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_TransactionPositionDebitTable.docLink_Debit.Label</property>
+            <property name="Required">true</property>
+            <property name="Width">2</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getDocLinkFieldValue"
+                name="Accounting_TransactionPositionDebitTable.docLink_Debit.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Accounting_TransactionPositionDebitTable.docLink_Debit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">HideDocLinK</property>
+                <property name="Inverse">true</property>
+            </trigger>
         </field>
         <field name="labelLink_Debit">
             <property name="ModeCreate">EDITABLE</property>

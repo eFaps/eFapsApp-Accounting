@@ -29,7 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinition2Case4ExternalTree</name>
         <target>
-            <menu>Accounting_ActionDefinition2Case4External_Menu</menu>
+            <menu>Accounting_ActionDefinition2Case4ExternalTree_Menu</menu>
             <form>Accounting_ActionDefinition2Case4ExternalForm</form>
         </target>
         <type>Accounting_ActionDefinition2Case4External</type>

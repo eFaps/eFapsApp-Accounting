@@ -23,19 +23,14 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -147,7 +142,47 @@ public abstract class FieldValue_Base
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof FieldValue) {
-            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+            if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
+                            && org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(
+                                            ((FieldValue) uiObject).getDisplay())) {
+                final List<DropDownPosition> values = new ArrayList<>();
+                final Instance transInst;
+                final Instance docInst;
+                if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+                    final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                    final SelectBuilder selTransInst = SelectBuilder.get()
+                                    .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink).instance();
+                    final SelectBuilder selDocInst = SelectBuilder.get()
+                                    .linkfrom(CIAccounting.TransactionPosition2ERPDocument.FromLinkAbstract)
+                                    .linkto(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract).instance();
+                    print.addSelect(selTransInst, selDocInst);
+                    print.execute();
+                     transInst = print.getSelect(selTransInst);
+                     docInst = print.getSelect(selDocInst);
+                } else {
+                     transInst = _parameter.getCallInstance();
+                     docInst = null;
+                }
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+                queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
+                queryBldr.addOrderByAttributeAsc(CIAccounting.Transaction2ERPDocument.Position);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selCurDocInst = SelectBuilder.get()
+                                .linkto(CIAccounting.Transaction2ERPDocument.ToLinkAbstract).instance();
+                multi.addSelect(selCurDocInst);
+                multi.addAttribute(CIAccounting.Transaction2ERPDocument.Position);
+                multi.setEnforceSorted(true);
+                multi.execute();
+                while (multi.next()) {
+                    final Instance curDocInst = multi.getSelect(selCurDocInst);
+                    final DropDownPosition drpD = new DropDownPosition(curDocInst.getOid(),
+                                    String.valueOf(multi.getAttribute(CIAccounting.Transaction2ERPDocument.Position))
+                                                    + ".");
+                    drpD.setSelected(curDocInst.equals(docInst));
+                    values.add(drpD);
+                }
+                ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
+            } else if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
                 final String[] oids = _parameter.getParameterValues("selectedRow");
                 final List<DropDownPosition> values = new ArrayList<>();
                 int i = 1;
@@ -1083,59 +1118,43 @@ public abstract class FieldValue_Base
     public Return getLabelFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
-        final FieldValue field = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (field.getDisplay().equals(Display.EDITABLE)) {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelProject);
-            queryBldr.addWhereAttrEqValue(CIAccounting.LabelProject.Active, true);
-            final MultiPrintQuery print = queryBldr.getPrint();
-            print.addAttribute(CIAccounting.LabelProject.OID,
-                               CIAccounting.LabelProject.Name,
-                               CIAccounting.LabelProject.Description);
-            print.execute();
-            final Map<String, String> values = new TreeMap<String, String>();
-            while (print.next()) {
-                values.put(print.<String>getAttribute(CIAccounting.LabelProject.Name) + " - "
-                                + print.<String>getAttribute(CIAccounting.LabelProject.Description),
-                                print.<String>getAttribute(CIAccounting.LabelProject.OID));
-            }
-
-            final Set<String> oidDoc = new HashSet<String>();
-            oidDoc.addAll(getSelectedLabel(_parameter));
-
-
-            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-
-            html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
-                            .append(UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
-            html.append("<option value=\"0\"></option>");
-            for (final Entry<String, String> entry : values.entrySet()) {
-                html.append("<option value=\"").append(entry.getValue()).append("\">");
-                String value = entry.getKey();
-                if (oidDoc.contains(entry.getValue())) {
-                    value = "> " + value;
-                }
-                html.append(StringEscapeUtils.escapeHtml4(value)).append("</option>");
-            }
-            html.append("</select>");
-        }
-
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+                final List<DropDownPosition> values = new ArrayList<>();
+                Instance labelInst = null;
+                if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+                    final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                    final SelectBuilder selLabelInst = SelectBuilder.get()
+                                    .linkfrom(CIAccounting.TransactionPosition2LabelAbstract.FromLinkAbstract)
+                                    .linkto(CIAccounting.TransactionPosition2LabelAbstract.ToLinkAbstract).instance();
+                    print.addSelect(selLabelInst);
+                    print.execute();
+                    labelInst = print.getSelect(selLabelInst);
+                }
 
-    /**
-     * To be overwritten from implementation.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return Collection to be added as additional information to the doc table
-     * @throws EFapsException on error
-     */
-    protected Collection<String> getSelectedLabel(final Parameter _parameter)
-        throws EFapsException
-    {
-        return Collections.<String>emptyList();
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelProject);
+                queryBldr.addWhereAttrEqValue(CIAccounting.LabelProject.Active, true);
+                final MultiPrintQuery print = queryBldr.getPrint();
+                print.addAttribute(CIAccounting.LabelProject.Name,
+                                CIAccounting.LabelProject.Description);
+                print.execute();
+                while (print.next()) {
+                    final DropDownPosition drP = new DropDownPosition(print.getCurrentInstance().getOid(),
+                                    print.<String>getAttribute(CIAccounting.LabelProject.Name) + " - "
+                                                    + print.<String>getAttribute(CIAccounting.LabelProject.Description));
+
+                    drP.setSelected(print.getCurrentInstance().equals(labelInst));
+                    values.add(drP);
+                }
+                values.add(0, new DropDownPosition("", "-"));
+                ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
+            } else {
+                ret.put(ReturnValues.SNIPLETT, "");
+            }
+        }
+        return ret;
     }
 
     /**
