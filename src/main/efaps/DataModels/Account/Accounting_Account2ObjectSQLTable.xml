@@ -41,7 +41,7 @@
             <column name="TOID"         type="INTEGER"  not-null="true" />
             <column name="NUMERATOR"    type="INTEGER" />
             <column name="DENOMINATOR"  type="INTEGER" />
-            <column name="ACTIVE"       type="BOOLEAN" />
+            <column name="CONFIG"       type="INTEGER" />
             <column name="LINKID"       type="INTEGER" />
             <column name="ORD"          type="INTEGER" />
             <column name="CREATOR"      type="INTEGER"  not-null="true" />

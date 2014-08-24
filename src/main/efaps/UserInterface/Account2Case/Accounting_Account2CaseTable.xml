@@ -51,10 +51,6 @@
             <property name="Attribute">Denominator</property>
             <property name="Label">Accounting_Account2CaseAbstract/Denominator.Label</property>
         </field>
-        <field name="default">
-            <property name="Attribute">Default</property>
-            <property name="Label">Accounting_Account2CaseAbstract/Default.Label</property>
-        </field>
         <field name="fromAccountAbstractLink">
             <property name="SelectAlternateOID">linkto[FromAccountAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAccountAbstractLink].type.label&gt; -  $&lt;linkto[FromAccountAbstractLink].attribute[Name]&gt;</property>

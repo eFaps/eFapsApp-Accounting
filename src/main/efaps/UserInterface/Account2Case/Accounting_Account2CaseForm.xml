@@ -55,11 +55,11 @@
             <property name="Attribute">Denominator</property>
             <property name="Required">true</property>
         </field>
-        <field name="default">
+        <field name="config">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
-            <property name="Attribute">Default</property>
+            <property name="Attribute">Config</property>
         </field>
         <field name="classificationLink">
             <property name="Attribute">ClassificationLink</property>

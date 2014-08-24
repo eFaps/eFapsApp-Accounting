@@ -47,7 +47,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
@@ -61,8 +60,8 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
+import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
-import org.efaps.esjp.accounting.listener.IOnLabel;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
@@ -762,10 +761,7 @@ public abstract class FieldValue_Base
         }
 
         if (showLabel) {
-            final List<Instance> labelInsts = new ArrayList<>();
-            for (final IOnLabel listener : Listener.get().<IOnLabel>invoke(IOnLabel.class)) {
-                labelInsts.addAll(listener.evalLabelsForDocument(_parameter, _doc.getInstance()));
-            }
+            final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance());
             final MultiPrintQuery labelMulti = new MultiPrintQuery(labelInsts);
             labelMulti.addAttribute(CIAccounting.LabelAbstract.Name);
             labelMulti.execute();

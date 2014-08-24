@@ -54,6 +54,7 @@ import org.efaps.esjp.accounting.export.ColumnAccount;
 import org.efaps.esjp.accounting.export.ColumnCase;
 import org.efaps.esjp.accounting.export.ColumnReport;
 import org.efaps.esjp.accounting.export.IColumn;
+import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -660,7 +661,9 @@ public abstract class Import_Base
             insert.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, this.accInst.getId());
             insert.add(CIAccounting.Account2CaseAbstract.Denominator, this.a2cDenum);
             insert.add(CIAccounting.Account2CaseAbstract.Numerator, this.a2cNum);
-            insert.add(CIAccounting.Account2CaseAbstract.Default, this.a2cDefault);
+            if (this.a2cDefault) {
+                insert.add(CIAccounting.Account2CaseAbstract.Config, Account2CaseConfig.DEFAULTSELECTED);
+            }
             if (this.a2cClass != null) {
                 insert.add(CIAccounting.Account2CaseAbstract.LinkValue, Classification.get(this.a2cClass).getId());
             }
@@ -1007,7 +1010,7 @@ public abstract class Import_Base
                 instCur = multi.getCurrentInstance();
                 final Long parentId = multi.<Long>getAttribute(CIAccounting.ViewAbstract.ParentLink);
                 final String parentName = multi.<String>getSelect(selParent);
-                if (_cont < (_parts.length)) {
+                if (_cont < _parts.length) {
                     if (parentName.equals(_parts[_cont])) {
                         ret = validateUpdate(parentName, parentId, _period, _cont, _parts);
                         if (ret != null) {

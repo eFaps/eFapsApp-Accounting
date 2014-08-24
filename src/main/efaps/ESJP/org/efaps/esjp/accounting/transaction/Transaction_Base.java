@@ -70,9 +70,11 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.accounting.Case;
+import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -623,6 +625,8 @@ public abstract class Transaction_Base
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
         if (caseInst.isValid()) {
             _doc.setCaseInst(caseInst);
+            final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance());
+
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
             queryBldr.addOrderByAttributeAsc(CIAccounting.Account2CaseAbstract.Order);
@@ -633,17 +637,20 @@ public abstract class Transaction_Base
             multi.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                             CIAccounting.Account2CaseAbstract.Denominator,
                             CIAccounting.Account2CaseAbstract.LinkValue,
-                            CIAccounting.Account2CaseAbstract.Default);
+                            CIAccounting.Account2CaseAbstract.Config);
             multi.addSelect(selInst);
             multi.execute();
             while (multi.next()) {
                 final Type type = multi.getCurrentInstance().getType();
                 final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
                                 || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
-                final Boolean isDefault = multi.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
+                final List<Account2CaseConfig> configs = multi.getAttribute(CIAccounting.Account2CaseAbstract.Config);
                 // classRel or default selected will be added
+                final boolean isDefault = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
                 boolean add = classRel || isDefault;
                 if (add) {
+                    final boolean applyLabel = configs != null && configs.contains(Account2CaseConfig.APPLYLABEL);
+
                     final Instance inst = multi.<Instance>getSelect(selInst);
                     final Integer denom = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
                     final Integer numer = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
@@ -663,6 +670,9 @@ public abstract class Transaction_Base
                                     .divide(_doc.getRate(_parameter), BigDecimal.ROUND_HALF_UP);
                     if (add) {
                         final AccountInfo account = new AccountInfo(inst, accAmount);
+                        if (applyLabel && !labelInsts.isEmpty()) {
+                            account.setLabelInst(labelInsts.get(0));
+                        }
                         account.setAmountRate(accAmountRate);
                         if (_doc.getInstance() != null) {
                             account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
@@ -920,6 +930,10 @@ public abstract class Transaction_Base
             if (account.getDocLink() != null && account.getDocLink().isValid()) {
                 onJs.append(getSetFieldValue(i, "docLink_" + _postFix, account.getDocLink().getOid()));
             }
+            if (account.getLabelInst() != null && account.getLabelInst().isValid()) {
+                onJs.append(getSetFieldValue(i, "labelLink_" + _postFix, account.getLabelInst().getOid()));
+            }
+
             i++;
         }
         ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs));

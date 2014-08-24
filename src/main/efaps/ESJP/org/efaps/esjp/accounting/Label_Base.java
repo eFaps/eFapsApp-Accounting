@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.accounting;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
@@ -28,6 +30,9 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
+import org.efaps.db.Instance;
+import org.efaps.esjp.accounting.listener.IOnLabel;
 import org.efaps.util.EFapsException;
 
 /**
@@ -55,6 +60,23 @@ public abstract class Label_Base
                         UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
         if (!sysconf.getAttributeValueAsBoolean("DeactivateLabel")) {
             ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Paremeter as passed from the eFaPS API
+     * @param _instance document of instance
+     * @return list of labels
+     * @throws EFapsException on error
+     */
+    public List<Instance> getLabelInst4Documents(final Parameter _parameter,
+                                                 final Instance _instance)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        for (final IOnLabel listener : Listener.get().<IOnLabel>invoke(IOnLabel.class)) {
+            ret.addAll(listener.evalLabelsForDocument(_parameter, _instance));
         }
         return ret;
     }

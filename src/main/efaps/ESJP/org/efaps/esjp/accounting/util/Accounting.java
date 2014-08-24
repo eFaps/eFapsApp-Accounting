@@ -118,6 +118,33 @@ public final class Accounting
         }
     }
 
+    public enum Account2CaseConfig
+        implements IBitEnum
+    {
+        /** Is as default selected. */
+        DEFAULTSELECTED,
+        /** Official Report. */
+        APPLYLABEL;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
+
     public enum SummarizeDefinition
     {
         /** Never summarize for this period. Default if not set. */

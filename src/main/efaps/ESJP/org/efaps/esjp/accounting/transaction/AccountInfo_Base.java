@@ -101,6 +101,8 @@ public abstract class AccountInfo_Base
 
     private String ratePropKey;
 
+    private Instance labelInst;
+
     /**
      *
      */
@@ -446,7 +448,6 @@ public abstract class AccountInfo_Base
         }
     }
 
-
     /**
      * Getter method for the instance variable {@link #postFix}.
      *
@@ -468,6 +469,26 @@ public abstract class AccountInfo_Base
         this.postFix = _postFix;
     }
 
+    /**
+     * Getter method for the instance variable {@link #labelInst}.
+     *
+     * @return value of instance variable {@link #labelInst}
+     */
+    public Instance getLabelInst()
+    {
+        return this.labelInst;
+    }
+
+    /**
+     * Setter method for instance variable {@link #labelInst}.
+     *
+     * @param _labelInst value for instance variable {@link #labelInst}
+     */
+    public void setLabelInst(final Instance _labelInst)
+    {
+        this.labelInst = _labelInst;
+    }
+
 
     protected static AccountInfo get4Config(final Parameter _parameter,
                                             final String _key)
@@ -487,4 +508,6 @@ public abstract class AccountInfo_Base
         }
         return ret;
     }
+
+
 }

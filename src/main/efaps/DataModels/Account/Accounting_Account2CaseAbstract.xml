@@ -65,11 +65,12 @@
             <defaultvalue>1</defaultvalue>
         </attribute>
         <attribute>
-            <name>Default</name>
-            <type>Boolean</type>
+            <name>Config</name>
+            <type>BitEnum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$Account2CaseConfig</className>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
-            <sqlcolumn>ACTIVE</sqlcolumn>
-            <defaultvalue>false</defaultvalue>
+            <sqlcolumn>CONFIG</sqlcolumn>
+            <defaultvalue>0</defaultvalue>
         </attribute>
         <attribute>
             <name>LinkValue</name>

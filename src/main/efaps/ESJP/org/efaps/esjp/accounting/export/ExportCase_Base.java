@@ -35,6 +35,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.util.EFapsException;
@@ -104,7 +105,7 @@ public abstract class ExportCase_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                         CIAccounting.Account2CaseAbstract.Denominator,
-                        CIAccounting.Account2CaseAbstract.Default);
+                        CIAccounting.Account2CaseAbstract.Config);
         final SelectBuilder selCaseName = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                         .attribute(CIAccounting.CaseAbstract.Name);
@@ -146,7 +147,9 @@ public abstract class ExportCase_Base
 
             final Integer acc2CaseNum = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
             final Integer acc2CaseDen = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
-            final Boolean acc2CaseDef = multi.<Boolean>getAttribute(CIAccounting.Account2CaseAbstract.Default);
+            final List<Account2CaseConfig> configs = multi.getAttribute(CIAccounting.Account2CaseAbstract.Config);
+            // classRel or default selected will be added
+            final boolean acc2CaseDef = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
 
             row.put(ColumnCase.CASETYPE.getKey(), caseType.getUUID());
             row.put(ColumnCase.CASENAME.getKey(), caseName);
