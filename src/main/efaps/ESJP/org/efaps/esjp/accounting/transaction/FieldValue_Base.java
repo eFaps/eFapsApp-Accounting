@@ -47,6 +47,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.ci.CIAttribute;
@@ -61,6 +62,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.listener.IOnLabel;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
@@ -590,6 +592,7 @@ public abstract class FieldValue_Base
     {
         final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "NoNetTotal"));
         final boolean showAction = !"true".equalsIgnoreCase(getProperty(_parameter, "NoAction"));
+        final boolean showLabel = !"true".equalsIgnoreCase(getProperty(_parameter, "NoLabel"));
         final boolean showNote = "true".equalsIgnoreCase(getProperty(_parameter, "ShowNote"));
 
         _doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
@@ -755,6 +758,21 @@ public abstract class FieldValue_Base
                 _table.addRow()
                     .addColumn(DBProperties.getProperty(FieldValue.class.getName() + ".ActionInfo"))
                     .addColumn(actionMulti.<String>getSelect(selName));
+            }
+        }
+
+        if (showLabel) {
+            final List<Instance> labelInsts = new ArrayList<>();
+            for (final IOnLabel listener : Listener.get().<IOnLabel>invoke(IOnLabel.class)) {
+                labelInsts.addAll(listener.evalLabelsForDocument(_parameter, _doc.getInstance()));
+            }
+            final MultiPrintQuery labelMulti = new MultiPrintQuery(labelInsts);
+            labelMulti.addAttribute(CIAccounting.LabelAbstract.Name);
+            labelMulti.execute();
+            while (labelMulti.next()) {
+                _table.addRow()
+                    .addColumn(DBProperties.getProperty(FieldValue.class.getName() + ".LabelInfo"))
+                    .addColumn(labelMulti.<String>getAttribute(CIAccounting.LabelAbstract.Name));
             }
         }
 
