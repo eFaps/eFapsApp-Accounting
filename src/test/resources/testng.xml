@@ -3,6 +3,7 @@
 <suite name="Suite" parallel="false">
     <test name="CITests">
         <parameter name="baseFolder" value="../../../main/efaps"></parameter>
+        <parameter name="ciClass" value="org.efaps.esjp.ci.CIAccounting"></parameter>
         <packages>
             <package name="org.efaps.tests.ci.*"></package>
         </packages>
