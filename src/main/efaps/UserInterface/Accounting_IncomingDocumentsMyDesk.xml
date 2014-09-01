@@ -32,6 +32,7 @@
             <child>Accounting_Common_SearchMyDesk</child>
             <child>Sales_IncomingInvoiceMyDesk</child>
             <child>Sales_IncomingReceiptMyDesk</child>
+            <child>Sales_IncomingProfServReceiptMyDesk</child>
             <child>Sales_IncomingCreditNoteMyDesk</child>
             <child>Sales_IncomingReminderMyDesk</child>
             <child>Accounting_IncomingDocumentMyDesk</child>

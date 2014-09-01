@@ -19,16 +19,15 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8d853717-50db-4f07-a963-9c9cf6638f2f</uuid>
     <file-application>eFapsApp-Commons</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_DocumentSearch</name>
-        <!-- target definitions -->
         <target>
             <form>Accounting_AbstractDocumentForm</form>
             <table>Accounting_IncomingDocumentTable</table>
@@ -38,11 +37,10 @@
                 <property name="Type03">Sales_IncomingCreditNote</property>
                 <property name="Type04">Sales_IncomingReminder</property>
                 <property name="Type05">Accounting_ExternalVoucher</property>
+                <property name="Type05">Sales_IncomingProfServReceipt</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="TargetMode">search</property>
     </definition>
-
 </ui-command>

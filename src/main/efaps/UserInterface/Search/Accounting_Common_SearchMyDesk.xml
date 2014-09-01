@@ -19,23 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>feb1871b-e5cf-4f79-9340-006b0b361d49</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Common_SearchMyDesk</name>
-        <!-- target definitions -->
         <target>
             <search>Accounting_Common_Search</search>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">popup</property>
     </definition>
-
 </ui-command>
