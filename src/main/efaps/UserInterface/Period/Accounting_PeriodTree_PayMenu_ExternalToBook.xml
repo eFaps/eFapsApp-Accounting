@@ -52,6 +52,8 @@
                 <property name="Status05">!Booked</property>
                 <property name="StatusGroup06">Sales_IncomingReceiptStatus</property>
                 <property name="Status06">!Booked</property>
+                <property name="StatusGroup06">Sales_IncomingProfServReceiptStatus</property>
+                <property name="Status06">!Booked</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
