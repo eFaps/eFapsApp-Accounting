@@ -508,7 +508,8 @@ public abstract class FieldValue_Base
                 addDocumentInfo(_parameter, table, doc);
                 final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
                 if (taxInfo.isPerception()) {
-                    final DocumentInfo percDoc = new DocumentInfo(taxInfo.getTaxDocInstance());
+                    final DocumentInfo percDoc = new DocumentInfo(
+                                    taxInfo.getTaxDocInstance(CISales.IncomingPerceptionCertificate));
                     addDocumentInfo(_parameter, table, percDoc);
                 }
 
