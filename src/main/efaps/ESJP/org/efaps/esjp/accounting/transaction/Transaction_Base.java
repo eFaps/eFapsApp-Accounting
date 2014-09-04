@@ -75,6 +75,7 @@ import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
+import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -766,6 +767,7 @@ public abstract class Transaction_Base
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 if (docInst.isValid()) {
                     _doc.addDocInst(docInst);
+                    // evaluate the transactions
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                     attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst);
                     final AttributeQuery attrQuery = attrQueryBldr
@@ -801,8 +803,61 @@ public abstract class Transaction_Base
                             }
                         }
                     }
+                    add2Doc4Actions(_parameter, _doc, docInst);
                 }
             }
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _doc Document
+     * @param _docInst insatcne of the current document
+     * @throws EFapsException on error
+     */
+    protected void add2Doc4Actions(final Parameter _parameter,
+                                   final DocumentInfo _doc,
+                                   final Instance _docInst)
+        throws EFapsException
+    {
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIERP.ActionDefinition2DocumentAbstract);
+        attrQueryBldr.addWhereAttrEqValue(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, _docInst);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4DocAbstract);
+        queryBldr.addWhereAttrInQuery(CIAccounting.ActionDefinition2Case4DocAbstract.FromLinkAbstract,
+                        attrQueryBldr.getAttributeQuery(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract));
+        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4DocAbstract.Config,
+                        ActDef2Case4DocConfig.EVALONPAYMENT);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCaseInst = SelectBuilder.get()
+                        .linkto(CIAccounting.ActionDefinition2Case4DocAbstract.ToLinkAbstract).instance();
+        multi.addSelect(selCaseInst);
+        multi.execute();
+        while (multi.next()) {
+            final boolean outDoc = _doc.getInstance().getType().isKindOf(
+                            CISales.PaymentDocumentOutAbstract.getType());
+            final Instance caseInst = multi.getSelect(selCaseInst);
+
+            final QueryBuilder caseQueryBldr = new QueryBuilder(outDoc ? CIAccounting.Account2CaseDebit
+                            : CIAccounting.Account2CaseCredit);
+            caseQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
+            final MultiPrintQuery caseMulti = caseQueryBldr.getPrint();
+            final SelectBuilder selAccInst = SelectBuilder.get()
+                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
+            caseMulti.addSelect(selAccInst);
+            caseMulti.execute();
+            while (caseMulti.next()) {
+                final Instance accInst = caseMulti.<Instance>getSelect(selAccInst);
+                final AccountInfo acc = new AccountInfo().setInstance(accInst)
+                                .addAmount(_doc.getAmount4Doc(_docInst))
+                                .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                if (outDoc) {
+                    _doc.addDebit(acc);
+                } else {
+                    _doc.addCredit(acc);
+                }
+            }
+
         }
     }
 

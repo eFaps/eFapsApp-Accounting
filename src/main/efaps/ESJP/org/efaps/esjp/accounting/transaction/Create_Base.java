@@ -571,10 +571,12 @@ public abstract class Create_Base
     {
         final String[] docOids = _parameter.getParameterValues("document");
         final List<Instance> ret = new ArrayList<>();
-        for (final String docOid : docOids) {
-            final Instance docInst = Instance.get(docOid);
-            if (docInst.isValid()) {
-                ret.add(docInst);
+        if (docOids != null) {
+            for (final String docOid : docOids) {
+                final Instance docInst = Instance.get(docOid);
+                if (docInst.isValid()) {
+                    ret.add(docInst);
+                }
             }
         }
         return ret;

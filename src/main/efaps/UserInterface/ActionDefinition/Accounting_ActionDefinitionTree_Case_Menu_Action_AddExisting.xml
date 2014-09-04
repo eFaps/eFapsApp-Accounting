@@ -48,11 +48,11 @@
                 <property name="ConnectParentType03">Sales_ActionDefinitionPettyCashReceipt</property>
                 <property name="ConnectChildAttribute03">ToLinkAbstract</property>
                 <property name="ConnectParentAttribute03">FromLinkAbstract</property>
-                <property name="ConnectType04">Accounting_ActionDefinition2Case4OtherCollect</property>
+                <property name="ConnectType04">Accounting_ActionDefinition2Case4OthersCollect</property>
                 <property name="ConnectParentType04">Sales_ActionDefinitionCollectionOrder</property>
                 <property name="ConnectChildAttribute04">ToLinkAbstract</property>
                 <property name="ConnectParentAttribute04">FromLinkAbstract</property>
-                <property name="ConnectType05">Accounting_ActionDefinition2Case4OtherPay</property>
+                <property name="ConnectType05">Accounting_ActionDefinition2Case4OthersPay</property>
                 <property name="ConnectParentType05">Sales_ActionDefinitionPaymentOrder</property>
                 <property name="ConnectChildAttribute05">ToLinkAbstract</property>
                 <property name="ConnectParentAttribute05">FromLinkAbstract</property>

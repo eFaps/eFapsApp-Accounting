@@ -21,6 +21,7 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.efaps.admin.datamodel.Status;
@@ -182,11 +183,12 @@ public abstract class Action_Base
                                 final Instance _actionRelInst)
         throws EFapsException
     {
-        final Parameter parameter = getParameter4Incoming(_parameter, _actionRelInst);
-        if (parameter != null) {
+        final IncomingActionDef def = evalActionDef4Incoming(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
             final Create create = new Create();
-            create.create4ExternalMassive(parameter);
-            create.connectDocs2PurchaseRecord(parameter, Instance.get(parameter.getParameterValue("document")));
+            create.create4ExternalMassive(def.getParameter());
+            create.connectDocs2PurchaseRecord(def.getParameter(),
+                            Instance.get(def.getParameter().getParameterValue("document")));
         }
     }
 
@@ -195,11 +197,11 @@ public abstract class Action_Base
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
      */
-    protected Parameter getParameter4Incoming(final Parameter _parameter,
-                                              final Instance _actionRelInst)
+    protected IncomingActionDef evalActionDef4Incoming(final Parameter _parameter,
+                                                       final Instance _actionRelInst)
         throws EFapsException
     {
-        Parameter ret = null;
+        final IncomingActionDef ret = getIncomingActionDef(_parameter);
 
         final PrintQuery print = new PrintQuery(_actionRelInst);
         final SelectBuilder selActionInst = SelectBuilder.get()
@@ -208,10 +210,11 @@ public abstract class Action_Base
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract).instance();
         print.addSelect(selActionInst, selDocInst);
         print.execute();
-        final Instance actionInst = print.getSelect(selActionInst);
-        final Instance docInst = print.getSelect(selDocInst);
+        ret.setActionInst(print.<Instance>getSelect(selActionInst));
+        ret.setDocInst(print.<Instance>getSelect(selDocInst));
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4IncomingAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4IncomingAbstract.FromLinkAbstract, actionInst);
+        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4IncomingAbstract.FromLinkAbstract,
+                        ret.getActionInst());
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selCaseInst = SelectBuilder.get()
                         .linkto(CIAccounting.ActionDefinition2Case4IncomingAbstract.ToLinkAbstract).instance();
@@ -225,7 +228,7 @@ public abstract class Action_Base
                 final Instance caseInst = multi.getSelect(selCaseInst);
                 // force the correct period by evaluating it now
                 new Period().evaluateCurrentPeriod(_parameter, caseInst);
-                ret = ParameterUtil.clone(_parameter, (Object) null);
+                ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
 
                 if (configs.contains(ActDef2Case4IncomingConfig.PURCHASERECORD)) {
                     final DateTime date = new DateTime();
@@ -237,12 +240,13 @@ public abstract class Action_Base
                     final InstanceQuery prQuery = prQueryBldr.getQuery();
                     prQuery.execute();
                     if (prQuery.next()) {
-                        ParameterUtil.setParmeterValue(ret, "purchaseRecord", prQuery.getCurrentValue().getOid());
+                        ParameterUtil.setParmeterValue(ret.getParameter(), "purchaseRecord", prQuery.getCurrentValue()
+                                        .getOid());
                     }
                 }
                 if (configs.contains(ActDef2Case4IncomingConfig.TRANSACTION)) {
-                    ParameterUtil.setParmeterValue(ret, "case", caseInst.getOid());
-                    ParameterUtil.setParmeterValue(ret, "document", docInst.getOid());
+                    ParameterUtil.setParmeterValue(ret.getParameter(), "case", caseInst.getOid());
+                    ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
                     if (configs.contains(ActDef2Case4IncomingConfig.SUBJOURNAL)) {
                         final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
                         sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst);
@@ -251,7 +255,8 @@ public abstract class Action_Base
                         sjMulti.addSelect(sel);
                         sjMulti.execute();
                         if (sjMulti.next()) {
-                            ParameterUtil.setParmeterValue(ret, "subJournal", sjMulti.<String>getSelect(sel));
+                            ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
+                                            sjMulti.<String>getSelect(sel));
                         }
                     }
                 }
@@ -269,11 +274,12 @@ public abstract class Action_Base
                                         final Instance _actionRelInst)
         throws EFapsException
     {
-        final Parameter parameter = getParameter4Incoming(_parameter, _actionRelInst);
-        if (parameter != null) {
+        final IncomingActionDef def = evalActionDef4Incoming(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
             final Create create = new Create();
-            create.create4PettyCashMassive(parameter);
-            create.connectDocs2PurchaseRecord(parameter, Instance.get(parameter.getParameterValue("document")));
+            create.create4PettyCashMassive(def.getParameter());
+            create.connectDocs2PurchaseRecord(def.getParameter(),
+                            Instance.get(def.getParameter().getParameterValue("document")));
         }
     }
 
@@ -286,18 +292,18 @@ public abstract class Action_Base
                            final Instance _actionRelInst)
         throws EFapsException
     {
-        final Parameter parameter = getParameter4Doc(_parameter, _actionRelInst);
-        if (parameter != null) {
+        final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
             final Create create = new Create();
-            create.create4DocMassive(parameter);
+            create.create4DocMassive(def.getParameter());
         }
     }
 
-    protected Parameter getParameter4Doc(final Parameter _parameter,
-                                         final Instance _actionRelInst)
+    protected DocActionDef evalActionDef4Doc(final Parameter _parameter,
+                                          final Instance _actionRelInst)
         throws EFapsException
     {
-        Parameter ret = null;
+        final DocActionDef ret = getDocActionDef(_parameter);
         final PrintQuery print = new PrintQuery(_actionRelInst);
         final SelectBuilder selActionInst = SelectBuilder.get()
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract).instance();
@@ -305,10 +311,11 @@ public abstract class Action_Base
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract).instance();
         print.addSelect(selActionInst, selDocInst);
         print.execute();
-        final Instance actionInst = print.getSelect(selActionInst);
-        final Instance docInst = print.getSelect(selDocInst);
+        ret.setActionInst(print.<Instance>getSelect(selActionInst));
+        ret.setDocInst(print.<Instance>getSelect(selDocInst));
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4DocAbstract);
-        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4DocAbstract.FromLinkAbstract, actionInst);
+        queryBldr.addWhereAttrEqValue(CIAccounting.ActionDefinition2Case4DocAbstract.FromLinkAbstract,
+                        ret.getActionInst());
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selCaseInst = SelectBuilder.get()
                         .linkto(CIAccounting.ActionDefinition2Case4DocAbstract.ToLinkAbstract).instance();
@@ -319,13 +326,14 @@ public abstract class Action_Base
             final List<ActDef2Case4DocConfig> configs = multi
                             .getAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
             if (configs != null) {
+                ret.getConfigs().addAll(configs);
                 final Instance caseInst = multi.getSelect(selCaseInst);
                 // force the correct period by evaluating it now
                 new Period().evaluateCurrentPeriod(_parameter, caseInst);
-                ret = ParameterUtil.clone(_parameter, (Object) null);
+                ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
+                ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
                 if (configs.contains(ActDef2Case4DocConfig.TRANSACTION)) {
-                    ParameterUtil.setParmeterValue(ret, "case", caseInst.getOid());
-                    ParameterUtil.setParmeterValue(ret, "document", docInst.getOid());
+                    ParameterUtil.setParmeterValue(ret.getParameter(), "case", caseInst.getOid());
                     if (configs.contains(ActDef2Case4DocConfig.SUBJOURNAL)) {
                         final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
                         sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst);
@@ -334,10 +342,13 @@ public abstract class Action_Base
                         sjMulti.addSelect(sel);
                         sjMulti.execute();
                         if (sjMulti.next()) {
-                            ParameterUtil.setParmeterValue(ret, "subJournal", sjMulti.<String>getSelect(sel));
+                            ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
+                                            sjMulti.<String>getSelect(sel));
                         }
                     }
-
+                }
+                if (configs.contains(ActDef2Case4DocConfig.SETSTATUS)) {
+                    ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
                 }
             }
         }
@@ -352,10 +363,14 @@ public abstract class Action_Base
                                  final Instance _actionRelInst)
         throws EFapsException
     {
-        final Parameter parameter = getParameter4Doc(_parameter, _actionRelInst);
-        if (parameter != null) {
+        final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
             final Create create = new Create();
-            create.create4OthersPay( parameter);
+            if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
+                create.create4OthersPayMassiv(def.getParameter());
+            } else if (def.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
+                create.setStatus4Docs(_parameter, def.getDocInst());
+            }
         }
     }
 
@@ -367,10 +382,162 @@ public abstract class Action_Base
                                      final Instance _actionRelInst)
         throws EFapsException
     {
-        final Parameter parameter = getParameter4Doc(_parameter, _actionRelInst);
-        if (parameter != null) {
+        final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
             final Create create = new Create();
-            create.create4OthersCollect(parameter);
+            if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
+                create.create4OthersCollectMassive(def.getParameter());
+            } else if (def.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
+                create.setStatus4Docs(_parameter, def.getDocInst());
+            }
+        }
+    }
+
+    protected DocActionDef getDocActionDef(final Parameter _parameter)
+    {
+        return new DocActionDef();
+    }
+
+    protected IncomingActionDef getIncomingActionDef(final Parameter _parameter)
+    {
+        return new IncomingActionDef();
+    }
+
+    public static abstract class AbstractActionDef {
+
+        /**
+         * Parameter used to simulate the forms.
+         */
+        private Parameter parameter;
+
+        /**
+         * Instance of the action.
+         */
+        private Instance actionInst;
+
+        /**
+         * Instance of the document.
+         */
+        private Instance docInst;
+
+        /**
+         * Getter method for the instance variable {@link #_parameter}.
+         *
+         * @return value of instance variable {@link #_parameter}
+         */
+        public Parameter getParameter()
+        {
+            return this.parameter;
+        }
+
+        /**
+         * Setter method for instance variable {@link #_parameter}.
+         *
+         * @param __parameter value for instance variable {@link #_parameter}
+         */
+        public void setParameter(final Parameter __parameter)
+        {
+            this.parameter = __parameter;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #actionInst}.
+         *
+         * @return value of instance variable {@link #actionInst}
+         */
+        public Instance getActionInst()
+        {
+            return this.actionInst;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #actionInst}.
+         *
+         * @param _actionInst value for instance variable {@link #actionInst}
+         */
+        public void setActionInst(final Instance _actionInst)
+        {
+            this.actionInst = _actionInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         */
+        public void setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+        }
+    }
+
+
+    public static class DocActionDef
+        extends AbstractActionDef
+    {
+        /**
+         * Configs.
+         */
+        private List<ActDef2Case4DocConfig> configs = new ArrayList<>();
+
+        /**
+         * Getter method for the instance variable {@link #configs}.
+         *
+         * @return value of instance variable {@link #configs}
+         */
+        public List<ActDef2Case4DocConfig> getConfigs()
+        {
+            return this.configs;
+        }
+
+        /**
+         * Setter method for instance variable {@link #configs}.
+         *
+         * @param _configs value for instance variable {@link #configs}
+         */
+        public void setConfigs(final List<ActDef2Case4DocConfig> _configs)
+        {
+            this.configs = _configs;
+        }
+    }
+
+    public static class IncomingActionDef
+        extends AbstractActionDef
+    {
+
+        /**
+         * Configs.
+         */
+        private List<ActDef2Case4IncomingConfig> configs = new ArrayList<>();
+
+        /**
+         * Getter method for the instance variable {@link #configs}.
+         *
+         * @return value of instance variable {@link #configs}
+         */
+        public List<ActDef2Case4IncomingConfig> getConfigs()
+        {
+            return this.configs;
+        }
+
+        /**
+         * Setter method for instance variable {@link #configs}.
+         *
+         * @param _configs value for instance variable {@link #configs}
+         */
+        public void setConfigs(final List<ActDef2Case4IncomingConfig> _configs)
+        {
+            this.configs = _configs;
         }
     }
 }
