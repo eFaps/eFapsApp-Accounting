@@ -79,6 +79,7 @@ import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.ui.html.Table;
@@ -217,6 +218,7 @@ public abstract class FieldValue_Base
     {
         final Field field = new Field()
         {
+
             @Override
             protected void add2QueryBuilder4List(final Parameter _parameter,
                                                  final QueryBuilder _queryBldr)
@@ -232,24 +234,45 @@ public abstract class FieldValue_Base
                 throws EFapsException
             {
                 super.updatePositionList(_parameter, _values);
-
-                final DateTime date = new DateTime();
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord);
-                queryBldr.addWhereAttrLessValue(CIAccounting.PurchaseRecord.Date, date.plusDays(1));
-                queryBldr.addWhereAttrGreaterValue(CIAccounting.PurchaseRecord.DueDate, date.minusDays(1));
-                queryBldr.addOrderByAttributeAsc(CIAccounting.PurchaseRecord.Date);
-                final InstanceQuery query = queryBldr.getQuery();
-                boolean selected = false;
-                for (final Instance inst : query.executeWithoutAccessCheck()) {
-                    for (final DropDownPosition dd : _values) {
-                        if (inst.getOid().equals(dd.getValue())) {
-                            dd.setSelected(true);
-                            selected = true;
+                boolean select = true;
+                final List<Instance> docInsts = getSelectedDocInst(_parameter);
+                if (!docInsts.isEmpty()) {
+                    final QueryBuilder dtQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
+                    dtQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, docInsts.toArray());
+                    final MultiPrintQuery multi = dtQueryBldr.getPrint();
+                    final SelectBuilder docTypeSel = new SelectBuilder()
+                                    .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                                    .attribute(CIERP.DocumentType.Configuration);
+                    multi.addSelect(docTypeSel);
+                    multi.executeWithoutAccessCheck();
+                    while (multi.next()) {
+                        final List<DocTypeConfiguration> configs = multi.getSelect(docTypeSel);
+                        if (configs == null
+                                       || configs != null && !configs.contains(DocTypeConfiguration.PURCHASERECORD)) {
+                            select = false;
                             break;
                         }
                     }
-                    if (selected) {
-                        break;
+                }
+                if (select) {
+                    final DateTime date = new DateTime();
+                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord);
+                    queryBldr.addWhereAttrLessValue(CIAccounting.PurchaseRecord.Date, date.plusDays(1));
+                    queryBldr.addWhereAttrGreaterValue(CIAccounting.PurchaseRecord.DueDate, date.minusDays(1));
+                    queryBldr.addOrderByAttributeAsc(CIAccounting.PurchaseRecord.Date);
+                    final InstanceQuery query = queryBldr.getQuery();
+                    boolean selected = false;
+                    for (final Instance inst : query.executeWithoutAccessCheck()) {
+                        for (final DropDownPosition dd : _values) {
+                            if (inst.getOid().equals(dd.getValue())) {
+                                dd.setSelected(true);
+                                selected = true;
+                                break;
+                            }
+                        }
+                        if (selected) {
+                            break;
+                        }
                     }
                 }
             }
@@ -497,29 +520,19 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final String[] oids = _parameter.getParameterValues("selectedRow");
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
         final Table table = (Table) new Table().setStyle("width:450px;");
-        for (final String oid : oids) {
-            final Instance docInst = Instance.get(oid);
-            if (docInst.isValid()) {
-                final DocumentInfo doc = new DocumentInfo(docInst);
-                addDocumentInfo(_parameter, table, doc);
-                final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
-                if (taxInfo.isPerception()) {
-                    final DocumentInfo percDoc = new DocumentInfo(
-                                    taxInfo.getTaxDocInstance(CISales.IncomingPerceptionCertificate));
-                    addDocumentInfo(_parameter, table, percDoc);
-                }
-
-//              .append("</tr><tr><td colspan=\"4\">")
-//              .append(AbstractPaymentDocument.getTransactionHtml(_parameter, _doc.getInstance()))
-//              .append("</td></tr>");
-
-                //html.append(getCostInformation(_parameter, date, doc));
-                rowspan.add(table.getRows().size());
+        for (final Instance docInst : getSelectedDocInst(_parameter)) {
+            final DocumentInfo doc = new DocumentInfo(docInst);
+            addDocumentInfo(_parameter, table, doc);
+            final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
+            if (taxInfo.isPerception()) {
+                final DocumentInfo percDoc = new DocumentInfo(
+                                taxInfo.getTaxDocInstance(CISales.IncomingPerceptionCertificate));
+                addDocumentInfo(_parameter, table, percDoc);
             }
+            rowspan.add(table.getRows().size());
         }
         int current = 0;
         int i = 1;
@@ -533,6 +546,24 @@ public abstract class FieldValue_Base
             .append(InterfaceUtils.wrappInScriptTag(_parameter, getScript(_parameter, docs), true, 0));
 
         ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+   /**
+    * @param _parameter Parameter as passed from eFaps to an esjp
+    * @return list of selected instances
+    * @throws EFapsException on error
+    */
+    protected List<Instance> getSelectedDocInst(final Parameter _parameter)
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final String[] oids = _parameter.getParameterValues("selectedRow");
+        for (final String oid : oids) {
+            final Instance docInst = Instance.get(oid);
+            if (docInst.isValid()) {
+                ret.add(docInst);
+            }
+        }
         return ret;
     }
 
@@ -620,13 +651,18 @@ public abstract class FieldValue_Base
         final SelectBuilder rateCurrSymbSel4Pay = new SelectBuilder()
             .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink).attribute(CIERP.Currency.Symbol);
 
+        final SelectBuilder docTypeSel = new SelectBuilder()
+            .linkfrom(CISales.Document2DocumentType.DocumentLink)
+            .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+            .attribute(CIERP.DocumentType.Name);
+
         final PrintQuery print = new PrintQuery(_doc.getInstance());
         if (_doc.isSumsDoc()) {
             print.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
                                CISales.DocumentSumAbstract.NetTotal,
                                CISales.DocumentSumAbstract.RateCrossTotal,
                                CISales.DocumentSumAbstract.RateNetTotal);
-            print.addSelect(rateLabelSel, currSymbSel, rateCurrSymbSel);
+            print.addSelect(rateLabelSel, currSymbSel, rateCurrSymbSel, docTypeSel);
         }
         if (_doc.isPaymentDoc()) {
             print.addAttribute(CISales.PaymentDocumentAbstract.Note, CISales.PaymentDocumentAbstract.Amount);
@@ -640,6 +676,11 @@ public abstract class FieldValue_Base
         print.addSelect(accDescSel, accNameSel, accInstSel, contNameSel);
         print.execute();
 
+        String docType = null;
+        if (_doc.isSumsDoc()) {
+            docType = print.getSelect(docTypeSel);
+        }
+
         _doc.setDate(print.<DateTime>getAttribute(CISales.DocumentAbstract.Date));
 
         //Basic information for all documents
@@ -651,6 +692,7 @@ public abstract class FieldValue_Base
             setAccounts4Debit(_parameter, _doc);
         }
         final StringBuilder label = new StringBuilder().append(_doc.getInstance().getType().getLabel())
+            .append(docType == null ? "" : " - " + CIERP.DocumentType.getType().getLabel() + ": " + docType)
             .append("<input type=\"hidden\" name=\"document\" value=\"").append(_doc.getInstance().getOid())
             .append("\"/>");
         _table.addRow()
