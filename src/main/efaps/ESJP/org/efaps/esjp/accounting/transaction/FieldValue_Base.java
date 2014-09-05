@@ -558,10 +558,12 @@ public abstract class FieldValue_Base
     {
         final List<Instance> ret = new ArrayList<>();
         final String[] oids = _parameter.getParameterValues("selectedRow");
-        for (final String oid : oids) {
-            final Instance docInst = Instance.get(oid);
-            if (docInst.isValid()) {
-                ret.add(docInst);
+        if (oids != null) {
+            for (final String oid : oids) {
+                final Instance docInst = Instance.get(oid);
+                if (docInst.isValid()) {
+                    ret.add(docInst);
+                }
             }
         }
         return ret;
