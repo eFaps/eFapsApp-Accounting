@@ -834,10 +834,9 @@ public abstract class Transaction_Base
         multi.addSelect(selCaseInst);
         multi.execute();
         while (multi.next()) {
-            final boolean outDoc = _doc.getInstance().getType().isKindOf(
-                            CISales.PaymentDocumentOutAbstract.getType());
+            final boolean outDoc = _doc.getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract);
             final Instance caseInst = multi.getSelect(selCaseInst);
-
+            _doc.setCaseInst(caseInst);
             final QueryBuilder caseQueryBldr = new QueryBuilder(outDoc ? CIAccounting.Account2CaseDebit
                             : CIAccounting.Account2CaseCredit);
             caseQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
