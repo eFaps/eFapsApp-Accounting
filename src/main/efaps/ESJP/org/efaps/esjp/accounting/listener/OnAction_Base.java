@@ -112,6 +112,9 @@ public abstract class OnAction_Base
         } else if (CISales.PaymentOrder.isType(_type)) {
             final Action action = new Action();
             action.create4OthersCollect(_parameter, _actionRelInst);
+        } else if (CISales.FundsToBeSettledReceipt.isType(_type)) {
+            final Action action = new Action();
+            action.create4FundsToBeSettledReceipt(_parameter, _actionRelInst);
         }
     }
 

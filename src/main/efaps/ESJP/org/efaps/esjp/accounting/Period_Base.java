@@ -137,7 +137,7 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "??");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEREMARK4TRANSPOS, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD, "false");
-        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEFTBSCASHWD, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEFTBSWD, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
                         SummarizeDefinition.CASEUSER.name());
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_LABELDEF, LabelDefinition.COST.name());
@@ -661,7 +661,7 @@ public abstract class Period_Base
 
                 final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instance);
                 final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
+                                .getProperty(AccountingSettings.PERIOD_ACTIVATEFTBSWD));
 
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);

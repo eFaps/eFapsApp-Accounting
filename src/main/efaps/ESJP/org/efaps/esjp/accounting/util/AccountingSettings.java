@@ -160,7 +160,7 @@ public interface AccountingSettings
     /**
      * Name of the SubJournal to be applied for PaymentOut.
      */
-    String PERIOD_ACTIVATEFTBSCASHWD = "ActivateFundsToBeSettledWithoutDoc";
+    String PERIOD_ACTIVATEFTBSWD = "ActivateFundsToBeSettledWithoutDoc";
 
 
     String PERIOD_TRANSPOSORDER = "TransPosOrder";

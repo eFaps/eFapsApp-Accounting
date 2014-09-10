@@ -253,6 +253,19 @@ public abstract class Action_Base
                             execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
                         }
                     }
+                } else if (ret.getDocInst().getType().isKindOf(CISales.FundsToBeSettledReceipt)) {
+                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+                    final boolean withoutDoc = "true".equalsIgnoreCase(props
+                                    .getProperty(AccountingSettings.PERIOD_ACTIVATEFTBSWD));
+                    if (!withoutDoc && ret.getDocTypeInst() == null) {
+                        execute = false;
+                    } else {
+                        if (ret.getDocTypeInst() == null) {
+                            execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
+                        } else {
+                            execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
+                        }
+                    }
                 }
 
                 if (execute) {
@@ -291,6 +304,7 @@ public abstract class Action_Base
                             }
                         }
                     }
+                    break;
                 }
             }
         }
@@ -310,6 +324,24 @@ public abstract class Action_Base
         if (def.getParameter() != null) {
             final Create create = new Create();
             create.create4PettyCashMassive(def.getParameter());
+            create.connectDocs2PurchaseRecord(def.getParameter(),
+                            Instance.get(def.getParameter().getParameterValue("document")));
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _actionRelInst relation Instance
+     * @throws EFapsException on error
+     */
+    public void create4FundsToBeSettledReceipt(final Parameter _parameter,
+                                               final Instance _actionRelInst)
+        throws EFapsException
+    {
+        final IncomingActionDef def = evalActionDef4Incoming(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
+            final Create create = new Create();
+            create.create4FundsToBeSettledMassive(def.getParameter());
             create.connectDocs2PurchaseRecord(def.getParameter(),
                             Instance.get(def.getParameter().getParameterValue("document")));
         }
