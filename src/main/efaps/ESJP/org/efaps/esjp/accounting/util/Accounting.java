@@ -70,7 +70,8 @@ public final class Accounting
         /** Official Report. */
         TRANSACTION,
         /** Official Report. */
-        SUBJOURNAL;
+        SUBJOURNAL,
+        WITHOUTDOC;
 
         /**
          * {@inheritDoc}

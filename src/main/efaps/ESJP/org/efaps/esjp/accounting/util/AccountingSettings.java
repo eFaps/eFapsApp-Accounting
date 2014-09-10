@@ -104,7 +104,7 @@ public interface AccountingSettings
     /**
      * Activate the Exchange mechanism.
      */
-    String PERIOD_ACTIVAREMARK4TRANSPOS = "ActivateRemark4TransPos";
+    String PERIOD_ACTIVATEREMARK4TRANSPOS = "ActivateRemark4TransPos";
 
     /**
      * Activate the Exchange mechanism.
@@ -146,10 +146,22 @@ public interface AccountingSettings
      */
     String PERIOD_SUBJOURNAL4PAYOUT = "SubJournal4PaymentOut";
 
+
     /**
      * Name of the SubJournal to be applied for PaymentIn.
      */
     String PERIOD_SUBJOURNAL4PAYIN = "SubJournal4PaymentIn";
+
+    /**
+     * Name of the SubJournal to be applied for PaymentOut.
+     */
+    String PERIOD_ACTIVATEPETTYCASHWD = "ActivatePettyCashWithoutDoc";
+
+    /**
+     * Name of the SubJournal to be applied for PaymentOut.
+     */
+    String PERIOD_ACTIVATEFTBSCASHWD = "ActivateFundsToBeSettledWithoutDoc";
+
 
     String PERIOD_TRANSPOSORDER = "TransPosOrder";
 

@@ -800,7 +800,8 @@ public abstract class FieldValue_Base
             actionMulti.execute();
             while (actionMulti.next()) {
                 _table.addRow()
-                    .addColumn(DBProperties.getProperty(FieldValue.class.getName() + ".ActionInfo"))
+                    .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class.getName()
+                                    + ".ActionInfo"))
                     .addColumn(actionMulti.<String>getSelect(selName));
             }
         }

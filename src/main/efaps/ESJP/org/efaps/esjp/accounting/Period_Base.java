@@ -135,7 +135,9 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SHOWREPORT, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUBJOURNAL4PAYOUT, "??");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "??");
-        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVAREMARK4TRANSPOS, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEREMARK4TRANSPOS, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEFTBSCASHWD, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
                         SummarizeDefinition.CASEUSER.name());
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_LABELDEF, LabelDefinition.COST.name());
@@ -640,7 +642,7 @@ public abstract class Period_Base
                 print.addAttribute(CIAccounting.Period.FromDate);
                 print.execute();
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
-
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
                 final List<Status> statusArrayBalance = new ArrayList<Status>();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.FundsToBeSettledBalance);
@@ -657,20 +659,26 @@ public abstract class Period_Base
                 }
                 final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.FundsToBeSettledBalance.ID);
 
+                final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instance);
+                final boolean withoutDoc = "true".equalsIgnoreCase(props
+                                .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
+
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
                 final AttributeQuery attrQuery2 = queryBldr2
                                 .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
 
-                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+                if (withoutDoc) {
+                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery2);
+                } else {
+                    final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                    docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                                    attrQuery2);
+                    final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                                    CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
-                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
-                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
-                                attrQuery2);
-                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
-                                CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
-
-                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+                }
             }
         };
         return multi.execute(_parameter);
@@ -700,6 +708,7 @@ public abstract class Period_Base
                 print.addAttribute(CIAccounting.Period.FromDate);
                 print.execute();
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
 
                 final List<Status> statusArrayBalance = new ArrayList<Status>();
 
@@ -716,20 +725,25 @@ public abstract class Period_Base
                 }
                 final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
 
+                final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instance);
+                final boolean withoutDoc = "true".equalsIgnoreCase(props
+                                .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
+
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
                 final AttributeQuery attrQuery2 = queryBldr2
                                 .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+                if (withoutDoc) {
+                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery2);
+                } else {
+                    final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                    docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                                    attrQuery2);
+                    final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                                    CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
-                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
-
-                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
-                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
-                                attrQuery2);
-                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
-                                CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
-
-                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+                }
             }
         };
         return multi.execute(_parameter);
