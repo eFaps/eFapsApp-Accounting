@@ -581,15 +581,13 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final String selected = Context.getThreadContext().getParameter("selectedRow");
         final org.efaps.admin.datamodel.ui.FieldValue fieldValue = (FieldValue) _parameter
                         .get(ParameterValues.UIOBJECT);
-        final Instance docInst = Instance.get(selected);
-        if (docInst.isValid()) {
-            html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">")
-                            .append(getDocDetail(_parameter, docInst))
-                            .append("</span>");
+        html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">");
+        for (final Instance docInst : getSelectedDocInst(_parameter)) {
+            html.append(getDocDetail(_parameter, docInst));
         }
+        html.append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }

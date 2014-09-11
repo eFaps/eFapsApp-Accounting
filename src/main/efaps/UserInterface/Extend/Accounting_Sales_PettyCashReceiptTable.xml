@@ -28,7 +28,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Sales_PettyCashReceiptTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -39,19 +38,21 @@
             <property name="Attribute">Revision</property>
             <property name="Label">Sales_IncomingInvoice/Revision.Label</property>
         </field>
+        <field name="action">
+            <property name="Select">linkfrom[Sales_ActionDefinitionPettyCashReceipt2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
         <field name="documentType">
             <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
             <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
@@ -79,6 +80,15 @@
             <property name="Label">Sales_DocumentAbstract/NetTotal.Label</property>
             <property name="Align">right</property>
         </field>
+        <field name="created">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
+            <property name="Attribute">Created</property>
+            <property name="Label">Sales_DocumentAbstract/Created.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
         <field name="status">
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
@@ -86,6 +96,7 @@
         <field name="pettyCash">
             <property name="Label">Accounting_Sales_PettyCashReceiptTable.pettyCash.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getSalesAccountFieldValue"
                 name="Accounting_Sales_PettyCashReceiptTable.pettyCash.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
             </trigger>
