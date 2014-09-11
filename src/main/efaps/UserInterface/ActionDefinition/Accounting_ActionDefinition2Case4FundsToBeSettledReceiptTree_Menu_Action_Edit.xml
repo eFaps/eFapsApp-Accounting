@@ -19,30 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>25ff1912-73d0-4add-8bcc-a70724619fc8</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e58d9471-03c9-4fd8-b8bb-5da90c168b39</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_PayMenu_FundsToBeSettled</name>
+        <name>Accounting_ActionDefinition2Case4FundsToBeSettledReceiptTree_Menu_Action_Edit</name>
         <access>
             <role>Accounting_Admin</role>
-            <role>Accounting_Manager</role>
         </access>
         <target>
-            <menu>Accounting_PeriodTree_PayMenu_FundsToBeSettled_Menu</menu>
-            <table>Accounting_FundsToBeSettledReceiptTable</table>
-            <evaluate method="getFundsToBeSettled" program="org.efaps.esjp.accounting.Period">
-                <property name="FundsToBeSettledBalanceStatus">Verified</property>
-                <property name="Type01">Sales_FundsToBeSettledReceipt</property>
-                <property name="StatusGroup01">Sales_FundsToBeSettledReceiptStatus</property>
-                <property name="Status01">Closed</property>
-            </evaluate>
+            <form>Accounting_ActionDefinition2Case4FundsToBeSettledReceiptForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit"/>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>

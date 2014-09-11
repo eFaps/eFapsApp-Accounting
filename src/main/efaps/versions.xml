@@ -124,6 +124,9 @@
             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Menu to the Sales_PettyCashReceiptTree menu -->
             update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "bd92f918-d154-478d-a686-b8fe256c8900", -1);
 
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Sales_FundsToBeSettledReceiptTree  -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "4cf1e2e4-d744-4ce5-be8f-9bb784bd37a4", -1);
+
             <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCashOutTree -->
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "d5bd0a02-56e8-4cf7-bf04-1c5e179856a2", -1);
 
@@ -171,6 +174,8 @@
 
             <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentRetentionTree  -->
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "9ea19998-7cb9-49fb-a5f8-ae0b3cbe0b5f", -1);
+
+
 
             <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentScheduleTree  -->
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "60732b90-3b07-4ca4-af15-6fb0712c8670", -1);
