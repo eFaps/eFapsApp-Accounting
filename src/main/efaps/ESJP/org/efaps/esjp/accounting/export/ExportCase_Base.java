@@ -81,7 +81,8 @@ public abstract class ExportCase_Base
     {
         _exporter.addColumns(new FrmtColumn(ColumnCase.CASETYPE.getKey(), 30));
         _exporter.addColumns(new FrmtColumn(ColumnCase.CASENAME.getKey(), 40));
-        _exporter.addColumns(new FrmtColumn(ColumnCase.CASEDESC.getKey()).setMaxWidth(80));
+        _exporter.addColumns(new FrmtColumn(ColumnCase.CASEDESC.getKey()).setMaxWidth(256));
+        _exporter.addColumns(new FrmtColumn(ColumnCase.CASELABEL.getKey()).setMaxWidth(512));
         _exporter.addColumns(new FrmtColumn(ColumnCase.CASEISCROSS.getKey(), 5));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CTYPE.getKey(), 30));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CACC.getKey(), 12));
@@ -89,6 +90,7 @@ public abstract class ExportCase_Base
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CNUM.getKey(), 3));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CDENUM.getKey(), 3));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CDEFAULT.getKey(), 5));
+        _exporter.addColumns(new FrmtColumn(ColumnCase.A2CAPPLYLABEL.getKey(), 5));
     }
 
     @Override
@@ -112,6 +114,9 @@ public abstract class ExportCase_Base
         final SelectBuilder selCaseDesc = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                         .attribute(CIAccounting.CaseAbstract.Description);
+        final SelectBuilder selCaseLabel = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
+                        .attribute(CIAccounting.CaseAbstract.Label);
         final SelectBuilder selCaseIsCross = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                         .attribute(CIAccounting.CaseAbstract.IsCross);
@@ -120,7 +125,8 @@ public abstract class ExportCase_Base
         final SelectBuilder selAccountName = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
                         .attribute(CIAccounting.AccountAbstract.Name);
-        multi.addSelect(selAccountName, selCaseDesc, selCaseName, selCaseType, selCaseIsCross);
+
+        multi.addSelect(selAccountName, selCaseDesc, selCaseLabel, selCaseName, selCaseType, selCaseIsCross);
         multi.execute();
         final List<Map<String, Object>> lstCols = new ArrayList<Map<String, Object>>();
         while (multi.next()) {
@@ -128,6 +134,8 @@ public abstract class ExportCase_Base
             final Type caseType = multi.<Type>getSelect(selCaseType);
             final String caseName = multi.<String>getSelect(selCaseName);
             final String caseDesc = multi.<String>getSelect(selCaseDesc);
+            final String caseLabel = multi.<String>getSelect(selCaseLabel);
+
             final Boolean caseIsCross = multi.<Boolean>getSelect(selCaseIsCross);
             final Type acc2CaseType = multi.getCurrentInstance().getType();
             final String acc2CaseAcc = multi.<String>getSelect(selAccountName);
@@ -150,17 +158,19 @@ public abstract class ExportCase_Base
             final List<Account2CaseConfig> configs = multi.getAttribute(CIAccounting.Account2CaseAbstract.Config);
             // classRel or default selected will be added
             final boolean acc2CaseDef = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
+            final boolean acc2CaseLabel = configs != null && configs.contains(Account2CaseConfig.APPLYLABEL);
 
             row.put(ColumnCase.CASETYPE.getKey(), caseType.getUUID());
             row.put(ColumnCase.CASENAME.getKey(), caseName);
             row.put(ColumnCase.CASEDESC.getKey(), caseDesc);
+            row.put(ColumnCase.CASELABEL.getKey(), caseLabel);
             row.put(ColumnCase.CASEISCROSS.getKey(), caseIsCross);
             row.put(ColumnCase.A2CTYPE.getKey(), acc2CaseType.getUUID());
             row.put(ColumnCase.A2CACC.getKey(), acc2CaseAcc);
             row.put(ColumnCase.A2CNUM.getKey(), acc2CaseNum);
             row.put(ColumnCase.A2CDENUM.getKey(), acc2CaseDen);
             row.put(ColumnCase.A2CDEFAULT.getKey(), acc2CaseDef);
-
+            row.put(ColumnCase.A2CAPPLYLABEL.getKey(), acc2CaseLabel);
             lstCols.add(row);
         }
 
@@ -190,13 +200,15 @@ public abstract class ExportCase_Base
             _exporter.addRow(AbstractExport_Base.TYPE2TYPE.get(map.get(ColumnCase.CASETYPE.getKey())),
                             map.get(ColumnCase.CASENAME.getKey()),
                             map.get(ColumnCase.CASEDESC.getKey()),
+                            map.get(ColumnCase.CASELABEL.getKey()),
                             map.get(ColumnCase.CASEISCROSS.getKey()),
                             AbstractExport_Base.TYPE2TYPE.get(map.get(ColumnCase.A2CTYPE.getKey())),
                             map.get(ColumnCase.A2CACC.getKey()),
                             map.get(ColumnCase.A2CCLA.getKey()),
                             map.get(ColumnCase.A2CNUM.getKey()),
                             map.get(ColumnCase.A2CDENUM.getKey()),
-                            map.get(ColumnCase.A2CDEFAULT.getKey()));
+                            map.get(ColumnCase.A2CDEFAULT.getKey()),
+                            map.get(ColumnCase.A2CAPPLYLABEL.getKey()));
         }
     }
 }

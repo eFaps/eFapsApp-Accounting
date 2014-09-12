@@ -43,13 +43,17 @@ public enum ColumnCase
     /** */
     A2CDEFAULT("[Account2Case_Default]"),
     /** */
+    A2CAPPLYLABEL("[Account2Case_CostCenter]"),
+    /** */
     CASETYPE("[Case_Type]"),
     /** */
     CASENAME("[Case_Name]"),
     /** */
     CASEDESC("[Case_Description]"),
     /** */
-    CASEISCROSS("[Case_IsCross]");
+    CASEISCROSS("[Case_IsCross]"),
+    /** */
+    CASELABEL("[Case_Label]");
 
     /** Key. */
     private final String key;

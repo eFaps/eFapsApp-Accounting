@@ -26,9 +26,11 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -463,8 +465,10 @@ public abstract class Import_Base
                 i++;
             }
             if (valid) {
+                final Set<Instance> caseInsts = new HashSet<>();
                 for (final ImportCase impCase : cases) {
-                    impCase.update();
+                    impCase.update(caseInsts);
+                    caseInsts.add(impCase.getCaseInst());
                 }
             }
         } catch (final UnsupportedEncodingException e) {
@@ -552,6 +556,7 @@ public abstract class Import_Base
     {
 
         private String caseName;
+        private String caseLabel;
         private String caseDescription;
         private Type casetype;
         private boolean caseIsCross;
@@ -560,9 +565,10 @@ public abstract class Import_Base
         private String a2cNum;
         private String a2cDenum;
         private boolean a2cDefault;
+        private boolean a2cLabel;
         private Instance accInst;
         private Instance periodInst;
-
+        private Instance caseInst;
 
         /**
          * @param _periodInst
@@ -579,6 +585,8 @@ public abstract class Import_Base
                                 .replaceAll("\n", "");
                 this.caseDescription = _row[_colName2Index.get(ColumnCase.CASEDESC.getKey())].trim()
                                 .replaceAll("\n", "");
+                this.caseLabel = _row[_colName2Index.get(ColumnCase.CASELABEL.getKey())].trim().replaceAll("\n", "");
+
                 final String type = _row[_colName2Index.get(ColumnCase.CASETYPE.getKey())].trim()
                                 .replaceAll("\n", "");
                 this.casetype = Type.get(Import_Base.TYPE2TYPE.get(type));
@@ -598,7 +606,10 @@ public abstract class Import_Base
                                 .getKey())])
                                 || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CDEFAULT
                                                 .getKey())]);
-
+                this.a2cLabel = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL
+                                .getKey())])
+                                || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL
+                                                .getKey())]);
                 final String accName = _row[_colName2Index.get(ColumnCase.A2CACC.getKey())].trim()
                                 .replaceAll("\n", "");
 
@@ -635,7 +646,7 @@ public abstract class Import_Base
         /**
          * @throws EFapsException on error
          */
-        public void update()
+        public void update(final Set<Instance> _caseInsts)
             throws EFapsException
         {
             final QueryBuilder queryBuilder = new QueryBuilder(this.casetype);
@@ -643,27 +654,52 @@ public abstract class Import_Base
             queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
             final InstanceQuery query = queryBuilder.getQuery();
             query.executeWithoutAccessCheck();
-            Instance caseInst;
+
             if (query.next()) {
-                caseInst = query.getCurrentValue();
+                this.caseInst = query.getCurrentValue();
+                if (!_caseInsts.contains(this.caseInst)) {
+                    final Update update = new Update(this.caseInst);
+                    update.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
+                    update.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
+                    update.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
+                    update.execute();
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
+                    queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, this.caseInst);
+                    for (final Instance inst : queryBldr.getQuery().execute()) {
+                        new Delete(inst).execute();
+                    }
+                }
             } else {
                 final Insert insert = new Insert(this.casetype);
                 insert.add(CIAccounting.CaseAbstract.Name, this.caseName);
                 insert.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
+                insert.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
                 insert.add(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
                 insert.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
                 insert.execute();
-                caseInst = insert.getInstance();
+                this.caseInst = insert.getInstance();
             }
 
             final Insert insert = new Insert(this.a2cType);
-            insert.add(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst.getId());
-            insert.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, this.accInst.getId());
+            insert.add(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, this.caseInst);
+            insert.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, this.accInst);
             insert.add(CIAccounting.Account2CaseAbstract.Denominator, this.a2cDenum);
             insert.add(CIAccounting.Account2CaseAbstract.Numerator, this.a2cNum);
+
+            final List<Account2CaseConfig> configs = new ArrayList<>();
             if (this.a2cDefault) {
-                insert.add(CIAccounting.Account2CaseAbstract.Config, Account2CaseConfig.DEFAULTSELECTED);
+                configs.add(Account2CaseConfig.DEFAULTSELECTED);
             }
+            if (this.a2cLabel) {
+                configs.add(Account2CaseConfig.APPLYLABEL);
+            }
+            if (configs.isEmpty()) {
+                insert.add(CIAccounting.Account2CaseAbstract.Config, (Object) null);
+            } else {
+                insert.add(CIAccounting.Account2CaseAbstract.Config, configs.toArray());
+            }
+
             if (this.a2cClass != null) {
                 insert.add(CIAccounting.Account2CaseAbstract.LinkValue, Classification.get(this.a2cClass).getId());
             }
@@ -674,6 +710,28 @@ public abstract class Import_Base
         public String toString()
         {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.MULTI_LINE_STYLE);
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #caseInst}.
+         *
+         * @return value of instance variable {@link #caseInst}
+         */
+        public Instance getCaseInst()
+        {
+            return this.caseInst;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #caseInst}.
+         *
+         * @param _caseInst value for instance variable {@link #caseInst}
+         */
+        public void setCaseInst(final Instance _caseInst)
+        {
+            this.caseInst = _caseInst;
         }
     }
 

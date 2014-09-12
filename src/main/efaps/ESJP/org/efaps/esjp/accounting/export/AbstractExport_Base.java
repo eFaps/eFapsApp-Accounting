@@ -75,16 +75,23 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2AccountCredit.uuid, "AccountAbono");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2AccountDebit.uuid, "AccountCargo");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.AccountMemo.uuid, "Memo");
+
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseDocBooking.uuid, "CaseDocBooking");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseDocRegister.uuid, "CaseDocRegister");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseExchange.uuid, "CaseExchange");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseExternalBooking.uuid, "CaseExternalBooking");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseExternalRegister.uuid, "CaseExternalRegister");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseFundsToBeSettled.uuid, "CaseFundsToBeSettled");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseGeneral.uuid, "CaseGeneral");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseIncomingExchange.uuid, "CaseIncomingExchange");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseOthersCollect.uuid, "CaseOthersCollect");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseOthersPay.uuid, "CaseOthersPay");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CasePayroll.uuid, "CasePayroll");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CasePettyCashReceiptRegister.uuid, "CasePettyCashRegister");
-        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseStockBooking.uuid, "CaseStockBooking");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseRetPer.uuid, "CaseRetentionPerception");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseSecurities.uuid, "CaseSecurities");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseStockBooking.uuid, "CaseStockBooking");
+
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit.uuid, "Credit");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit.uuid, "Debit");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4Classification.uuid, "CreditClassification");
@@ -95,6 +102,8 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeRoot.uuid, "Root");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeTree.uuid, "Tree");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeAccount.uuid, "Account");
+
+
     }
 
     /**
