@@ -98,7 +98,7 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="emptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
         </field>
         <field name="currencyGroup" character="Group">
