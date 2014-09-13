@@ -6,6 +6,7 @@
         <parameter name="ciClass" value="org.efaps.esjp.ci.CIAccounting"/>
         <parameter name="regex4TypeLabelExclude" value="^Sales_.*|/ToProductClass|/Flag.Label|/Group.Label"/>
         <parameter name="regex4FieldLabelExclude" value="^Sales_.*"/>
+        <parameter name="regex4MenuLabelExclude" value=".*_Menu.Label$|^Sales_.*"/>
         <packages>
             <package name="org.efaps.tests.ci.*"></package>
         </packages>
