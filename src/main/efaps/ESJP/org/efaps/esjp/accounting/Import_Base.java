@@ -57,6 +57,7 @@ import org.efaps.esjp.accounting.export.ColumnCase;
 import org.efaps.esjp.accounting.export.ColumnReport;
 import org.efaps.esjp.accounting.export.IColumn;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -569,7 +570,7 @@ public abstract class Import_Base
         private Instance accInst;
         private Instance periodInst;
         private Instance caseInst;
-
+        private SummarizeConfig caseSummarizeConfig;
         /**
          * @param _periodInst
          * @param _colName2Index
@@ -592,7 +593,10 @@ public abstract class Import_Base
                 this.casetype = Type.get(Import_Base.TYPE2TYPE.get(type));
                 this.caseIsCross = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())])
                                 || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())]);
-
+                final String configStr = _row[_colName2Index.get(ColumnCase.CASECONFIG.getKey())].trim();
+                if (!configStr.isEmpty()) {
+                    this.caseSummarizeConfig = SummarizeConfig.valueOf(configStr.toUpperCase());
+                }
                 final String a2c = _row[_colName2Index.get(ColumnCase.A2CTYPE.getKey())].trim()
                                 .replaceAll("\n", "");
 
@@ -662,6 +666,8 @@ public abstract class Import_Base
                     update.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
                     update.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
                     update.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
+                    update.add(CIAccounting.CaseAbstract.SummarizeConfig,
+                                    this.caseSummarizeConfig == null ? SummarizeConfig.NONE : this.caseSummarizeConfig);
                     update.execute();
 
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);

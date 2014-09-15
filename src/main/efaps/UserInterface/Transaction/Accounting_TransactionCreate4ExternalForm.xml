@@ -64,7 +64,6 @@
         </field>
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="HideLabel">true</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.case.Label</property>
             <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"

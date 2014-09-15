@@ -53,7 +53,9 @@ public enum ColumnCase
     /** */
     CASEISCROSS("[Case_IsCross]"),
     /** */
-    CASELABEL("[Case_Label]");
+    CASELABEL("[Case_Label]"),
+    /** */
+    CASECONFIG("[Case_SummarizeConfig]");
 
     /** Key. */
     private final String key;

@@ -522,7 +522,7 @@ public abstract class FieldValue_Base
         final StringBuilder html = new StringBuilder();
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
-        final Table table = (Table) new Table().setStyle("width:450px;");
+        final Table table = (Table) new Table().setStyle("width:350px;");
         for (final Instance docInst : getSelectedDocInst(_parameter)) {
             final DocumentInfo doc = new DocumentInfo(docInst);
             addDocumentInfo(_parameter, table, doc);
