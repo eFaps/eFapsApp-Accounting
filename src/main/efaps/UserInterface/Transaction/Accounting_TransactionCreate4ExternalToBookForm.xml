@@ -32,6 +32,24 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4ExternalToBookForm</name>
+        <field name="caseGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalToBookForm.caseGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Inverse">true</property>
+            </trigger>
+        </field>
+        <field name="caseGroup2" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">4</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalToBookForm.caseGroup2.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
+        </field>
         <field name="documentGroup" character="Group">
             <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
@@ -74,6 +92,21 @@
                 event="UI_FIELD_CMD">
                 <property name="amountAttribute">RateCrossTotal</property>
             </trigger>
+        </field>
+        <field name="summarizeConfig" >
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalVoucherForm.subJournal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$SummarizeConfig</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
         </field>
         <field name="subJournal">
             <property name="ModeCreate">EDITABLE</property>
