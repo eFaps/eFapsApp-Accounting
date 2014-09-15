@@ -46,7 +46,6 @@ import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -76,6 +75,7 @@ import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -478,31 +478,37 @@ public abstract class Transaction_Base
      * @return true if summarize
      * @throws EFapsException on error
      */
-    protected boolean summarizeTransaction(final Parameter _parameter)
+    protected SummarizeConfig summarizeTransaction(final Parameter _parameter)
         throws EFapsException
     {
-        boolean ret = false;
+        SummarizeConfig ret = SummarizeConfig.NONE;
         final SummarizeDefinition summarize = new Period().getSummarizeDefinition(_parameter);
         switch (summarize) {
             case NEVER:
-                ret = false;
+                ret = SummarizeConfig.NONE;
                 break;
             case ALWAYS:
-                ret = true;
+                ret = SummarizeConfig.BOTH;
                 break;
             case CASE:
                 final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
                 final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
-                print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
                 print.executeWithoutAccessCheck();
-                ret = BooleanUtils.isTrue(print.<Boolean>getAttribute(CIAccounting.CaseAbstract.Summarize));
+                ret = print.<SummarizeConfig>getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
                 break;
             case CASEUSER:
             case USER:
-                ret = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Summarize"));
+                final Integer num = Integer.valueOf(_parameter.getParameterValue("summarizeConfig"));
+                for (final SummarizeConfig cons : SummarizeConfig.values()) {
+                    if (num == cons.getInt()) {
+                        ret = cons;
+                        break;
+                    }
+                }
                 break;
             default:
-                ret = false;
+                ret = SummarizeConfig.NONE;;
                 break;
         }
         return ret;
@@ -706,7 +712,7 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         if (_doc.isPaymentDoc()) {
-            _doc.setSummarize(false);
+            _doc.setSummarizeConfig(SummarizeConfig.NONE);
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
             attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);

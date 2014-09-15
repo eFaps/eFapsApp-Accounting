@@ -154,12 +154,35 @@ public final class Accounting
         NEVER,
         /** Always summarize for this period. */
         ALWAYS,
+        /** Always summarize for this period. */
+        ALWAYSDEBIT,
+        /** Always summarize for this period. */
+        ALWAYSCREDIT,
         /** Summarize is defined only by the cases. */
         CASE,
         /** Summarize is defined only by the user. */
         USER,
         /** Summarize is defined first by case but can be overwritten by the user. */
         CASEUSER;
+    }
+
+    public enum SummarizeConfig
+        implements IEnum
+    {
+        /** Never summarize for this period. Default if not set. */
+        NONE,
+        /** Always summarize for this period. */
+        DEBIT,
+        /** Summarize is defined only by the cases. */
+        CREDIT,
+        /** Summarize is defined only by the user. */
+        BOTH;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
     }
 
     public enum LabelDefinition

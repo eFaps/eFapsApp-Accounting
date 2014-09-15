@@ -48,6 +48,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
@@ -150,7 +151,7 @@ public abstract class DocumentInfo_Base
     /**
      * Summarize or not.
      */
-    private boolean summarize = true;
+    private SummarizeConfig config = SummarizeConfig.NONE;
 
     private final Set<Instance> docInsts = new HashSet<>();
 
@@ -325,7 +326,7 @@ public abstract class DocumentInfo_Base
     public DocumentInfo addDebit(final AccountInfo _accInfo)
         throws EFapsException
     {
-        add(this.debitAccounts, _accInfo);
+        add(this.debitAccounts, _accInfo, true);
         return (DocumentInfo) this;
     }
 
@@ -347,7 +348,7 @@ public abstract class DocumentInfo_Base
     public DocumentInfo addCredit(final AccountInfo _accInfo)
         throws EFapsException
     {
-        add(this.creditAccounts, _accInfo);
+        add(this.creditAccounts, _accInfo, false);
         return (DocumentInfo) this;
     }
 
@@ -357,7 +358,8 @@ public abstract class DocumentInfo_Base
      * @throws EFapsException on error
      */
     protected void add(final Set<AccountInfo> _accounts,
-                       final AccountInfo _accInfo)
+                       final AccountInfo _accInfo,
+                       final boolean _debit)
         throws EFapsException
     {
         if (_accInfo.getRateInfo() == null) {
@@ -368,7 +370,9 @@ public abstract class DocumentInfo_Base
             }
         }
         boolean add = true;
-        if (isSummarize()) {
+        if (SummarizeConfig.BOTH.equals(getSummarizeConfig())
+                        || SummarizeConfig.DEBIT.equals(getSummarizeConfig()) && _debit
+                        || SummarizeConfig.CREDIT.equals(getSummarizeConfig()) && !_debit) {
             _accInfo.setAmountRate(null); // reset the amount rate
             for (final AccountInfo acc : _accounts) {
                 if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getInstance4Currency()
@@ -669,9 +673,9 @@ public abstract class DocumentInfo_Base
      *
      * @return value of instance variable {@link #summarize}
      */
-    public boolean isSummarize()
+    public SummarizeConfig getSummarizeConfig()
     {
-        return this.summarize;
+        return this.config;
     }
 
     /**
@@ -679,9 +683,9 @@ public abstract class DocumentInfo_Base
      *
      * @param _summarize value for instance variable {@link #summarize}
      */
-    public void setSummarize(final boolean _summarize)
+    public void setSummarizeConfig(final SummarizeConfig _config)
     {
-        this.summarize = _summarize;
+        this.config = _config;
     }
 
     /**
@@ -848,7 +852,7 @@ public abstract class DocumentInfo_Base
     }
 
     protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
-                                              final boolean _summarize)
+                                              final SummarizeConfig _config)
         throws EFapsException
     {
         DocumentInfo ret;
@@ -857,18 +861,18 @@ public abstract class DocumentInfo_Base
         } else {
             ret = new DocumentInfo();
             ret.setRateInfo(_docInfos.iterator().next().getRateInfo());
-            ret.setSummarize(_summarize);
+            ret.setSummarizeConfig(_config);
             ret.setCaseInst(_docInfos.iterator().next().getCaseInst());
             for (final DocumentInfo documentInfo : _docInfos) {
                 for (final AccountInfo accInfo : documentInfo.getCreditAccounts()) {
-                    ret.add(ret.getCreditAccounts(), accInfo);
-                    if (!_summarize) {
+                    ret.add(ret.getCreditAccounts(), accInfo, false);
+                    if (!SummarizeConfig.BOTH.equals(_config) && !SummarizeConfig.CREDIT.equals(_config)) {
                         accInfo.setDocLink(documentInfo.getInstance());
                     }
                 }
                 for (final AccountInfo accInfo : documentInfo.getDebitAccounts()) {
-                    ret.add(ret.getDebitAccounts(), accInfo);
-                    if (!_summarize) {
+                    ret.add(ret.getDebitAccounts(), accInfo, true);
+                    if (!SummarizeConfig.BOTH.equals(_config) && !SummarizeConfig.DEBIT.equals(_config)) {
                         accInfo.setDocLink(documentInfo.getInstance());
                     }
                 }

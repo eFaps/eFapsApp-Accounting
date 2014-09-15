@@ -30,7 +30,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -64,6 +63,7 @@ import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
@@ -1356,18 +1356,25 @@ public abstract class FieldValue_Base
                             .get((String) Context.getThreadContext().getRequestAttribute(CASE_REQKEY));
             if (caseInst.isValid()) {
                 final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
-                print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
                 print.executeWithoutAccessCheck();
-                final Boolean summarize = print.getAttribute(CIAccounting.CaseAbstract.Summarize);
+
                 final StringBuilder caseJs = new StringBuilder();
                 final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
-                                .checkbox4Summarize.name;
-                caseJs.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
-                    .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize)).append("); \n");
+                                .summarizeConfig.name;
+                final SummarizeConfig config =  print.getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+
+                caseJs.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"][value=")
+                    .append(config.getInt()).append("] \").forEach(function(node){\n")
+                    .append(" domAttr.set(node, \"checked\", true); \n")
+                    .append("});\n");
+
                 if (SummarizeDefinition.CASE.equals(summarizeDef)) {
-                    caseJs.append(" domAttr.set(node, \"disabled\", \"disabled\"); \n");
+                    caseJs.append(" query(\"input[name=\\\"").append(fieldName)
+                        .append("\\\"]\").forEach(function(node){\n")
+                        .append(" domAttr.set(node, \"readonly\", true); \n").append("});\n");
                 }
-                caseJs.append("});\n");
+
                 js.append(InterfaceUtils.wrapInDojoRequire(_parameter, caseJs, DojoLibs.QUERY, DojoLibs.DOMATTR));
             }
         }

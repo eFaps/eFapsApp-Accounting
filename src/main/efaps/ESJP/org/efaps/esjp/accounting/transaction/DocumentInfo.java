@@ -26,6 +26,7 @@ import java.util.Collection;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.util.EFapsException;
 
 /**
@@ -59,9 +60,9 @@ public class DocumentInfo
     }
 
     public static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
-                                           final boolean _summarize)
+                                           final SummarizeConfig _config)
         throws EFapsException
     {
-        return DocumentInfo_Base.getCombined(_docInfos, _summarize);
+        return DocumentInfo_Base.getCombined(_docInfos, _config);
     }
 }

@@ -74,11 +74,11 @@
             <property name="Attribute">IsCross</property>
             <property name="Required">true</property>
         </field>
-        <field name="summarize">
+        <field name="summarizeConfig">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">NONE</property>
-            <property name="Attribute">Summarize</property>
+            <property name="Attribute">SummarizeConfig</property>
             <property name="Required">true</property>
         </field>
         <field name="label">

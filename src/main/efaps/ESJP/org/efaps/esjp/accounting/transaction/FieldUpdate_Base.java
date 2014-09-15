@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -43,6 +42,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -325,18 +325,22 @@ public abstract class FieldUpdate_Base
         if (SummarizeDefinition.CASE.equals(summarizeDef) || SummarizeDefinition.CASEUSER.equals(summarizeDef)) {
             final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
             final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
-            print.addAttribute(CIAccounting.CaseAbstract.Summarize);
+            print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
             print.executeWithoutAccessCheck();
-            final Boolean summarize = print.getAttribute(CIAccounting.CaseAbstract.Summarize);
+            final SummarizeConfig config = print.getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
 
             final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
-                            .checkbox4Summarize.name;
-            js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
-                .append(" domAttr.set(node, \"checked\", ").append(BooleanUtils.isTrue(summarize)).append("); \n");
+                            .summarizeConfig.name;
+            js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"][value=")
+                .append(config.getInt())
+                .append("] \").forEach(function(node){\n")
+                .append(" domAttr.set(node, \"checked\", true); \n")
+                .append("});\n");
+
             if (SummarizeDefinition.CASE.equals(summarizeDef)) {
-                js.append(" domAttr.set(node, \"disabled\", \"disabled\"); \n");
+                js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
+                    .append(" domAttr.set(node, \"readonly\", true); \n").append("});\n");
             }
-            js.append("});\n");
 
             final Map<String, Object> map = new HashMap<>();
             list.add(map);

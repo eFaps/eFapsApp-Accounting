@@ -91,11 +91,11 @@
             <defaultvalue>false</defaultvalue>
         </attribute>
         <attribute>
-            <name>Summarize</name>
-            <type>Boolean</type>
+            <name>SummarizeConfig</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$SummarizeConfig</className>
             <sqltable>Accounting_CaseSQLTable</sqltable>
             <sqlcolumn>SUMMARIZE</sqlcolumn>
-            <defaultvalue>false</defaultvalue>
         </attribute>
         <attribute>
             <name>Label</name>
