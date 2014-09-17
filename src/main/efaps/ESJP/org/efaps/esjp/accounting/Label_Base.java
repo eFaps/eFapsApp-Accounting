@@ -22,9 +22,7 @@ package org.efaps.esjp.accounting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -32,7 +30,15 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.listener.IOnLabel;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIHumanResource;
+import org.efaps.update.AppDependency;
+import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
 
 /**
@@ -55,10 +61,7 @@ public abstract class Label_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        // Accounting-Configuration
-        final SystemConfiguration sysconf = SystemConfiguration.get(
-                        UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9"));
-        if (!sysconf.getAttributeValueAsBoolean("DeactivateLabel")) {
+        if (! Accounting.getSysConfig().getAttributeValueAsBoolean("DeactivateLabel")) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -75,6 +78,31 @@ public abstract class Label_Base
         throws EFapsException
     {
         final List<Instance> ret = new ArrayList<>();
+
+        // evaluate own ones
+        try {
+            if (AppDependency.getAppDependency("eFapsApp-HumanResource").isMet()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIHumanResource.Department2DocumentAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CIHumanResource.Department2DocumentAbstract.ToAbstractLink, _instance);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelDepartment2Department);
+                queryBldr.addWhereAttrInQuery(CIAccounting.LabelDepartment2Department.ToLink,
+                                attrQueryBldr.getAttributeQuery(
+                                                CIHumanResource.Department2DocumentAbstract.FromAbstractLink));
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selInst = SelectBuilder.get()
+                                .linkto(CIAccounting.LabelDepartment2Department.FromLink)
+                                .instance();
+                multi.addSelect(selInst);
+                multi.execute();
+                while (multi.next()) {
+                    ret.add(multi.<Instance>getSelect(selInst));
+                }
+            }
+        } catch (final InstallationException e) {
+            throw new EFapsException("Dependency validation vailed.", e);
+        }
+        // let others participate
         for (final IOnLabel listener : Listener.get().<IOnLabel>invoke(IOnLabel.class)) {
             ret.addAll(listener.evalLabelsForDocument(_parameter, _instance));
         }

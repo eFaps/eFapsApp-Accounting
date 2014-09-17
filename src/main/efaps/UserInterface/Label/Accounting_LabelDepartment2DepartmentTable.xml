@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,24 +20,26 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>69af1543-a800-47fa-8ada-c58ed17ad4cd</uuid>
+    <uuid>3230a428-6303-423e-b649-d4eb83c508d6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_LabelProject</name>
-        <parent>Accounting_LabelAbstract</parent>
-        <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Accounting_LabelStatus</typelink>
-            <sqltable>Accounting_LabelSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Accounting_LabelProject.Status.RANGE_VALUE"
-                event="RANGE_VALUE" />
-        </attribute>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" />
+        </application-dependencies>
+        <name>Accounting_LabelDepartment2DepartmentTable</name>
+         <field name="type">
+            <property name="Select">linkto[ToLink].type.label</property>
+            <property name="Label">Accounting_LabelAbstract/Name.Label</property>
+        </field>
+        <field name="name">
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
+            <property name="Select">linkto[ToLink].attribute[Name]</property>
+            <property name="Label">Accounting_LabelAbstract/Name.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
     </definition>
-</datamodel-type>
+</ui-table>

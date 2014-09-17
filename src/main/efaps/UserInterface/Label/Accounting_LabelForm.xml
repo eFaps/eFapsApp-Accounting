@@ -59,11 +59,10 @@
             <property name="Label">Accounting_LabelAbstract/PeriodLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-        <field name="active">
+        <field name="status">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Active</property>
-            <property name="Label">Accounting_LabelAbstract/Active.Label</property>
+            <property name="Attribute">Status</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>

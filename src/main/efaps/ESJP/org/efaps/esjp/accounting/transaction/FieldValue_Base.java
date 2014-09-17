@@ -811,7 +811,8 @@ public abstract class FieldValue_Base
             labelMulti.execute();
             while (labelMulti.next()) {
                 _table.addRow()
-                    .addColumn(DBProperties.getProperty(FieldValue.class.getName() + ".LabelInfo"))
+                    .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class.getName()
+                                    + ".LabelInfo"))
                     .addColumn(labelMulti.<String>getAttribute(CIAccounting.LabelAbstract.Name));
             }
         }
@@ -1193,16 +1194,19 @@ public abstract class FieldValue_Base
                     labelInst = print.getSelect(selLabelInst);
                 }
 
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelProject);
-                queryBldr.addWhereAttrEqValue(CIAccounting.LabelProject.Active, true);
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.LabelAbstract);
+                queryBldr.addWhereAttrEqValue(CIAccounting.LabelAbstract.StatusAbstract,
+                                Status.find(CIAccounting.LabelStatus.Active));
                 final MultiPrintQuery print = queryBldr.getPrint();
-                print.addAttribute(CIAccounting.LabelProject.Name,
-                                CIAccounting.LabelProject.Description);
+                print.addAttribute(CIAccounting.LabelAbstract.Name,
+                                CIAccounting.LabelAbstract.Description);
                 print.execute();
                 while (print.next()) {
-                    final DropDownPosition drP = new DropDownPosition(print.getCurrentInstance().getOid(),
-                                    print.<String>getAttribute(CIAccounting.LabelProject.Name) + " - "
-                                                    + print.<String>getAttribute(CIAccounting.LabelProject.Description));
+                    final DropDownPosition drP = new DropDownPosition(
+                                    print.getCurrentInstance().getOid(),
+                                    print.<String>getAttribute(CIAccounting.LabelAbstract.Name)
+                                                    + " - "
+                                                  + print.<String>getAttribute(CIAccounting.LabelAbstract.Description));
 
                     drP.setSelected(print.getCurrentInstance().equals(labelInst));
                     values.add(drP);

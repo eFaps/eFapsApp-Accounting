@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,20 +20,24 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>33cdd0be-eb26-4f8c-af3d-d2b3782f09e2</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ce9da14c-cf88-4a83-9dac-e8ff9bc96e69</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</child>
-            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_CreateDepartment</child>
-            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Delete</child>
-        </childs>
+        <name>Accounting_LabelDepartment</name>
+        <parent>Accounting_LabelAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Accounting_LabelStatus</typelink>
+            <sqltable>Accounting_LabelSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Accounting_LabelDepartment.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

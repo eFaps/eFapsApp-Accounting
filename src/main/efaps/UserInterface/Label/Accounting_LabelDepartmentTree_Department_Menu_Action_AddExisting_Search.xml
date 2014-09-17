@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,20 +20,22 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>33cdd0be-eb26-4f8c-af3d-d2b3782f09e2</uuid>
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>7c0b65f4-8d02-44c1-b3df-012bb2aed278</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action</name>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" />
+        </application-dependencies>
+        <name>Accounting_LabelDepartmentTree_Department_Menu_Action_AddExisting_Search</name>
+        <default>
+            <command>HumanResource_DepartmentSearch</command>
+        </default>
         <childs>
-            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</child>
-            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_CreateDepartment</child>
-            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Delete</child>
+            <child>HumanResource_DepartmentSearch</child>
         </childs>
     </definition>
-</ui-menu>
+</ui-search>

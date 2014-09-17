@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,24 +20,25 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>69af1543-a800-47fa-8ada-c58ed17ad4cd</uuid>
+    <uuid>482c372d-e1e2-4114-b519-6ea8529d141c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_LabelProject</name>
-        <parent>Accounting_LabelAbstract</parent>
-        <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Accounting_LabelStatus</typelink>
-            <sqltable>Accounting_LabelSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Accounting_LabelProject.Status.RANGE_VALUE"
-                event="RANGE_VALUE" />
-        </attribute>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" />
+        </application-dependencies>
+        <name>Accounting_LabelDepartmentTree_Department_Menu_Action_AddExisting</name>
+        <target>
+            <search>Accounting_LabelDepartmentTree_Department_Menu_Action_AddExisting_Search</search>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectType">Accounting_LabelDepartment2Department</property>
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
     </definition>
-</datamodel-type>
+</ui-command>

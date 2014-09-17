@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,26 +20,25 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>e27de94f-ea18-4223-97db-7a30c7f0056d</uuid>
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1ae9be72-a20f-4681-bd4a-505c42fd0e8a</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_LabelTree_Position</name>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" />
+        </application-dependencies>
+        <name>Accounting_LabelDepartmentTree_Department</name>
         <target>
-            <menu>Accounting_LabelTree_Position_Menu</menu>
-            <table>Accounting_LabelPositionTable</table>
+            <menu>Accounting_LabelDepartmentTree_Department_Menu</menu>
+            <table>Accounting_LabelDepartment2DepartmentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_TransactionPosition2LabelAbstract</property>
-                <property name="LinkFrom">ToLinkAbstract</property>
+                <property name="Type">Accounting_LabelDepartment2Department</property>
+                <property name="LinkFrom">FromLink</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

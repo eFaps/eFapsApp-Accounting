@@ -77,12 +77,15 @@
             <sqltable>Accounting_LabelSQLTable</sqltable>
             <sqlcolumn>DESCR</sqlcolumn>
         </attribute>
-         <attribute>
-            <name>Active</name>
-            <type>Boolean</type>
+        <attribute>
+            <name>StatusAbstract</name>
+            <type>Status</type>
+            <typelink>Accounting_LabelStatus</typelink>
             <sqltable>Accounting_LabelSQLTable</sqltable>
-            <sqlcolumn>ACTIVE</sqlcolumn>
-            <defaultvalue>true</defaultvalue>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Accounting_LabelAbstract.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
         </attribute>
         <attribute>
             <name>Creator</name>

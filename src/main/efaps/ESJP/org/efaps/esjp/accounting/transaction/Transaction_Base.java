@@ -497,12 +497,22 @@ public abstract class Transaction_Base
                 break;
             case CASEUSER:
             case USER:
-                final Integer num = Integer.valueOf(_parameter.getParameterValue("summarizeConfig"));
-                for (final SummarizeConfig cons : SummarizeConfig.values()) {
-                    if (num == cons.getInt()) {
-                        ret = cons;
-                        break;
+                if (_parameter.getParameterValue("summarizeConfig") != null) {
+                    final Integer num = Integer.valueOf(_parameter.getParameterValue("summarizeConfig"));
+                    for (final SummarizeConfig cons : SummarizeConfig.values()) {
+                        if (num == cons.getInt()) {
+                            ret = cons;
+                            break;
+                        }
                     }
+                } else if (_parameter.getParameterValue("case") != null) {
+                    final Instance caseInst2 = Instance.get(_parameter.getParameterValue("case"));
+                    final PrintQuery print2 = new CachedPrintQuery(caseInst2, Case.CACHEKEY);
+                    print2.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                    print2.executeWithoutAccessCheck();
+                    ret = print2.<SummarizeConfig>getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                } else {
+                    ret = SummarizeConfig.NONE;
                 }
                 break;
             default:

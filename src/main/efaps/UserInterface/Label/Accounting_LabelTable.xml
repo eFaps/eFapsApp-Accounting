@@ -51,9 +51,10 @@
             <property name="Attribute">Description</property>
             <property name="Label">Accounting_LabelAbstract/Description.Label</property>
             </field>
-        <field name="active">
-            <property name="Attribute">Active</property>
-            <property name="Label">Accounting_LabelAbstract/Active.Label</property>
+        <field name="status">
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Accounting_LabelAbstract/StatusAbstract.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="periodLink">
             <property name="ModeSearch">READONLY</property>
