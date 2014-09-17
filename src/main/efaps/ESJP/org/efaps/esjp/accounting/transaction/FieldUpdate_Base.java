@@ -201,7 +201,7 @@ public abstract class FieldUpdate_Base
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Map<String, String> map = new HashMap<String, String>();
             map.put("rate_" + postfix, rate.getRateUIFrmt());
-            map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.getCurrencyInst().isInvert());
+            map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.isInvert());
             map.put("sum" + postfix, sumStr);
             map.put("amountRate_" + postfix,
                             formater.format(amountRate.setScale(12).divide(rate.getRate(), BigDecimal.ROUND_HALF_UP)));
@@ -433,7 +433,7 @@ public abstract class FieldUpdate_Base
                     .append("].value='").append(rate.getRateUIFrmt()).append("';")
                     .append("document.getElementsByName('").append(_targetFieldName)
                     .append(RateUI.INVERTEDSUFFIX)
-                    .append("')[").append(i).append("].value='").append(rate.getCurrencyInst().isInvert())
+                    .append("')[").append(i).append("].value='").append(rate.isInvert())
                     .append("';");
             }
         }

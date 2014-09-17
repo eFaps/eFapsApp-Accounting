@@ -974,9 +974,9 @@ public abstract class Transaction_Base
             values.add(map);
 
             map.put("amount_" + _postFix, account.getAmountFormated());
-            map.put("rateCurrencyLink_" + _postFix, account.getRateInfo().getCurrencyInst().getInstance().getId());
+            map.put("rateCurrencyLink_" + _postFix, account.getRateInfo().getCurrencyInstObj().getInstance().getId());
             map.put("rate_" + _postFix, account.getRateUIFrmt(_parameter));
-            map.put("rate_" + _postFix + RateUI.INVERTEDSUFFIX, account.getRateInfo().getCurrencyInst().isInvert());
+            map.put("rate_" + _postFix + RateUI.INVERTEDSUFFIX, account.getRateInfo().getCurrencyInstObj().isInvert());
             map.put("amountRate_" + _postFix, account.getAmountRateFormated(_parameter));
             map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());

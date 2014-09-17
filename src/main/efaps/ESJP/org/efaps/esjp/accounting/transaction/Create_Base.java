@@ -1148,7 +1148,7 @@ public abstract class Create_Base
         insert.add(CIAccounting.TransactionPositionAbstract.AccountLink, accInst.getId());
         insert.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
         insert.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
-                        _account.getRateInfo().getInstance4Currency());
+                        _account.getRateInfo().getCurrencyInstance());
         insert.add(CIAccounting.TransactionPositionAbstract.Rate,
                         new Object[] {_doc.getRateInfo().getRate(), _account.getRateInfo().getRate() });
         final BigDecimal rateAmount = _account.getAmount();
@@ -1217,7 +1217,7 @@ public abstract class Create_Base
                                 print.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
                 insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
                 insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
-                                _account.getRateInfo().getInstance4Currency());
+                                _account.getRateInfo().getCurrencyInstance());
                 insert3.add(CIAccounting.TransactionPositionAbstract.Rate,
                                 new Object[] {_doc.getRateInfo().getRate(), _account.getRateInfo().getRate() });
                 insert3.add(CIAccounting.TransactionPositionAbstract.Amount, amount2);

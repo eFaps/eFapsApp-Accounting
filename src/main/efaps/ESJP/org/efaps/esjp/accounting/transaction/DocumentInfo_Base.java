@@ -375,8 +375,8 @@ public abstract class DocumentInfo_Base
                         || SummarizeConfig.CREDIT.equals(getSummarizeConfig()) && !_debit) {
             _accInfo.setAmountRate(null); // reset the amount rate
             for (final AccountInfo acc : _accounts) {
-                if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getInstance4Currency()
-                                .equals(_accInfo.getRateInfo().getInstance4Currency())) {
+                if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
+                                .equals(_accInfo.getRateInfo().getCurrencyInstance())) {
                     acc.addAmount(_accInfo.getAmount());
                     add = false;
                     break;
@@ -418,7 +418,7 @@ public abstract class DocumentInfo_Base
     public String getCurrSymbol()
         throws EFapsException
     {
-        return this.rateInfo.getCurrencyInst().getSymbol();
+        return this.rateInfo.getCurrencyInstObj().getSymbol();
     }
 
     /**
@@ -456,7 +456,7 @@ public abstract class DocumentInfo_Base
      */
     public Instance getRateCurrInst()
     {
-        return this.rateInfo.getInstance4Currency();
+        return this.rateInfo.getCurrencyInstance();
     }
 
     /**

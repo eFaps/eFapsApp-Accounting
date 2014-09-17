@@ -912,7 +912,7 @@ public abstract class FieldValue_Base
                     final BigDecimal cost = quantity.multiply(new BigDecimal(uom.getNumerator()))
                                         .divide(new BigDecimal(uom.getDenominator())).multiply(price);
                     html.append("<td>").append(NumberFormatter.get().getTwoDigitsFormatter().format(price)).append("</td>")
-                         .append("<td>").append(rateTmp.getCurrencyInst().getSymbol()).append("</td>");
+                         .append("<td>").append(rateTmp.getCurrencyInstObj().getSymbol()).append("</td>");
 
                     if (script) {
                         analyzeProduct(_doc, true, prodInst, cost, rate,
@@ -937,9 +937,9 @@ public abstract class FieldValue_Base
                 .append("<td colspan=4></td><td>").append(NumberFormatter.get().getTwoDigitsFormatter().format(total))
                 .append("<input type=\"hidden\" name=\"amountExternal\" value=\"").append(total).append("\"/>")
                 .append("</td>")
-                .append("<td>").append(rate.getCurrencyInst().getSymbol())
+                .append("<td>").append(rate.getCurrencyInstObj().getSymbol())
                 .append("<input type=\"hidden\" name=\"currencyExternal\" value=\"")
-                .append(rate.getInstance4Currency().getId()).append("\"/>")
+                .append(rate.getCurrencyInstance().getId()).append("\"/>")
                 .append("</td>")
                 .append("<tr>")
                 .append("</table>");
