@@ -66,6 +66,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.contacts.ContactsPicker;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.AbstractDocumentSum;
@@ -143,7 +144,7 @@ public abstract class ExternalVoucher_Base
         final List<Calculator> calcList = analyseAmountsFromUI(_parameter);
         createdDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
 
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst = Currency.getBaseCurrency();
 
         Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
         if (!contactInst.isValid()) {

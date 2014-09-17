@@ -72,12 +72,11 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -519,8 +518,8 @@ public abstract class Report_Base
         public Boolean evaluate(final ReportParameters _reportParameters)
         {
             final AbstractNode node = (AbstractNode) _reportParameters.getFieldValue("node_" + this.idx);
-            return (Report_Base.this.indent && (node.getLevel() == 0 || node instanceof TotalNode))
-                            || (!Report_Base.this.indent && node instanceof RootNode);
+            return Report_Base.this.indent && (node.getLevel() == 0 || node instanceof TotalNode)
+                            || !Report_Base.this.indent && node instanceof RootNode;
         }
     }
 
@@ -643,7 +642,7 @@ public abstract class Report_Base
             final List<AbstractNode> ret = new ArrayList<AbstractNode>();
             boolean added = false;
             if ((_parent.isShowAllways()
-                            || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0))
+                            || _parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0)
                             && Report_Base.this.indent) {
                 ret.add(_parent);
                 added = true;
@@ -655,7 +654,7 @@ public abstract class Report_Base
                 ret.add(new TotalNode(getTotalLabel(_parent), _parent.getSum(), _parent.getLevel()));
                 _parent.setTextOnly(true);
             } else if ((_parent.isShowAllways()
-                            || (_parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0))
+                            || _parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0)
                             && !Report_Base.this.indent) {
                 _parent.setLevel(0);
                 ret.add(_parent);
@@ -1178,8 +1177,7 @@ public abstract class Report_Base
             final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
             final String currency = _parameter.getParameterValue("currency");
 
-            final SystemConfiguration system = Sales.getSysConfig();
-            final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+            final Instance curBase = Currency.getBaseCurrency();
 
             final QueryBuilder transQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
             transQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,

@@ -39,11 +39,10 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -80,8 +79,7 @@ public abstract class ReportJournalDataSource_Base
         final String currency = _parameter.getParameterValue("currency");
         final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
-        final SystemConfiguration system = Sales.getSysConfig();
-        final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+        final Instance curBase = Currency.getBaseCurrency();
 
         _jrParameters.put("Active", active);
         _jrParameters.put("CurrencyBase", curBase);

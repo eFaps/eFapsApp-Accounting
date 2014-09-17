@@ -93,8 +93,6 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -276,7 +274,7 @@ public abstract class Transaction_Base
         print.addSelect(sel);
         print.execute();
         final Instance perCurrInst = print.<Instance>getSelect(sel);
-        final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrency = Currency.getBaseCurrency();
 
         final Currency currency = getCurrency(_parameter);
         final RateInfo ret;

@@ -46,8 +46,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -137,7 +136,7 @@ public class ConSis
                 insert.add(CIAccounting.TransactionOpeningBalance.PeriodLink, _parameter.getInstance());
                 insert.executeWithoutAccessCheck();
 
-                final Instance basCur = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                final Instance basCur = Currency.getBaseCurrency();
                 for (final Account acc : accs) {
                     final Insert insertpos = new Insert(
                                     acc.getAmountME().compareTo(BigDecimal.ZERO) > 0

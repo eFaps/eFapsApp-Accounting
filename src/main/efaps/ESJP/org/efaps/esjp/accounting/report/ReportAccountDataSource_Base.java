@@ -42,12 +42,11 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -199,8 +198,7 @@ public abstract class ReportAccountDataSource_Base
     {
         final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
         final String currency = _parameter.getParameterValue("currency");
-        final SystemConfiguration system = Sales.getSysConfig();
-        final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+        final Instance curBase = Currency.getBaseCurrency();
 
         BigDecimal debit = BigDecimal.ZERO;
         BigDecimal credit = BigDecimal.ZERO;

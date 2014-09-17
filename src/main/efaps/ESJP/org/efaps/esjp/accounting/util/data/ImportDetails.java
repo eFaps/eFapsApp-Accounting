@@ -54,8 +54,7 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -314,7 +313,7 @@ public class ImportDetails
             }
 
             final Map<String, Account> accounts = doc.getAccounts();
-            final Instance basCur = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance basCur = Currency.getBaseCurrency();
             for (final Account acc : accounts.values()) {
                 final Insert insertpos = new Insert(
                                 acc.getAmountMN().compareTo(BigDecimal.ZERO) > 0
