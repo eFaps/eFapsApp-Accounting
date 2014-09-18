@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.5.1-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" uuid="7e65f5a8-4957-4494-a75f-e437820b673b">
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.5.1  -->
+<!-- 2014-09-18T12:46:33 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="7e65f5a8-4957-4494-a75f-e437820b673b">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -17,7 +18,7 @@
 		<property name="Instance" value="true"/>
 		<property name="hasSubReport" value="true"/>
 	</parameter>
-	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap" isForPrompting="false"/>
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<parameter name="Period" class="java.lang.String" isForPrompting="false">
@@ -98,7 +99,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Voucher Asiento: " + $F{identifier}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Voucher: " + $F{identifier}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="MMMM, yyyy" isBlankWhenNull="true">
 				<reportElement x="0" y="76" width="539" height="16" uuid="3fb0f5d7-e340-476e-b055-9a515949b28e"/>
@@ -152,7 +153,7 @@
 				<reportElement x="0" y="0" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 				</reportElement>
-				<subreportParameter name="EFAPS_DEFINITION"/>
+				<subreportParameter name="EFAPS_SUBREPORT"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionPosition")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionPosition"]]></subreportExpression>
 			</subreport>
@@ -161,18 +162,20 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<subreport isUsingCache="false">
 				<reportElement x="0" y="30" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06"/>
-				<subreportParameter name="EFAPS_DEFINITION"/>
+				<subreportParameter name="EFAPS_SUBREPORT">
+					<subreportParameterExpression><![CDATA[$P{EFAPS_SUBREPORT}]]></subreportParameterExpression>
+				</subreportParameter>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionDocuments")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionDocuments"]]></subreportExpression>
 			</subreport>
 			<staticText>
 				<reportElement x="0" y="10" width="139" height="20" uuid="a45af7cb-383a-4fe3-8c7a-29bb2a2a63f3"/>
-				<text><![CDATA[Documento Relacionados:]]></text>
+				<text><![CDATA[Documentos:]]></text>
 			</staticText>
 		</band>
 		<band height="101">
 			<staticText>
-				<reportElement x="0" y="7" width="50" height="20" uuid="a31f9c29-155a-41e3-bbcf-6b4f287a4fad"/>
+				<reportElement x="0" y="7" width="139" height="20" uuid="a31f9c29-155a-41e3-bbcf-6b4f287a4fad"/>
 				<text><![CDATA[Subdiario:]]></text>
 			</staticText>
 			<subreport>
@@ -182,6 +185,25 @@
 			</subreport>
 		</band>
 	</detail>
+	<columnFooter>
+		<band height="70">
+			<line>
+				<reportElement x="30" y="50" width="160" height="1" uuid="d82bfdcf-3f81-4fa9-a396-9aadb2fa7ddc">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="30" y="51" width="159" height="18" uuid="d8c073fb-e7c4-4fe1-9a9f-a4019244ce61"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Area de Contabilidad]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
 	<pageFooter>
 		<band height="41">
 			<property name="local_mesure_unitheight" value="pixel"/>
