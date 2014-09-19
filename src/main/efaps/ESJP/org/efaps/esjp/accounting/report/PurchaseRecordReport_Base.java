@@ -49,6 +49,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.QueryCache;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting.Taxed4PurchaseRecord;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
@@ -160,14 +161,28 @@ public abstract class PurchaseRecordReport_Base
         DOC_CONTACT("contact"),
         /**Tipo de Documento de Identidad del proveedor. */
         DOC_CONTACTDOI("contactDOI"),
+
+        /** */
+        DOC_NETTOTALTAXED("netTotalTaxed"),
+        /** */
+        DOC_IGVTAXED("igvTaxed"),
+
+        /** */
+        DOC_NETTOTALEXPORT("netTotalExport"),
+        /** */
+        DOC_IGVEXPORT("igvExport"),
+
+        /** */
+        DOC_NETTOTALUNTAXED("netTotalUntaxed"),
+        /** */
+        DOC_IGVUNTAXED("igvUntaxed"),
+
         /** */
         DOC_CROSSTOTAL("crossTotal"),
+
+
         /** */
-        DOC_NETTOTAL("netTotal"),
-        /** */
-        DOC_IGV("igv"),
-        /** */
-        DOC_EXPORT("export"),
+        DOC_VALUENOTAX("valueNoTax"),
         /** */
         DOC_RATE("rate"),
         /** */
@@ -281,7 +296,8 @@ public abstract class PurchaseRecordReport_Base
                             selRelTypeLinkName, selRelDocContactIdenityCard, selRelDocContactDOIType);
             multi.addAttribute(CIAccounting.PurchaseRecord2Document.DetractionDate,
                             CIAccounting.PurchaseRecord2Document.DetractionName,
-                            CIAccounting.PurchaseRecord2Document.DetractionAmount);
+                            CIAccounting.PurchaseRecord2Document.DetractionAmount,
+                            CIAccounting.PurchaseRecord2Document.Taxed);
             multi.execute();
 
             while (multi.next()) {
@@ -298,6 +314,7 @@ public abstract class PurchaseRecordReport_Base
                 final String docRevision = multi.<String>getSelect(selRelDocRevision);
                 final String docContactIdenityCard = multi.<String>getSelect(selRelDocContactIdenityCard);
                 final String docContactDOIType = multi.<String>getSelect(selRelDocContactDOIType);
+                final Taxed4PurchaseRecord taxed = multi.getAttribute(CIAccounting.PurchaseRecord2Document.Taxed);
 
                 final String detractionName = multi
                                 .<String>getAttribute(CIAccounting.PurchaseRecord2Document.DetractionName);
@@ -343,17 +360,33 @@ public abstract class PurchaseRecordReport_Base
                 map.put(PurchaseRecordReport_Base.Field.DOC_CONTACT.getKey(), contactName);
                 Boolean isDOI = false;
                 String taxNum = contactTaxNum;
-                if (taxNum == null || (taxNum != null && taxNum.isEmpty())) {
+                if (taxNum == null || taxNum != null && taxNum.isEmpty()) {
                     if (docContactIdenityCard != null && !docContactIdenityCard.isEmpty()) {
                         taxNum = docContactIdenityCard;
                         isDOI =true;
                     }
                 }
                 map.put(PurchaseRecordReport_Base.Field.DOC_TAXNUM.getKey(), taxNum);
-                map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTAL.getKey(), netTotal);
+
+                switch (taxed) {
+                    case TAXED:
+                        map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTALTAXED.getKey(), netTotal);
+                        map.put(PurchaseRecordReport_Base.Field.DOC_IGVTAXED.getKey(), igv);
+                        break;
+                    case EXPORT:
+                        map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTALEXPORT.getKey(), netTotal);
+                        map.put(PurchaseRecordReport_Base.Field.DOC_IGVEXPORT.getKey(), igv);
+                        break;
+                    case UNTAXED:
+                        map.put(PurchaseRecordReport_Base.Field.DOC_NETTOTALUNTAXED.getKey(), netTotal);
+                        map.put(PurchaseRecordReport_Base.Field.DOC_IGVUNTAXED.getKey(), igv);
+                        break;
+                    default:
+                        break;
+                }
+
                 map.put(PurchaseRecordReport_Base.Field.DOC_CROSSTOTAL.getKey(), crossTotal);
-                map.put(PurchaseRecordReport_Base.Field.DOC_IGV.getKey(), igv);
-                map.put(PurchaseRecordReport_Base.Field.DOC_EXPORT.getKey(), taxfree);
+                map.put(PurchaseRecordReport_Base.Field.DOC_VALUENOTAX.getKey(), taxfree);
 
                 final String[] nameAr = docName.split("\\W");
 

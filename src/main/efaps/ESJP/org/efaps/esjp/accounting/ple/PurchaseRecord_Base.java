@@ -101,8 +101,8 @@ public abstract class PurchaseRecord_Base
                         .setMaxWidth(1).setNullValue("0").setEmptyValue("0")); //10
         _exporter.addColumns(new FrmtColumn(Field.DOC_TAXNUM.getKey()).setMaxWidth(15)); //11
         _exporter.addColumns(new FrmtColumn(Field.DOC_CONTACT.getKey()).setMaxWidth(60)); //12
-        _exporter.addColumns(new FrmtNumberColumn(Field.DOC_NETTOTAL.getKey(), 14, 2)); //13
-        _exporter.addColumns(new FrmtNumberColumn(Field.DOC_IGV.getKey(), 14, 2)); //14
+        _exporter.addColumns(new FrmtNumberColumn(Field.DOC_NETTOTALTAXED.getKey(), 14, 2)); //13
+        _exporter.addColumns(new FrmtNumberColumn(Field.DOC_IGVTAXED.getKey(), 14, 2)); //14
         _exporter.addColumns(new FrmtNumberColumn("no", 14, 2)); //15
         _exporter.addColumns(new FrmtNumberColumn("no", 14, 2)); //16
         _exporter.addColumns(new FrmtNumberColumn("no", 14, 2)); //17
@@ -160,8 +160,8 @@ public abstract class PurchaseRecord_Base
                             value.get(Field.DOC_CONTACTDOI.getKey()),  //10
                             value.get(Field.DOC_TAXNUM.getKey()),   //11
                             value.get(Field.DOC_CONTACT.getKey()),  //12
-                            value.get(Field.DOC_NETTOTAL.getKey()), //13
-                            value.get(Field.DOC_IGV.getKey()),      //14
+                            value.get(Field.DOC_NETTOTALTAXED.getKey()), //13
+                            value.get(Field.DOC_IGVTAXED.getKey()),      //14
                             BigDecimal.ZERO, //15
                             BigDecimal.ZERO, //16
                             BigDecimal.ZERO, //17

@@ -28,7 +28,11 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PurchaseRecord2DocumentForm</name>
-        <!-- fields -->
+        <field name="taxed">
+            <property name="Attribute">Taxed</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
         <field name="detractionName">
             <property name="Attribute">DetractionName</property>
             <property name="ModeCreate">NONE</property>

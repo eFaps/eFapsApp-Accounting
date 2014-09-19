@@ -36,6 +36,7 @@
             <column name="DETRAMOUNT"  type="DECIMAL"       length="12" scale="4"/>
             <column name="DETRDATE"    type="DATETIME"/>
             <column name="EXTYPEID"    type="INTEGER"/>
+            <column name="TAXED"       type="INTEGER"/>
         </database>
     </definition>
 </datamodel-sqltable>

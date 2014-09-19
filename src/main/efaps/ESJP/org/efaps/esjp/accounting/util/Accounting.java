@@ -47,10 +47,27 @@ public final class Accounting
     {
     }
 
+    public enum Taxed4PurchaseRecord
+        implements IEnum
+    {
+        /** Internal Report. */
+        TAXED,
+        /** Official Report. */
+        EXPORT,
+        /** Official Report. */
+        UNTAXED;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
+
     public enum SubJournalConfig
         implements IEnum
     {
-        /**Internal Report. */
+        /** Internal Report. */
         INTERNAL,
         /** Official Report. */
         OFFICIAL;
@@ -60,7 +77,7 @@ public final class Accounting
         {
             return ordinal();
         }
-    }
+}
 
     public enum ActDef2Case4IncomingConfig
        implements IBitEnum
