@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-09-18T23:04:56 -->
+<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.5.1  -->
+<!-- 2014-09-23T10:53:15 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_PurchaseOfficialRecord" language="groovy" pageWidth="1940" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1900" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" whenResourceMissingType="Error" uuid="395c14f9-f8c3-4b02-ad33-cf7d009e60a6">
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
@@ -92,9 +92,9 @@
 	<field name="id" class="java.lang.Long">
 		<property name="Key" value="id"/>
 	</field>
-	<variable name="contactDocType" class="java.lang.String">
-		<variableExpression><![CDATA[($F{taxNumber}.length() == 11 ) ? "R.U.C":"D.N.I"]]></variableExpression>
-	</variable>
+	<field name="contactDOI" class="java.lang.String">
+		<property name="Key" value="contactDOI"/>
+	</field>
 	<variable name="sumNetTotalTaxed" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{netTotalTaxed}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
@@ -1042,7 +1042,7 @@ DOCUMENTO]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{contactDocType}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{contactDOI}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="115" y="0" width="62" height="14" uuid="e61ba3d5-7e32-4320-8ad7-bf1b8157354e">

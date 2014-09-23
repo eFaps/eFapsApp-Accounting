@@ -18,6 +18,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.accounting.util.Accounting.Taxed4PurchaseRecord;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
@@ -138,6 +139,11 @@ public abstract class PurchaseRecord_Base
 
         final Instance docInst = print.<Instance>getSelect(selectDocInst);
         if (docInst != null && docInst.isValid()) {
+            final Taxed4PurchaseRecord taxed = evalTaxed(_parameter,  docInst);
+            final Update update1 = new Update(_instance);
+            update1.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
+            update1.executeWithoutTrigger();
+
             final PrintQuery printDocQuery = new PrintQuery(docInst);
             final SelectBuilder selDocTypeIns = new SelectBuilder()
                             .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
@@ -224,6 +230,8 @@ public abstract class PurchaseRecord_Base
     {
         if (_purchaseRecInst != null && _docInsts != null && _purchaseRecInst.isValid()) {
             for (final Instance docInst : _docInsts) {
+                final Taxed4PurchaseRecord taxed = evalTaxed(_parameter,  docInst);
+
                 final PrintQuery print = new PrintQuery(docInst);
                 final SelectBuilder sel = SelectBuilder.get()
                                 .linkfrom(CISales.Document2DocumentType.DocumentLink)
@@ -240,11 +248,25 @@ public abstract class PurchaseRecord_Base
                         final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
                         purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, _purchaseRecInst);
                         purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                        purInsert.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
                         purInsert.execute();
                     }
                 }
             }
         }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstance Instance of the document to be evaluated
+     * @return
+     */
+    protected Taxed4PurchaseRecord evalTaxed(final Parameter _parameter,
+                                             final Instance _docInstance)
+    {
+        final Taxed4PurchaseRecord ret = Taxed4PurchaseRecord.TAXED;
+        //TODO add criteria
+        return ret;
     }
 
 }
