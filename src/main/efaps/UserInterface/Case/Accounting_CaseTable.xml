@@ -64,5 +64,9 @@
             <property name="ModeSearch">READONLY</property>
             <property name="Label">Accounting_CaseAbstract/SummarizeConfig.Label</property>
         </field>
+         <field name="label">
+            <property name="Attribute">Label</property>
+            <property name="Label">Accounting_CaseAbstract/Label.Label</property>
+        </field>
     </definition>
 </ui-table>
