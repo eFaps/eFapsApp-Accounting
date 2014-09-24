@@ -23,14 +23,12 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7efe5f1a-4fdc-41d7-8f55-77777212f02b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <specification>DM00038</specification>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2CaseAbstract</name>
@@ -77,6 +75,20 @@
             <type>Long</type>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>LINKID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CurrencyLink</name>
+            <type>LinkWithRanges</type>
+            <typelink>ERP_Currency</typelink>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>CURRENCYID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Accounting_Account2CaseAbstract.CurrencyId.RANGE_VALUE"
+                event="RANGE_VALUE">
+                <property name="Value">Name</property>
+                <property name="Type">ERP_Currency</property>
+                <property name="EmptyValue">true</property>
+            </trigger>
         </attribute>
     </definition>
 </datamodel-type>

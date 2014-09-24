@@ -647,26 +647,37 @@ public abstract class Transaction_Base
             queryBldr.addOrderByAttributeAsc(CIAccounting.Account2CaseAbstract.Order);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.setEnforceSorted(true);
-            final SelectBuilder selInst = new SelectBuilder()
+            final SelectBuilder selAccInst = new SelectBuilder()
                             .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
+            final SelectBuilder selCurrInst = new SelectBuilder()
+                            .linkto(CIAccounting.Account2CaseAbstract.CurrencyLink).instance();
             multi.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                             CIAccounting.Account2CaseAbstract.Denominator,
                             CIAccounting.Account2CaseAbstract.LinkValue,
                             CIAccounting.Account2CaseAbstract.Config);
-            multi.addSelect(selInst);
+            multi.addSelect(selAccInst, selCurrInst);
             multi.execute();
             while (multi.next()) {
                 final Type type = multi.getCurrentInstance().getType();
                 final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
                                 || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
                 final List<Account2CaseConfig> configs = multi.getAttribute(CIAccounting.Account2CaseAbstract.Config);
-                // classRel or default selected will be added
+
                 final boolean isDefault = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
-                boolean add = classRel || isDefault;
+
+                final Instance currInst4Case = multi.getSelect(selCurrInst);
+                final boolean checkCurr;
+                if (currInst4Case != null && currInst4Case.isValid()) {
+                    checkCurr = _doc.getRateInfo().getCurrencyInstance().equals(currInst4Case);
+                } else {
+                    checkCurr = true;
+                }
+                // classRel or default selected and currency correct will be added
+                boolean add = (classRel || isDefault) && checkCurr;
                 if (add) {
                     final boolean applyLabel = configs != null && configs.contains(Account2CaseConfig.APPLYLABEL);
 
-                    final Instance inst = multi.<Instance>getSelect(selInst);
+                    final Instance accInst = multi.<Instance>getSelect(selAccInst);
                     final Integer denom = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
                     final Integer numer = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
                     final Long linkId = multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
@@ -684,7 +695,7 @@ public abstract class Transaction_Base
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                     .divide(_doc.getRate(_parameter), BigDecimal.ROUND_HALF_UP);
                     if (add) {
-                        final AccountInfo account = new AccountInfo(inst, accAmount);
+                        final AccountInfo account = new AccountInfo(accInst, accAmount);
                         if (applyLabel && !labelInsts.isEmpty()) {
                             account.setLabelInst(labelInsts.get(0));
                         }

@@ -38,6 +38,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.data.columns.export.FrmtColumn;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 
 import com.brsanthu.dataexporter.DataExporter;
@@ -92,6 +93,7 @@ public abstract class ExportCase_Base
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CDENUM.getKey(), 3));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CDEFAULT.getKey(), 5));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CAPPLYLABEL.getKey(), 5));
+        _exporter.addColumns(new FrmtColumn(ColumnCase.A2CCURRENCY.getKey(), 4));
     }
 
     @Override
@@ -108,7 +110,8 @@ public abstract class ExportCase_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
                         CIAccounting.Account2CaseAbstract.Denominator,
-                        CIAccounting.Account2CaseAbstract.Config);
+                        CIAccounting.Account2CaseAbstract.Config,
+                        CIAccounting.Account2CaseAbstract.CurrencyLink);
         final SelectBuilder selCaseName = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                         .attribute(CIAccounting.CaseAbstract.Name);
@@ -143,7 +146,13 @@ public abstract class ExportCase_Base
             final Boolean caseIsCross = multi.<Boolean>getSelect(selCaseIsCross);
             final Type acc2CaseType = multi.getCurrentInstance().getType();
             final String acc2CaseAcc = multi.<String>getSelect(selAccountName);
-
+            final Long currencyId = multi.getAttribute(CIAccounting.Account2CaseAbstract.CurrencyLink);
+            final String currency;
+            if (currencyId == null) {
+                currency = "";
+            } else {
+                currency = CurrencyInst.get(currencyId).getISOCode();
+            }
             final Object config =   multi.getSelect(selCaseConfig);
 
             if (acc2CaseType.isKindOf(CIAccounting.Account2CaseCredit4Classification.getType())
@@ -178,6 +187,7 @@ public abstract class ExportCase_Base
             row.put(ColumnCase.A2CDENUM.getKey(), acc2CaseDen);
             row.put(ColumnCase.A2CDEFAULT.getKey(), acc2CaseDef);
             row.put(ColumnCase.A2CAPPLYLABEL.getKey(), acc2CaseLabel);
+            row.put(ColumnCase.A2CCURRENCY.getKey(), currency);
             lstCols.add(row);
         }
 
@@ -216,7 +226,8 @@ public abstract class ExportCase_Base
                             map.get(ColumnCase.A2CNUM.getKey()),
                             map.get(ColumnCase.A2CDENUM.getKey()),
                             map.get(ColumnCase.A2CDEFAULT.getKey()),
-                            map.get(ColumnCase.A2CAPPLYLABEL.getKey()));
+                            map.get(ColumnCase.A2CAPPLYLABEL.getKey()),
+                            map.get(ColumnCase.A2CCURRENCY.getKey()));
         }
     }
 }

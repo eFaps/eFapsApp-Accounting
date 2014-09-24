@@ -59,6 +59,7 @@ import org.efaps.esjp.accounting.export.IColumn;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -571,6 +572,7 @@ public abstract class Import_Base
         private Instance periodInst;
         private Instance caseInst;
         private SummarizeConfig caseSummarizeConfig;
+        private String currencyISO;
         /**
          * @param _periodInst
          * @param _colName2Index
@@ -624,6 +626,10 @@ public abstract class Import_Base
                                 .replaceAll("\n", "");
                 }
 
+                if (_colName2Index.containsKey(ColumnCase.A2CCURRENCY.getKey())) {
+                    this.currencyISO = _row[_colName2Index.get(ColumnCase.A2CCURRENCY.getKey())].trim()
+                                    .replaceAll("\n", "");
+                }
                 final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, accName);
                 queryBuilder.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, _periodInst.getId());
@@ -708,6 +714,13 @@ public abstract class Import_Base
 
             if (this.a2cClass != null) {
                 insert.add(CIAccounting.Account2CaseAbstract.LinkValue, Classification.get(this.a2cClass).getId());
+            }
+            if (this.currencyISO != null && !this.currencyISO.isEmpty()) {
+                for (final CurrencyInst currencyInst : CurrencyInst.getAvailable()) {
+                    if (currencyInst.getISOCode().equals(this.currencyISO)) {
+                        insert.add(CIAccounting.Account2CaseAbstract.CurrencyLink, currencyInst.getInstance());
+                    }
+                }
             }
             insert.execute();
         }

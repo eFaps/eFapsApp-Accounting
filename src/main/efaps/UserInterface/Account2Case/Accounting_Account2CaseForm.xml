@@ -35,6 +35,11 @@
         <field name="type">
             <property name="Attribute">Type</property>
         </field>
+        <field name="toCaseAbstractLink">
+            <property name="SelectAlternateOID">linkto[ToCaseAbstractLink].oid</property>
+            <property name="Select">linkto[ToCaseAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_Account2CaseForm.toCaseAbstractLink.Label</property>
+        </field>
         <field name="order">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -60,6 +65,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Config</property>
+        </field>
+        <field name="currencyLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">CurrencyLink</property>
         </field>
         <field name="classificationLink">
             <property name="Attribute">ClassificationLink</property>
@@ -111,11 +121,7 @@
                 <property name="ShowSumAccount">false</property>
             </trigger>
         </field>
-        <field name="toCaseAbstractLink">
-            <property name="SelectAlternateOID">linkto[ToCaseAbstractLink].oid</property>
-            <property name="Select">linkto[ToCaseAbstractLink].attribute[Name]</property>
-            <property name="Label">Accounting_Account2CaseForm.toCaseAbstractLink.Label</property>
-        </field>
+
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>

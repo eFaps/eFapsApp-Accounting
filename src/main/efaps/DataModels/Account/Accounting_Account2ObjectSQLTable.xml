@@ -43,6 +43,7 @@
             <column name="DENOMINATOR"  type="INTEGER" />
             <column name="CONFIG"       type="INTEGER" />
             <column name="LINKID"       type="INTEGER" />
+            <column name="CURRENCYID"   type="INTEGER" />
             <column name="ORD"          type="INTEGER" />
             <column name="CREATOR"      type="INTEGER"  not-null="true" />
             <column name="CREATED"      type="DATETIME" not-null="true" />
