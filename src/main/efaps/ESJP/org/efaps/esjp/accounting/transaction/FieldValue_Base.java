@@ -80,6 +80,8 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
+import org.efaps.esjp.sales.Swap_Base;
+import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.ui.html.Table;
@@ -625,6 +627,7 @@ public abstract class FieldValue_Base
         final boolean showAction = !"true".equalsIgnoreCase(getProperty(_parameter, "NoAction"));
         final boolean showLabel = !"true".equalsIgnoreCase(getProperty(_parameter, "NoLabel"));
         final boolean showNote = "true".equalsIgnoreCase(getProperty(_parameter, "ShowNote"));
+        final boolean showSwap = !"true".equalsIgnoreCase(getProperty(_parameter, "NoSwap"));
 
         _doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
 
@@ -814,6 +817,21 @@ public abstract class FieldValue_Base
                     .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class.getName()
                                     + ".LabelInfo"))
                     .addColumn(labelMulti.<String>getAttribute(CIAccounting.LabelAbstract.Name));
+            }
+        }
+
+        if (showSwap && !_doc.isPaymentDoc()) {
+            final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+            swapQueryBldr.setOr(true);
+            swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromLink, _doc.getInstance());
+            swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToLink, _doc.getInstance());
+            final InstanceQuery swapQuery = swapQueryBldr.getQuery();
+            final List<Instance> relInst = swapQuery.execute();
+            if (!relInst.isEmpty()) {
+                for (final SwapInfo info : Swap_Base.getSwapInfos(_parameter, _doc.getInstance(), relInst).values()) {
+                    _table.addRow()
+                        .addColumn(info.getDirection()).addColumn(info.getDocument());
+                }
             }
         }
 
