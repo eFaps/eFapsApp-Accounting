@@ -58,6 +58,10 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="config">
+            <property name="Attribute">Config</property>
+            <property name="Label">Accounting_Account2CaseAbstract/Config.Label</property>
+        </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Accounting_Account2CaseAbstract/CurrencyLink.Label</property>

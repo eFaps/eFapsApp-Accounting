@@ -58,5 +58,11 @@
             <property name="ModeSearch">READONLY</property>
             <property name="Label">Accounting_CaseAbstract/IsCross.Label</property>
         </field>
+        <field name="summarizeConfig">
+            <property name="Attribute">SummarizeConfig</property>
+            <property name="FilterType">PICKLIST</property>
+            <property name="ModeSearch">READONLY</property>
+            <property name="Label">Accounting_CaseAbstract/SummarizeConfig.Label</property>
+        </field>
     </definition>
 </ui-table>
