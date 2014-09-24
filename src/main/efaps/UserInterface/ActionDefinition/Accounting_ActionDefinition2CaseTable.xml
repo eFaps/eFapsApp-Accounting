@@ -35,6 +35,9 @@
             <property name="Label">Accounting_Account2CaseAbstract/Type.Label</property>
             <property name="HRef">TREE</property>
         </field>
+        <field name="config">
+            <property name="Attribute">Config</property>
+        </field>
         <field name="toLink">
             <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
             <property name="Phrase">$&lt;linkto[ToLinkAbstract].type.label&gt; -  $&lt;linkto[ToLinkAbstract].attribute[Name]&gt;</property>
