@@ -640,7 +640,8 @@ public abstract class Transaction_Base
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
         if (caseInst.isValid()) {
             _doc.setCaseInst(caseInst);
-            final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance());
+            final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance(),
+                            new Period().evaluateCurrentPeriod(_parameter));
 
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);

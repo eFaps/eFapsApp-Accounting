@@ -51,6 +51,7 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public abstract class Label_Base
 {
+
     /**
      * Check access to label.
      *
@@ -61,7 +62,7 @@ public abstract class Label_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        if (! Accounting.getSysConfig().getAttributeValueAsBoolean("DeactivateLabel")) {
+        if (!Accounting.getSysConfig().getAttributeValueAsBoolean("DeactivateLabel")) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -105,6 +106,36 @@ public abstract class Label_Base
         // let others participate
         for (final IOnLabel listener : Listener.get().<IOnLabel>invoke(IOnLabel.class)) {
             ret.addAll(listener.evalLabelsForDocument(_parameter, _instance));
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Paremeter as passed from the eFaPS API
+     * @param _instance document of instance
+     * @param _periodInst Instance of the Period
+     * @return list of labels
+     * @throws EFapsException on error
+     */
+    public List<Instance> getLabelInst4Documents(final Parameter _parameter,
+                                                 final Instance _instance,
+                                                 final Instance _periodInst)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final List<Instance> labelInst = getLabelInst4Documents(_parameter, _instance);
+
+        final MultiPrintQuery multi = new MultiPrintQuery(labelInst);
+        final SelectBuilder selPeriodInst = SelectBuilder.get()
+                        .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
+                        .instance();
+        multi.addSelect(selPeriodInst);
+        multi.execute();
+        while (multi.next()) {
+            final Instance periodInst = multi.getSelect(selPeriodInst);
+            if (periodInst.equals(_periodInst)) {
+                ret.add(multi.getCurrentInstance());
+            }
         }
         return ret;
     }

@@ -810,13 +810,25 @@ public abstract class FieldValue_Base
         if (showLabel) {
             final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance());
             final MultiPrintQuery labelMulti = new MultiPrintQuery(labelInsts);
+            final SelectBuilder selPeriodName = SelectBuilder.get()
+                            .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
+                            .attribute(CIAccounting.Period.Name);
+            final SelectBuilder selPeriodInst = SelectBuilder.get()
+                            .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
+                            .instance();
+            labelMulti.addSelect(selPeriodInst, selPeriodName);
             labelMulti.addAttribute(CIAccounting.LabelAbstract.Name);
             labelMulti.execute();
             while (labelMulti.next()) {
                 _table.addRow()
-                    .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class.getName()
-                                    + ".LabelInfo"))
+                    .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class
+                                                                .getName()+ ".LabelInfo"))
                     .addColumn(labelMulti.<String>getAttribute(CIAccounting.LabelAbstract.Name));
+                final Instance periodInst = labelMulti.getSelect(selPeriodInst);
+                if (!periodInst.equals(new Period().evaluateCurrentPeriod(_parameter))) {
+                    _table.addColumn(CIAccounting.Period.getType().getLabel())
+                        .addColumn(labelMulti.<String>getSelect(selPeriodName));
+                }
             }
         }
 
