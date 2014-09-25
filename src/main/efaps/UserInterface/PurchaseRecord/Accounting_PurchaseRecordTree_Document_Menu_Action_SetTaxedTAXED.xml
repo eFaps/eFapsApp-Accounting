@@ -22,18 +22,20 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7261b942-1baa-4d2a-9d58-bc459facecae</uuid>
+    <uuid>93a402e1-668c-4b97-afb1-b107137e1775</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PurchaseRecordTree_Document_Menu_Action_UpdateRelations</name>
+        <name>Accounting_PurchaseRecordTree_Document_Menu_Action_SetTaxedTAXED</name>
         <target>
-            <execute program="org.efaps.esjp.accounting.PurchaseRecord"
-                method="updatePurchaseRecord" />
+            <execute method="setTaxedValue"
+                program="org.efaps.esjp.accounting.PurchaseRecord" >
+                <property name="Taxed">TAXED</property>
+            </execute>
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="SubmitSelectedRows">0</property>
     </definition>
 </ui-command>

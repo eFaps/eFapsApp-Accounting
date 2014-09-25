@@ -3,9 +3,11 @@ package org.efaps.esjp.accounting;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -139,7 +141,7 @@ public abstract class PurchaseRecord_Base
 
         final Instance docInst = print.<Instance>getSelect(selectDocInst);
         if (docInst != null && docInst.isValid()) {
-            final Taxed4PurchaseRecord taxed = evalTaxed(_parameter,  docInst);
+            final Taxed4PurchaseRecord taxed = evalTaxed(_parameter, docInst);
             final Update update1 = new Update(_instance);
             update1.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
             update1.executeWithoutTrigger();
@@ -230,7 +232,7 @@ public abstract class PurchaseRecord_Base
     {
         if (_purchaseRecInst != null && _docInsts != null && _purchaseRecInst.isValid()) {
             for (final Instance docInst : _docInsts) {
-                final Taxed4PurchaseRecord taxed = evalTaxed(_parameter,  docInst);
+                final Taxed4PurchaseRecord taxed = evalTaxed(_parameter, docInst);
 
                 final PrintQuery print = new PrintQuery(docInst);
                 final SelectBuilder sel = SelectBuilder.get()
@@ -265,8 +267,28 @@ public abstract class PurchaseRecord_Base
                                              final Instance _docInstance)
     {
         final Taxed4PurchaseRecord ret = Taxed4PurchaseRecord.TAXED;
-        //TODO add criteria
+        // TODO add criteria
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return empty Return
+     */
+    public Return setTaxedValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] oids = (String[]) _parameter.get(ParameterValues.OTHERS);
+        final Taxed4PurchaseRecord taxed = EnumUtils.getEnum(Taxed4PurchaseRecord.class,
+                        getProperty(_parameter, "Taxed"));
+        if (taxed != null && oids != null) {
+            for (final String oid : oids) {
+                final Update update = new Update(oid);
+                update.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
+                update.execute();
+            }
+        }
+        return new Return();
     }
 
 }
