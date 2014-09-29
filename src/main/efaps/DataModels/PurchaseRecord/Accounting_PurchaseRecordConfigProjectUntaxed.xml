@@ -20,18 +20,32 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>83e43e98-bf91-450c-a0a7-40be7b84d189</uuid>
+    <uuid>2b7af999-5248-45a8-9ddf-a9f633b1d4f9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PurchaseRecordMyDesk_Menu_Action</name>
-        <childs>
-            <child>Accounting_PurchaseRecordMyDesk_Menu_Action_Create</child>
-            <child>Accounting_PurchaseRecordMyDesk_Menu_Action_Config</child>
-            <child>Accounting_PurchaseRecordMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <name>Accounting_PurchaseRecordConfigProjectUntaxed</name>
+        <parent>Accounting_PurchaseRecordConfigAbstract</parent>
     </definition>
-</ui-menu>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+         <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Accounting_PurchaseRecordConfigProjectUntaxed</name>
+        <parent>Accounting_PurchaseRecordConfigAbstract</parent>
+        <attribute>
+            <name>Projectlink</name>
+            <type>Link</type>
+            <typelink>Projects_ProjectAbstract</typelink>
+            <sqltable>Accounting_PurchaseRecordConfigSQLTable</sqltable>
+            <sqlcolumn>INT1</sqlcolumn>
+        </attribute>
+    </definition>
+</datamodel-type>

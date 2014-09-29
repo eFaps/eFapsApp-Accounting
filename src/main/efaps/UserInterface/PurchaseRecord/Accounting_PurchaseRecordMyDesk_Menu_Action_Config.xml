@@ -20,18 +20,22 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>83e43e98-bf91-450c-a0a7-40be7b84d189</uuid>
+    <uuid>f362d69f-068c-4b06-b17e-3edeaf2da03e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PurchaseRecordMyDesk_Menu_Action</name>
-        <childs>
-            <child>Accounting_PurchaseRecordMyDesk_Menu_Action_Create</child>
-            <child>Accounting_PurchaseRecordMyDesk_Menu_Action_Config</child>
-            <child>Accounting_PurchaseRecordMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Accounting_PurchaseRecordMyDesk_Menu_Action_Config</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+        <target>
+            <form>Accounting_PurchaseRecordConfigForm</form>
+            <execute program="org.efaps.esjp.accounting.PurchaseRecord" method="configure"/>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
     </definition>
-</ui-menu>
+</ui-command>

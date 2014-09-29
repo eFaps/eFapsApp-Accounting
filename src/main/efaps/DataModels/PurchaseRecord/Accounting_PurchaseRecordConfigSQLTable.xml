@@ -22,21 +22,23 @@
 -->
 <datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4a48a893-bab3-4723-abd4-88053f154c68</uuid>
+    <uuid>fddcb624-11a4-4efd-a097-b81bd468fd53</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PurchaseRecord2DocumentSQLTable</name>
-        <parent>ERP_Document2DocumentAbstract</parent>
+        <name>Accounting_PurchaseRecordConfigSQLTable</name>
+        <typeid-column>TYPEID</typeid-column>
         <database>
-            <table-name>T_ACCPR2DOCEXT</table-name>
-            <parent-table>T_ERPDOC2DOC</parent-table>
-            <column name="DETRNO"       type="STRING_SHORT" length="128" />
-            <column name="DETRAMOUNT"   type="DECIMAL"      length="12"     scale="4" />
-            <column name="DETRDATE"     type="DATETIME" />
-            <column name="EXTYPEID"     type="INTEGER" />
-            <column name="TAXED"        type="INTEGER" />
+            <table-name>T_ACCPRCONFIG</table-name>
+            <column name="TYPEID"   type="INTEGER"  not-null="true" />
+            <column name="INT1"     type="INTEGER" />
+            <column name="CREATOR"  type="INTEGER"  not-null="true" />
+            <column name="CREATED"  type="DATETIME" not-null="true" />
+            <column name="MODIFIER" type="INTEGER"  not-null="true" />
+            <column name="MODIFIED" type="DATETIME" not-null="true" />
+            <foreign name="T_ACCPRCONFIG_FK_CRTR" key="CREATOR"     reference="T_USERPERSON(ID)" />
+            <foreign name="T_ACCPRCONFIG_FK_MDFR" key="MODIFIER"    reference="T_USERPERSON(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>

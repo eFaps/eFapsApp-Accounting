@@ -1,7 +1,10 @@
 package org.efaps.esjp.accounting;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -11,7 +14,9 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -20,12 +25,14 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.accounting.listener.IOnPurchaseRecord;
 import org.efaps.esjp.accounting.util.Accounting.Taxed4PurchaseRecord;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
@@ -265,9 +272,16 @@ public abstract class PurchaseRecord_Base
      */
     protected Taxed4PurchaseRecord evalTaxed(final Parameter _parameter,
                                              final Instance _docInstance)
+        throws EFapsException
     {
-        final Taxed4PurchaseRecord ret = Taxed4PurchaseRecord.TAXED;
-        // TODO add criteria
+        Taxed4PurchaseRecord ret = Taxed4PurchaseRecord.TAXED;
+        // let others participate
+        for (final IOnPurchaseRecord listener : Listener.get().<IOnPurchaseRecord>invoke(IOnPurchaseRecord.class)) {
+            final Taxed4PurchaseRecord rettmp = listener.evalTaxed(_parameter, _docInstance);
+            if (rettmp != null) {
+                ret = rettmp;
+            }
+        }
         return ret;
     }
 
@@ -286,6 +300,45 @@ public abstract class PurchaseRecord_Base
                 final Update update = new Update(oid);
                 update.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
                 update.execute();
+            }
+        }
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return empty Return
+     */
+    public Return configure(final Parameter _parameter)
+        throws EFapsException
+    {
+        @SuppressWarnings("unchecked")
+        final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+        final String[] rowKeys = InterfaceUtils.getRowKeys(_parameter, "project", "project");
+        final String[] projects = _parameter.getParameterValues("project");
+        if (projects != null) {
+            final Set<Instance> validInst = new HashSet<>();
+            for (int i = 0; i < projects.length; i++) {
+                final Instance inst = Instance.get(oidMap.get(rowKeys[i]));
+                final Instance projInst = Instance.get(projects[i]);
+                Update update;
+                if (inst.isValid()) {
+                    update = new Update(inst);
+                } else {
+                    update = new Insert(CIAccounting.PurchaseRecordConfigProjectUntaxed);
+                }
+                if (projInst.isValid()) {
+                    update.add(CIAccounting.PurchaseRecordConfigProjectUntaxed.Projectlink, projInst);
+                }
+                update.execute();
+                validInst.add(update.getInstance());
+            }
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecordConfigProjectUntaxed);
+            queryBldr.addWhereAttrNotEqValue(CIAccounting.PurchaseRecordConfigProjectUntaxed.ID, validInst.toArray());
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                new Delete(query.getCurrentValue()).execute();
             }
         }
         return new Return();
