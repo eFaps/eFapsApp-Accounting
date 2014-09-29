@@ -869,20 +869,28 @@ public abstract class Transaction_Base
             final MultiPrintQuery caseMulti = caseQueryBldr.getPrint();
             final SelectBuilder selAccInst = SelectBuilder.get()
                             .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
-            caseMulti.addSelect(selAccInst);
+            final SelectBuilder selCurrInst = SelectBuilder.get()
+                            .linkto(CIAccounting.Account2CaseAbstract.CurrencyLink).instance();
+            caseMulti.addSelect(selAccInst, selCurrInst);
             caseMulti.execute();
             while (caseMulti.next()) {
-                final Instance accInst = caseMulti.<Instance>getSelect(selAccInst);
-                final AccountInfo acc = new AccountInfo().setInstance(accInst)
-                                .addAmount(_doc.getAmount4Doc(_docInst))
-                                .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
-                if (outDoc) {
-                    _doc.addDebit(acc);
-                } else {
-                    _doc.addCredit(acc);
+                final Instance currInst = caseMulti.<Instance>getSelect(selCurrInst);
+                boolean add = true;
+                if (currInst != null && currInst.isValid()) {
+                    add = _doc.getRateInfo().getCurrencyInstance().equals(currInst);
+                }
+                if (add) {
+                    final Instance accInst = caseMulti.<Instance>getSelect(selAccInst);
+                    final AccountInfo acc = new AccountInfo().setInstance(accInst)
+                                    .addAmount(_doc.getAmount4Doc(_docInst))
+                                    .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                    if (outDoc) {
+                        _doc.addDebit(acc);
+                    } else {
+                        _doc.addCredit(acc);
+                    }
                 }
             }
-
         }
     }
 
