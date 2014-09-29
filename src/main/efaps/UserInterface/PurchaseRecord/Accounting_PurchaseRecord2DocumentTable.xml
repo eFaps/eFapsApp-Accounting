@@ -133,8 +133,8 @@
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
         </field>
         <field name="project">
-            <property name="SelectAlternateOID">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
-            <property name="Select">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkto[ToLink].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
+            <property name="Select">linkto[ToLink].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Accounting_IncomingDocumentTable.project.Label</property>
             <property name="FilterType">PICKLIST</property>
