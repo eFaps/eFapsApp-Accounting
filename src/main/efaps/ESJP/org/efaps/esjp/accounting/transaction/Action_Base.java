@@ -352,6 +352,22 @@ public abstract class Action_Base
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
      */
+    public void create4IncomingExchange(final Parameter _parameter,
+                                        final Instance _actionRelInst)
+        throws EFapsException
+    {
+        final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
+        if (def.getParameter() != null) {
+            final Create create = new Create();
+            create.create4ExternalMassive(def.getParameter());
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _actionRelInst relation Instance
+     * @throws EFapsException on error
+     */
     public void create4Doc(final Parameter _parameter,
                            final Instance _actionRelInst)
         throws EFapsException

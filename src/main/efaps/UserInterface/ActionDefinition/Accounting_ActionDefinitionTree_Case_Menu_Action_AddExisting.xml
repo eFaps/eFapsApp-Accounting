@@ -60,6 +60,10 @@
                 <property name="ConnectParentType06">Sales_ActionDefinitionFundsToBeSettledReceipt</property>
                 <property name="ConnectChildAttribute06">ToLinkAbstract</property>
                 <property name="ConnectParentAttribute06">FromLinkAbstract</property>
+                <property name="ConnectType07">Accounting_ActionDefinition2Case4IncomingExchange</property>
+                <property name="ConnectParentType07">Sales_ActionDefinitionIncomingExchange</property>
+                <property name="ConnectChildAttribute07">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute07">FromLinkAbstract</property>
             </execute>
         </target>
         <property name="Target">modal</property>
