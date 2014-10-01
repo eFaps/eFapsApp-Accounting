@@ -1440,4 +1440,25 @@ public abstract class FieldValue_Base
         return ret;
     }
 
+    public Return getValueSum(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+        multi.execute();
+
+        BigDecimal value = BigDecimal.ZERO;
+
+        while (multi.next()) {
+            final BigDecimal amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
+            value = value.add(amount.abs());
+        }
+
+        ret.put(ReturnValues.VALUES, value);
+
+        return ret;
+    }
 }
