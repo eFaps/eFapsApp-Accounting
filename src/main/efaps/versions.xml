@@ -183,9 +183,6 @@
             <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentSupplierOutTree -->
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "9e1ea83a-7670-47ee-9a73-134f07ef3585", -1);
 
-            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentTree  -->
-            update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "218694a8-9617-4458-ba3d-4524efdb2e44", -1);
-
             <!-- connect the Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing to Sales_IncomingInvoiceTree menu -->
             update.add2Menu("56cd1287-922e-487c-84a2-07350d757473", "0370fa3a-6733-4481-841a-645d0e78e54f", -1);
 
