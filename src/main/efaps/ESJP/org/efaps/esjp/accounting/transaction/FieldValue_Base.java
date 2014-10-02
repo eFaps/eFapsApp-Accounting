@@ -843,8 +843,7 @@ public abstract class FieldValue_Base
                 for (final SwapInfo info : Swap_Base.getSwapInfos(_parameter, _doc.getInstance(), relInst).values()) {
                     _table.addRow()
                         .addColumn(info.getDirection()).addColumn(info.getDocument())
-                        .addColumn(info.getAmount().toString())
-                        .addColumn(CurrencyInst.get(info.getCurrencyInstance()).getSymbol());
+                        .addColumn(info.getAmount() + " " + CurrencyInst.get(info.getCurrencyInstance()).getSymbol());
                 }
             }
         }
