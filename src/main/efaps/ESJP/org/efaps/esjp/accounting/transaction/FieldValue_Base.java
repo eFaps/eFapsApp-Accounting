@@ -842,7 +842,9 @@ public abstract class FieldValue_Base
             if (!relInst.isEmpty()) {
                 for (final SwapInfo info : Swap_Base.getSwapInfos(_parameter, _doc.getInstance(), relInst).values()) {
                     _table.addRow()
-                        .addColumn(info.getDirection()).addColumn(info.getDocument());
+                        .addColumn(info.getDirection()).addColumn(info.getDocument())
+                        .addColumn(info.getAmount().toString())
+                        .addColumn(CurrencyInst.get(info.getCurrencyInstance()).getSymbol());
                 }
             }
         }
