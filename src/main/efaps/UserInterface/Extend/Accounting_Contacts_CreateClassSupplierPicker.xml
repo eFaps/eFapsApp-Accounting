@@ -19,23 +19,26 @@
  Last Changed:    $Date: 2011-01-13 09:39:56 -0500 (Thu, 13 Jan 2011) $
  Last Changed By: $Author: jan@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>cd3e231d-a399-4676-a415-19244c5b6a89</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev: 6062 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Contacts_CreateClassSupplierPicker</name>
-        <!-- target definitions -->
         <target>
             <form>Contacts_CreateClassSupplierPickerForm</form>
             <validate method="validateContact" program="org.efaps.esjp.contacts.ContactsPicker"/>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="addSupplier2Contact"
                 name="Contacts_CreateContactPicker.UI_PICKER"
-                event="UI_PICKER"/>
+                event="UI_PICKER">
+                <property name="FieldName4OID">contactPicker</property>
+                <property name="FieldName4Data">contactData</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="NoUpdateAfterCOMMAND">true</property>
         <property name="TargetCreateType">Contacts_Contact</property>
