@@ -315,7 +315,7 @@ public abstract class FieldValue_Base
                     for (final DropDownPosition pos : _values) {
                         if (first) {
                             // store the selected
-                            Context.getThreadContext().setRequestAttribute(CASE_REQKEY, pos.getValue());
+                            Context.getThreadContext().setRequestAttribute(FieldValue_Base.CASE_REQKEY, pos.getValue());
                             first = false;
                         }
                         final String strTmp = pos.getOption().toString();
@@ -809,25 +809,27 @@ public abstract class FieldValue_Base
 
         if (showLabel) {
             final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance());
-            final MultiPrintQuery labelMulti = new MultiPrintQuery(labelInsts);
-            final SelectBuilder selPeriodName = SelectBuilder.get()
-                            .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
-                            .attribute(CIAccounting.Period.Name);
-            final SelectBuilder selPeriodInst = SelectBuilder.get()
-                            .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
-                            .instance();
-            labelMulti.addSelect(selPeriodInst, selPeriodName);
-            labelMulti.addAttribute(CIAccounting.LabelAbstract.Name);
-            labelMulti.execute();
-            while (labelMulti.next()) {
-                _table.addRow()
-                    .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class
-                                                                .getName()+ ".LabelInfo"))
-                    .addColumn(labelMulti.<String>getAttribute(CIAccounting.LabelAbstract.Name));
-                final Instance periodInst = labelMulti.getSelect(selPeriodInst);
-                if (!periodInst.equals(new Period().evaluateCurrentPeriod(_parameter))) {
-                    _table.addColumn(CIAccounting.Period.getType().getLabel())
-                        .addColumn(labelMulti.<String>getSelect(selPeriodName));
+            if (labelInsts != null) {
+                final MultiPrintQuery labelMulti = new MultiPrintQuery(labelInsts);
+                final SelectBuilder selPeriodName = SelectBuilder.get()
+                                .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
+                                .attribute(CIAccounting.Period.Name);
+                final SelectBuilder selPeriodInst = SelectBuilder.get()
+                                .linkto(CIAccounting.LabelAbstract.PeriodAbstractLink)
+                                .instance();
+                labelMulti.addSelect(selPeriodInst, selPeriodName);
+                labelMulti.addAttribute(CIAccounting.LabelAbstract.Name);
+                labelMulti.execute();
+                while (labelMulti.next()) {
+                    _table.addRow()
+                        .addColumn(DBProperties.getProperty(org.efaps.esjp.accounting.transaction.FieldValue.class
+                                                                    .getName() + ".LabelInfo"))
+                        .addColumn(labelMulti.<String>getAttribute(CIAccounting.LabelAbstract.Name));
+                    final Instance periodInst = labelMulti.getSelect(selPeriodInst);
+                    if (!periodInst.equals(new Period().evaluateCurrentPeriod(_parameter))) {
+                        _table.addColumn(CIAccounting.Period.getType().getLabel())
+                            .addColumn(labelMulti.<String>getSelect(selPeriodName));
+                    }
                 }
             }
         }
@@ -1388,7 +1390,7 @@ public abstract class FieldValue_Base
         final SummarizeDefinition summarizeDef = new Period().getSummarizeDefinition(_parameter);
         if (SummarizeDefinition.CASE.equals(summarizeDef) || SummarizeDefinition.CASEUSER.equals(summarizeDef)) {
             final Instance caseInst = Instance
-                            .get((String) Context.getThreadContext().getRequestAttribute(CASE_REQKEY));
+                            .get((String) Context.getThreadContext().getRequestAttribute(FieldValue_Base.CASE_REQKEY));
             if (caseInst.isValid()) {
                 final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
                 print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
