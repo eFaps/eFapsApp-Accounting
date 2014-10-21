@@ -1,6 +1,8 @@
 package org.efaps.esjp.accounting;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +14,12 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -36,6 +40,7 @@ import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.util.EFapsException;
@@ -73,6 +78,11 @@ import org.joda.time.DateTime;
 public abstract class PurchaseRecord_Base
     extends CommonDocument
 {
+
+    /**
+     * Used to store the PerceptionValue in the Context.
+     */
+    public static final String REQKEY4DOCTAXINFO = PurchaseRecord.class.getName() + ".RequestKey4DocTaxInfo";
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -344,4 +354,30 @@ public abstract class PurchaseRecord_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return new Return
+     * @throws EFapsException on error
+     */
+    public Return getDocTaxInfoFieldValueUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        @SuppressWarnings("unchecked")
+        final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+        final MultiPrintQuery multi = CachedMultiPrintQuery.get4Request(instances);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.PurchaseRecord2Document.ToLink).instance();
+        multi.addSelect(sel);
+        multi.execute();
+        final Map<Instance,Instance> rel2doc = new HashMap<>();
+        while (multi.next()) {
+            rel2doc.put(multi.getCurrentInstance(), multi.<Instance>getSelect(sel));
+        }
+
+        AbstractDocumentTax.evaluateDocTaxInfo(_parameter, new ArrayList<Instance>(rel2doc.values()));
+        final StringBuilder html = AbstractDocumentTax.getSmallTaxField4Doc(_parameter,
+                        rel2doc.get(_parameter.getInstance()));
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
 }

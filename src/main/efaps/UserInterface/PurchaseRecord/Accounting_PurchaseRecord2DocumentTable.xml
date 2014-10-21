@@ -78,6 +78,15 @@
             <property name="Select">linkto[ToLink].attribute[Revision]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
         </field>
+        <field name="docTaxInfo">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Accounting_IncomingDocumentTable.docTaxInfo.Label</property>
+            <property name="ModeSearch">READONLY</property>
+            <trigger program="org.efaps.esjp.accounting.PurchaseRecord"
+                method="getDocTaxInfoFieldValueUI"
+                name="Accounting_PurchaseRecord2DocumentTable.docTaxInfo.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
+        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -131,6 +140,15 @@
         <field name="revision">
             <property name="Select">linkto[ToLink].attribute[Revision]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
+        </field>
+         <field name="docTaxInfo">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Accounting_IncomingDocumentTable.docTaxInfo.Label</property>
+            <property name="ModeSearch">READONLY</property>
+            <trigger program="org.efaps.esjp.accounting.PurchaseRecord"
+                method="getDocTaxInfoFieldValueUI"
+                name="Accounting_PurchaseRecord2DocumentTable.docTaxInfo.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
         </field>
         <field name="project">
             <property name="SelectAlternateOID">linkto[ToLink].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
