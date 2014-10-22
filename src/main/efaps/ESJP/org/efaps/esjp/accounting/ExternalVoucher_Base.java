@@ -36,7 +36,6 @@ import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -59,7 +58,6 @@ import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
@@ -673,26 +671,6 @@ public abstract class ExternalVoucher_Base
     public Return addSupplier2Contact(final Parameter _parameter)
         throws EFapsException
     {
-        final ContactsPicker contactsPicker = new ContactsPicker()
-        {
-            @Override
-            protected void addClassSupplier(final Parameter _parameter,
-                                            final Instance _contactInst)
-                throws EFapsException
-            {
-
-                final Classification classification = (Classification) CIContacts.ClassSupplier.getType();
-                final Insert relInsert1 = new Insert(classification.getClassifyRelationType());
-                relInsert1.add(classification.getRelLinkAttributeName(), _contactInst.getId());
-                relInsert1.add(classification.getRelTypeAttributeName(), classification.getId());
-                relInsert1.execute();
-
-                final Insert classInsert1 = new Insert(classification);
-                classInsert1.add(classification.getLinkAttributeName(), _contactInst.getId());
-                addClassInsert(_parameter, classInsert1);
-                classInsert1.execute();
-           }
-        };
-        return contactsPicker.picker4NewContact(_parameter);
+        return new ContactsPicker().picker4NewContact(_parameter);
     }
 }

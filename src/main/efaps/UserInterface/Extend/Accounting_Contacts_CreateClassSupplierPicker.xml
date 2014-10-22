@@ -37,6 +37,7 @@
                 event="UI_PICKER">
                 <property name="FieldName4OID">contactPicker</property>
                 <property name="FieldName4Data">contactData</property>
+                <property name="AddClassSupplier">true</property>
             </trigger>
         </target>
         <property name="Target">modal</property>
