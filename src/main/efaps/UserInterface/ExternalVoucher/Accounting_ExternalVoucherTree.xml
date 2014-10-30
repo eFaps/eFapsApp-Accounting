@@ -44,7 +44,6 @@
         <childs>
             <child>Accounting_ExternalVoucherTree_Doc</child>
             <child>Accounting_Sales_DocumentSumTree_Transaction</child>
-            <child>Accounting_Sales_IncomingInvoiceTree_PaymentOutgoing</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
