@@ -791,11 +791,29 @@ public abstract class Transaction_Base
             multi.execute();
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                Instance docInst4Trans = docInst;
                 if (docInst.isValid()) {
+                    if (docInst.getType().isCIType(CISales.IncomingDetraction)) {
+                        final QueryBuilder altQueryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+                        altQueryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.FromAbstractLink,
+                                        docInst);
+                        final MultiPrintQuery altMulti = altQueryBldr.getPrint();
+                        final SelectBuilder selDoc = SelectBuilder.get().linkto(
+                                        CISales.IncomingDocumentTax2Document.ToAbstractLink).instance();
+                        altMulti.addSelect(selDoc);
+                        altMulti.execute();
+                        if (altMulti.next()) {
+                            final Instance altDocInst = altMulti.getSelect(selDoc);
+                            if (altDocInst.isValid()) {
+                                docInst4Trans = altDocInst;
+                            }
+                        }
+                    }
+
                     _doc.addDocInst(docInst);
                     // evaluate the transactions
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst);
+                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst4Trans);
                     final AttributeQuery attrQuery = attrQueryBldr
                                     .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
                     final boolean outDoc = _doc.getInstance().getType().isKindOf(

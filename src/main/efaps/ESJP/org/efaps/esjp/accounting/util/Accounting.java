@@ -88,6 +88,7 @@ public final class Accounting
         TRANSACTION,
         /** Official Report. */
         SUBJOURNAL,
+        SETSTATUS,
         WITHOUTDOC;
 
         /**

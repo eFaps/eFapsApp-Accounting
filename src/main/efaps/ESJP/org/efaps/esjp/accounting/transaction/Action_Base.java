@@ -303,6 +303,9 @@ public abstract class Action_Base
                                                 sjMulti.<String>getSelect(sel));
                             }
                         }
+                        if (configs.contains(ActDef2Case4IncomingConfig.SETSTATUS)) {
+                            ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
+                        }
                     }
                     break;
                 }
