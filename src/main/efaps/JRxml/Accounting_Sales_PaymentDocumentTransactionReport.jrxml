@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-11-05T14:52:34 -->
+<!-- 2014-11-05T16:45:35 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Sales_PaymentDocumentTransactionReport" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="dcc06164-c574-4ad5-910e-fbf1e70b2a1e">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -11,7 +11,7 @@
 	</parameter>
 	<queryString language="eFaps">
 		<![CDATA[query type Accounting_Transaction2PaymentDocument where ToLink = $P!{INSTANCE} select linkto[FromLinkAbstract].attribute[Name] as transName, 
-linkto[FromLinkAbstract].attribute[Identifier] as transIdentifier, linkto[FromLinkAbstract].attribute[Date] as transDate, linkto[FromLinkAbstract].oid as transOID,  linkto[FromLinkAbstract].attribute[Description] as transDescr ]]>
+linkto[FromLinkAbstract].attribute[Identifier] as transIdentifier, linkto[FromLinkAbstract].attribute[Date] as transDate, linkto[FromLinkAbstract].oid as transOID,  linkto[FromLinkAbstract].attribute[Description] as transDescr]]>
 	</queryString>
 	<field name="transName" class="java.lang.String"/>
 	<field name="transDate" class="org.joda.time.DateTime"/>
@@ -19,29 +19,47 @@ linkto[FromLinkAbstract].attribute[Identifier] as transIdentifier, linkto[FromLi
 	<field name="transOID" class="java.lang.String"/>
 	<field name="transDescr" class="java.lang.String"/>
 	<columnHeader>
-		<band height="63" splitType="Stretch">
+		<band height="50" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy ">
-				<reportElement x="100" y="20" width="100" height="30" uuid="00113686-6786-4e73-b1db-be6c62592006"/>
+				<reportElement x="60" y="14" width="100" height="16" uuid="00113686-6786-4e73-b1db-be6c62592006"/>
 				<textFieldExpression><![CDATA[$F{transDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="20" width="100" height="30" uuid="2cefdcf7-07bb-4ee6-a995-6a3e8e6db303"/>
+				<reportElement x="280" y="14" width="100" height="16" uuid="2cefdcf7-07bb-4ee6-a995-6a3e8e6db303"/>
 				<textFieldExpression><![CDATA[$F{transIdentifier}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="200" y="20" width="100" height="30" uuid="32207320-fa4b-45d6-964d-e286af9fc058"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement x="60" y="30" width="494" height="20" uuid="32207320-fa4b-45d6-964d-e286af9fc058"/>
 				<textFieldExpression><![CDATA[$F{transDescr}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="100" height="20" uuid="0b2f79c5-a17a-4db8-9978-3cf03fc7b140"/>
+				<reportElement x="0" y="0" width="50" height="14" uuid="0b2f79c5-a17a-4db8-9978-3cf03fc7b140">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
 				<text><![CDATA[Asiento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="14" width="60" height="16" uuid="852fd85f-8095-4eb7-82cc-2fe807f77cdf"/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="14" width="120" height="16" uuid="1b8300be-285b-401f-87a8-9d381a94f7a1"/>
+				<text><![CDATA[Código de Operación:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="30" width="60" height="20" uuid="15105103-7096-4eec-b333-3e0d8c322400"/>
+				<text><![CDATA[Glosa:]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="237" splitType="Stretch">
+		<band height="91" splitType="Stretch">
 			<subreport>
-				<reportElement x="0" y="0" width="554" height="200" uuid="362c2cf9-dd5e-465d-b4a7-8c94c7c7f63a"/>
+				<reportElement x="0" y="0" width="554" height="90" uuid="362c2cf9-dd5e-465d-b4a7-8c94c7c7f63a"/>
 				<subreportParameter name="INSTANCE">
 					<subreportParameterExpression><![CDATA[$F{transOID}]]></subreportParameterExpression>
 				</subreportParameter>
