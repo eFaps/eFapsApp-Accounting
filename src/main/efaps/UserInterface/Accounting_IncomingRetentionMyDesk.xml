@@ -32,6 +32,8 @@
             <child>Sales_IncomingRetentionMyDesk</child>
             <child>Sales_RetentionCertificateMyDesk</child>
             <child>Sales_IncomingRetentionCertificateMyDesk</child>
+            <child>Sales_RetentionReportMyDesk</child>
+            <child>Sales_RetentionBookReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
