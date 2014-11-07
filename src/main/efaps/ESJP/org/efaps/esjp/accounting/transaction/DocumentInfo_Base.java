@@ -184,16 +184,16 @@ public abstract class DocumentInfo_Base
             if (this.clazz2Amount == null) {
                 this.clazz2Amount = new HashMap<Long, BigDecimal>();
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-                queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance.getId());
+                queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 final SelectBuilder sel = new SelectBuilder()
                                 .linkto(CISales.PositionAbstract.Product).clazz().type();
                 multi.addSelect(sel);
-                multi.addAttribute(CISales.PositionSumAbstract.NetPrice);
+                multi.addAttribute(CISales.PositionSumAbstract.RateNetPrice);
                 multi.execute();
                 while (multi.next()) {
                     final BigDecimal posamount = multi
-                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
                     final List<Classification> clazzes = multi.getSelect(sel);
                     if (clazzes != null) {
                         for (final Classification clazz : clazzes) {
