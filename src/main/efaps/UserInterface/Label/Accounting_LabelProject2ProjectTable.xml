@@ -37,13 +37,13 @@
         <name>Accounting_LabelProject2ProjectTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">Projects_ProjectService2Label/Type.Label</property>
+            <property name="Label">Accounting_LabelProject2ProjectTable.type.Label</property>
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="label">
             <property name="SelectAlternateOID">linkto[FromLink].oid</property>
             <property name="Select">linkto[FromLink].attribute[Name]</property>
-            <property name="Label">Projects_Project2LabelTable.label.Label</property>
+            <property name="Label">Accounting_LabelProject2ProjectTable.label.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="buttonOpenInNewWindow">
