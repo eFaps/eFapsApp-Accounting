@@ -24,25 +24,20 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4e73e454-382d-4160-a397-43165dc9b7e4</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
+    <uuid>8a5727c9-e667-4c2c-b6f7-e67f881343cc</uuid>
+    <file-application>eFapsApp-Projects</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</name>
-        <access>
-            <role>Accounting_Admin</role>
-            <role>Accounting_Manager</role>
-        </access>
+        <name>Projects_Accounting_PeriodeTree_Label_Menu_Action_Create4Project</name>
         <target>
-            <form>Accounting_LabelForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <form>Projects_Accounting_Label4ProjectForm</form>
+            <execute program="org.efaps.esjp.projects.Project" method="createLabel4Project" />
         </target>
+        <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_Label</property>
-        <property name="TargetConnectAttribute">Accounting_LabelAbstract/PeriodAbstractLink</property>
+        <property name="TargetCreateType">Accounting_LabelProject</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>

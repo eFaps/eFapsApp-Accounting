@@ -31,10 +31,26 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action</name>
         <childs>
             <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</child>
             <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_CreateDepartment</child>
+            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Delete</child>
+        </childs>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action</name>
+        <childs>
+            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</child>
+            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_CreateDepartment</child>
+            <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_CreateProject</child>
             <child>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Delete</child>
         </childs>
     </definition>

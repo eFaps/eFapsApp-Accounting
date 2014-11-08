@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -22,27 +20,20 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>69af1543-a800-47fa-8ada-c58ed17ad4cd</uuid>
+    <uuid>a8004d13-9d35-4649-a3bf-31a8025f6038</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="projects"/>
+            <profile name="projects" />
         </profiles>
-        <name>Accounting_LabelProject</name>
-        <parent>Accounting_LabelAbstract</parent>
-        <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Accounting_LabelStatus</typelink>
-            <sqltable>Accounting_LabelSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Accounting_LabelProject.Status.RANGE_VALUE"
-                event="RANGE_VALUE" />
-        </attribute>
+        <name>Accounting_LabelProjectTree_Project_Menu_Action</name>
+        <childs>
+            <child>Accounting_LabelProjectTree_Project_Menu_Action_AddExisting</child>
+            <child>Accounting_LabelProjectTree_Project_Menu_Action_Disconnect</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>

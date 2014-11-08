@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,28 +22,34 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4e73e454-382d-4160-a397-43165dc9b7e4</uuid>
+
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4c47213c-8339-43c7-a103-8b477deaf05e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_ConfigMenu_Label_Menu_Action_Create</name>
+        <name>Accounting_LabelProjectTree_Project</name>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
         <access>
             <role>Accounting_Admin</role>
+            <role>Accounting_Accountant</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_LabelForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <menu>Accounting_LabelProjectTree_Project_Menu</menu>
+            <table>Accounting_LabelProject2ProjectTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Projects_ProjectService2Label</property>
+                <property name="LinkFrom">ToLink</property>
+            </evaluate>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Accounting_Label</property>
-        <property name="TargetConnectAttribute">Accounting_LabelAbstract/PeriodAbstractLink</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
 </ui-command>
