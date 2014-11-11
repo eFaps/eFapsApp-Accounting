@@ -188,16 +188,12 @@ public abstract class FieldValue_Base
                 }
                 ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
             } else if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
-                final String[] oids = _parameter.getParameterValues("selectedRow");
+                final List<Instance> insts = getSelectedDocInst(_parameter);
                 final List<DropDownPosition> values = new ArrayList<>();
                 int i = 1;
-                if (oids != null) {
-                    for (final String oid : oids) {
-                        if (Instance.get(oid).isValid()) {
-                            values.add(new DropDownPosition(oid, i + "."));
-                            i++;
-                        }
-                    }
+                for (final Instance inst : insts) {
+                    values.add(new DropDownPosition(inst.getOid(), i + "."));
+                    i++;
                 }
                 if (values.size() > 1) {
                     values.add(0, new DropDownPosition("", "-"));
@@ -556,7 +552,8 @@ public abstract class FieldValue_Base
     * @return list of selected instances
     * @throws EFapsException on error
     */
-    protected List<Instance> getSelectedDocInst(final Parameter _parameter)
+    public List<Instance> getSelectedDocInst(final Parameter _parameter)
+        throws EFapsException
     {
         final List<Instance> ret = new ArrayList<>();
         final String[] oids = _parameter.getParameterValues("selectedRow");
@@ -564,7 +561,25 @@ public abstract class FieldValue_Base
             for (final String oid : oids) {
                 final Instance docInst = Instance.get(oid);
                 if (docInst.isValid()) {
-                    ret.add(docInst);
+                    if (docInst.getType().isCIType(CISales.RetentionCertificate)) {
+                        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+                        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink, docInst);
+                        final MultiPrintQuery multi = queryBldr.getCachedPrint(Context.getThreadContext()
+                                        .getRequestId());
+                        final SelectBuilder sel = SelectBuilder.get()
+                                        .linkto(CISales.RetentionCertificate2IncomingRetention.ToLink)
+                                        .instance();
+                        multi.addSelect(sel);
+                        multi.execute();
+                        while (multi.next()) {
+                            final Instance relInst = multi.getSelect(sel);
+                            if (relInst != null && relInst.isValid()) {
+                                ret.add(relInst);
+                            }
+                        }
+                    } else {
+                        ret.add(docInst);
+                    }
                 }
             }
         }

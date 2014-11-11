@@ -29,9 +29,23 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4RetPerForm</name>
-        <field character="Group" name="caseGroup">
+         <field name="caseGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4PettyCashReceiptForm.caseGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Inverse">true</property>
+            </trigger>
+        </field>
+        <field name="caseGroup2" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">4</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4PettyCashReceiptForm.caseGroup2.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
         </field>
         <field name="document">
             <property name="ModeCreate">READONLY</property>
@@ -40,6 +54,10 @@
             <trigger event="UI_FIELD_VALUE" method="getDocumentFieldValue"
                 name="Accounting_TransactionCreate4DocForm.document.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
+                <property name="NoNetTotal">true</property>
+                <property name="NoLabel">true</property>
+                <property name="NoAction">true</property>
+                <property name="NoSwap">true</property>
             </trigger>
         </field>
         <field name="case">
@@ -65,6 +83,21 @@
                 name="Accounting_TransactionCreate4RetPerForm.case.UI_FIELD_CMD"
                 program="org.efaps.esjp.accounting.transaction.Transaction">
             </trigger>
+        </field>
+        <field name="summarizeConfig" >
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalVoucherForm.subJournal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$SummarizeConfig</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
         </field>
         <field name="docDetailHeader" character="Heading">
             <property name="Level">4</property>
@@ -105,6 +138,7 @@
         </field>
         <field name="checkbox4Account">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="HideLabel">true</property>
             <property name="Label">Accounting_TransactionCreate4RetPerForm.select4Account.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>

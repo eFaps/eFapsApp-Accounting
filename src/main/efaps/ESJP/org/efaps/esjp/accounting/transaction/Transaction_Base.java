@@ -663,8 +663,14 @@ public abstract class Transaction_Base
                 final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
                                 || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
                 final List<Account2CaseConfig> configs = multi.getAttribute(CIAccounting.Account2CaseAbstract.Config);
+                final Instance accInst = multi.<Instance>getSelect(selAccInst);
 
-                final boolean isDefault = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
+                boolean isDefault = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
+
+                // if it is not default and the classification does not apply, perhaps evaluation leads to something
+                if (!isDefault && !classRel && configs != null && configs.contains(Account2CaseConfig.EVALRELATION)) {
+                    isDefault = evalRelatedDocuments(_parameter, _doc, accInst);
+                }
 
                 final Instance currInst4Case = multi.getSelect(selCurrInst);
                 final boolean checkCurr;
@@ -678,7 +684,6 @@ public abstract class Transaction_Base
                 if (add) {
                     final boolean applyLabel = configs != null && configs.contains(Account2CaseConfig.APPLYLABEL);
 
-                    final Instance accInst = multi.<Instance>getSelect(selAccInst);
                     final Integer denom = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
                     final Integer numer = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
                     final Long linkId = multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
@@ -716,9 +721,49 @@ public abstract class Transaction_Base
                         }
                     }
                 }
+
             }
         }
     }
+
+    /**
+     * method for add account bank cash in case existing DocumentInfo instance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _doc Document.
+     * @param _accInst  instance of the account to be checked for
+     * @throws EFapsException on error.
+     */
+    protected boolean evalRelatedDocuments(final Parameter _parameter,
+                                           final DocumentInfo _doc,
+                                           final Instance _accInst)
+        throws EFapsException
+    {
+        boolean ret = false;
+        Instance relDocInst = null;
+        if (_doc.getInstance().getType().isCIType(CISales.IncomingRetention)) {
+            final PrintQuery print = new PrintQuery(_doc.getInstance());
+            final SelectBuilder selRelDoc = SelectBuilder.get().linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingRetention2IncomingInvoice.ToAbstractLink).instance();
+            print.addSelect(selRelDoc);
+            print.executeWithoutAccessCheck();
+            relDocInst = print.getSelect(selRelDoc);
+        }
+        if (relDocInst != null && relDocInst.isValid()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, relDocInst);
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
+
+            final QueryBuilder posQueryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
+            posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                            attrQuery);
+            posQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPositionAbstract.AccountLink, _accInst);
+            ret = posQueryBldr.getQuery().executeWithoutAccessCheck().isEmpty();
+        }
+        return ret;
+    }
+
 
     /**
      * method for add account bank cash in case existing DocumentInfo instance.

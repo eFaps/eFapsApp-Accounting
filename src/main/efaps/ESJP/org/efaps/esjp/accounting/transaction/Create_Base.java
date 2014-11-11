@@ -397,6 +397,17 @@ public abstract class Create_Base
     }
 
     /**
+     * @param _parameter as passed from the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error.
+     */
+    public Return create4RetPerMassive(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4DocMassive(_parameter);
+    }
+
+    /**
      * Create a Transaction for a PaymentDocument.
      * Connects the PaymentDocument and the related Document with the transaction.
      *

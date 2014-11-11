@@ -138,6 +138,7 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEREMARK4TRANSPOS, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEFTBSWD, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_RETENTIONCASE, "");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
                         SummarizeDefinition.CASEUSER.name());
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_LABELDEF, LabelDefinition.COST.name());
@@ -449,11 +450,17 @@ public abstract class Period_Base
                     print.executeWithoutAccessCheck();
                     ret = getCurrentPeriodByDate(_parameter,
                                     print.<DateTime>getAttribute(CISales.PaymentDocumentIOAbstract.Date));
+                } else if (instance.getType().isKindOf(CISales.RetentionCertificate)) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    print.addAttribute(CISales.RetentionCertificate.Date);
+                    print.executeWithoutAccessCheck();
+                    ret = getCurrentPeriodByDate(_parameter,
+                                    print.<DateTime>getAttribute(CISales.RetentionCertificate.Date));
                 }
             }
             // last way to get the valid period
             if (ret == null) {
-                ret = getCurrentPeriodByDate(_parameter, new DateTime());
+                ret = getCurrentPeriodByDate(_parameter, null);
             } else {
                 Context.getThreadContext().setRequestAttribute(Period.REQKEY4CUR, ret);
             }
@@ -467,16 +474,22 @@ public abstract class Period_Base
      * @return instance of the period
      * @throws EFapsException on error
      */
-    protected Instance getCurrentPeriodByDate(final Parameter _parameter,
-                                              final DateTime _date)
+    public Instance getCurrentPeriodByDate(final Parameter _parameter,
+                                           final DateTime _date)
         throws EFapsException
     {
-        LOG.warn("Evaluation Period by date only!!!!!");
+        DateTime date;
+        if (_date == null) {
+            LOG.warn("Evaluation Period by current Date only!!!!!");
+            date = new DateTime();
+        } else {
+            date = _date;
+        }
         Instance ret = null;
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period);
         queryBldr.addWhereAttrEqValue(CIAccounting.Period.Status, Status.find(CIAccounting.PeriodStatus.Open));
-        queryBldr.addWhereAttrGreaterValue(CIAccounting.Period.ToDate, _date);
-        queryBldr.addWhereAttrLessValue(CIAccounting.Period.FromDate, _date);
+        queryBldr.addWhereAttrGreaterValue(CIAccounting.Period.ToDate, date);
+        queryBldr.addWhereAttrLessValue(CIAccounting.Period.FromDate, date);
         final InstanceQuery query = queryBldr.getQuery();
         query.executeWithoutAccessCheck();
         if (query.next()) {

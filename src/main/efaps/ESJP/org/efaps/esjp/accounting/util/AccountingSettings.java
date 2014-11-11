@@ -165,6 +165,11 @@ public interface AccountingSettings
 
     String PERIOD_TRANSPOSORDER = "TransPosOrder";
 
+    /**
+     * Activate the mechanism for Retention and Perception.
+     */
+    String PERIOD_RETENTIONCASE = "Case4RetentionCertificate";
+
     String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";
 
     String PERIOD_REPORT302ACCOUNT = "ReportBalance302Account";

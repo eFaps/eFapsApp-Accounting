@@ -145,7 +145,9 @@ public final class Accounting
         /** Is as default selected. */
         DEFAULTSELECTED,
         /** Official Report. */
-        APPLYLABEL;
+        APPLYLABEL,
+        /** Official Report. */
+        EVALRELATION;
 
         /**
          * {@inheritDoc}
