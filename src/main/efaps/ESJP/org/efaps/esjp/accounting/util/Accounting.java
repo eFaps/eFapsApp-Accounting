@@ -77,7 +77,7 @@ public final class Accounting
         {
             return ordinal();
         }
-}
+    }
 
     public enum ActDef2Case4IncomingConfig
        implements IBitEnum
@@ -233,7 +233,20 @@ public final class Accounting
         NAMEGROUP;;
     }
 
+    public enum TransPosType
+        implements IEnum
+    {
+        /** Main position. */
+        MAIN,
+        /** create throu a linkage. */
+        CONNECTION;
 
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
 
     /**
      * @return the SystemConfigruation for Accounting

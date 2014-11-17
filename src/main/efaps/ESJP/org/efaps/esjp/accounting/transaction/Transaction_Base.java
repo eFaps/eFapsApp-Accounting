@@ -868,7 +868,9 @@ public abstract class Transaction_Base
                                     : CIAccounting.TransactionPositionDebit);
                     posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
                                     attrQuery);
+                    posQueryBldr.addOrderByAttributeAsc(CIAccounting.TransactionPositionAbstract.Position);
                     final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                    posMulti.setEnforceSorted(true);
                     final SelectBuilder selAccInst = new SelectBuilder().linkto(
                                     CIAccounting.TransactionPositionAbstract.AccountLink).instance();
                     final SelectBuilder dateSel = new SelectBuilder().linkto(

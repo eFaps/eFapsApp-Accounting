@@ -98,5 +98,9 @@
             <property name="Select">linkfrom[Accounting_TransactionPosition2LabelAbstract#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name]</property>
             <property name="Label">Accounting_TransactionPositionTable.labels.Label</property>
         </field>
+         <field name="positionType">
+            <property name="Attribute">PositionType</property>
+            <property name="Label">Accounting_TransactionPositionAbstract/PositionType.Label</property>
+        </field>
     </definition>
 </ui-table>

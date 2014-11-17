@@ -71,6 +71,14 @@
             <sqlcolumn>POS</sqlcolumn>
             <defaultvalue>0</defaultvalue>
         </attribute>
+         <attribute>
+            <name>PositionType</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$TransPosType</className>
+            <sqltable>Accounting_TransactionPositionSQLTable</sqltable>
+            <sqlcolumn>POSTYPE</sqlcolumn>
+            <defaultvalue>0</defaultvalue>
+        </attribute>
         <attribute>
             <name>Amount</name>
             <type>Decimal</type>

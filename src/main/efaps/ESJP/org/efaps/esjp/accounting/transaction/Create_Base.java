@@ -58,6 +58,7 @@ import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.TransactionDocument;
 import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.TransPosType;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -861,6 +862,7 @@ public abstract class Create_Base
                         while (multi.next()) {
                             final Instance instance = multi.getCurrentInstance();
                             final PositionInfo connPos  = new PositionInfo();
+                            connPos.setPosType(TransPosType.CONNECTION);
                             Boolean deactivatable = multi
                                             .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
                             if (deactivatable == null) {

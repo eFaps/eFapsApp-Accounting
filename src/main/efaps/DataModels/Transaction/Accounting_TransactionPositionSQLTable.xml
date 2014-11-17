@@ -40,6 +40,7 @@
             <column name="TYPEID"           type="INTEGER"      not-null="true" />
             <column name="TRANSACTIONID"    type="INTEGER"      not-null="true" />
             <column name="ACCOUNTID"        type="INTEGER"      not-null="true" />
+            <column name="POSTYPE"          type="INTEGER"      not-null="true"/>
             <column name="POS"              type="INTEGER"      not-null="true" />
             <column name="AMOUNT"           type="DECIMAL"                      length="12" scale="2" />
             <column name="CURRENCYID"       type="INTEGER"      not-null="true" />
