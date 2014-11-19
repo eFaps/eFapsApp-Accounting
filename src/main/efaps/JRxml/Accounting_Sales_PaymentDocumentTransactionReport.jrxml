@@ -10,7 +10,7 @@
 		<defaultValueExpression><![CDATA["5905.636"]]></defaultValueExpression>
 	</parameter>
 	<queryString language="eFaps">
-		<![CDATA[query type Accounting_Transaction2PaymentDocument where ToLink = $P!{INSTANCE} select linkto[FromLinkAbstract].attribute[Name] as transName, 
+		<![CDATA[query type Accounting_Transaction2PaymentDocument where ToLink == $P!{INSTANCE} select linkto[FromLinkAbstract].attribute[Name] as transName, 
 linkto[FromLinkAbstract].attribute[Identifier] as transIdentifier, linkto[FromLinkAbstract].attribute[Date] as transDate, linkto[FromLinkAbstract].oid as transOID,  linkto[FromLinkAbstract].attribute[Description] as transDescr]]>
 	</queryString>
 	<field name="transName" class="java.lang.String"/>

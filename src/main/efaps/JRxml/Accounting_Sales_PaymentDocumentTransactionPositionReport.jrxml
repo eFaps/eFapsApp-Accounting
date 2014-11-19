@@ -10,7 +10,7 @@
 		<defaultValueExpression><![CDATA["10943.92"]]></defaultValueExpression>
 	</parameter>
 	<queryString language="eFaps">
-		<![CDATA[query type Accounting_TransactionPositionAbstract where TransactionLink = $P!{INSTANCE} select linkto[AccountLink].attribute[Name] as accountName, linkto[AccountLink].attribute[Description] as accountDesc, linkto[RateCurrencyLink].attribute[Symbol] as rateCurrency, attribute[Rate].label as rate, type.uuid as typeUUID, attribute[Amount] as amount, attribute[RateAmount] as rateAmount, attribute[Position] as position,linkfrom[Accounting_TransactionPosition2LabelAbstract#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name] as label, linkfrom[Accounting_TransactionPosition2ERPDocument#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name] as doc, attribute[Remark] as remark]]>
+		<![CDATA[query type Accounting_TransactionPositionAbstract where TransactionLink == $P!{INSTANCE} select linkto[AccountLink].attribute[Name] as accountName, linkto[AccountLink].attribute[Description] as accountDesc, linkto[RateCurrencyLink].attribute[Symbol] as rateCurrency, attribute[Rate].label as rate, type.uuid as typeUUID, attribute[Amount] as amount, attribute[RateAmount] as rateAmount, attribute[Position] as position,linkfrom[Accounting_TransactionPosition2LabelAbstract#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name] as label, linkfrom[Accounting_TransactionPosition2ERPDocument#FromLinkAbstract].linkto[ToLinkAbstract].attribute[Name] as doc, attribute[Remark] as remark]]>
 	</queryString>
 	<field name="accountName" class="java.lang.String">
 		<property name="Select" value="linkto[AccountLink].attribute[Name]"/>
