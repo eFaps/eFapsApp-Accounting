@@ -72,7 +72,7 @@
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font size="15" isBold="true"/>
                 </textElement>
-                <text><![CDATA[ESTADO DE GANANCIAS Y PÉRDIDAS]]></text>
+                <text><![CDATA[ESTADO DE RESULTADOS]]></text>
             </staticText>
             <staticText>
                 <reportElement uuid="a557a642-416f-44c8-9c5c-0aa1c8168797" x="0" y="30" width="79" height="16">

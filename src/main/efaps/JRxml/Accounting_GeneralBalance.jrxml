@@ -53,7 +53,7 @@
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font size="18" isBold="true"/>
                 </textElement>
-                <text><![CDATA[BALANCE GENERAL]]></text>
+                <text><![CDATA[ESTADO DE SITUACIÓN FINANCIERA]]></text>
             </staticText>
             <staticText>
                 <reportElement uuid="e1a68c9f-3b89-48f4-bd6b-d3a069a317bc" x="0" y="40" width="120" height="16">
