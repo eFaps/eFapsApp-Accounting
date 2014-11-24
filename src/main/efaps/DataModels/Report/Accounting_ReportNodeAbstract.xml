@@ -56,6 +56,13 @@
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>ReportLink</name>
+            <type>Link</type>
+            <typelink>Accounting_ReportAbstract</typelink>
+            <sqltable>Accounting_ReportNodeSQLTable</sqltable>
+            <sqlcolumn>REPORTID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Position</name>
             <type>Long</type>
             <sqltable>Accounting_ReportNodeSQLTable</sqltable>

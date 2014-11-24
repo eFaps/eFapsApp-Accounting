@@ -48,5 +48,6 @@
         <property name="TargetMode">create</property>
         <property name="TargetShowFile">true</property>
         <property name="NoUpdateAfterCOMMAND">true</property>
+        <property name="WindowWidth">800</property>
     </definition>
 </ui-command>

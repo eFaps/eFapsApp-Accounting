@@ -35,18 +35,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportNodeRoot</name>
         <parent>Accounting_ReportNodeAbstract</parent>
-
-        <attribute>
-            <name>ReportLink</name>
-            <type>Link</type>
-            <typelink>Accounting_ReportAbstract</typelink>
-            <sqltable>Accounting_ReportNodeSQLTable</sqltable>
-            <sqlcolumn>REPORTID</sqlcolumn>
-        </attribute>
         <trigger program="org.efaps.esjp.accounting.report.Report"
             method="deleteNodeTrigger"
             name="Accounting_ReportNodeRoot.DELETE_PRE"
             event="DELETE_PRE"/>
-
-    </definition>
 </datamodel-type>
