@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.accounting;
 
 import org.efaps.admin.datamodel.Classification;
@@ -31,12 +30,13 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.uiform.Edit;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
-
 
 /**
  * TODO comment!
@@ -64,6 +64,7 @@ public abstract class Case_Base
     {
         final Edit edit = new Edit()
         {
+
             @Override
             protected void add2MainUpdate(final Parameter _parameter,
                                           final Update _update)
@@ -75,6 +76,30 @@ public abstract class Case_Base
             }
         };
         return edit.execute(_parameter);
+    }
+
+    /**
+     * @param _parameter Paremeter as passed from the eFaPS API
+     * @return Return SNIPPLET
+     * @throws EFapsException on error
+     */
+    public Return dropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field()
+        {
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                super.add2QueryBuilder4List(_parameter, _queryBldr);
+                _queryBldr.addWhereAttrEqValue(CIAccounting.CategoryProduct.PeriodAbstractLink,
+                                new Period().evaluateCurrentPeriod(_parameter));
+            }
+
+        };
+        return field.dropDownFieldValue(_parameter);
     }
 
     /**
@@ -114,6 +139,7 @@ public abstract class Case_Base
 
     /**
      * Check the access to the link field.
+     *
      * @param _parameter Paremeter as passed from the eFaPS API
      * @return return
      * @throws EFapsException on error
@@ -123,7 +149,27 @@ public abstract class Case_Base
     {
         final Return ret = new Return();
         if (_parameter.getInstance().getType().equals(CIAccounting.Account2CaseCredit4Classification.getType())
-                || _parameter.getInstance().getType().equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
+                        || _parameter.getInstance().getType()
+                                        .equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Check the access to the link field.
+     *
+     * @param _parameter Paremeter as passed from the eFaPS API
+     * @return return
+     * @throws EFapsException on error
+     */
+    public Return categoryProductLinkAccessCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (_parameter.getInstance().getType().equals(CIAccounting.Account2CaseCredit4CategoryProduct.getType())
+                        || _parameter.getInstance().getType()
+                                        .equals(CIAccounting.Account2CaseDebit4CategoryProduct.getType())) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;

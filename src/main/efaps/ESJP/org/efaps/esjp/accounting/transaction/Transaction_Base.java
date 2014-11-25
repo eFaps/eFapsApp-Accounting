@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -68,6 +69,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.db.transaction.ConnectionResource;
+import org.efaps.esjp.accounting.Account2CaseInfo;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
@@ -629,8 +631,8 @@ public abstract class Transaction_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _doc          Document the calculation must be done for
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _doc Document the calculation must be done for
      * @throws EFapsException on error
      */
     protected void add2Doc4Case(final Parameter _parameter,
@@ -643,85 +645,75 @@ public abstract class Transaction_Base
             final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance(),
                             new Period().evaluateCurrentPeriod(_parameter));
 
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
-            queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
-            queryBldr.addOrderByAttributeAsc(CIAccounting.Account2CaseAbstract.Order);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.setEnforceSorted(true);
-            final SelectBuilder selAccInst = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
-            final SelectBuilder selCurrInst = new SelectBuilder()
-                            .linkto(CIAccounting.Account2CaseAbstract.CurrencyLink).instance();
-            multi.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
-                            CIAccounting.Account2CaseAbstract.Denominator,
-                            CIAccounting.Account2CaseAbstract.LinkValue,
-                            CIAccounting.Account2CaseAbstract.Config);
-            multi.addSelect(selAccInst, selCurrInst);
-            multi.execute();
-            while (multi.next()) {
-                final Type type = multi.getCurrentInstance().getType();
-                final boolean classRel = type.equals(CIAccounting.Account2CaseCredit4Classification.getType())
-                                || type.equals(CIAccounting.Account2CaseDebit4Classification.getType());
-                final List<Account2CaseConfig> configs = multi.getAttribute(CIAccounting.Account2CaseAbstract.Config);
-                final Instance accInst = multi.<Instance>getSelect(selAccInst);
-
-                boolean isDefault = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
-
-                // if it is not default and the classification does not apply, perhaps evaluation leads to something
-                if (!isDefault && !classRel && configs != null && configs.contains(Account2CaseConfig.EVALRELATION)) {
-                    isDefault = evalRelatedDocuments(_parameter, _doc, accInst);
-                }
-
-                final Instance currInst4Case = multi.getSelect(selCurrInst);
-                final boolean checkCurr;
-                if (currInst4Case != null && currInst4Case.isValid()) {
-                    checkCurr = _doc.getRateInfo().getCurrencyInstance().equals(currInst4Case);
-                } else {
-                    checkCurr = true;
-                }
-                // classRel or default selected and currency correct will be added
-                boolean add = (classRel || isDefault) && checkCurr;
-                if (add) {
-                    final boolean applyLabel = configs != null && configs.contains(Account2CaseConfig.APPLYLABEL);
-
-                    final Integer denom = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator);
-                    final Integer numer = multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator);
-                    final Long linkId = multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue);
-                    final BigDecimal mul = new BigDecimal(numer).setScale(12).divide(new BigDecimal(denom),
-                                    BigDecimal.ROUND_HALF_UP);
-                    final BigDecimal accAmount;
-
-                    if (classRel) {
-                        accAmount = mul.multiply(_doc.getAmount4Class(linkId)).setScale(2, BigDecimal.ROUND_HALF_UP);
-                        add = isDefault || accAmount.compareTo(BigDecimal.ZERO) != 0;
+            final Map<Instance, Account2CaseInfo> inst2caseInfo = new HashMap<>();
+            for (final Entry<Instance, BigDecimal> entry : _doc.getProduct2Amount().entrySet()) {
+                final Account2CaseInfo acc2case = Account2CaseInfo.get4Product(_parameter, caseInst, entry.getKey());
+                if (acc2case != null) {
+                    if (inst2caseInfo.containsKey(acc2case.getInstance())) {
+                        inst2caseInfo.get(acc2case.getInstance()).setAmount(
+                                        inst2caseInfo.get(acc2case.getInstance()).getAmount().add(entry.getValue()));
                     } else {
-                        accAmount = mul.multiply(_doc.getAmount()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        acc2case.setAmount(entry.getValue());
+                        inst2caseInfo.put(acc2case.getInstance(), acc2case);
                     }
+                }
+            }
+            final List<Account2CaseInfo> infos = Account2CaseInfo.getStandards(_parameter, caseInst);
+            infos.addAll(inst2caseInfo.values());
 
+            Collections.sort(infos, new Comparator<Account2CaseInfo>()
+            {
+                @Override
+                public int compare(final Account2CaseInfo _o1,
+                                   final Account2CaseInfo _o2)
+                {
+                    return _o1.getOrder().compareTo(_o2.getOrder());
+                }
+            });
+
+            for (final Account2CaseInfo acc2case : infos) {
+                boolean isDefault = acc2case.isDefault();
+                if (!isDefault && !acc2case.isClassRelation() && !acc2case.isCategoryProduct()
+                                && acc2case.getConfigs() != null
+                                && acc2case.getConfigs().contains(Account2CaseConfig.EVALRELATION)) {
+                    isDefault = evalRelatedDocuments(_parameter, _doc, acc2case.getAccountInstance());
+                }
+                final boolean currencyCheck;
+                if (acc2case.isCheckCurrency()) {
+                    currencyCheck = _doc.getRateInfo().getCurrencyInstance().equals(acc2case.getCurrencyInstance());
+                } else {
+                    currencyCheck = true;
+                }
+
+                final boolean add = (isDefault || acc2case.isClassRelation() || acc2case.isCategoryProduct())
+                                && currencyCheck;
+                if (add) {
+                    final BigDecimal mul = new BigDecimal(acc2case.getNumerator()).setScale(12).divide(
+                                    new BigDecimal(acc2case.getDenominator()),
+                                    BigDecimal.ROUND_HALF_UP);
+                    final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
+                                    ? acc2case.getAmount() : _doc.getAmount();
+                    final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, BigDecimal.ROUND_HALF_UP);
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                     .divide(_doc.getRate(_parameter), BigDecimal.ROUND_HALF_UP);
-                    if (add) {
-                        final AccountInfo account = new AccountInfo(accInst, accAmount);
-                        if (applyLabel && !labelInsts.isEmpty()) {
-                            account.setLabelInst(labelInsts.get(0));
-                        }
-                        account.setAmountRate(accAmountRate);
-                        if (_doc.getInstance() != null) {
-                            account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
-                        } else {
-                            account.setRateInfo(_doc.getRateInfo(), getProperty(_parameter, "Type4RateInfo"));
-                        }
-                        if (type.getUUID().equals(CIAccounting.Account2CaseCredit.uuid)
-                                        || type.equals(CIAccounting.Account2CaseCredit4Classification.getType())) {
-                            account.setPostFix("_Credit");
-                            _doc.addCredit(account);
-                        } else {
-                            account.setPostFix("_Debit");
-                            _doc.addDebit(account);
-                        }
+                    final AccountInfo account = new AccountInfo(acc2case.getAccountInstance(), accAmount);
+                    if (acc2case.isApplyLabel() && !labelInsts.isEmpty()) {
+                        account.setLabelInst(labelInsts.get(0));
+                    }
+                    account.setAmountRate(accAmountRate);
+                    if (_doc.getInstance() != null) {
+                        account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                    } else {
+                        account.setRateInfo(_doc.getRateInfo(), getProperty(_parameter, "Type4RateInfo"));
+                    }
+                    if (acc2case.isCredit()) {
+                        account.setPostFix("_Credit");
+                        _doc.addCredit(account);
+                    } else {
+                        account.setPostFix("_Debit");
+                        _doc.addDebit(account);
                     }
                 }
-
             }
         }
     }

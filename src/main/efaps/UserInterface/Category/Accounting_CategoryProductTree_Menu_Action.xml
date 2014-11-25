@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,20 +22,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>34e53c08-7c78-41a2-986c-7e5e0f07b6a1</uuid>
+    <uuid>3720218e-8641-4a61-8377-e33bacf6aefe</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_CaseTree_Account_Menu_Action</name>
+        <name>Accounting_CategoryProductTree_Menu_Action</name>
         <childs>
-            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsCredit</child>
-            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsCredit4Classification</child>
-            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsCredit4CategoryProduct</child>
-            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsDebit</child>
-            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsDebit4Classification</child>
-            <child>Accounting_CaseTree_Account_Menu_Action_AddExistingAsDebit4CategoryProduct</child>
-            <child>Accounting_CaseTree_Account_Menu_Action_Disconnect</child>
+            <child>Accounting_CategoryProductTree_Menu_Action_Edit</child>
         </childs>
     </definition>
 </ui-menu>

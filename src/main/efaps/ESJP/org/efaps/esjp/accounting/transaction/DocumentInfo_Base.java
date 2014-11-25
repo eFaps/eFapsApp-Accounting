@@ -23,17 +23,16 @@ package org.efaps.esjp.accounting.transaction;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -144,16 +143,13 @@ public abstract class DocumentInfo_Base
     private boolean invert;
 
     /**
-     * Mapping of classification id 2 amount.
-     */
-    private HashMap<Long, BigDecimal> clazz2Amount;
-
-    /**
      * Summarize or not.
      */
     private SummarizeConfig config = SummarizeConfig.NONE;
 
     private final Set<Instance> docInsts = new HashSet<>();
+
+    private  Map<Instance,BigDecimal> product2Amount;
 
     /**
      * Constructor.
@@ -171,53 +167,40 @@ public abstract class DocumentInfo_Base
         setInstance(_instance);
     }
 
-    /**
-     * @param _linkId id of the Classification the amount is wanted for
-     * @return Amount
-     * @throws EFapsException on error
-     */
-    public BigDecimal getAmount4Class(final Long _linkId)
+    public Map<Instance, BigDecimal> getProduct2Amount()
         throws EFapsException
     {
-        BigDecimal ret;
+        Map<Instance, BigDecimal> ret;
         if (isSumsDoc()) {
-            if (this.clazz2Amount == null) {
-                this.clazz2Amount = new HashMap<Long, BigDecimal>();
+            if (this.product2Amount == null) {
+                this.product2Amount = new HashMap<>();
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
                 queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder sel = new SelectBuilder()
-                                .linkto(CISales.PositionAbstract.Product).clazz().type();
-                multi.addSelect(sel);
+                final SelectBuilder selInst = new SelectBuilder()
+                                .linkto(CISales.PositionAbstract.Product).instance();
+                multi.addSelect(selInst);
                 multi.addAttribute(CISales.PositionSumAbstract.RateNetPrice);
                 multi.execute();
                 while (multi.next()) {
-                    final BigDecimal posamount = multi
-                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
-                    final List<Classification> clazzes = multi.getSelect(sel);
-                    if (clazzes != null) {
-                        for (final Classification clazz : clazzes) {
-                            Classification classTmp = clazz;
-                            while (classTmp != null) {
-                                BigDecimal currAmount;
-                                if (this.clazz2Amount.containsKey(classTmp.getId())) {
-                                    currAmount = this.clazz2Amount.get(classTmp.getId());
-                                } else {
-                                    currAmount = BigDecimal.ZERO;
-                                }
-                                this.clazz2Amount.put(classTmp.getId(), currAmount.add(posamount));
-                                classTmp = classTmp.getParentClassification();
-                            }
-                        }
+                    final BigDecimal posamount = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                    final Instance prodInst = multi.getSelect(selInst);
+                    BigDecimal amount;
+                    if (this.product2Amount.containsKey(prodInst)) {
+                        amount = this.product2Amount.get(prodInst);
+                    } else {
+                        amount = BigDecimal.ZERO;
                     }
+                    this.product2Amount.put(prodInst, amount.add(posamount));
                 }
             }
-            ret = this.clazz2Amount.containsKey(_linkId) ? this.clazz2Amount.get(_linkId) : BigDecimal.ZERO;
+            ret = this.product2Amount;
         } else {
-            ret = BigDecimal.ZERO;
+            ret = Collections.emptyMap();
         }
         return ret;
     }
+
 
     /**
      * Getter method for the instance variable {@link #invert}.
