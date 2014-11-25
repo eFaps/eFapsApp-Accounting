@@ -39,4 +39,5 @@
             method="deleteNodeTrigger"
             name="Accounting_ReportNodeRoot.DELETE_PRE"
             event="DELETE_PRE"/>
+    </definition>
 </datamodel-type>
