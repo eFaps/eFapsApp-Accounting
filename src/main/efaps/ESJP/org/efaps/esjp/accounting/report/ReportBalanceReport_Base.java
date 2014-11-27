@@ -31,9 +31,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
+import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
@@ -68,7 +71,8 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: ReportBalanceReport_Base.java 14531 2014-11-27 16:52:11Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("cbbcab6e-6c56-480d-baee-6ffbf4eb093c")
 @EFapsRevision("$Rev$")
@@ -194,12 +198,14 @@ public abstract class ReportBalanceReport_Base
             multi.execute();
             while (multi.next()) {
                 final DetailBean detail = new DetailBean()
-                        .setInstance(multi.getCurrentInstance())
-                        .setLabel(multi.<String>getAttribute(CIAccounting.ReportBalancePositionAbstract.Label))
-                        .setPosition(multi.<Integer>getAttribute(CIAccounting.ReportBalancePositionAbstract.Position))
-                        .setConfigs(multi.<List<ReportBalancePositionConfig>>getAttribute(
-                                        CIAccounting.ReportBalancePositionAbstract.Config))
-                                        .setFilterMap(getFilteredReport().getFilterMap(_parameter));;
+                                .setInstance(multi.getCurrentInstance())
+                                .setLabel(multi.<String>getAttribute(CIAccounting.ReportBalancePositionAbstract.Label))
+                                .setPosition(multi
+                                                .<Integer>getAttribute(CIAccounting.ReportBalancePositionAbstract.Position))
+                                .setConfigs(multi.<List<ReportBalancePositionConfig>>getAttribute(
+                                                CIAccounting.ReportBalancePositionAbstract.Config))
+                                .setFilterMap(getFilteredReport().getFilterMap(_parameter));
+                ;
                 if (multi.getCurrentInstance().getType().isCIType(CIAccounting.ReportBalancePositionAsset)) {
                     assets.add(detail);
                 } else {
@@ -266,6 +272,44 @@ public abstract class ReportBalanceReport_Base
             final TextColumnBuilder<BigDecimal> liabiltyAmountColumn = DynamicReports.col.column("liabiltyAmount",
                             DynamicReports.type.bigDecimalType());
 
+            final StyleBuilder assetStyle;
+            final StyleBuilder liabilityStyle;
+            switch (getExType()) {
+                case PDF:
+                    assetStyle = getColumnStyle4Pdf(_parameter);
+                    liabilityStyle = getColumnStyle4Pdf(_parameter);
+                    break;
+                case EXCEL:
+                    assetStyle = getColumnStyle4Excel(_parameter);
+                    liabilityStyle = getColumnStyle4Excel(_parameter);
+                    break;
+                default:
+                    assetStyle = getColumnStyle4Html(_parameter);
+                    liabilityStyle = getColumnStyle4Html(_parameter);
+                    break;
+            };
+            final ConditionalStyleBuilder assetTitleCondition = DynamicReports.stl.conditionalStyle(
+                            new TitleConditionExpression("assetIsTitle")).bold();
+            final ConditionalStyleBuilder assetTotalCondition = DynamicReports.stl.conditionalStyle(
+                            new TitleConditionExpression("assetIsTotal")).boldItalic().underline();
+            assetStyle.conditionalStyles(assetTitleCondition, assetTotalCondition);
+
+            final ConditionalStyleBuilder liabilityTitleCondition = DynamicReports.stl.conditionalStyle(
+                            new TitleConditionExpression("liabilityIsTitle")).bold();
+            final ConditionalStyleBuilder liabilityTotalCondition = DynamicReports.stl.conditionalStyle(
+                            new TitleConditionExpression("liabilityIsTotal")).boldItalic().underline();
+            liabilityStyle.conditionalStyles(liabilityTitleCondition, liabilityTotalCondition);
+
+            assetLabelColum.setStyle(assetStyle);
+            assetAmountColumn.setStyle(assetStyle);
+            liabiltyLabelColum.setStyle(liabilityStyle);
+            liabiltyAmountColumn.setStyle(liabilityStyle);
+
+            _builder.addField("assetIsTitle", Boolean.class);
+            _builder.addField("liabilityIsTitle", Boolean.class);
+            _builder.addField("assetIsTotal", Boolean.class);
+            _builder.addField("liabilityIsTotal", Boolean.class);
+
             _builder.addColumn(assetLabelColum, assetAmountColumn, liabiltyLabelColum, liabiltyAmountColumn);
         }
 
@@ -273,9 +317,8 @@ public abstract class ReportBalanceReport_Base
         protected StyleBuilder getColumnStyle4Pdf(final Parameter _parameter)
             throws EFapsException
         {
-            return DynamicReports.stl.style();
+            return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(2));
         }
-
 
         /**
          * Getter method for the instance variable {@link #filteredReport}.
@@ -326,6 +369,7 @@ public abstract class ReportBalanceReport_Base
 
     public static class DetailBean
     {
+
         private Map<String, Object> filterMap;
 
         private Instance instance;
@@ -336,7 +380,7 @@ public abstract class ReportBalanceReport_Base
 
         private BigDecimal amount = null;
 
-        private List<ReportBalancePositionConfig>configs;
+        private List<ReportBalancePositionConfig> configs;
 
         /**
          * Getter method for the instance variable {@link #label}.
@@ -387,8 +431,8 @@ public abstract class ReportBalanceReport_Base
         }
 
         /**
-         * @param _parameter  Parameter as passed by the eFaps API
-         * @param _queryBldr    QueryBuilder to add to
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _queryBldr QueryBuilder to add to
          * @throws EFapsException on error
          */
         protected void add2QueryBldr(final QueryBuilder _queryBldr)
@@ -409,8 +453,14 @@ public abstract class ReportBalanceReport_Base
                             attrQueryBldr.getAttributeQuery(CIAccounting.ReportBalancePosition2Account.ToLink));
         }
 
-        public boolean isTitleOnly(){
+        public boolean isTitleOnly()
+        {
             return getConfigs().contains(ReportBalancePositionConfig.TITLEONLY);
+        }
+
+        public boolean isTotal()
+        {
+            return getConfigs().contains(ReportBalancePositionConfig.TOTAL);
         }
 
         /**
@@ -626,5 +676,70 @@ public abstract class ReportBalanceReport_Base
         {
             this.liability = _liability;
         }
+
+        public boolean getAssetIsTitle()
+        {
+            return getAsset() != null ? getAsset().isTitleOnly() : false;
+        }
+
+        public boolean getLiabilityIsTitle()
+        {
+            return getLiability() != null ? getLiability().isTitleOnly() : false;
+        }
+
+        public boolean getAssetIsTotal()
+        {
+            return getAsset() != null ? getAsset().isTotal() : false;
+        }
+
+        public boolean getLiabilityIsTotal()
+        {
+            return getLiability() != null ? getLiability().isTotal() : false;
+        }
     }
+
+    public static class TitleConditionExpression
+        extends AbstractSimpleExpression<Boolean>
+    {
+
+        private static final long serialVersionUID = 1L;
+        private final String fieldName;
+
+        /**
+         * @param _string
+         */
+        public TitleConditionExpression(final String _fieldName)
+        {
+            this.fieldName = _fieldName;
+        }
+
+        @Override
+        public Boolean evaluate(final ReportParameters reportParameters)
+        {
+            return reportParameters.getValue(this.fieldName);
+        }
+    }
+
+    public static class TotalConditionExpression
+        extends AbstractSimpleExpression<Boolean>
+    {
+
+        private static final long serialVersionUID = 1L;
+        private final String fieldName;
+
+        /**
+         * @param _string
+         */
+        public TotalConditionExpression(final String _fieldName)
+        {
+            this.fieldName = _fieldName;
+        }
+
+        @Override
+        public Boolean evaluate(final ReportParameters reportParameters)
+        {
+            return reportParameters.getValue(this.fieldName);
+        }
+    }
+
 }

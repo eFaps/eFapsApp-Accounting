@@ -252,7 +252,9 @@ public final class Accounting
         implements IBitEnum
     {
         /** Is Only a title. */
-        TITLEONLY;
+        TITLEONLY,
+        /** Is Only a title. */
+        TOTAL;
 
         /**
          * {@inheritDoc}
