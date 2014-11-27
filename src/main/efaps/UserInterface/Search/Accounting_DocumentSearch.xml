@@ -30,7 +30,7 @@
         <name>Accounting_DocumentSearch</name>
         <target>
             <form>Accounting_AbstractDocumentForm</form>
-            <table>Accounting_IncomingDocumentTable</table>
+            <table>Accounting_DocumentSearchTable</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="Type02">Sales_IncomingReceipt</property>

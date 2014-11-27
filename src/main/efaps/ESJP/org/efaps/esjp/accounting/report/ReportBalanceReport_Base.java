@@ -262,12 +262,12 @@ public abstract class ReportBalanceReport_Base
             throws EFapsException
         {
             final TextColumnBuilder<String> assetLabelColum = DynamicReports.col.column("assetLabel",
-                            DynamicReports.type.stringType()).setWidth(150);
+                            DynamicReports.type.stringType()).setWidth(250);
 
             final TextColumnBuilder<BigDecimal> assetAmountColumn = DynamicReports.col.column("assetAmount",
                             DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<String> liabiltyLabelColum = DynamicReports.col.column("liabiltyLabel",
-                            DynamicReports.type.stringType()).setWidth(150);
+                            DynamicReports.type.stringType()).setWidth(250);
 
             final TextColumnBuilder<BigDecimal> liabiltyAmountColumn = DynamicReports.col.column("liabiltyAmount",
                             DynamicReports.type.bigDecimalType());
