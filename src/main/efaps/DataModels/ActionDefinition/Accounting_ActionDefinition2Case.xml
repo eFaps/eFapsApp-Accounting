@@ -41,5 +41,12 @@
             <sqltable>ERP_ActionDefinition2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>LabelLink</name>
+            <type>Link</type>
+            <typelink>Accounting_LabelAbstract</typelink>
+            <sqltable>Accounting_ActionDefinition2ObjectExtSQLTable</sqltable>
+            <sqlcolumn>LABELID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

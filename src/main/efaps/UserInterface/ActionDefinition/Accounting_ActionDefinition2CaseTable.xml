@@ -38,6 +38,12 @@
         <field name="config">
             <property name="Attribute">Config</property>
         </field>
+        <field name="labelLink">
+            <property name="Select">linkto[LabelLink].attribute[Name]</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Accounting_ActionDefinition2Case/LabelLink.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
         <field name="toLink">
             <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
             <property name="Phrase">$&lt;linkto[ToLinkAbstract].type.label&gt; -  $&lt;linkto[ToLinkAbstract].attribute[Name]&gt;</property>

@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -38,6 +39,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
@@ -47,6 +49,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
@@ -228,13 +231,16 @@ public abstract class Action_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selCaseInst = SelectBuilder.get()
                         .linkto(CIAccounting.ActionDefinition2Case4IncomingAbstract.ToLinkAbstract).instance();
-        multi.addSelect(selCaseInst);
+        final SelectBuilder selLabelInst = SelectBuilder.get()
+                        .linkto(CIAccounting.ActionDefinition2Case4IncomingAbstract.LabelLink).instance();
+        multi.addSelect(selCaseInst, selLabelInst);
         multi.addAttribute(CIAccounting.ActionDefinition2Case4IncomingAbstract.Config);
         multi.execute();
         while (multi.next()) {
             final List<ActDef2Case4IncomingConfig> configs = multi
                             .getAttribute(CIAccounting.ActionDefinition2Case4IncomingAbstract.Config);
             if (configs != null) {
+
                 final Instance caseInst = multi.getSelect(selCaseInst);
                 // force the correct period by evaluating it now
                 final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, caseInst);
@@ -267,47 +273,59 @@ public abstract class Action_Base
                         }
                     }
                 }
-
                 if (execute) {
-
-                    ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
-
-                    if (configs.contains(ActDef2Case4IncomingConfig.PURCHASERECORD)) {
-                        final DateTime date = new DateTime();
-                        final QueryBuilder prQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord);
-                        prQueryBldr.addWhereAttrLessValue(CIAccounting.PurchaseRecord.Date, date.plusDays(1));
-                        prQueryBldr.addWhereAttrGreaterValue(CIAccounting.PurchaseRecord.DueDate, date.minusDays(1));
-                        prQueryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord.Status,
-                                        Status.find(CIAccounting.PurchaseRecordStatus.Open));
-                        final InstanceQuery prQuery = prQueryBldr.getQuery();
-                        prQuery.execute();
-                        if (prQuery.next()) {
-                            ParameterUtil.setParmeterValue(ret.getParameter(), "purchaseRecord", prQuery
-                                            .getCurrentValue()
-                                            .getOid());
+                    final Instance labelInst = multi.getSelect(selLabelInst);
+                    if (labelInst != null && labelInst.isValid()) {
+                        final List<Instance> labels = new Label().getLabelInst4Documents(_parameter, ret.getDocInst());
+                        if (labels.contains(labelInst)) {
+                            ret.setConfigs(configs);
+                            ret.setCaseInst(caseInst);
+                            break;
                         }
+                    } else {
+                        ret.setConfigs(configs);
+                        ret.setCaseInst(caseInst);
                     }
-                    if (configs.contains(ActDef2Case4IncomingConfig.TRANSACTION)) {
-                        ParameterUtil.setParmeterValue(ret.getParameter(), "case", caseInst.getOid());
-                        ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
-                        if (configs.contains(ActDef2Case4IncomingConfig.SUBJOURNAL)) {
-                            final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
-                            sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst);
-                            final MultiPrintQuery sjMulti = sjQueryBldr.getPrint();
-                            final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.Report2Case.FromLink)
-                                            .oid();
-                            sjMulti.addSelect(sel);
-                            sjMulti.execute();
-                            if (sjMulti.next()) {
-                                ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
-                                                sjMulti.<String>getSelect(sel));
-                            }
-                        }
-                        if (configs.contains(ActDef2Case4IncomingConfig.SETSTATUS)) {
-                            ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
-                        }
+                }
+            }
+        }
+
+        if (ret.getCaseInst() != null && ret.getCaseInst().isValid()) {
+            ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
+
+            if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.PURCHASERECORD)) {
+                final DateTime date = new DateTime();
+                final QueryBuilder prQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord);
+                prQueryBldr.addWhereAttrLessValue(CIAccounting.PurchaseRecord.Date, date.plusDays(1));
+                prQueryBldr.addWhereAttrGreaterValue(CIAccounting.PurchaseRecord.DueDate, date.minusDays(1));
+                prQueryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord.Status,
+                                Status.find(CIAccounting.PurchaseRecordStatus.Open));
+                final InstanceQuery prQuery = prQueryBldr.getQuery();
+                prQuery.execute();
+                if (prQuery.next()) {
+                    ParameterUtil.setParmeterValue(ret.getParameter(), "purchaseRecord", prQuery
+                                    .getCurrentValue()
+                                    .getOid());
+                }
+            }
+            if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.TRANSACTION)) {
+                ParameterUtil.setParmeterValue(ret.getParameter(), "case", ret.getCaseInst().getOid());
+                ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
+                if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.SUBJOURNAL)) {
+                    final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
+                    sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, ret.getCaseInst());
+                    final MultiPrintQuery sjMulti = sjQueryBldr.getPrint();
+                    final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.Report2Case.FromLink)
+                                    .oid();
+                    sjMulti.addSelect(sel);
+                    sjMulti.execute();
+                    if (sjMulti.next()) {
+                        ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
+                                        sjMulti.<String>getSelect(sel));
                     }
-                    break;
+                }
+                if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.SETSTATUS)) {
+                    ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
                 }
             }
         }
@@ -402,10 +420,12 @@ public abstract class Action_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selCaseInst = SelectBuilder.get()
                         .linkto(CIAccounting.ActionDefinition2Case4DocAbstract.ToLinkAbstract).instance();
-        multi.addSelect(selCaseInst);
+        final SelectBuilder selLabelInst = SelectBuilder.get()
+                        .linkto(CIAccounting.ActionDefinition2Case4IncomingAbstract.LabelLink).instance();
+        multi.addSelect(selCaseInst, selLabelInst);
         multi.addAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
-        if (multi.execute()) {
-            multi.next();
+        multi.execute();
+        while( multi.next()) {
             final List<ActDef2Case4DocConfig> configs = multi
                             .getAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
             if (configs != null) {
@@ -414,25 +434,40 @@ public abstract class Action_Base
                 // force the correct period by evaluating it now
                 new Period().evaluateCurrentPeriod(_parameter, caseInst);
                 ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
-                ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
-                if (configs.contains(ActDef2Case4DocConfig.TRANSACTION)) {
-                    ParameterUtil.setParmeterValue(ret.getParameter(), "case", caseInst.getOid());
-                    if (configs.contains(ActDef2Case4DocConfig.SUBJOURNAL)) {
-                        final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
-                        sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, caseInst);
-                        final MultiPrintQuery sjMulti = sjQueryBldr.getPrint();
-                        final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.Report2Case.FromLink).oid();
-                        sjMulti.addSelect(sel);
-                        sjMulti.execute();
-                        if (sjMulti.next()) {
-                            ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
-                                            sjMulti.<String>getSelect(sel));
-                        }
+
+                final Instance labelInst = multi.getSelect(selLabelInst);
+                if (labelInst != null && labelInst.isValid()) {
+                    final List<Instance> labels = new Label().getLabelInst4Documents(_parameter, ret.getDocInst());
+                    if (labels.contains(labelInst)) {
+                        ret.setConfigs(configs);
+                        ret.setCaseInst(caseInst);
+                        break;
+                    }
+                } else {
+                    ret.setConfigs(configs);
+                    ret.setCaseInst(caseInst);
+                }
+            }
+        }
+        if (ret.getCaseInst() != null && ret.getCaseInst().isValid()) {
+            ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
+            if (ret.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
+                ParameterUtil.setParmeterValue(ret.getParameter(), "case", ret.getCaseInst().getOid());
+                if (ret.getConfigs().contains(ActDef2Case4DocConfig.SUBJOURNAL)) {
+                    final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
+                    sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, ret.getCaseInst());
+                    final MultiPrintQuery sjMulti = sjQueryBldr.getPrint();
+                    final SelectBuilder sel = new SelectBuilder().linkto(CIAccounting.Report2Case.FromLink).oid();
+                    sjMulti.addSelect(sel);
+                    sjMulti.execute();
+                    if (sjMulti.next()) {
+                        ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
+                                        sjMulti.<String>getSelect(sel));
                     }
                 }
-                if (configs.contains(ActDef2Case4DocConfig.SETSTATUS)) {
-                    ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
-                }
+            }
+            if (ret.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
+                ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
             }
         }
         return ret;
@@ -486,6 +521,23 @@ public abstract class Action_Base
         return new IncomingActionDef();
     }
 
+    public Return getLabelUIFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field(){
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                super.add2QueryBuilder4List(_parameter, _queryBldr);
+                _queryBldr.addWhereAttrEqValue(CIAccounting.Label.PeriodAbstractLink,
+                                new Period().evaluateCurrentPeriod(_parameter));
+            }
+        };
+        return field.dropDownFieldValue(_parameter);
+    }
+
     public static abstract class AbstractActionDef {
 
         private Instance docTypeInst;
@@ -504,6 +556,11 @@ public abstract class Action_Base
          * Instance of the document.
          */
         private Instance docInst;
+
+        /**
+         * Instance of the document.
+         */
+        private Instance caseInst;
 
         /**
          * Getter method for the instance variable {@link #_parameter}.
@@ -583,6 +640,28 @@ public abstract class Action_Base
         public void setDocTypeInst(final Instance _docTypeInst)
         {
             this.docTypeInst = _docTypeInst;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #caseInst}.
+         *
+         * @return value of instance variable {@link #caseInst}
+         */
+        public Instance getCaseInst()
+        {
+            return this.caseInst;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #caseInst}.
+         *
+         * @param _caseInst value for instance variable {@link #caseInst}
+         */
+        public void setCaseInst(final Instance _caseInst)
+        {
+            this.caseInst = _caseInst;
         }
     }
 

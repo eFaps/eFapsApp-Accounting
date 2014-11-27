@@ -32,6 +32,7 @@
         <database>
             <table-name>T_ACCACTDEF2OBJEXT</table-name>
             <parent-table>T_ERPACTIONDEF2OBJECT</parent-table>
+            <column name="LABELID" type="INTEGER"/>
             <column name="INT1" type="INTEGER"/>
         </database>
     </definition>

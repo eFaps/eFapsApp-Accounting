@@ -397,9 +397,9 @@ public abstract class Period_Base
             }
 
             if (instance != null && instance.isValid()) {
-                if (instance.getType().isKindOf(CIAccounting.Period.getType())) {
+                if (instance.getType().isKindOf(CIAccounting.Period)) {
                     ret = instance;
-                } else if (instance.getType().isKindOf(CIAccounting.Account2ObjectAbstract.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.Account2ObjectAbstract)) {
                     final PrintQuery print = new PrintQuery(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.Account2ObjectAbstract.FromAccountAbstractLink)
@@ -407,28 +407,28 @@ public abstract class Period_Base
                     print.addSelect(sel);
                     print.execute();
                     ret = print.<Instance>getSelect(sel);
-                } else if (instance.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.AccountAbstract)) {
                     final PrintQuery print = new PrintQuery(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
                     print.addSelect(sel);
                     print.execute();
                     ret = print.<Instance>getSelect(sel);
-                } else if (instance.getType().isKindOf(CIAccounting.Transaction.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.Transaction)) {
                     final PrintQuery print = new PrintQuery(instance);
                     final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.Transaction.PeriodLink)
                                     .instance();
                     print.addSelect(selPeriodInst);
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
-                } else if (instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.SubPeriod)) {
                     final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
                     final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
                                     .instance();
                     print.addSelect(selPeriodInst);
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
-                } else if (instance.getType().isKindOf(CIAccounting.TransactionPositionAbstract.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.TransactionPositionAbstract)) {
                     final PrintQuery print = new PrintQuery(instance);
                     final SelectBuilder selPeriodInst = SelectBuilder.get()
                                     .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
@@ -437,14 +437,14 @@ public abstract class Period_Base
                     print.addSelect(selPeriodInst);
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
-                } else if (instance.getType().isKindOf(CIAccounting.CaseAbstract.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.CaseAbstract)) {
                     final PrintQuery print = new PrintQuery(instance);
                     final SelectBuilder selPeriodInst = SelectBuilder.get()
                                     .linkto(CIAccounting.CaseAbstract.PeriodAbstractLink).instance();
                     print.addSelect(selPeriodInst);
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
-                } else if (instance.getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
+                } else if (instance.getType().isKindOf(CISales.PaymentDocumentIOAbstract)) {
                     final PrintQuery print = new PrintQuery(instance);
                     print.addAttribute(CISales.PaymentDocumentIOAbstract.Date);
                     print.executeWithoutAccessCheck();
@@ -456,10 +456,18 @@ public abstract class Period_Base
                     print.executeWithoutAccessCheck();
                     ret = getCurrentPeriodByDate(_parameter,
                                     print.<DateTime>getAttribute(CISales.RetentionCertificate.Date));
-                }  else if (instance.getType().isKindOf(CIAccounting.ReportAbstract.getType())) {
+                } else if (instance.getType().isKindOf(CIAccounting.ReportAbstract)) {
                     final PrintQuery print = new PrintQuery(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.ReportAbstract.PeriodLink).instance();
+                    print.addSelect(sel);
+                    print.execute();
+                    ret = print.<Instance>getSelect(sel);
+                } else if (instance.getType().isKindOf(CIAccounting.ActionDefinition2Case)) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder sel = SelectBuilder.get()
+                                    .linkto(CIAccounting.ActionDefinition2Case.ToLinkAbstract)
+                                    .linkto(CIAccounting.CaseAbstract.PeriodAbstractLink).instance();
                     print.addSelect(sel);
                     print.execute();
                     ret = print.<Instance>getSelect(sel);
