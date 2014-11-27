@@ -18,61 +18,22 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.accounting.transaction;
+package org.efaps.esjp.accounting.report;
 
-import java.math.BigDecimal;
-
-import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Instance;
-import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
  * class.
- *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("dc6246d8-285e-45f0-a984-2c9a653633b9")
+@EFapsUUID("7d086ef6-85cb-4f59-9a69-d0b8433e3057")
 @EFapsRevision("$Rev$")
-public class AccountInfo
-    extends AccountInfo_Base
+public class ReportBalanceReport
+    extends ReportBalanceReport_Base
 {
-    /**
-     *
-     */
-    public AccountInfo()
-    {
-        super();
-    }
 
-    /**
-     * @param _instance Instance.
-     */
-    public AccountInfo(final Instance _instance)
-    {
-        super(_instance);
-    }
-
-    /**
-     * new TargetAccount.
-     *
-     * @param _instance Instance.
-     * @param _amount amount.
-     */
-    public AccountInfo(final Instance _instance,
-                       final BigDecimal _amount)
-    {
-        super(_instance, _amount);
-    }
-
-    public static AccountInfo get4Config(final Parameter _parameter,
-                                            final String _key)
-        throws EFapsException
-    {
-        return AccountInfo_Base.get4Config(_parameter, _key);
-    }
 }

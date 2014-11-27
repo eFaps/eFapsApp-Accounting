@@ -219,9 +219,10 @@ public abstract class AccountInfo_Base
      * @param _amount value for instance variable {@link #amount}
      */
 
-    public void setAmount(final BigDecimal _amount)
+    public AccountInfo setAmount(final BigDecimal _amount)
     {
         this.amount = _amount;
+        return (AccountInfo) this;
     }
 
     /**
@@ -230,9 +231,10 @@ public abstract class AccountInfo_Base
      * @param _currInstance value for instance variable {@link #currInstance}
      */
 
-    public void setCurrInstance(final Instance _currInstance)
+    public AccountInfo setCurrInstance(final Instance _currInstance)
     {
         this.currInstance = _currInstance;
+        return (AccountInfo) this;
     }
 
     /**

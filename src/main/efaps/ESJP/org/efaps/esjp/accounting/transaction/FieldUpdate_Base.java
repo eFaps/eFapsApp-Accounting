@@ -298,8 +298,8 @@ public abstract class FieldUpdate_Base
             }
         }
 
-        js.append(getCurrencyJS(_parameter, "rateCurrencyLink_Debit", "rate_Debit"))
-            .append(getCurrencyJS(_parameter, "rateCurrencyLink_Credit", "rate_Credit"));
+       // js.append(getCurrencyJS(_parameter, "rateCurrencyLink_Debit", "rate_Debit"))
+       //     .append(getCurrencyJS(_parameter, "rateCurrencyLink_Credit", "rate_Credit"));
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
         final Return retVal = new Return();

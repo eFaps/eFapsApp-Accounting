@@ -600,16 +600,17 @@ public abstract class Transaction_Base
                         }
                         print.addSelect(sel);
                         print.addAttribute(attrName);
+                        print.addAttribute(CIERP.DocumentAbstract.Date);
                         print.execute();
                         currInst = print.<Instance>getSelect(sel);
                         docInfo.setAmount(print.<BigDecimal>getAttribute(attrName));
+                        docInfo.setDate(print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date));
                     } else {
                         docInfo.setAmount((BigDecimal) docInfo.getFormater().parse(
                                         amountStr.isEmpty() ? "0" : amountStr));
                         currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
+                        docInfo.setDate(new DateTime(_parameter.getParameterValue("date")));
                     }
-
-                    docInfo.setDate(new DateTime(_parameter.getParameterValue("date")));
 
                     final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getDate(), currInst);
                     docInfo.setRateInfo(rateInfo);
@@ -889,6 +890,7 @@ public abstract class Transaction_Base
                     add2Doc4Actions(_parameter, _doc, docInst);
                 }
             }
+            _doc.applyExchangeGainLoss(_parameter);
         }
     }
 

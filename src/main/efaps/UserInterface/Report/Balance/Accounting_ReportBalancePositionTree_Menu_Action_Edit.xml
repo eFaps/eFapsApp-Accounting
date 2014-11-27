@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,19 +20,22 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>10cf68e4-c990-4a27-a4c5-a76caf35c8cf</uuid>
+    <uuid>3cbeb9a6-7053-4c31-a7ad-f249a0597aee</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportBalance</name>
-        <parent>Accounting_ReportSingularAbstract</parent>
-        <trigger program="org.efaps.esjp.accounting.report.Report"
-            method="deleteReportTrigger"
-            name="Accounting_ReportBalance.DELETE_PRE"
-            event="DELETE_PRE" />
+        <name>Accounting_ReportBalancePositionTree_Menu_Action_Edit</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+        <target>
+            <form>Accounting_ReportBalancePositionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
     </definition>
-</datamodel-type>
+</ui-command>

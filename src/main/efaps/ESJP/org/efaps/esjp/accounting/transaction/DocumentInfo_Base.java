@@ -50,7 +50,9 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -814,9 +816,9 @@ public abstract class DocumentInfo_Base
                 debit = diff.compareTo(BigDecimal.ZERO) < 0;
                 AccountInfo accInfo;
                 if (debit) {
-                    accInfo = AccountInfo_Base.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGDEBIT);
+                    accInfo = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGDEBIT);
                 } else {
-                    accInfo = AccountInfo_Base.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGCREDIT);
+                    accInfo = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGCREDIT);
                 }
                 if (accInfo != null) {
                     accInfo.setAmount(diff.abs());
@@ -828,6 +830,120 @@ public abstract class DocumentInfo_Base
                         addDebit(accInfo);
                     } else {
                         addCredit(accInfo);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void applyExchangeGainLoss(final Parameter _parameter) throws EFapsException
+    {
+        final AccountInfo gainAcc = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_EXCHANGEGAIN);
+        final AccountInfo lossAcc = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_EXCHANGELOSS);
+
+        if (gainAcc != null && lossAcc != null) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, getInstance());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocInst = new SelectBuilder().linkto(
+                            CISales.Payment.FromAbstractLink).instance();
+            final SelectBuilder selCurInst = new SelectBuilder()
+                        .linkto(CISales.Payment.RateCurrencyLink).instance();
+            multi.addSelect(selDocInst, selCurInst);
+            multi.addAttribute(CISales.Payment.Amount,
+                            CISales.Payment.Date);
+            multi.execute();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                final PrintQuery print = new PrintQuery(docInst);
+                final SelectBuilder selDocCurInst = new SelectBuilder()
+                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                print.addSelect(selDocCurInst);
+                print.addAttribute(CIERP.DocumentAbstract.Date);
+                print.execute();
+                final Instance curInst = multi.getSelect(selCurInst);
+                final Instance docCurInst = print.getSelect(selDocCurInst);
+                final DateTime docDate = print.getAttribute(CIERP.DocumentAbstract.Date);
+                final DateTime date = multi.getAttribute(CISales.Payment.Date);
+                final BigDecimal amount = multi.getAttribute(CISales.Payment.Amount);
+
+                if (!curInst.equals(Currency.getBaseCurrency()) || !docCurInst.equals(Currency.getBaseCurrency())) {
+                    final Currency currency = new Currency();
+                    final RateInfo[] rateInfos1 = currency.evaluateRateInfos(_parameter, date, curInst, docCurInst);
+                    final RateInfo[] rateInfos2 = currency.evaluateRateInfos(_parameter, docDate, curInst, docCurInst);
+                    int idx;
+                    // payment in BaseCurreny ==> Document was not BaseCurrency therefore current against target
+                    if (curInst.equals(Currency.getBaseCurrency())) {
+                        idx = 2;
+                    // Document in  BaseCurrency ==> payment was not BaseCurrency therefore current against base
+                    } else if (docCurInst.equals(Currency.getBaseCurrency())) {
+                        idx = 0;
+                    // neither Document nor payment are BaseCurrency but are the same
+                    } else if (curInst.equals(docCurInst)) {
+                        idx = 0;
+                    } else {
+                        idx = 0;
+                    }
+
+                    final BigDecimal rate1 = RateInfo.getRate(_parameter, rateInfos1[idx], docInst.getType().getName());
+                    final BigDecimal rate2 = RateInfo.getRate(_parameter, rateInfos2[idx], docInst.getType().getName());
+                    if (rate1.compareTo(rate2) != 0) {
+                        final BigDecimal amount1 = amount.divide(rate1, BigDecimal.ROUND_HALF_UP);
+                        final BigDecimal amount2 = amount.divide(rate2, BigDecimal.ROUND_HALF_UP);
+                        BigDecimal gainLoss = amount1.subtract(amount2);
+                        if (idx == 2) {
+                            gainLoss = gainLoss.divide(rate2);
+                        }
+                        if (gainLoss.compareTo(BigDecimal.ZERO) != 0) {
+                            final boolean out = getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract);
+                            final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) > 0;
+                            if (out) {
+                                for (final AccountInfo accinfo : getCreditAccounts()) {
+                                    if (accinfo.getDocLink().equals(docInst)) {
+                                        BigDecimal accAmount;
+                                        if (accinfo.getRateInfo().getCurrencyInstance()
+                                                        .equals(Currency.getBaseCurrency())) {
+                                            accAmount = gainLoss;
+                                        } else {
+                                            accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
+                                        }
+                                        accinfo.addAmount(gain ? accAmount.negate() : accAmount);
+                                    }
+                                }
+                                if (gain) {
+                                    gainAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                                    getInstance().getType().getName());
+                                    addCredit(gainAcc);
+                                } else {
+                                    lossAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                                    getInstance().getType().getName());
+                                    addDebit(lossAcc);
+                                }
+                            } else {
+                                for (final AccountInfo accinfo : getDebitAccounts()) {
+                                    if (accinfo.getDocLink().equals(docInst)) {
+                                        BigDecimal accAmount;
+                                        if (!accinfo.getRateInfo().getCurrencyInstance()
+                                                        .equals(Currency.getBaseCurrency())) {
+                                            accAmount = gainLoss;
+                                        } else {
+                                            accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
+                                        }
+                                        accinfo.addAmount(gain ? accAmount.negate() : accAmount);
+                                    }
+                                }
+                                if (gain) {
+                                    gainAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                                    getInstance().getType().getName());
+                                    addDebit(gainAcc);
+                                } else {
+                                    lossAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                                    getInstance().getType().getName());
+                                    addCredit(lossAcc);
+                                }
+                            }
+                        }
                     }
                 }
             }

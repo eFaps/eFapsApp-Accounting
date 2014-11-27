@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,19 +20,18 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>10cf68e4-c990-4a27-a4c5-a76caf35c8cf</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
+    <uuid>38f5bf27-ce02-411b-8b6c-2cd6510bf7fe</uuid>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
-        <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportBalance</name>
-        <parent>Accounting_ReportSingularAbstract</parent>
-        <trigger program="org.efaps.esjp.accounting.report.Report"
-            method="deleteReportTrigger"
-            name="Accounting_ReportBalance.DELETE_PRE"
-            event="DELETE_PRE" />
+    <version-expression>(version==latest)</version-expression>
+        <name>Accounting_ReportBalanceTree_Report_Menu</name>
+        <childs>
+            <child>Accounting_ReportBalanceTree_Report_Menu_DownloadExcel</child>
+            <child>Accounting_ReportBalanceTree_Report_Menu_DownloadPDF</child>
+            <child>Accounting_ReportBalanceTree_Report_Menu_Filter</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>
