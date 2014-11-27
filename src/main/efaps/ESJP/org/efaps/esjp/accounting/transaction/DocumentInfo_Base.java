@@ -908,15 +908,15 @@ public abstract class DocumentInfo_Base
                                         } else {
                                             accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
                                         }
-                                        accinfo.addAmount(gain ? accAmount.negate() : accAmount);
+                                        accinfo.addAmount(accAmount.negate());
                                     }
                                 }
                                 if (gain) {
-                                    gainAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                    gainAcc.setAmount(gainLoss.abs()).setRateInfo(RateInfo.getDummyRateInfo(),
                                                     getInstance().getType().getName());
                                     addCredit(gainAcc);
                                 } else {
-                                    lossAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                    lossAcc.setAmount(gainLoss.abs()).setRateInfo(RateInfo.getDummyRateInfo(),
                                                     getInstance().getType().getName());
                                     addDebit(lossAcc);
                                 }
@@ -930,15 +930,15 @@ public abstract class DocumentInfo_Base
                                         } else {
                                             accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
                                         }
-                                        accinfo.addAmount(gain ? accAmount.negate() : accAmount);
+                                        accinfo.addAmount(accAmount.negate());
                                     }
                                 }
                                 if (gain) {
-                                    gainAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                    gainAcc.setAmount(gainLoss.abs()).setRateInfo(RateInfo.getDummyRateInfo(),
                                                     getInstance().getType().getName());
                                     addDebit(gainAcc);
                                 } else {
-                                    lossAcc.setAmount(gainLoss).setRateInfo(RateInfo.getDummyRateInfo(),
+                                    lossAcc.setAmount(gainLoss.abs()).setRateInfo(RateInfo.getDummyRateInfo(),
                                                     getInstance().getType().getName());
                                     addCredit(lossAcc);
                                 }
