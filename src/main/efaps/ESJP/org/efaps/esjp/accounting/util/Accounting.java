@@ -248,6 +248,32 @@ public final class Accounting
         }
     }
 
+    public enum ReportBalancePositionConfig
+        implements IBitEnum
+    {
+        /** Is Only a title. */
+        TITLEONLY;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
+
+
     /**
      * @return the SystemConfigruation for Accounting
      * @throws CacheReloadException on error

@@ -30,5 +30,12 @@
         <name>Accounting_ReportBalancePositionAbstract</name>
         <parent>Accounting_ReportPositionAbstract</parent>
         <purpose abstract="true"/>
+        <attribute>
+            <name>Config</name>
+            <type>BitEnum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$ReportBalancePositionConfig</className>
+            <sqltable>Accounting_ReportPositionSQLTable</sqltable>
+            <sqlcolumn>CONFIG</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

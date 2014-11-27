@@ -456,6 +456,13 @@ public abstract class Period_Base
                     print.executeWithoutAccessCheck();
                     ret = getCurrentPeriodByDate(_parameter,
                                     print.<DateTime>getAttribute(CISales.RetentionCertificate.Date));
+                }  else if (instance.getType().isKindOf(CIAccounting.ReportAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    final SelectBuilder sel = SelectBuilder.get()
+                                    .linkto(CIAccounting.ReportAbstract.PeriodLink).instance();
+                    print.addSelect(sel);
+                    print.execute();
+                    ret = print.<Instance>getSelect(sel);
                 }
             }
             // last way to get the valid period

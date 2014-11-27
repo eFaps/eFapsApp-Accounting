@@ -47,6 +47,11 @@
             <property name="Required">true</property>
             <property name="Columns">80</property>
         </field>
+        <field name="config">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Config</property>
+        </field>
         <field name="reportLink4view">
             <property name="SelectAlternateOID">linkto[ReportLink].oid</property>
             <property name="Select">linkto[ReportLink].attribute[Name]</property>

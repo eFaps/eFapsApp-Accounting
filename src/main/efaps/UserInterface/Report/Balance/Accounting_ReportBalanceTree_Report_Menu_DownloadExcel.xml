@@ -31,18 +31,10 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.ProfServReceiptReport">
+            <execute method="exportReport" program="org.efaps.esjp.accounting.report.ReportBalanceReport">
                 <property name="Mime">xls</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProfServReceiptReport.FilterKey</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">!Replaced</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup02">Accounting_ExternalVoucherStatus</property>
-                <property name="Status02">!Replaced</property>
+                <property name="FilterKey">org.efaps.esjp.accounting.report.ReportBalanceReport.FilterKey</property>
+                <property name="TemplateDesign4XLS">Accounting_ReportBalanceReportTemplate</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

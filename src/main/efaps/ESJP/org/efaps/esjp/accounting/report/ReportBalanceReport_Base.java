@@ -33,9 +33,11 @@ import java.util.Map;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -43,14 +45,22 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting.ReportBalancePositionConfig;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,6 +109,7 @@ public abstract class ReportBalanceReport_Base
         final String mime = (String) props.get("Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
         dyRp.setFileName(DBProperties.getProperty(ReportBalanceReport.class.getName() + ".FileName"));
+
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -107,6 +118,32 @@ public abstract class ReportBalanceReport_Base
         }
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
+
+    @Override
+    protected Object getDefaultValue(final Parameter _parameter,
+                                     final String _field,
+                                     final String _type,
+                                     final String _default)
+        throws EFapsException
+    {
+        Object ret = null;
+        if ("DateTime".equalsIgnoreCase(_type) && "dateFrom".equals(_field)) {
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
+            print.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.ToDate);
+            print.execute();
+            ret = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+        } else if ("DateTime".equalsIgnoreCase(_type) && "dateTo".equals(_field)) {
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
+            print.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.ToDate);
+            print.execute();
+            ret = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
+        } else {
+            ret = super.getDefaultValue(_parameter, _field, _type, _default);
+        }
         return ret;
     }
 
@@ -152,13 +189,17 @@ public abstract class ReportBalanceReport_Base
                             _parameter.getInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIAccounting.ReportBalancePositionAbstract.Label,
-                            CIAccounting.ReportBalancePositionAbstract.Position);
+                            CIAccounting.ReportBalancePositionAbstract.Position,
+                            CIAccounting.ReportBalancePositionAbstract.Config);
             multi.execute();
             while (multi.next()) {
                 final DetailBean detail = new DetailBean()
                         .setInstance(multi.getCurrentInstance())
                         .setLabel(multi.<String>getAttribute(CIAccounting.ReportBalancePositionAbstract.Label))
-                        .setPosition(multi.<Integer>getAttribute(CIAccounting.ReportBalancePositionAbstract.Position));
+                        .setPosition(multi.<Integer>getAttribute(CIAccounting.ReportBalancePositionAbstract.Position))
+                        .setConfigs(multi.<List<ReportBalancePositionConfig>>getAttribute(
+                                        CIAccounting.ReportBalancePositionAbstract.Config))
+                                        .setFilterMap(getFilteredReport().getFilterMap(_parameter));;
                 if (multi.getCurrentInstance().getType().isCIType(CIAccounting.ReportBalancePositionAsset)) {
                     assets.add(detail);
                 } else {
@@ -196,12 +237,12 @@ public abstract class ReportBalanceReport_Base
                 final DataBean data = new DataBean();
                 if (assetsIter.hasNext()) {
                     final DetailBean detail = assetsIter.next();
-                    data.setAssetLabel(detail.getLabel());
+                    data.setAsset(detail);
                     data.setAssetAmount(detail.getAmount(map));
                 }
                 if (liabiltiesIter.hasNext()) {
                     final DetailBean detail = liabiltiesIter.next();
-                    data.setLiabiltyLabel(detail.getLabel());
+                    data.setLiability(detail);
                     data.setLiabiltyAmount(detail.getAmount(map));
                 }
                 datasource.add(data);
@@ -228,6 +269,14 @@ public abstract class ReportBalanceReport_Base
             _builder.addColumn(assetLabelColum, assetAmountColumn, liabiltyLabelColum, liabiltyAmountColumn);
         }
 
+        @Override
+        protected StyleBuilder getColumnStyle4Pdf(final Parameter _parameter)
+            throws EFapsException
+        {
+            return DynamicReports.stl.style();
+        }
+
+
         /**
          * Getter method for the instance variable {@link #filteredReport}.
          *
@@ -237,10 +286,47 @@ public abstract class ReportBalanceReport_Base
         {
             return this.filteredReport;
         }
+
+        @Override
+        protected void add2ReportParameter(final Parameter _parameter)
+            throws EFapsException
+        {
+            super.add2ReportParameter(_parameter);
+            final SystemConfiguration config = ERP.getSysConfig();
+            if (config != null) {
+                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+                if (companyName != null && !companyName.isEmpty()) {
+                    getParameters().put("CompanyName", companyName);
+                }
+                final String companyTaxNum = config.getAttributeValue(ERPSettings.COMPANYTAX);
+                if (companyTaxNum != null && !companyTaxNum.isEmpty()) {
+                    getParameters().put("CompanyTaxNum", companyTaxNum);
+                }
+            }
+            final Map<String, Object> filtermap = getFilteredReport().getFilterMap(_parameter);
+            if (filtermap.containsKey("dateFrom")) {
+                final DateTime date = (DateTime) filtermap.get("dateFrom");
+                getParameters().put("DateFrom", date);
+            }
+            if (filtermap.containsKey("dateTo")) {
+                final DateTime date = (DateTime) filtermap.get("dateTo");
+                getParameters().put("DateTo", date);
+            }
+
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CIAccounting.ReportAbstract.Name);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.ReportAbstract.PeriodLink)
+                            .attribute(CIAccounting.Period.Name);
+            print.addSelect(sel);
+            print.execute();
+            getParameters().put("ReportName", print.getAttribute(CIAccounting.ReportAbstract.Name));
+            getParameters().put("PeriodName", print.getSelect(sel));
+        }
     }
 
     public static class DetailBean
     {
+        private Map<String, Object> filterMap;
 
         private Instance instance;
 
@@ -249,6 +335,8 @@ public abstract class ReportBalanceReport_Base
         private Integer position;
 
         private BigDecimal amount = null;
+
+        private List<ReportBalancePositionConfig>configs;
 
         /**
          * Getter method for the instance variable {@link #label}.
@@ -266,13 +354,14 @@ public abstract class ReportBalanceReport_Base
         public BigDecimal getAmount(final Map<Instance, DetailBean> _map)
             throws EFapsException
         {
-            if (this.amount == null) {
+            if (this.amount == null && !isTitleOnly()) {
                 this.amount = BigDecimal.ZERO;
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.ReportBalancePosition2Account);
                 attrQueryBldr.addWhereAttrEqValue(CIAccounting.ReportBalancePosition2Account.FromLink, getInstance());
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
                 queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.AccountLink,
                                 attrQueryBldr.getAttributeQuery(CIAccounting.ReportBalancePosition2Account.ToLink));
+                add2QueryBldr(queryBldr);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount);
                 multi.execute();
@@ -295,6 +384,33 @@ public abstract class ReportBalanceReport_Base
                 }
             }
             return this.amount;
+        }
+
+        /**
+         * @param _parameter  Parameter as passed by the eFaps API
+         * @param _queryBldr    QueryBuilder to add to
+         * @throws EFapsException on error
+         */
+        protected void add2QueryBldr(final QueryBuilder _queryBldr)
+            throws EFapsException
+        {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction);
+            if (getFilterMap().containsKey("dateFrom")) {
+                final DateTime date = (DateTime) getFilterMap().get("dateFrom");
+                attrQueryBldr.addWhereAttrGreaterValue(CIAccounting.Transaction.Date,
+                                date.withTimeAtStartOfDay().minusSeconds(1));
+            }
+            if (getFilterMap().containsKey("dateTo")) {
+                final DateTime date = (DateTime) getFilterMap().get("dateTo");
+                attrQueryBldr.addWhereAttrLessValue(CIAccounting.Transaction.Date,
+                                date.withTimeAtStartOfDay().plusDays(1));
+            }
+            _queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                            attrQueryBldr.getAttributeQuery(CIAccounting.ReportBalancePosition2Account.ToLink));
+        }
+
+        public boolean isTitleOnly(){
+            return getConfigs().contains(ReportBalancePositionConfig.TITLEONLY);
         }
 
         /**
@@ -349,15 +465,66 @@ public abstract class ReportBalanceReport_Base
             this.instance = _instance;
             return this;
         }
+
+        /**
+         * Getter method for the instance variable {@link #configs}.
+         *
+         * @return value of instance variable {@link #configs}
+         */
+        public List<ReportBalancePositionConfig> getConfigs()
+        {
+            List<ReportBalancePositionConfig> ret;
+            if (this.configs == null) {
+                ret = Collections.<ReportBalancePositionConfig>emptyList();
+            } else {
+                ret = this.configs;
+            }
+            return ret;
+        }
+
+        /**
+         * Setter method for instance variable {@link #configs}.
+         *
+         * @param _configs value for instance variable {@link #configs}
+         */
+        public DetailBean setConfigs(final List<ReportBalancePositionConfig> _configs)
+        {
+            this.configs = _configs;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #filterMap}.
+         *
+         * @return value of instance variable {@link #filterMap}
+         */
+        public Map<String, Object> getFilterMap()
+        {
+            return this.filterMap;
+        }
+
+        /**
+         * Setter method for instance variable {@link #filterMap}.
+         *
+         * @param _filterMap value for instance variable {@link #filterMap}
+         */
+        public DetailBean setFilterMap(final Map<String, Object> _filterMap)
+        {
+            this.filterMap = _filterMap;
+            return this;
+        }
     }
 
     public static class DataBean
     {
 
-        private String assetLabel;
+        private DetailBean asset;
+
+        private DetailBean liability;
+
         private BigDecimal assetAmount;
-        private String liabiltyLabel;
-        private BigDecimal liabiltyAmount;
+
+        private BigDecimal liabilityAmount;
 
         /**
          * Getter method for the instance variable {@link #assetLabel}.
@@ -366,17 +533,7 @@ public abstract class ReportBalanceReport_Base
          */
         public String getAssetLabel()
         {
-            return this.assetLabel;
-        }
-
-        /**
-         * Setter method for instance variable {@link #assetLabel}.
-         *
-         * @param _assetLabel value for instance variable {@link #assetLabel}
-         */
-        public void setAssetLabel(final String _assetLabel)
-        {
-            this.assetLabel = _assetLabel;
+            return getAsset() != null ? getAsset().getLabel() : null;
         }
 
         /**
@@ -406,18 +563,7 @@ public abstract class ReportBalanceReport_Base
          */
         public String getLiabiltyLabel()
         {
-            return this.liabiltyLabel;
-        }
-
-        /**
-         * Setter method for instance variable {@link #liabiltyLabel}.
-         *
-         * @param _liabiltyLabel value for instance variable
-         *            {@link #liabiltyLabel}
-         */
-        public void setLiabiltyLabel(final String _liabiltyLabel)
-        {
-            this.liabiltyLabel = _liabiltyLabel;
+            return getLiability() != null ? getLiability().getLabel() : null;
         }
 
         /**
@@ -427,7 +573,7 @@ public abstract class ReportBalanceReport_Base
          */
         public BigDecimal getLiabiltyAmount()
         {
-            return this.liabiltyAmount;
+            return this.liabilityAmount;
         }
 
         /**
@@ -438,7 +584,47 @@ public abstract class ReportBalanceReport_Base
          */
         public void setLiabiltyAmount(final BigDecimal _liabiltyAmount)
         {
-            this.liabiltyAmount = _liabiltyAmount;
+            this.liabilityAmount = _liabiltyAmount;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #asset}.
+         *
+         * @return value of instance variable {@link #asset}
+         */
+        public DetailBean getAsset()
+        {
+            return this.asset;
+        }
+
+        /**
+         * Setter method for instance variable {@link #asset}.
+         *
+         * @param _asset value for instance variable {@link #asset}
+         */
+        public void setAsset(final DetailBean _asset)
+        {
+            this.asset = _asset;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #liability}.
+         *
+         * @return value of instance variable {@link #liability}
+         */
+        public DetailBean getLiability()
+        {
+            return this.liability;
+        }
+
+        /**
+         * Setter method for instance variable {@link #liability}.
+         *
+         * @param _liability value for instance variable {@link #liability}
+         */
+        public void setLiability(final DetailBean _liability)
+        {
+            this.liability = _liability;
         }
     }
 }

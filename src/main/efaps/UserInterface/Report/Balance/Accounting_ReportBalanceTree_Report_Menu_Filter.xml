@@ -19,7 +19,8 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>232af1a0-303c-4939-9cae-3e3d038c4e5b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -31,17 +32,17 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4ContactDateFromTo</form>
-            <execute method="setFilter" program="org.efaps.esjp.sales.report.ProfServReceiptReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.ProfServReceiptReport.FilterKey</property>
+            <form>ERP_ReportFilterForm4DateFromTo</form>
+            <execute method="setFilter" program="org.efaps.esjp.accounting.report.ReportBalanceReport">
+                <property name="FilterKey">org.efaps.esjp.accounting.report.ReportBalanceReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
         <property name="TargetTitle">report.Filter</property>
-        <property name="FilterKey">org.efaps.esjp.sales.report.ProfServReceiptReport.FilterKey</property>
-        <property name="FilterTargetForm">Sales_ProfServReceiptReportForm</property>
+        <property name="FilterKey">org.efaps.esjp.accounting.report.ReportBalanceReport.FilterKey</property>
+        <property name="FilterTargetForm">Accounting_ReportBalanceReportForm</property>
         <property name="FilterTargetField">report</property>
     </definition>
 </ui-command>
