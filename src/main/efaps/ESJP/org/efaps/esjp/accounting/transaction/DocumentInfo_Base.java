@@ -849,7 +849,7 @@ public abstract class DocumentInfo_Base
             final SelectBuilder selDocInst = new SelectBuilder().linkto(
                             CISales.Payment.FromAbstractLink).instance();
             final SelectBuilder selCurInst = new SelectBuilder()
-                        .linkto(CISales.Payment.RateCurrencyLink).instance();
+                        .linkto(CISales.Payment.CurrencyLink).instance();
             multi.addSelect(selDocInst, selCurInst);
             multi.addAttribute(CISales.Payment.Amount,
                             CISales.Payment.Date);
@@ -893,14 +893,14 @@ public abstract class DocumentInfo_Base
                         final BigDecimal amount2 = amount.divide(rate2, BigDecimal.ROUND_HALF_UP);
                         BigDecimal gainLoss = amount1.subtract(amount2);
                         if (idx == 2) {
-                            gainLoss = gainLoss.divide(rate2);
+                            gainLoss = gainLoss.multiply(rate1);
                         }
                         if (gainLoss.compareTo(BigDecimal.ZERO) != 0) {
                             final boolean out = getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract);
-                            final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) > 0;
                             if (out) {
-                                for (final AccountInfo accinfo : getCreditAccounts()) {
-                                    if (accinfo.getDocLink().equals(docInst)) {
+                                final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) > 0;
+                                for (final AccountInfo accinfo : getDebitAccounts()) {
+                                    if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(getInstance())) {
                                         BigDecimal accAmount;
                                         if (accinfo.getRateInfo().getCurrencyInstance()
                                                         .equals(Currency.getBaseCurrency())) {
@@ -908,7 +908,7 @@ public abstract class DocumentInfo_Base
                                         } else {
                                             accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
                                         }
-                                        accinfo.addAmount(accAmount.negate());
+                                        accinfo.addAmount(accAmount);
                                     }
                                 }
                                 if (gain) {
@@ -921,8 +921,9 @@ public abstract class DocumentInfo_Base
                                     addDebit(lossAcc);
                                 }
                             } else {
-                                for (final AccountInfo accinfo : getDebitAccounts()) {
-                                    if (accinfo.getDocLink().equals(docInst)) {
+                                final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) < 0;
+                                for (final AccountInfo accinfo : getCreditAccounts()) {
+                                    if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(getInstance())) {
                                         BigDecimal accAmount;
                                         if (!accinfo.getRateInfo().getCurrencyInstance()
                                                         .equals(Currency.getBaseCurrency())) {

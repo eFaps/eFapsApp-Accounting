@@ -879,6 +879,7 @@ public abstract class Transaction_Base
                             final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
                             final AccountInfo acc = new AccountInfo().setInstance(accInst)
                                             .addAmount(_doc.getAmount4Doc(docInst))
+                                            .setDocLink(_doc.getInstance())
                                             .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                             if (outDoc) {
                                 _doc.addDebit(acc);
