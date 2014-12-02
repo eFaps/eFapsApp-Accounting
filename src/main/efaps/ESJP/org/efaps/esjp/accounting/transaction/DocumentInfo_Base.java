@@ -899,8 +899,8 @@ public abstract class DocumentInfo_Base
                             final boolean out = getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract);
                             if (out) {
                                 final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) > 0;
-                                for (final AccountInfo accinfo : getDebitAccounts()) {
-                                    if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(getInstance())) {
+                                for (final AccountInfo accinfo : getCreditAccounts()) {
+                                    if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(docInst)) {
                                         BigDecimal accAmount;
                                         if (accinfo.getRateInfo().getCurrencyInstance()
                                                         .equals(Currency.getBaseCurrency())) {
@@ -908,7 +908,7 @@ public abstract class DocumentInfo_Base
                                         } else {
                                             accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
                                         }
-                                        accinfo.addAmount(accAmount);
+                                        accinfo.addAmount(accAmount.negate());
                                     }
                                 }
                                 if (gain) {
@@ -922,8 +922,8 @@ public abstract class DocumentInfo_Base
                                 }
                             } else {
                                 final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) < 0;
-                                for (final AccountInfo accinfo : getCreditAccounts()) {
-                                    if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(getInstance())) {
+                                for (final AccountInfo accinfo : getDebitAccounts()) {
+                                    if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(docInst)) {
                                         BigDecimal accAmount;
                                         if (!accinfo.getRateInfo().getCurrencyInstance()
                                                         .equals(Currency.getBaseCurrency())) {
@@ -931,7 +931,7 @@ public abstract class DocumentInfo_Base
                                         } else {
                                             accAmount = gainLoss.multiply(accinfo.getRate(_parameter));
                                         }
-                                        accinfo.addAmount(accAmount.negate());
+                                        accinfo.addAmount(accAmount);
                                     }
                                 }
                                 if (gain) {
