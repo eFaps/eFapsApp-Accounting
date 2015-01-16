@@ -45,6 +45,8 @@ public enum ColumnCase
     /** */
     A2CAPPLYLABEL("[Account2Case_CostCenter]"),
     /** */
+    A2CEVALRELATION("[Account2Case_EvaluateRelation]"),
+    /** */
     A2CCURRENCY("[Account2Case_Currency]"),
     /** */
     CASETYPE("[Case_Type]"),

@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.datamodel.Classification;
@@ -568,6 +569,7 @@ public abstract class Import_Base
         private String a2cDenum;
         private boolean a2cDefault;
         private boolean a2cLabel;
+        private boolean a2cEvalRel;
         private Instance accInst;
         private Instance periodInst;
         private Instance caseInst;
@@ -608,14 +610,10 @@ public abstract class Import_Base
                                 .replaceAll("\n", "");
                 this.a2cDenum = _row[_colName2Index.get(ColumnCase.A2CDENUM.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.a2cDefault = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CDEFAULT
-                                .getKey())])
-                                || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CDEFAULT
-                                                .getKey())]);
-                this.a2cLabel = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL
-                                .getKey())])
-                                || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL
-                                                .getKey())]);
+                this.a2cDefault = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CDEFAULT.getKey())]);
+                this.a2cLabel = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL.getKey())]);
+                this.a2cEvalRel = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CEVALRELATION.getKey())]);
+
                 final String accName = _row[_colName2Index.get(ColumnCase.A2CACC.getKey())].trim()
                                 .replaceAll("\n", "");
 
@@ -689,6 +687,8 @@ public abstract class Import_Base
                 insert.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
                 insert.add(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
                 insert.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
+                insert.add(CIAccounting.CaseAbstract.SummarizeConfig,
+                                this.caseSummarizeConfig == null ? SummarizeConfig.NONE : this.caseSummarizeConfig);
                 insert.execute();
                 this.caseInst = insert.getInstance();
             }
@@ -705,6 +705,9 @@ public abstract class Import_Base
             }
             if (this.a2cLabel) {
                 configs.add(Account2CaseConfig.APPLYLABEL);
+            }
+            if (this.a2cEvalRel) {
+                configs.add(Account2CaseConfig.EVALRELATION);
             }
             if (configs.isEmpty()) {
                 insert.add(CIAccounting.Account2CaseAbstract.Config, (Object) null);

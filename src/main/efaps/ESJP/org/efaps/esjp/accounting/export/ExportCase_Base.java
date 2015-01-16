@@ -93,6 +93,7 @@ public abstract class ExportCase_Base
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CDENUM.getKey(), 3));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CDEFAULT.getKey(), 5));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CAPPLYLABEL.getKey(), 5));
+        _exporter.addColumns(new FrmtColumn(ColumnCase.A2CEVALRELATION.getKey(), 5));
         _exporter.addColumns(new FrmtColumn(ColumnCase.A2CCURRENCY.getKey(), 4));
     }
 
@@ -174,6 +175,7 @@ public abstract class ExportCase_Base
             // classRel or default selected will be added
             final boolean acc2CaseDef = configs != null && configs.contains(Account2CaseConfig.DEFAULTSELECTED);
             final boolean acc2CaseLabel = configs != null && configs.contains(Account2CaseConfig.APPLYLABEL);
+            final boolean acc2CaseEvalRelation = configs != null && configs.contains(Account2CaseConfig.EVALRELATION);
 
             row.put(ColumnCase.CASETYPE.getKey(), caseType.getUUID());
             row.put(ColumnCase.CASENAME.getKey(), caseName);
@@ -187,6 +189,7 @@ public abstract class ExportCase_Base
             row.put(ColumnCase.A2CDENUM.getKey(), acc2CaseDen);
             row.put(ColumnCase.A2CDEFAULT.getKey(), acc2CaseDef);
             row.put(ColumnCase.A2CAPPLYLABEL.getKey(), acc2CaseLabel);
+            row.put(ColumnCase.A2CEVALRELATION.getKey(), acc2CaseEvalRelation);
             row.put(ColumnCase.A2CCURRENCY.getKey(), currency);
             lstCols.add(row);
         }
@@ -227,6 +230,7 @@ public abstract class ExportCase_Base
                             map.get(ColumnCase.A2CDENUM.getKey()),
                             map.get(ColumnCase.A2CDEFAULT.getKey()),
                             map.get(ColumnCase.A2CAPPLYLABEL.getKey()),
+                            map.get(ColumnCase.A2CEVALRELATION.getKey()),
                             map.get(ColumnCase.A2CCURRENCY.getKey()));
         }
     }
