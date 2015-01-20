@@ -19,12 +19,12 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>194aa8b8-7591-41b1-833d-e3de37b2e1a9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Period2AccountForm</name>
@@ -38,9 +38,10 @@
                 name="Accounting_Period2AccountForm.salesAccountLink4Edit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
-             </trigger>
+            </trigger>
         </field>
         <field name="salesAccountLink">
+             <property name="ModeEdit">NONE</property>
             <property name="SelectAlternateOID">linkto[SalesAccountLink].oid</property>
             <property name="Phrase">$&lt;linkto[SalesAccountLink].attribute[Name]&gt; - $&lt;linkto[SalesAccountLink].linkto[CurrencyLink].attribute[Name]&gt;</property>
             <property name="Label">Accounting_Period2Account/SalesAccountLink.Label</property>

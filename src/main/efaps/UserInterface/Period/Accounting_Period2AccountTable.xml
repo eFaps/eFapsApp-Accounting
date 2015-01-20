@@ -46,6 +46,10 @@
             <property name="Label">Accounting_Period2Account/SalesAccountLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
+        <field name="salesAccountCurrency">
+            <property name="ModeSearch">READONLY</property>
+            <property name="Select">linkto[SalesAccountLink].linkto[CurrencyLink].attribute[Name]</property>
+        </field>
         <field name="toLink">
             <property name="ModeSearch">READONLY</property>
             <property name="SelectAlternateOID">linkto[FromLink].oid</property>
