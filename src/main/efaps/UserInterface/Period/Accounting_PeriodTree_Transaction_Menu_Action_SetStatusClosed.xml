@@ -39,7 +39,8 @@
             <execute program="org.efaps.esjp.admin.datamodel.StatusValue"
                 method="setStatus">
                 <property name="Status">Closed</property>
-                <property name="NoUpdateStatus">Booked;Closed</property>
+                <property name="NoUpdateStatus01">Closed</property>
+                <property name="NoUpdateStatus02">Booked</property>
                 <property name="EvalOID">true</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
