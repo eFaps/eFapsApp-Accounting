@@ -28,6 +28,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Common_SearchMyDesk</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
         <target>
             <search>Accounting_Common_Search</search>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
