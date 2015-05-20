@@ -30,7 +30,7 @@
         </access>
         <target>
             <menu>Accounting_PeriodTree_PayMenu_Payroll_Menu</menu>
-            <table>Accounting_OthersPayTable</table>
+            <table>Accounting_PayrollTable</table>
             <evaluate method="getPayrollPay" program="org.efaps.esjp.accounting.Period">
                 <property name="Type01">Payroll_Payslip</property>
                 <property name="StatusGroup01">Payroll_PayslipStatus</property>
