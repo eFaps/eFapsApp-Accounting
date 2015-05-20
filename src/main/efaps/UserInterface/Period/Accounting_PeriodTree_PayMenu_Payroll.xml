@@ -38,6 +38,11 @@
                 <property name="StatusGroup02">Payroll_PayslipStatus</property>
                 <property name="Status02">Paid</property>
             </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="configObjectCheck"
+                name="Accounting_PeriodTree_PayMenu_Payroll_Menu.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="SystemConfig">Accounting-Configuration</property>
+                <property name="Key">ActivatePayroll</property>
+            </trigger>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>

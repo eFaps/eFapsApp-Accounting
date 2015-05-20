@@ -127,6 +127,9 @@
             <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Sales_FundsToBeSettledReceiptTree  -->
             update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "4cf1e2e4-d744-4ce5-be8f-9bb784bd37a4", -1);
 
+            <!-- connect the Accounting_Sales_DocumentSumTree_Transaction Payroll_PayslipTree  -->
+            update.add2Menu("06018fca-1ee8-40df-8030-460f57acb447", "89f26b99-0066-4173-aee8-325bd27d70f1", -1);
+
             <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentCashOutTree -->
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "d5bd0a02-56e8-4cf7-bf04-1c5e179856a2", -1);
 

@@ -30,7 +30,7 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4PayrollForm</form>
-            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create">
+            <execute method="create4Payroll" program="org.efaps.esjp.accounting.transaction.Create">
                 <property name="JasperReport">Accounting_Transaction</property>
             </execute>
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Validation"/>

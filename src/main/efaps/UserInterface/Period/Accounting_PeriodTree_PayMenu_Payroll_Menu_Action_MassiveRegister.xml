@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,28 +15,25 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>08c5b3a2-2c00-417f-871b-32c8670f0e2c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_PayMenu_Payroll_Menu_Action_MassiveRegister</name>
-
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4PaymentMassiveForm</form>
-            <execute method="create4PaymentMassive" program="org.efaps.esjp.accounting.transaction.Create"/>
-            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Accounting_PeriodTree_Payment_Menu_Action_MassiveRegister.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            <form>Accounting_TransactionCreate4PayrollMassiveForm</form>
+            <execute method="create4PayrollMassive" program="org.efaps.esjp.accounting.transaction.Create" />
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Accounting_PeriodTree_PayMenu_Payroll_Menu_Action_MassiveRegister.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
         </target>
