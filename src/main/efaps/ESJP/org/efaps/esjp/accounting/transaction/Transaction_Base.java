@@ -686,6 +686,13 @@ public abstract class Transaction_Base
                     currencyCheck = true;
                 }
 
+                if (acc2case.isCheckKey()) {
+                    if (_doc.getKey2Amount().containsKey(acc2case.getKey())) {
+                        isDefault = true;
+                        acc2case.setAmount(_doc.getKey2Amount().get(acc2case.getKey()));
+                    }
+                }
+
                 final boolean add = (isDefault || acc2case.isClassRelation() || acc2case.isCategoryProduct())
                                 && currencyCheck;
                 if (add) {
@@ -693,6 +700,7 @@ public abstract class Transaction_Base
                                     new BigDecimal(acc2case.getDenominator()),
                                     BigDecimal.ROUND_HALF_UP);
                     final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
+                                    || acc2case.isCheckKey()
                                     ? acc2case.getAmount() : _doc.getAmount();
                     final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, BigDecimal.ROUND_HALF_UP);
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)

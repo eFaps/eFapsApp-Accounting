@@ -174,4 +174,16 @@ public abstract class Case_Base
         }
         return ret;
     }
+
+    public Return keyAccessCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (_parameter.getInstance().getType().equals(CIAccounting.Account2CaseCredit4Key.getType())
+                        || _parameter.getInstance().getType()
+                                        .equals(CIAccounting.Account2CaseDebit4Key.getType())) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
 }

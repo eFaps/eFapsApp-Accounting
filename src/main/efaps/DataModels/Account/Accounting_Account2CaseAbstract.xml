@@ -17,9 +17,6 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 
@@ -27,7 +24,6 @@
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7efe5f1a-4fdc-41d7-8f55-77777212f02b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <specification>DM00038</specification>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -75,6 +71,12 @@
             <type>Long</type>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>LINKID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Key</name>
+            <type>String</type>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>KEY</sqlcolumn>
         </attribute>
         <attribute>
             <name>CurrencyLink</name>

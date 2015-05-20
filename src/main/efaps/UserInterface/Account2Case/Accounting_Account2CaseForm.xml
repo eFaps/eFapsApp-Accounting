@@ -17,9 +17,6 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
 -->
 
@@ -28,7 +25,6 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>221ced08-4566-4ef9-abb3-41ddfb40d146</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Account2CaseForm</name>
@@ -126,6 +122,15 @@
             <trigger program="org.efaps.esjp.accounting.Case"
                 method="categoryProductLinkAccessCheck"
                 name="Accounting_Account2CaseTable.categoryProductLink4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
+        </field>
+        <field name="key">
+           <property name="Attribute">Key</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_Account2CaseCredit4Key/Key.Label</property>
+            <trigger program="org.efaps.esjp.accounting.Case"
+                method="keyAccessCheck"
+                name="Accounting_Account2CaseForm.key.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
         </field>
         <field name="fromAccountAbstractLink">

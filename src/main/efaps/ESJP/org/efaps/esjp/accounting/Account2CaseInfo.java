@@ -23,7 +23,7 @@ package org.efaps.esjp.accounting;
 import java.util.List;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
@@ -37,7 +37,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("2e44431b-f2fe-45ed-acd6-4d86c59cbeb2")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class Account2CaseInfo
     extends Account2CaseInfo_Base
 {

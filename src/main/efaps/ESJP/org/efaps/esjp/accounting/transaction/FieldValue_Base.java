@@ -643,6 +643,7 @@ public abstract class FieldValue_Base
         final boolean showLabel = !"true".equalsIgnoreCase(getProperty(_parameter, "NoLabel"));
         final boolean showNote = "true".equalsIgnoreCase(getProperty(_parameter, "ShowNote"));
         final boolean showSwap = !"true".equalsIgnoreCase(getProperty(_parameter, "NoSwap"));
+        final boolean showContact = !"true".equalsIgnoreCase(getProperty(_parameter, "NoContact"));
 
         _doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
 
@@ -719,16 +720,18 @@ public abstract class FieldValue_Base
                 .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Name))
                 .addColumn(name)
                 .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Date))
-                .addColumn(_doc.getDateString())
-            .addRow()
-                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Contact));
+                .addColumn(_doc.getDateString());
 
-        if (_doc.getDebtorAccount() == null) {
-            _table.addColumn(contactName);
-        } else {
-            _table.addColumn(new StringBuilder().append(contactName).append(" -> ")
-                .append(CIAccounting.AccountCurrentDebtor.getType().getLabel())
-                .append(": ").append(_doc.getDebtorAccount().getName()));
+        if (showContact) {
+            _table.addRow()
+                .addColumn(getLabel(_doc.getInstance(), CISales.DocumentAbstract.Contact));
+            if (_doc.getDebtorAccount() == null) {
+                _table.addColumn(contactName);
+            } else {
+                _table.addColumn(new StringBuilder().append(contactName).append(" -> ")
+                    .append(CIAccounting.AccountCurrentDebtor.getType().getLabel())
+                    .append(": ").append(_doc.getDebtorAccount().getName()));
+            }
         }
         _table.addRow()
                 .addColumn(getLabel(_doc.getInstance(), "Status"))

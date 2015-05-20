@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -37,6 +38,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -46,6 +48,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.listener.IOnDocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -153,6 +156,8 @@ public abstract class DocumentInfo_Base
 
     private  Map<Instance,BigDecimal> product2Amount;
 
+    private  Map<String,BigDecimal> key2Amount;
+
     /**
      * Constructor.
      */
@@ -197,6 +202,36 @@ public abstract class DocumentInfo_Base
                 }
             }
             ret = this.product2Amount;
+        } else {
+            ret = Collections.emptyMap();
+        }
+        return ret;
+    }
+
+    public Map<String, BigDecimal> getKey2Amount()
+        throws EFapsException
+    {
+        Map<String, BigDecimal> ret;
+        if (isSumsDoc()) {
+            if (this.key2Amount == null) {
+                this.key2Amount = new HashMap<>();
+                // let others participate
+                for (final IOnDocumentInfo listener : Listener.get().<IOnDocumentInfo>invoke(IOnDocumentInfo.class)) {
+                    for (final Entry<String, BigDecimal> entry : listener.getKey2Amount(this.instance).entrySet()) {
+                        if (this.key2Amount.containsKey(entry.getKey())) {
+                            if (entry.getValue() == null) {
+                                this.key2Amount.remove(entry.getKey());
+                            } else {
+                                this.key2Amount.put(entry.getKey(),
+                                                this.key2Amount.get(entry.getKey()).add(entry.getValue()));
+                            }
+                        } else {
+                            this.key2Amount.put(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+            }
+            ret = this.key2Amount;
         } else {
             ret = Collections.emptyMap();
         }

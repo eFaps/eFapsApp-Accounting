@@ -27,7 +27,7 @@ import java.util.List;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -45,7 +45,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("d1eefab1-b171-4c24-b190-3da41369fe30")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Account2CaseInfo_Base
 {
 
@@ -66,6 +66,8 @@ public abstract class Account2CaseInfo_Base
     private Integer order;
 
     private BigDecimal amount;
+
+    private String key;
 
     /**
      * Getter method for the instance variable {@link #type}.
@@ -92,9 +94,10 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _configs value for instance variable {@link #configs}
      */
-    public void setConfigs(final List<Account2CaseConfig> _configs)
+    public Account2CaseInfo setConfigs(final List<Account2CaseConfig> _configs)
     {
         this.configs = _configs;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -113,9 +116,10 @@ public abstract class Account2CaseInfo_Base
      * @param _accountInstance value for instance variable
      *            {@link #accountInstance}
      */
-    public void setAccountInstance(final Instance _accountInstance)
+    public Account2CaseInfo setAccountInstance(final Instance _accountInstance)
     {
         this.accountInstance = _accountInstance;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -134,9 +138,10 @@ public abstract class Account2CaseInfo_Base
      * @param _currencyInstance value for instance variable
      *            {@link #currencyInstance}
      */
-    public void setCurrencyInstance(final Instance _currencyInstance)
+    public Account2CaseInfo setCurrencyInstance(final Instance _currencyInstance)
     {
         this.currencyInstance = _currencyInstance;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -154,9 +159,10 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _denominator value for instance variable {@link #denominator}
      */
-    public void setDenominator(final Integer _denominator)
+    public Account2CaseInfo setDenominator(final Integer _denominator)
     {
         this.denominator = _denominator;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -174,9 +180,10 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _numerator value for instance variable {@link #numerator}
      */
-    public void setNumerator(final Integer _numerator)
+    public Account2CaseInfo setNumerator(final Integer _numerator)
     {
         this.numerator = _numerator;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -194,9 +201,10 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _linkId value for instance variable {@link #linkId}
      */
-    public void setLinkId(final Long _linkId)
+    public Account2CaseInfo setLinkId(final Long _linkId)
     {
         this.linkId = _linkId;
+        return (Account2CaseInfo) this;
     }
 
     public boolean isClassRelation()
@@ -229,6 +237,7 @@ public abstract class Account2CaseInfo_Base
     public boolean isCredit()
     {
         return getType().isCIType(CIAccounting.Account2CaseCredit)
+                        || getType().isCIType(CIAccounting.Account2CaseCredit4Key)
                         || getType().isCIType(CIAccounting.Account2CaseCredit4Classification)
                         || getType().isCIType(CIAccounting.Account2CaseCredit4CategoryProduct);
     }
@@ -239,6 +248,14 @@ public abstract class Account2CaseInfo_Base
     public boolean isDebit()
     {
         return !isCredit();
+    }
+
+    /**
+     *
+     */
+    public boolean isCheckKey()
+    {
+        return this.key != null && !this.key.isEmpty();
     }
 
     public boolean isCheckCurrency()
@@ -252,7 +269,8 @@ public abstract class Account2CaseInfo_Base
     {
         final List<Account2CaseInfo> ret = new ArrayList<>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseDebit);
-        queryBldr.addType(CIAccounting.Account2CaseCredit);
+        queryBldr.addType(CIAccounting.Account2CaseCredit, CIAccounting.Account2CaseCredit4Key,
+                        CIAccounting.Account2CaseDebit4Key);
         queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, _caseInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selAccInst = new SelectBuilder()
@@ -263,19 +281,22 @@ public abstract class Account2CaseInfo_Base
                         CIAccounting.Account2CaseAbstract.Denominator,
                         CIAccounting.Account2CaseAbstract.LinkValue,
                         CIAccounting.Account2CaseAbstract.Config,
-                        CIAccounting.Account2CaseAbstract.Order);
+                        CIAccounting.Account2CaseAbstract.Order,
+                        CIAccounting.Account2CaseAbstract.Key);
         multi.addSelect(selAccInst, selCurrInst);
         multi.execute();
         while (multi.next()) {
-            final Account2CaseInfo acc2case = new Account2CaseInfo();
-            acc2case.setInstance(multi.getCurrentInstance());
-            acc2case.setConfigs(multi.<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config));
-            acc2case.setAccountInstance(multi.<Instance>getSelect(selAccInst));
-            acc2case.setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
-            acc2case.setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator));
-            acc2case.setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator));
-            acc2case.setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue));
-            acc2case.setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order));
+            final Account2CaseInfo acc2case = new Account2CaseInfo()
+                    .setInstance(multi.getCurrentInstance())
+                    .setConfigs(multi
+                                    .<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
+                    .setAccountInstance(multi.<Instance>getSelect(selAccInst))
+                    .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst))
+                    .setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))
+                    .setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
+                    .setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
+                    .setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
+                    .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key));
             ret.add(acc2case);
         }
         return ret;
@@ -349,19 +370,22 @@ public abstract class Account2CaseInfo_Base
                         CIAccounting.Account2CaseAbstract.Denominator,
                         CIAccounting.Account2CaseAbstract.LinkValue,
                         CIAccounting.Account2CaseAbstract.Config,
-                        CIAccounting.Account2CaseAbstract.Order);
+                        CIAccounting.Account2CaseAbstract.Order,
+                        CIAccounting.Account2CaseAbstract.Key);
         multi.addSelect(selAccInst, selCurrInst);
         multi.execute();
         if (multi.next()) {
-            ret = new Account2CaseInfo();
-            ret.setInstance(multi.getCurrentInstance());
-            ret.setConfigs(multi.<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config));
-            ret.setAccountInstance(multi.<Instance>getSelect(selAccInst));
-            ret.setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
-            ret.setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator));
-            ret.setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator));
-            ret.setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue));
-            ret.setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order));
+            ret = new Account2CaseInfo()
+                            .setInstance(multi.getCurrentInstance())
+                            .setConfigs(multi
+                                            .<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
+                            .setAccountInstance(multi.<Instance>getSelect(selAccInst))
+                            .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst))
+                            .setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))
+                            .setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
+                            .setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
+                            .setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
+                            .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key));
         }
         return ret;
     }
@@ -381,9 +405,10 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _order value for instance variable {@link #order}
      */
-    public void setOrder(final Integer _order)
+    public Account2CaseInfo setOrder(final Integer _order)
     {
         this.order = _order;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -401,9 +426,10 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _instance value for instance variable {@link #instance}
      */
-    public void setInstance(final Instance _instance)
+    public Account2CaseInfo setInstance(final Instance _instance)
     {
         this.instance = _instance;
+        return (Account2CaseInfo) this;
     }
 
     /**
@@ -421,9 +447,31 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _amount value for instance variable {@link #amount}
      */
-    public void setAmount(final BigDecimal _amount)
+    public Account2CaseInfo setAmount(final BigDecimal _amount)
     {
         this.amount = _amount;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #key}.
+     *
+     * @return value of instance variable {@link #key}
+     */
+    public String getKey()
+    {
+        return this.key;
+    }
+
+    /**
+     * Setter method for instance variable {@link #key}.
+     *
+     * @param _key value for instance variable {@link #key}
+     */
+    public Account2CaseInfo setKey(final String _key)
+    {
+        this.key = _key;
+        return (Account2CaseInfo) this;
     }
 
 }
