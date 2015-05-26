@@ -42,25 +42,25 @@
                 <property name="StatusGroup02">Sales_InvoiceStatus</property>
                 <property name="Status02">Paid</property>
                 <property name="StatusGroup03">Sales_InvoiceStatus</property>
-                <property name="Status03">Digitized</property>
+                <property name="Status03">Draft</property>
                 <property name="StatusGroup04">Sales_ReceiptStatus</property>
                 <property name="Status04">Open</property>
                 <property name="StatusGroup05">Sales_ReceiptStatus</property>
                 <property name="Status05">Paid</property>
                 <property name="StatusGroup06">Sales_ReceiptStatus</property>
-                <property name="Status06">Digitized</property>
+                <property name="Status06">Draft</property>
                 <property name="StatusGroup07">Sales_CreditNoteStatus</property>
                 <property name="Status07">Open</property>
                 <property name="StatusGroup08">Sales_CreditNoteStatus</property>
                 <property name="Status08">Paid</property>
                 <property name="StatusGroup09">Sales_CreditNoteStatus</property>
-                <property name="Status09">Digitized</property>
+                <property name="Status09">Draft</property>
                 <property name="StatusGroup10">Sales_ReminderStatus</property>
                 <property name="Status10">Open</property>
                 <property name="StatusGroup11">Sales_ReminderStatus</property>
                 <property name="Status11">Paid</property>
                 <property name="StatusGroup12">Sales_ReminderStatus</property>
-                <property name="Status12">Digitized</property>
+                <property name="Status12">Draft</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
