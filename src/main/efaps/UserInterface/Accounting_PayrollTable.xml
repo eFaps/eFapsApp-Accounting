@@ -72,7 +72,6 @@
         </field>
         <field name="periodicityLink">
             <property name="FilterType">PICKLIST</property>
-            <property name="Label">HumanResource_Employee/PeriodicityLink.Label</property>
             <property name="Select">linkto[EmployeeAbstractLink].class[HumanResource_ClassTR_Labor].linkto[PeriodicityLink].attribute[Value]</property>
             <property name="Label">HumanResource_ClassTR_Labor/PeriodicityLink.Label</property>
         </field>
