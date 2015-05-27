@@ -72,10 +72,13 @@
         </field>
         <field name="periodicityLink">
             <property name="FilterType">PICKLIST</property>
+            <property name="Label">HumanResource_Employee/PeriodicityLink.Label</property>
             <property name="Select">linkto[EmployeeAbstractLink].class[HumanResource_ClassTR_Labor].linkto[PeriodicityLink].attribute[Value]</property>
             <property name="Label">HumanResource_ClassTR_Labor/PeriodicityLink.Label</property>
         </field>
         <field name="activation">
+             <property name="FilterType">PICKLIST</property>
+            <property name="Label">HumanResource_Employee/Activation.Label</property>
             <property name="Select">linkto[EmployeeAbstractLink].attribute[Activation]</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
@@ -142,6 +145,8 @@
             <property name="Label">HumanResource_ClassTR_Labor/PeriodicityLink.Label</property>
         </field>
         <field name="activation">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Label">HumanResource_Employee/Activation.Label</property>
             <property name="Select">linkto[EmployeeAbstractLink].attribute[Activation]</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
@@ -152,6 +157,7 @@
             </trigger>
         </field>
         <field name="project">
+            <property name="FilterType">PICKLIST</property>
             <property name="SelectAlternateOID">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
             <property name="Select">linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
