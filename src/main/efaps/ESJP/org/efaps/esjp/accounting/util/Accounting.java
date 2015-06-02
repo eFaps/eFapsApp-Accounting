@@ -26,7 +26,7 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.IBitEnum;
 import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.datamodel.attributetype.BitEnumType;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -37,7 +37,7 @@ import org.efaps.util.cache.CacheReloadException;
  * @version $Id: TwoPlan.java 9442 2013-05-16 23:05:46Z jan@moxter.net $
  */
 @EFapsUUID("ded4c72c-82c2-4881-856f-ad5c579a2f14")
-@EFapsRevision("$Rev: 9442 $")
+@EFapsApplication("eFapsApp-Accounting")
 public final class Accounting
 {
     /**
@@ -138,6 +138,37 @@ public final class Accounting
             return ordinal();
         }
     }
+
+
+    public enum Account2AccountConfig
+        implements IBitEnum
+    {
+        /** Is as default selected. */
+        DEACTIVATABLE,
+        /** Official Report. */
+        APPLY4DEBIT,
+        /** Official Report. */
+        APPLY4CREDIT;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
+
 
     public enum Account2CaseConfig
         implements IBitEnum

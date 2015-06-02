@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -862,7 +863,7 @@ public abstract class Create_Base
                         multi.addSelect(selAcc);
                         multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                                           CIAccounting.Account2AccountAbstract.Denominator,
-                                          CIAccounting.Account2AccountAbstract.Deactivatable);
+                                          CIAccounting.Account2AccountAbstract.Config);
                         multi.execute();
                         int y = 1;
                         final int group = _transInfo.getNextGroup();
@@ -870,14 +871,18 @@ public abstract class Create_Base
                             final Instance instance = multi.getCurrentInstance();
                             final PositionInfo connPos  = new PositionInfo();
                             connPos.setPosType(TransPosType.CONNECTION);
-                            Boolean deactivatable = multi
-                                            .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
-                            if (deactivatable == null) {
-                                deactivatable = false;
-                            }
+                            final Collection<Accounting.Account2AccountConfig> configs = multi
+                                            .getAttribute(CIAccounting.Account2AccountAbstract.Config);
+                            final boolean deactivatable = configs != null && configs.contains(
+                                            Accounting.Account2AccountConfig.DEACTIVATABLE);
+                            final boolean confCheck = isDebitTrans &&  configs != null
+                                            && configs.contains(Accounting.Account2AccountConfig.APPLY4DEBIT)
+                                            || !isDebitTrans &&  configs != null
+                                            && configs.contains(Accounting.Account2AccountConfig.APPLY4CREDIT);
+
                             // if cannot be deactivated or selected in the UserInterface
-                            if (!deactivatable || acc2accOids != null && deactivatable
-                                            &&  Arrays.asList(acc2accOids).contains(instance.getOid())) {
+                            if (confCheck && (!deactivatable || acc2accOids != null && deactivatable
+                                            &&  Arrays.asList(acc2accOids).contains(instance.getOid()))) {
                                 final BigDecimal numerator = new BigDecimal(multi.<Integer>getAttribute(
                                                 CIAccounting.Account2AccountAbstract.Numerator));
                                 final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
@@ -1181,23 +1186,24 @@ public abstract class Create_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, accInst.getId());
-        final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                            CIAccounting.Account2AccountAbstract.Denominator,
-                           CIAccounting.Account2AccountAbstract.ToAccountLink);
-        print.execute();
-        while (print.next()) {
-            final Instance instance = print.getCurrentInstance();
+                           CIAccounting.Account2AccountAbstract.ToAccountLink,
+                           CIAccounting.Account2AccountAbstract.Config);
+        multi.execute();
+        while (multi.next()) {
+            final Instance instance = multi.getCurrentInstance();
             boolean add = false;
             Insert insert3 = null;
-            BigDecimal amount2 = amount.multiply(new BigDecimal(print.<Integer>getAttribute(
+            BigDecimal amount2 = amount.multiply(new BigDecimal(multi.<Integer>getAttribute(
                                             CIAccounting.Account2AccountAbstract.Numerator))
-                                 .divide(new BigDecimal(print.<Integer>getAttribute(
+                                 .divide(new BigDecimal(multi.<Integer>getAttribute(
                                                  CIAccounting.Account2AccountAbstract.Denominator)),
                                                             BigDecimal.ROUND_HALF_UP));
-            BigDecimal rateAmount2 = rateAmount.multiply(new BigDecimal(print.<Integer>getAttribute(
+            BigDecimal rateAmount2 = rateAmount.multiply(new BigDecimal(multi.<Integer>getAttribute(
                                             CIAccounting.Account2AccountAbstract.Numerator))
-                                  .divide(new BigDecimal(print.<Integer>getAttribute(
+                                  .divide(new BigDecimal(multi.<Integer>getAttribute(
                                                   CIAccounting.Account2AccountAbstract.Denominator)),
                                             BigDecimal.ROUND_HALF_UP));
             if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
@@ -1231,10 +1237,18 @@ public abstract class Create_Base
                 }
                 add = true;
             }
+            final Collection<Accounting.Account2AccountConfig> configs = multi
+                            .getAttribute(CIAccounting.Account2AccountAbstract.Config);
+
+            add = add && (isDebitTrans && configs != null
+                            && configs.contains(Accounting.Account2AccountConfig.APPLY4DEBIT)
+                            || !isDebitTrans && configs != null
+                            && configs.contains(Accounting.Account2AccountConfig.APPLY4CREDIT));
+
             if (add) {
                 insert3.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transInst.getId());
                 insert3.add(CIAccounting.TransactionPositionAbstract.AccountLink,
-                                print.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
+                                multi.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
                 insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
                 insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
                                 _account.getRateInfo().getCurrencyInstance());

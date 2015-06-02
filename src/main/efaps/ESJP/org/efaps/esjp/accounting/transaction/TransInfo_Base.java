@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +33,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -59,6 +62,8 @@ import org.slf4j.LoggerFactory;
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("4968180a-4082-4663-8eb6-8f49de24ed83")
+@EFapsApplication("eFapsApps-Accounting")
 public abstract class TransInfo_Base
 {
     /**
@@ -628,7 +633,8 @@ public abstract class TransInfo_Base
                         .linkto(CIAccounting.Account2AccountAbstract.ToAccountLink).instance();
         multi.addSelect(selAcc);
         multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
-                        CIAccounting.Account2AccountAbstract.Denominator);
+                        CIAccounting.Account2AccountAbstract.Denominator,
+                        CIAccounting.Account2AccountAbstract.Config);
         multi.execute();
         int y = 1;
         while (multi.next()) {
@@ -639,52 +645,61 @@ public abstract class TransInfo_Base
                             CIAccounting.Account2AccountAbstract.Numerator));
             final BigDecimal denominator = new BigDecimal(multi.<Integer>getAttribute(
                             CIAccounting.Account2AccountAbstract.Denominator));
+            final Collection<Accounting.Account2AccountConfig> configs = multi
+                            .getAttribute(CIAccounting.Account2AccountAbstract.Config);
 
-            BigDecimal amount = _accInfo.getAmountRate(_parameter).multiply(numerator).divide(denominator,
-                            BigDecimal.ROUND_HALF_UP);
-            BigDecimal rateAmount = _accInfo.getAmount().multiply(numerator).divide(denominator,
-                            BigDecimal.ROUND_HALF_UP);
-            if (isDebitTrans) {
-                amount = amount.negate();
-                rateAmount = rateAmount.negate();
-            }
-            if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
-                connPos.setType(_type);
-            } else if (instance.getType().getUUID()
-                            .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
-                if (_type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
-                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
-                } else {
-                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
-                }
-                amount = amount.negate();
-            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
+            final boolean confCheck = isDebitTrans && configs != null
+                            && configs.contains(Accounting.Account2AccountConfig.APPLY4DEBIT)
+                            || !isDebitTrans && configs != null
+                            && configs.contains(Accounting.Account2AccountConfig.APPLY4CREDIT);
+
+            if (confCheck) {
+                BigDecimal amount = _accInfo.getAmountRate(_parameter).multiply(numerator).divide(denominator,
+                                BigDecimal.ROUND_HALF_UP);
+                BigDecimal rateAmount = _accInfo.getAmount().multiply(numerator).divide(denominator,
+                                BigDecimal.ROUND_HALF_UP);
                 if (isDebitTrans) {
-                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
-                } else {
-                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
                     amount = amount.negate();
                     rateAmount = rateAmount.negate();
                 }
-            } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
-                if (isDebitTrans) {
-                    connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCosting.uuid)) {
+                    connPos.setType(_type);
+                } else if (instance.getType().getUUID()
+                                .equals(CIAccounting.Account2AccountCostingInverse.uuid)) {
+                    if (_type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid)) {
+                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                    } else {
+                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                    }
                     amount = amount.negate();
-                    rateAmount = rateAmount.negate();
-                } else {
-                    connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountCredit.uuid)) {
+                    if (isDebitTrans) {
+                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                    } else {
+                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                        amount = amount.negate();
+                        rateAmount = rateAmount.negate();
+                    }
+                } else if (instance.getType().getUUID().equals(CIAccounting.Account2AccountDebit.uuid)) {
+                    if (isDebitTrans) {
+                        connPos.setType(CIAccounting.TransactionPositionDebit.getType());
+                        amount = amount.negate();
+                        rateAmount = rateAmount.negate();
+                    } else {
+                        connPos.setType(CIAccounting.TransactionPositionCredit.getType());
+                    }
                 }
+                if (connPos.getType() == null) {
+                    LOG.error("Missing definition");
+                } else {
+                    connPos.setConnOrder(y)
+                                    .setAccInst(multi.<Instance>getSelect(selAcc))
+                                    .setAmount(amount)
+                                    .setRateAmount(rateAmount);
+                    ret.add(connPos);
+                }
+                y++;
             }
-            if (connPos.getType() == null) {
-                LOG.error("Missing definition");
-            } else {
-                connPos.setConnOrder(y)
-                                .setAccInst(multi.<Instance>getSelect(selAcc))
-                                .setAmount(amount)
-                                .setRateAmount(rateAmount);
-                ret.add(connPos);
-            }
-            y++;
         }
         return ret;
     }

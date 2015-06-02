@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,20 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>161c69a4-2e0d-4132-8d53-52c4b7c8da05</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AccountTree_Account</name>
@@ -37,8 +29,8 @@
             <menu>Accounting_AccountTree_Account_Menu</menu>
             <table>Accounting_Account2AccountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_Account2AccountAbstract</property>
-                <property name="LinkFroms">FromAccountLink</property>
+                <property name="Type">Accounting_Account2AccountAbstract</property>
+                <property name="LinkFrom">FromAccountLink</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
             <trigger program="org.efaps.esjp.accounting.Account"
@@ -46,7 +38,6 @@
                 method="accessCheckOnSummary" event="UI_ACCESSCHECK">
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

@@ -34,7 +34,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
@@ -65,7 +65,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("af9547fa-3caf-4013-9e81-d637736ac62b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class FieldUpdate_Base
     extends Transaction
 {
@@ -97,7 +97,8 @@ public abstract class FieldUpdate_Base
 
         map.put("description" + (postfix.equals("") ? "" : "_" + postfix), accInfo.getDescription());
         final StringBuilder js = new StringBuilder();
-        js.append("var rv = \"").append(accInfo.getLinkHtml()).append("\";")
+        js.append("var rv = \"").append("debit".equalsIgnoreCase(postfix)
+                        ? accInfo.getLinkDebitHtml() : accInfo.getLinkCreditHtml()).append("\";")
             .append("document.getElementsByName('account2account_")
             .append(postfix).append("')[").append(pos).append("].innerHTML=rv;");
         InterfaceUtils.appendScript4FieldUpdate(map, js);

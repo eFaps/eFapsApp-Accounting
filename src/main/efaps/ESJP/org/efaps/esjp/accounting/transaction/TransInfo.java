@@ -21,14 +21,20 @@
 package org.efaps.esjp.accounting.transaction;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("00485da3-4c80-42f5-90bb-04b6eb3b3d85")
+@EFapsApplication("eFapsApps-Accounting")
 public class TransInfo
     extends TransInfo_Base
 {

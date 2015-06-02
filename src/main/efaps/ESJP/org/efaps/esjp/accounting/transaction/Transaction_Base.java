@@ -56,7 +56,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
@@ -108,7 +108,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("803f24bc-7c4f-4168-97bc-a9cb01872f76")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApps-Accounting")
 public abstract class Transaction_Base
     extends CommonDocument
 {
@@ -1077,10 +1077,12 @@ public abstract class Transaction_Base
             map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());
 
-            if (account.getLinkHtml() != null && account.getLinkHtml().length() > 0) {
+            final StringBuilder linkHtml = "debit".equalsIgnoreCase(_postFix)
+                            ? account.getLinkDebitHtml() : account.getLinkCreditHtml();
+            if (linkHtml != null && linkHtml.length() > 0) {
                 onJs.append("document.getElementsByName('account2account_")
                                 .append(_postFix).append("')[").append(i).append("].innerHTML='")
-                                .append(account.getLinkHtml().toString().replaceAll("'", "\\\\\\'")).append("';");
+                                .append(linkHtml.toString().replaceAll("'", "\\\\\\'")).append("';");
             }
 
             if (account.getDocLink() != null && account.getDocLink().isValid()) {

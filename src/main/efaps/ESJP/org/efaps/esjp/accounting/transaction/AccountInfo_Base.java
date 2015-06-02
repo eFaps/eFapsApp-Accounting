@@ -21,12 +21,13 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
@@ -49,7 +50,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("53f324b2-5933-43f7-a06d-91f830b86d4a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AccountInfo_Base
 {
 
@@ -93,7 +94,12 @@ public abstract class AccountInfo_Base
     /**
      * Link string.
      */
-    private StringBuilder linkHtml;
+    private StringBuilder linkDebitHtml;
+
+    /**
+     * Link string.
+     */
+    private StringBuilder linkCreditHtml;
 
     private Instance docLink;
 
@@ -277,45 +283,65 @@ public abstract class AccountInfo_Base
      *
      * @return value of instance variable {@link #link}
      */
-    public StringBuilder getLinkHtml() throws EFapsException
+    public StringBuilder getLinkCreditHtml()
+        throws EFapsException
     {
         initLinkHtml();
-        return this.linkHtml;
+        return this.linkCreditHtml;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #link}.
+     *
+     * @return value of instance variable {@link #link}
+     */
+    public StringBuilder getLinkDebitHtml()
+        throws EFapsException
+    {
+        initLinkHtml();
+        return this.linkDebitHtml;
     }
 
     protected void initLinkHtml()
         throws EFapsException
     {
-        if (this.linkHtml == null && getInstance() != null && getInstance().isValid()) {
-            this.linkHtml = new StringBuilder();
+        if (this.linkCreditHtml == null && getInstance() != null && getInstance().isValid()) {
+            this.linkCreditHtml = new StringBuilder();
+            this.linkDebitHtml = new StringBuilder();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2AccountAbstract);
             queryBldr.addWhereAttrEqValue(CIAccounting.Account2AccountAbstract.FromAccountLink, getInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIAccounting.Account2AccountAbstract.Numerator,
                             CIAccounting.Account2AccountAbstract.Denominator,
-                            CIAccounting.Account2AccountAbstract.Deactivatable);
+                            CIAccounting.Account2AccountAbstract.Config);
             final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.Account2AccountAbstract.ToAccountLink)
                             .attribute(CIAccounting.AccountAbstract.Name);
             multi.addSelect(sel);
             multi.execute();
-
+            final StringBuilder tmpBldr = new StringBuilder();
             while (multi.next()) {
                 final String to = multi.<String>getSelect(sel);
-                final Boolean deactivatable = multi
-                                .<Boolean>getAttribute(CIAccounting.Account2AccountAbstract.Deactivatable);
+                final Collection<Accounting.Account2AccountConfig> configs = multi
+                                .getAttribute(CIAccounting.Account2AccountAbstract.Config);
                 final Integer numerator = multi.<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Numerator);
                 final Integer denominator = multi
                                 .<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
                 final BigDecimal percent = new BigDecimal(numerator).divide(new BigDecimal(denominator),
                                 BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
                 final Instance instance = multi.getCurrentInstance();
-                if (deactivatable != null && deactivatable) {
-                    this.linkHtml.append("<input type='checkbox' name='acc2acc").append(getPostFix())
+                if (configs != null && configs.contains(Accounting.Account2AccountConfig.DEACTIVATABLE)) {
+                    tmpBldr.append("<input type='checkbox' name='acc2acc").append(getPostFix())
                                     .append("' checked='checked' value='").append(instance.getOid()).append("'/>");
                 }
-                this.linkHtml.append(DBProperties.getFormatedDBProperty(
+                tmpBldr.append(DBProperties.getFormatedDBProperty(
                                 Transaction.class.getName() + ".LinkString4" + instance.getType().getName(),
                                 new Object[] { percent, StringEscapeUtils.escapeEcmaScript(to) }));
+                if (configs != null && configs.contains(Accounting.Account2AccountConfig.APPLY4DEBIT)) {
+                    this.linkDebitHtml = tmpBldr;
+                }
+                if (configs != null && configs.contains(Accounting.Account2AccountConfig.APPLY4CREDIT)) {
+                    this.linkCreditHtml = tmpBldr;
+                }
             }
         }
     }
