@@ -36,12 +36,25 @@
             <property name="HRef">TREE</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="config">
+            <property name="Label">Accounting_Account2AccountAbstract/Config.Label</property>
+            <property name="Attribute">Config</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
         <field name="fromAccountLink">
             <property name="SelectAlternateOID">linkto[FromAccountLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAccountLink].attribute[Name]&gt; - $&lt;linkto[FromAccountLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_Account2AccountAbstractTable.fromAccountLink.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="HRef">TREE</property>
+        </field>
+        <field name="numerator">
+            <property name="Attribute">Numerator</property>
+            <property name="Label">Accounting_Account2AccountAbstract/Numerator.Label</property>
+        </field>
+        <field name="denominator">
+            <property name="Attribute">Denominator</property>
+            <property name="Label">Accounting_Account2AccountAbstract/Denominator.Label</property>
         </field>
         <field name="toAccountLink">
             <property name="SelectAlternateOID">linkto[ToAccountLink].oid</property>
