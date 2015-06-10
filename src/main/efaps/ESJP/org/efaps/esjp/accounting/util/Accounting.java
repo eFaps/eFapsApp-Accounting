@@ -236,6 +236,23 @@ public final class Accounting
         }
     }
 
+    public enum SummarizeCriteria
+        implements IEnum
+    {
+        /** Summarize with Account as only criteria. (default) */
+        ACCOUNT,
+        /** Summarize with Account and Label must be the same. */
+        LABEL,
+        /** Summarize with Account, Label and Remark must  be the same. */
+        ALL;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
+
     public enum LabelDefinition
     {
         /** Never summarize for this period. Default if not set. */

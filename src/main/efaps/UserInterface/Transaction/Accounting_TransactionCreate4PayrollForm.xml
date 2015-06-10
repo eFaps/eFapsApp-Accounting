@@ -97,6 +97,14 @@
                 name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
                 program="org.efaps.esjp.accounting.Period" />
         </field>
+         <field character="Group" name="caseGroup3">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">2</property>
+            <trigger event="UI_ACCESSCHECK"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4PayrollForm.checkbox4Summarize.UI_ACCESSCHECK"
+                program="org.efaps.esjp.accounting.Period" />
+        </field>
         <field name="subJournal">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
@@ -114,6 +122,23 @@
                 <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
         </field>
+        <field name="summarizeCriteria">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <trigger event="UI_FIELD_VALUE"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalVoucherForm.summarizeCriteria.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$SummarizeCriteria</property>
+            </trigger>
+            <trigger event="UI_ACCESSCHECK"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.summarizeCriteria.UI_ACCESSCHECK"
+                program="org.efaps.esjp.accounting.Period" />
+        </field>
+
+
         <field character="Heading" name="docDetailHeader">
             <property name="Level">4</property>
             <property name="Collapsed">true</property>

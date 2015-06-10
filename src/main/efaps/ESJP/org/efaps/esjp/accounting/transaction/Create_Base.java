@@ -227,7 +227,8 @@ public abstract class Create_Base
 
         final boolean oneTransPerDoc = Boolean.parseBoolean(_parameter.getParameterValue("oneTransPerDoc"));
         if (!oneTransPerDoc) {
-            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, summarizeTransaction(_parameter));
+            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, getSummarizeConfig(_parameter),
+                            getSummarizeCriteria(_parameter));
             docInfo.setDate(date);
             if (docInfo.isValid(_parameter)) {
                 final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);
@@ -295,7 +296,8 @@ public abstract class Create_Base
         final boolean oneTransPerDoc = Boolean.parseBoolean(_parameter.getParameterValue("oneTransPerDoc"));
 
         if (!oneTransPerDoc) {
-            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, summarizeTransaction(_parameter));
+            final DocumentInfo docInfo = DocumentInfo.getCombined(docInfos, getSummarizeConfig(_parameter),
+                            getSummarizeCriteria(_parameter));
             docInfo.setDate(date);
             if (docInfo.isValid(_parameter)) {
                 final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, false);

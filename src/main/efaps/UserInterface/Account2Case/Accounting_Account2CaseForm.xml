@@ -154,7 +154,16 @@
                 <property name="ShowSumAccount">false</property>
             </trigger>
         </field>
-
+        <field name="remark">
+            <property name="Label">Accounting_Account2CaseAbstract/Remark.Label</property>
+            <property name="Attribute">Remark</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheckByConfig"
+                name="Accounting_Account2CaseForm.remark_Credit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Key">ActivateRemark4TransPos</property>
+            </trigger>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>

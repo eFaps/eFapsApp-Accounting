@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.transaction;
@@ -36,7 +33,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.CachedPrintQuery;
@@ -51,6 +48,7 @@ import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.listener.IOnDocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -68,11 +66,9 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DocumentInfo_Base.java 13528 2014-08-04 20:06:28Z
- *          jan@moxter.net $
  */
 @EFapsUUID("f6508096-b3a3-4b19-9b10-0290ad0571a6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class DocumentInfo_Base
 {
 
@@ -151,6 +147,12 @@ public abstract class DocumentInfo_Base
      * Summarize or not.
      */
     private SummarizeConfig config = SummarizeConfig.NONE;
+
+    /**
+     * Summarize or not.
+     */
+    private SummarizeCriteria summarizeCriteria = SummarizeCriteria.ACCOUNT;
+
 
     private final Set<Instance> docInsts = new HashSet<>();
 
@@ -395,11 +397,41 @@ public abstract class DocumentInfo_Base
                         || SummarizeConfig.CREDIT.equals(getSummarizeConfig()) && !_debit) {
             _accInfo.setAmountRate(null); // reset the amount rate
             for (final AccountInfo acc : _accounts) {
-                if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
-                                .equals(_accInfo.getRateInfo().getCurrencyInstance())) {
-                    acc.addAmount(_accInfo.getAmount());
-                    add = false;
-                    break;
+                switch (getSummarizeCriteria()) {
+                    case LABEL:
+                        if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
+                                        .equals(_accInfo.getRateInfo().getCurrencyInstance())
+                                && (acc.getLabelInst() == null && _accInfo.getLabelInst() == null
+                                        || acc.getLabelInst() !=null
+                                            && acc.getLabelInst().equals(_accInfo.getLabelInst()))) {
+                            acc.addAmount(_accInfo.getAmount());
+                            add = false;
+                            break;
+                        }
+                        break;
+                    case ALL:
+                        if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
+                                        .equals(_accInfo.getRateInfo().getCurrencyInstance())
+                                && (acc.getLabelInst() == null && _accInfo.getLabelInst() == null
+                                        || acc.getLabelInst() !=null
+                                                && acc.getLabelInst().equals(_accInfo.getLabelInst()))
+                                && (acc.getRemark() == null && _accInfo.getRemark() == null
+                                        || acc.getRemark() !=null
+                                                && acc.getRemark().equals(_accInfo.getRemark()))) {
+                            acc.addAmount(_accInfo.getAmount());
+                            add = false;
+                            break;
+                        }
+                        break;
+                    case ACCOUNT:
+                    default:
+                        if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
+                                        .equals(_accInfo.getRateInfo().getCurrencyInstance())) {
+                            acc.addAmount(_accInfo.getAmount());
+                            add = false;
+                            break;
+                        }
+                        break;
                 }
             }
         }
@@ -986,8 +1018,31 @@ public abstract class DocumentInfo_Base
         }
     }
 
+
+
+    /**
+     * Getter method for the instance variable {@link #summarizeCriteria}.
+     *
+     * @return value of instance variable {@link #summarizeCriteria}
+     */
+    public SummarizeCriteria getSummarizeCriteria()
+    {
+        return this.summarizeCriteria;
+    }
+
+    /**
+     * Setter method for instance variable {@link #summarizeCriteria}.
+     *
+     * @param _summarizeCriteria value for instance variable {@link #summarizeCriteria}
+     */
+    public void setSummarizeCriteria(final SummarizeCriteria _summarizeCriteria)
+    {
+        this.summarizeCriteria = _summarizeCriteria;
+    }
+
     protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
-                                              final SummarizeConfig _config)
+                                              final SummarizeConfig _config,
+                                              final SummarizeCriteria _criteria)
         throws EFapsException
     {
         DocumentInfo ret;
@@ -997,6 +1052,7 @@ public abstract class DocumentInfo_Base
             ret = new DocumentInfo();
             ret.setRateInfo(_docInfos.iterator().next().getRateInfo());
             ret.setSummarizeConfig(_config);
+            ret.setSummarizeCriteria(_criteria);
             ret.setCaseInst(_docInfos.iterator().next().getCaseInst());
             for (final DocumentInfo documentInfo : _docInfos) {
                 for (final AccountInfo accInfo : documentInfo.getCreditAccounts()) {

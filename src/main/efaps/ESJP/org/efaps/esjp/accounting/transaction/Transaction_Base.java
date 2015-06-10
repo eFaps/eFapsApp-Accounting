@@ -78,6 +78,7 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -478,7 +479,30 @@ public abstract class Transaction_Base
      * @return true if summarize
      * @throws EFapsException on error
      */
-    protected SummarizeConfig summarizeTransaction(final Parameter _parameter)
+    protected SummarizeCriteria getSummarizeCriteria(final Parameter _parameter)
+        throws EFapsException
+    {
+        SummarizeCriteria ret = SummarizeCriteria.ACCOUNT;
+
+        if (_parameter.getParameterValue("summarizeCriteria") != null) {
+            final Integer num = Integer.valueOf(_parameter.getParameterValue("summarizeCriteria"));
+            for (final SummarizeCriteria cons : SummarizeCriteria.values()) {
+                if (num == cons.getInt()) {
+                    ret = cons;
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return true if summarize
+     * @throws EFapsException on error
+     */
+    protected SummarizeConfig getSummarizeConfig(final Parameter _parameter)
         throws EFapsException
     {
         SummarizeConfig ret = SummarizeConfig.NONE;
@@ -537,7 +561,8 @@ public abstract class Transaction_Base
         final Return ret = new Return();
         final List<DocumentInfo> docs = evalDocuments(_parameter);
         if (docs != null && !docs.isEmpty()) {
-            final DocumentInfo docInfo = DocumentInfo.getCombined(docs, summarizeTransaction(_parameter));
+            final DocumentInfo docInfo = DocumentInfo.getCombined(docs,
+                            getSummarizeConfig(_parameter), getSummarizeCriteria(_parameter));
             docInfo.applyRounding(_parameter);
             final StringBuilder js = getScript4ExecuteButton(_parameter, docInfo);
             ret.put(ReturnValues.SNIPLETT, js.toString());
@@ -706,6 +731,7 @@ public abstract class Transaction_Base
                     final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
                                     .divide(_doc.getRate(_parameter), BigDecimal.ROUND_HALF_UP);
                     final AccountInfo account = new AccountInfo(acc2case.getAccountInstance(), accAmount);
+                    account.setRemark(acc2case.getRemark());
                     if (acc2case.isApplyLabel() && !labelInsts.isEmpty()) {
                         account.setLabelInst(labelInsts.get(0));
                     }
@@ -1076,6 +1102,7 @@ public abstract class Transaction_Base
             map.put("amountRate_" + _postFix, account.getAmountRateFormated(_parameter));
             map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());
+            map.put("remark_" + _postFix, account.getRemark());
 
             final StringBuilder linkHtml = "debit".equalsIgnoreCase(_postFix)
                             ? account.getLinkDebitHtml() : account.getLinkCreditHtml();

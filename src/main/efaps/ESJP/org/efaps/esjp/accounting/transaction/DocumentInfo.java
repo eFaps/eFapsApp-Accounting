@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -23,10 +20,11 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.util.Collection;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
+import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.util.EFapsException;
 
 /**
@@ -38,7 +36,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("ea1a8ce4-50e8-44dd-b43c-dd517ebadb2a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class DocumentInfo
     extends DocumentInfo_Base
 {
@@ -60,9 +58,10 @@ public class DocumentInfo
     }
 
     public static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
-                                           final SummarizeConfig _config)
+                                           final SummarizeConfig _config,
+                                           final SummarizeCriteria _criteria)
         throws EFapsException
     {
-        return DocumentInfo_Base.getCombined(_docInfos, _config);
+        return DocumentInfo_Base.getCombined(_docInfos, _config, _criteria);
     }
 }

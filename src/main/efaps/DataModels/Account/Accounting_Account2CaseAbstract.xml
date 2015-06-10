@@ -79,6 +79,12 @@
             <sqlcolumn>KEY</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Remark</name>
+            <type>String</type>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>REMARK</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>CurrencyLink</name>
             <type>LinkWithRanges</type>
             <typelink>ERP_Currency</typelink>

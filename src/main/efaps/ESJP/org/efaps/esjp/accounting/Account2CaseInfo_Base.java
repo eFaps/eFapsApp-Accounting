@@ -69,6 +69,8 @@ public abstract class Account2CaseInfo_Base
 
     private String key;
 
+    private String remark;
+
     /**
      * Getter method for the instance variable {@link #type}.
      *
@@ -282,7 +284,8 @@ public abstract class Account2CaseInfo_Base
                         CIAccounting.Account2CaseAbstract.LinkValue,
                         CIAccounting.Account2CaseAbstract.Config,
                         CIAccounting.Account2CaseAbstract.Order,
-                        CIAccounting.Account2CaseAbstract.Key);
+                        CIAccounting.Account2CaseAbstract.Key,
+                        CIAccounting.Account2CaseAbstract.Remark);
         multi.addSelect(selAccInst, selCurrInst);
         multi.execute();
         while (multi.next()) {
@@ -296,7 +299,8 @@ public abstract class Account2CaseInfo_Base
                     .setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
                     .setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
                     .setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
-                    .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key));
+                    .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key))
+                    .setRemark(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Remark));
             ret.add(acc2case);
         }
         return ret;
@@ -371,7 +375,8 @@ public abstract class Account2CaseInfo_Base
                         CIAccounting.Account2CaseAbstract.LinkValue,
                         CIAccounting.Account2CaseAbstract.Config,
                         CIAccounting.Account2CaseAbstract.Order,
-                        CIAccounting.Account2CaseAbstract.Key);
+                        CIAccounting.Account2CaseAbstract.Key,
+                        CIAccounting.Account2CaseAbstract.Remark);
         multi.addSelect(selAccInst, selCurrInst);
         multi.execute();
         if (multi.next()) {
@@ -385,7 +390,8 @@ public abstract class Account2CaseInfo_Base
                             .setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
                             .setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
                             .setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
-                            .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key));
+                            .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key))
+                            .setRemark(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Remark));
         }
         return ret;
     }
@@ -474,4 +480,24 @@ public abstract class Account2CaseInfo_Base
         return (Account2CaseInfo) this;
     }
 
+    /**
+     * Getter method for the instance variable {@link #remark}.
+     *
+     * @return value of instance variable {@link #remark}
+     */
+    public String getRemark()
+    {
+        return this.remark;
+    }
+
+    /**
+     * Setter method for instance variable {@link #remark}.
+     *
+     * @param _remark value for instance variable {@link #remark}
+     */
+    public Account2CaseInfo setRemark(final String _remark)
+    {
+        this.remark = _remark;
+        return (Account2CaseInfo) this;
+    }
 }
