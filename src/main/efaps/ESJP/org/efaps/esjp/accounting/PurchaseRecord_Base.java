@@ -39,7 +39,6 @@ import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -220,8 +219,8 @@ public abstract class PurchaseRecord_Base
 
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+            final String companyName = ERP.COMPANYNAME.get();
+            final String companyTaxNumb = ERP.COMPANYTAX.get();
 
             if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
                 report.getJrParameters().put("CompanyName", companyName);

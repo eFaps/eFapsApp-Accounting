@@ -36,7 +36,6 @@ import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.esjp.data.columns.export.FrmtDateTimeColumn;
 import org.efaps.esjp.data.columns.export.FrmtNumberColumn;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -73,7 +72,7 @@ public abstract class PurchaseRecord_Base
     public String getFileName(final Parameter _parameter)
         throws EFapsException
     {
-        final String taxnumber = ERP.getSysConfig().getAttributeValue(ERPSettings.COMPANYTAX);
+        final String taxnumber = ERP.COMPANYTAX.get();
         final DateTime date4Purchase = new PurchaseRecordReport().getDate4Purchase(_parameter);
         final String dateStr = date4Purchase.toString("yyyyMM00");
 

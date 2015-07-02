@@ -29,9 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -45,9 +42,11 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
 
 
 /**
@@ -189,8 +188,8 @@ public abstract class TransactionDataSource_Base
 
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {
-                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-                final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+                final String companyName = ERP.COMPANYNAME.get();
+                final String companyTaxNumb = ERP.COMPANYTAX.get();
 
                 if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
                     _jrParameters.put("CompanyName", companyName);

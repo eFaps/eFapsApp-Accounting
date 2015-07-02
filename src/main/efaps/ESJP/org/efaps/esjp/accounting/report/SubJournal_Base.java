@@ -29,6 +29,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIFormAccounting;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base.ExportType;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -48,28 +69,6 @@ import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
-import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.dbproperty.DBProperties;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
-import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.ci.CIFormAccounting;
-import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base.ExportType;
-import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -111,8 +110,8 @@ public abstract class SubJournal_Base
 
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+            final String companyName = ERP.COMPANYNAME.get();
+            final String companyTaxNumb = ERP.COMPANYTAX.get();
 
             if (companyName != null && companyTaxNumb != null
                             && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
