@@ -53,7 +53,7 @@ import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.access.AccessCheck4UI;
-import org.efaps.esjp.admin.common.SystemConf;
+import org.efaps.esjp.admin.common.systemconfiguration.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
