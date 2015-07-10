@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.ple;
@@ -26,15 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.accounting.report.PurchaseRecordReport;
 import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.esjp.data.columns.export.FrmtDateTimeColumn;
 import org.efaps.esjp.data.columns.export.FrmtNumberColumn;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.sales.document.DocReport;
-import org.efaps.esjp.sales.document.DocReport_Base.Field;
+import org.efaps.esjp.sales.report.DocReport;
+import org.efaps.esjp.sales.report.DocReport_Base.Field;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -44,10 +41,9 @@ import com.brsanthu.dataexporter.model.LineNumberColumn;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("67776b3b-0aa9-45cf-a1a5-542e52bd619c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class SalesRecord_Base
     extends AbstractExport
 {
