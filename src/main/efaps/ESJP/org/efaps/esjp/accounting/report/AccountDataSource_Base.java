@@ -40,12 +40,14 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -68,7 +70,7 @@ public abstract class AccountDataSource_Base
 
     /**
      * @see org.efaps.esjp.common.jasperreport.EFapsDataSource_Base#init(net.sf.jasperreports.engine.JasperReport)
-     * @param _jasperReport  JasperReport
+     * @param _jasperReport JasperReport
      * @param _parameter Parameter
      * @param _parentSource JRDataSource
      * @param _jrParameters map that contains the report parameters
@@ -79,10 +81,10 @@ public abstract class AccountDataSource_Base
                      final Parameter _parameter,
                      final JRDataSource _parentSource,
                      final Map<String, Object> _jrParameters)
-        throws EFapsException
+                         throws EFapsException
     {
         final List<Instance> instances = new ArrayList<Instance>();
-        if (_parameter.getInstance() != null  && _parameter.getInstance().isValid()
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
                         && _parameter.getInstance().getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
             instances.add(_parameter.getInstance());
             final PrintQuery printRep = new PrintQuery(_parameter.getInstance());
@@ -92,7 +94,7 @@ public abstract class AccountDataSource_Base
             _jrParameters.put("FileName", name);
         } else {
             final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("selectedOIDs");
-            final Set<Instance>instSet = new LinkedHashSet<Instance>();
+            final Set<Instance> instSet = new LinkedHashSet<Instance>();
             for (final String oid : oids) {
                 final Instance instancetmp = Instance.get(oid);
                 if (instancetmp.isValid()) {
@@ -113,8 +115,8 @@ public abstract class AccountDataSource_Base
                 final CurrencyInst curInst = new CurrencyInst(curr);
                 _jrParameters.put("TargetCurrencyId", curr.getId());
                 _jrParameters.put("TargetCurrencyLabel", curInst.getName());
-                final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
-                rates.putAll(getRates4DateRange(curInst.getInstance(), dateFrom, dateTo, rateCurType));
+
+                rates.putAll(getRates4DateRange(_parameter, curInst.getInstance(), dateFrom, dateTo));
             }
         } else {
             _jrParameters.put("TargetCurrencyId", null);
@@ -159,8 +161,8 @@ public abstract class AccountDataSource_Base
     }
 
     protected Set<Instance> getAccountInstances(final Parameter _parameter,
-                                                 final Instance _instance)
-        throws EFapsException
+                                                final Instance _instance)
+                                                    throws EFapsException
     {
         final Set<Instance> ret = new LinkedHashSet<Instance>();
         final PrintQuery print = new PrintQuery(_instance);
@@ -180,41 +182,47 @@ public abstract class AccountDataSource_Base
         return ret;
     }
 
-    protected Map<DateTime, BigDecimal> getRates4DateRange(final Instance _curInst,
+    protected Map<DateTime, BigDecimal> getRates4DateRange(final Parameter _parameter,
+                                                           final Instance _curInst,
                                                            final DateTime _from,
-                                                           final DateTime _to,
-                                                           final Long _rateCurType)
-        throws EFapsException
+                                                           final DateTime _to)
+                                                               throws EFapsException
     {
         final Map<DateTime, BigDecimal> map = new HashMap<DateTime, BigDecimal>();
         DateTime fromAux = _from;
-        Rate rate;
+        final Currency currency = getCurrency(_parameter);
+
         while (fromAux.isBefore(_to)) {
-            final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
-            queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
-            queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, fromAux.minusMinutes(1));
-            queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, fromAux.plusMinutes(1));
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder valSel = new SelectBuilder()
-                            .attribute(CIERP.CurrencyRateAbstract.Rate).value();
-            final SelectBuilder labSel = new SelectBuilder()
-                            .attribute(CIERP.CurrencyRateAbstract.Rate).label();
-            final SelectBuilder curSel = new SelectBuilder()
-                            .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
-            multi.addSelect(valSel, labSel, curSel);
-            multi.execute();
-            if (multi.next()) {
-                rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
-                                multi.<BigDecimal>getSelect(valSel),
-                                multi.<BigDecimal>getSelect(labSel));
-            } else {
-                rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
-                                _curInst.getId())), BigDecimal.ONE);
-            }
-            map.put(fromAux, rate.getValue());
+            final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, fromAux, _curInst);
+            final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, AccountDataSource.class.getName());
+            map.put(fromAux, rate);
             fromAux = fromAux.plusDays(1);
         }
         return map;
+    }
+
+    protected Currency getCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Currency ret = new Currency()
+        {
+
+            @Override
+            protected Type getType4ExchangeRate(final Parameter _parameter)
+                throws EFapsException
+            {
+                // TODO final Long rateCurType =
+                // Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+                Type typeRet;
+                if (Accounting.getSysConfig().getAttributeValueAsBoolean(AccountingSettings.CURRATEEQ)) {
+                    typeRet = super.getType4ExchangeRate(_parameter);
+                } else {
+                    typeRet = CIAccounting.ERP_CurrencyRateAccounting.getType();
+                }
+                return typeRet;
+            }
+        };
+        return ret;
     }
 
 }

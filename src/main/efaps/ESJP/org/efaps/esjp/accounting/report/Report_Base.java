@@ -53,13 +53,15 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -492,6 +494,31 @@ public abstract class Report_Base
     protected boolean isIndent(final Parameter _parameter)
     {
         return !_parameter.getInstance().getType().isKindOf(CIAccounting.ReportProfitLoss.getType());
+    }
+
+    protected Currency getCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Currency ret = new Currency()
+        {
+
+            @Override
+            protected Type getType4ExchangeRate(final Parameter _parameter)
+                throws EFapsException
+            {
+                Type typeRet;
+                //TODO evaluate that
+                //final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+
+                if (Accounting.getSysConfig().getAttributeValueAsBoolean(AccountingSettings.CURRATEEQ)) {
+                    typeRet = super.getType4ExchangeRate(_parameter);
+                } else {
+                    typeRet = CIAccounting.ERP_CurrencyRateAccounting.getType();
+                }
+                return typeRet;
+            }
+        };
+        return ret;
     }
 
 
@@ -1203,22 +1230,23 @@ public abstract class Report_Base
                 final DateTime date = print.<DateTime>getSelect(selTxnDate);
                 BigDecimal amount = BigDecimal.ZERO;
                 if (active) {
-                    final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
                     final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
                     if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
                         if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
-                            final Rate rateTmp = getRates4DateRange(curInstTxnPos.getInstance(), date, rateCurType);
+                            RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInstTxnPos.getInstance());
+                            BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
                             final BigDecimal amountTmp = print
                                         .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
-                                                    .multiply(rateTmp.getLabel());
-
-                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
-                            amount = amountTmp.multiply(rate.getLabel());
+                                        .divide(rate, BigDecimal.ROUND_HALF_UP);
+                            rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst.getInstance());
+                            rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
+                            amount = amountTmp.divide(rate, BigDecimal.ROUND_HALF_UP);
                         } else {
-                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                            final RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst.getInstance());
+                            final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
                             amount = print
                                         .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
-                                                    .multiply(rate.getValue());
+                                        .divide(rate, BigDecimal.ROUND_HALF_UP);
                         }
 
                     } else {
@@ -1270,36 +1298,5 @@ public abstract class Report_Base
         {
             return this.sum;
         }
-    }
-
-    public Rate getRates4DateRange(final Instance _curInst,
-                                   final DateTime _date,
-                                   final Long _rateCurType)
-        throws EFapsException
-    {
-        Rate rate;
-        final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
-        queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
-        queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, _date.minusMinutes(1));
-        queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, _date.plusMinutes(1));
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder valSel = new SelectBuilder()
-                        .attribute(CIERP.CurrencyRateAbstract.Rate).value();
-        final SelectBuilder labSel = new SelectBuilder()
-                        .attribute(CIERP.CurrencyRateAbstract.Rate).label();
-        final SelectBuilder curSel = new SelectBuilder()
-                        .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
-        multi.addSelect(valSel, labSel, curSel);
-        multi.execute();
-        if (multi.next()) {
-            rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
-                            multi.<BigDecimal>getSelect(valSel),
-                            multi.<BigDecimal>getSelect(labSel));
-        } else {
-            rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
-                            _curInst.getId())), BigDecimal.ONE);
-        }
-
-        return rate;
     }
 }
