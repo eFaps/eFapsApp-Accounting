@@ -39,7 +39,7 @@
         <!-- target definitions -->
         <target>
             <form>Accounting_PeriodConfigurationForm</form>
-            <execute program="org.efaps.esjp.admin.common.SystemConf" method="updateObjectAttribute">
+            <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf" method="updateObjectAttribute">
                 <!-- Accounting-Configuration -->
                 <property name="SystemConfigurationUUID">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
                 <property name="FieldName">systemConfigurationObject</property>
