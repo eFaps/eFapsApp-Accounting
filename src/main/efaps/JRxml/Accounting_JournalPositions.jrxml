@@ -1,107 +1,106 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_JournalPositions" language="groovy" pageWidth="403" pageHeight="555" orientation="Landscape" columnWidth="392" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5be105c8-66a8-46ca-8c0b-aa83b96d5941">
-    <import value="org.efaps.db.Instance"/>
-    <import value="org.efaps.esjp.accounting.report.Report"/>
-    <import value="org.efaps.esjp.erp.Rate"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="Types" value="Accounting_TransactionPositionAbstract"/>
-        <property name="LinkFroms" value="TransactionLink"/>
-        <property name="useInstanceFromParent" value="true"/>
-    </parameter>
-    <parameter name="Active" class="java.lang.Boolean"/>
-    <parameter name="CurrencyBase" class="org.efaps.db.Instance"/>
-    <parameter name="CurrencyUI" class="org.efaps.db.Instance"/>
-    <parameter name="RateCurrencyType" class="java.lang.Long"/>
-    <field name="accountName" class="java.lang.String">
-        <property name="Select" value="linkto[AccountLink].attribute[Name]"/>
-    </field>
-    <field name="date" class="org.joda.time.DateTime">
-        <property name="Select" value="linkto[TransactionLink].attribute[Date]"/>
-    </field>
-    <field name="amount" class="java.math.BigDecimal">
-        <property name="Select" value="attribute[Amount]"/>
-    </field>
-    <field name="rateAmount" class="java.math.BigDecimal">
-        <property name="Select" value="attribute[RateAmount]"/>
-    </field>
-    <field name="currencyDB" class="org.efaps.db.Instance">
-        <property name="Select" value="linkto[RateCurrencyLink].instance()"/>
-    </field>
-    <field name="accountDescription" class="java.lang.String">
-        <property name="Select" value="linkto[AccountLink].attribute[Description]"/>
-    </field>
-    <field name="position" class="java.lang.Integer">
-        <property name="Select" value="attribute[Position]"/>
-    </field>
-    <sortField name="position"/>
-    <variable name="amount" class="java.math.BigDecimal">
-        <variableExpression><![CDATA[$P{Active}
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 5.5.1  -->
+<!-- 2015-09-16T10:12:21 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_JournalPositions" language="groovy" pageWidth="403" pageHeight="555" orientation="Landscape" columnWidth="392" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5be105c8-66a8-46ca-8c0b-aa83b96d5941">
+	<import value="org.efaps.db.Instance"/>
+	<import value="org.efaps.esjp.accounting.report.Report"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="Types" value="Accounting_TransactionPositionAbstract"/>
+		<property name="LinkFroms" value="TransactionLink"/>
+		<property name="useInstanceFromParent" value="true"/>
+	</parameter>
+	<parameter name="Active" class="java.lang.Boolean"/>
+	<parameter name="CurrencyBase" class="org.efaps.db.Instance"/>
+	<parameter name="CurrencyUI" class="org.efaps.db.Instance"/>
+	<parameter name="RateCurrencyType" class="java.lang.Long"/>
+	<field name="accountName" class="java.lang.String">
+		<property name="Select" value="linkto[AccountLink].attribute[Name]"/>
+	</field>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="linkto[TransactionLink].attribute[Date]"/>
+	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[Amount]"/>
+	</field>
+	<field name="rateAmount" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[RateAmount]"/>
+	</field>
+	<field name="currencyDB" class="org.efaps.db.Instance">
+		<property name="Select" value="linkto[RateCurrencyLink].instance()"/>
+	</field>
+	<field name="accountDescription" class="java.lang.String">
+		<property name="Select" value="linkto[AccountLink].attribute[Description]"/>
+	</field>
+	<field name="position" class="java.lang.Integer">
+		<property name="Select" value="attribute[Position]"/>
+	</field>
+	<sortField name="position"/>
+	<variable name="amount" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$P{Active}
         ? ($F{currencyDB}.getId() != $P{CurrencyUI}.getId()
             ? ($F{currencyDB}.getId() != $P{CurrencyBase}.getId()
                 ? ($F{rateAmount}.multiply(new Report().getRates4DateRange($F{currencyDB}, $F{date}, $P{RateCurrencyType}).getLabel())).multiply(new Report().getRates4DateRange($P{CurrencyUI}, $F{date}, $P{RateCurrencyType}).getLabel())
                 : $F{rateAmount}.multiply(new Report().getRates4DateRange($P{CurrencyUI}, $F{date}, $P{RateCurrencyType}).getValue()))
             : $F{rateAmount})
         : $F{amount}]]></variableExpression>
-    </variable>
-    <variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount}.abs() : BigDecimal.ZERO)]]></variableExpression>
-    </variable>
-    <variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : BigDecimal.ZERO)]]></variableExpression>
-    </variable>
-    <detail>
-        <band height="14" splitType="Prevent">
-            <property name="local_mesure_unitheight" value="pixel"/>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="60" height="14" uuid="a09b7030-845d-48d8-a9df-902faa967ea1"/>
-                <box leftPadding="2">
-                    <leftPen lineWidth="1.0"/>
-                    <bottomPen lineWidth="1.0"/>
-                    <rightPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle">
-                    <font size="9"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="263" y="0" width="70" height="14" uuid="bf1fcc5a-5791-4e84-aa77-e4c4bbdc3511"/>
-                <box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
-                    <leftPen lineWidth="1.0"/>
-                    <bottomPen lineWidth="1.0"/>
-                    <rightPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
-                    <font size="9" isPdfEmbedded="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount}.abs() : null)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="333" y="0" width="70" height="14" uuid="78908d7e-e151-489b-a237-3cda9a18ceb0"/>
-                <box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
-                    <leftPen lineWidth="1.0"/>
-                    <bottomPen lineWidth="1.0"/>
-                    <rightPen lineWidth="1.0"/>
-                </box>
-                <textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
-                    <font size="9" isPdfEmbedded="true"/>
-                </textElement>
-                <textFieldExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : null)]]></textFieldExpression>
-            </textField>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="60" y="0" width="203" height="14" uuid="518a7b20-a94d-43de-b004-e9ccaab46c9c"/>
-                <box leftPadding="2">
-                    <leftPen lineWidth="1.0"/>
-                    <bottomPen lineWidth="1.0"/>
-                    <rightPen lineWidth="1.0"/>
-                </box>
-                <textElement verticalAlignment="Middle">
-                    <font size="9"/>
-                </textElement>
-                <textFieldExpression><![CDATA[$F{accountDescription}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
+	</variable>
+	<variable name="debitSum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount}.abs() : BigDecimal.ZERO)]]></variableExpression>
+	</variable>
+	<variable name="creditSum" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : BigDecimal.ZERO)]]></variableExpression>
+	</variable>
+	<detail>
+		<band height="14" splitType="Prevent">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="60" height="14" uuid="a09b7030-845d-48d8-a9df-902faa967ea1"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="263" y="0" width="70" height="14" uuid="bf1fcc5a-5791-4e84-aa77-e4c4bbdc3511"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
+					<font size="9" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount}.abs() : null)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="333" y="0" width="70" height="14" uuid="78908d7e-e151-489b-a237-3cda9a18ceb0"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="html">
+					<font size="9" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : null)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="60" y="0" width="203" height="14" uuid="518a7b20-a94d-43de-b004-e9ccaab46c9c"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accountDescription}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
 </jasperReport>
