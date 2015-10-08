@@ -1,43 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-09-18T12:46:33 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="28" rightMargin="28" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" uuid="7e65f5a8-4957-4494-a75f-e437820b673b">
-	<property name="ireport.zoom" value="2.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-07T21:52:30 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_Transaction" pageWidth="595" pageHeight="842" columnWidth="567" leftMargin="14" rightMargin="14" topMargin="28" bottomMargin="28" isFloatColumnFooter="true" whenResourceMissingType="Empty" uuid="7e65f5a8-4957-4494-a75f-e437820b673b">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="mm"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="mm"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="Instance" value="true"/>
-		<property name="hasSubReport" value="true"/>
+	<parameter name="INSTANCE" class="java.lang.Object" isForPrompting="false">
+		<defaultValueExpression><![CDATA[10943.275]]></defaultValueExpression>
 	</parameter>
-	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap" isForPrompting="false"/>
-	<parameter name="CompanyName" class="java.lang.String"/>
-	<parameter name="CompanyTaxNum" class="java.lang.String"/>
-	<parameter name="Period" class="java.lang.String" isForPrompting="false">
-		<parameterDescription><![CDATA[]]></parameterDescription>
+	<parameter name="CompanyName" class="java.lang.String">
+		<defaultValueExpression><![CDATA["eFaps Company S.A."]]></defaultValueExpression>
 	</parameter>
-	<field name="name" class="java.lang.String">
-		<property name="Select" value="attribute[Name]"/>
-	</field>
-	<field name="identifier" class="java.lang.String">
-		<property name="Select" value="attribute[Identifier]"/>
-	</field>
-	<field name="description" class="java.lang.String">
-		<property name="Select" value="attribute[Description]"/>
-	</field>
-	<field name="date" class="org.joda.time.DateTime">
-		<property name="Select" value="attribute[Date]"/>
-	</field>
+	<parameter name="CompanyTaxNum" class="java.lang.String">
+		<defaultValueExpression><![CDATA["12345678901"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="eFaps">
+		<![CDATA[print obj $P!{INSTANCE}
+select
+attribute[Name] as name,
+attribute[Identifier] as identifier,
+attribute[Description] as description,
+attribute[Date] as date,
+linkto[PeriodLink].attribute[Name] as period]]>
+	</queryString>
+	<field name="name" class="java.lang.String"/>
+	<field name="identifier" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="date" class="org.joda.time.DateTime"/>
+	<field name="period" class="java.lang.String"/>
 	<pageHeader>
-		<band height="100">
+		<band height="94">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
@@ -59,14 +57,18 @@
 				<text><![CDATA[EMPRESA:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="70" y="16" width="469" height="16" uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f"/>
+				<reportElement x="70" y="16" width="497" height="16" uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="70" y="0" width="469" height="16" uuid="3eb75a7b-149c-4ebc-a756-74da899f703a"/>
+				<reportElement x="70" y="0" width="497" height="16" uuid="3eb75a7b-149c-4ebc-a756-74da899f703a">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="11" isBold="false"/>
 				</textElement>
@@ -85,24 +87,25 @@
 				<text><![CDATA[EJERCICIO:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="70" y="32" width="469" height="16" uuid="1b9d59b9-393c-4925-a359-d765fb3a8f35">
+				<reportElement x="70" y="32" width="497" height="16" uuid="1b9d59b9-393c-4925-a359-d765fb3a8f35">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{Period}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{period}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="60" width="539" height="16" uuid="74be226a-05d8-4a8d-9b4a-b65bbb46eb10"/>
+				<reportElement x="0" y="57" width="567" height="16" uuid="74be226a-05d8-4a8d-9b4a-b65bbb46eb10"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Voucher: " + $F{identifier}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="MMMM, yyyy" isBlankWhenNull="true">
-				<reportElement x="0" y="76" width="539" height="16" uuid="3fb0f5d7-e340-476e-b055-9a515949b28e"/>
+				<reportElement x="0" y="73" width="567" height="16" uuid="3fb0f5d7-e340-476e-b055-9a515949b28e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
@@ -117,7 +120,7 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="110" y="32" width="429" height="16" uuid="8898dbe2-28b7-4606-a863-39a03d070e90"/>
+				<reportElement x="110" y="32" width="457" height="16" uuid="8898dbe2-28b7-4606-a863-39a03d070e90"/>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
@@ -150,23 +153,25 @@
 		<band height="63" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<subreport isUsingCache="false">
-				<reportElement x="0" y="0" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06">
+				<reportElement x="0" y="0" width="567" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 				</reportElement>
-				<subreportParameter name="EFAPS_SUBREPORT"/>
-				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionPosition")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionPosition"]]></subreportExpression>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["Accounting_TransactionPosition.jrxml"]]></subreportExpression>
 			</subreport>
 		</band>
 		<band height="93" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<subreport isUsingCache="false">
-				<reportElement x="0" y="30" width="539" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06"/>
-				<subreportParameter name="EFAPS_SUBREPORT">
-					<subreportParameterExpression><![CDATA[$P{EFAPS_SUBREPORT}]]></subreportParameterExpression>
+				<reportElement x="0" y="30" width="567" height="60" uuid="b54fc070-b7fc-406b-9dc0-348f747cad06"/>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
 				</subreportParameter>
-				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionDocuments")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionDocuments"]]></subreportExpression>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["Accounting_TransactionDocuments.jrxml"]]></subreportExpression>
 			</subreport>
 			<staticText>
 				<reportElement x="0" y="10" width="139" height="20" uuid="a45af7cb-383a-4fe3-8c7a-29bb2a2a63f3"/>
@@ -179,9 +184,12 @@
 				<text><![CDATA[Subdiario:]]></text>
 			</staticText>
 			<subreport>
-				<reportElement x="0" y="32" width="539" height="68" uuid="f23e51bf-6586-4fad-9baa-983a403a4c39"/>
-				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Accounting_TransactionSubJournals")]]></dataSourceExpression>
-				<subreportExpression><![CDATA["JasperReport.Accounting_TransactionSubJournals"]]></subreportExpression>
+				<reportElement x="0" y="32" width="567" height="68" uuid="f23e51bf-6586-4fad-9baa-983a403a4c39"/>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["Accounting_TransactionSubJournals.jrxml"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>

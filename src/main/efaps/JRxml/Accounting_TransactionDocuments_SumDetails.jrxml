@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-09-18T22:53:48 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionDocuments_SumDetails" language="groovy" pageWidth="208" pageHeight="595" columnWidth="208" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error" uuid="c31354d8-6979-4a7b-94c5-0c242abca306">
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-07T18:58:36 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionDocuments_SumDetails" pageWidth="208" pageHeight="595" columnWidth="208" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error" uuid="c31354d8-6979-4a7b-94c5-0c242abca306">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -11,27 +11,26 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="Instance" value="true"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
+	<parameter name="INSTANCE" class="java.lang.Object">
+		<defaultValueExpression><![CDATA["5828.23709"]]></defaultValueExpression>
 	</parameter>
-	<field name="crossTotal" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[CrossTotal]"/>
-	</field>
-	<field name="netTotal" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[NetTotal]"/>
-	</field>
-	<field name="rateCrossTotal" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[RateCrossTotal]"/>
-	</field>
-	<field name="rateNetTotal" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[RateNetTotal]"/>
-	</field>
-	<field name="rateCurrency" class="java.lang.String">
-		<property name="Select" value="linkto[RateCurrencyId].attribute[Symbol]"/>
-	</field>
-	<field name="rate" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Rate].label"/>
-	</field>
+	<queryString language="eFaps">
+		<![CDATA[print obj $P!{INSTANCE}
+select
+attribute[CrossTotal] as crossTotal,
+attribute[NetTotal] as netTotal,
+attribute[RateCrossTotal] as rateCrossTotal,
+attribute[RateNetTotal] as rateNetTotal,
+linkto[RateCurrencyId].attribute[Symbol] as rateCurrency,
+attribute[Rate].label as rate]]>
+	</queryString>
+	<field name="crossTotal" class="java.math.BigDecimal"/>
+	<field name="netTotal" class="java.math.BigDecimal"/>
+	<field name="rateCrossTotal" class="java.math.BigDecimal"/>
+	<field name="rateNetTotal" class="java.math.BigDecimal"/>
+	<field name="rateCurrency" class="java.lang.String"/>
+	<field name="rate" class="java.math.BigDecimal"/>
 	<detail>
 		<band height="12">
 			<property name="local_mesure_unitheight" value="pixel"/>
@@ -49,8 +48,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rateNetTotal}]]></textFieldExpression>
 			</textField>
@@ -66,8 +65,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rateCrossTotal}]]></textFieldExpression>
 			</textField>
@@ -84,8 +83,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
@@ -100,8 +99,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font size="8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rateCurrency}]]></textFieldExpression>
 			</textField>
@@ -117,8 +116,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{netTotal}]]></textFieldExpression>
 			</textField>
@@ -134,8 +133,8 @@
 					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Right">
-					<font size="8"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
 			</textField>
