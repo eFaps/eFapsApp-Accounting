@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c72ef86e-be4f-4634-b028-1f771332a814</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_PayMenu_Others_Menu_Action_Register</name>
@@ -36,6 +30,7 @@
             <form>Accounting_TransactionCreate4OthersPayForm</form>
             <execute method="create4OthersPay" program="org.efaps.esjp.accounting.transaction.Create">
                 <property name="JasperReport">Accounting_Transaction</property>
+                <property name="NoDataSource">true</property>
             </execute>
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Validation" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"

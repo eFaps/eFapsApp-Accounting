@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
-<!-- 2015-10-07T17:29:30 -->
+<!-- 2015-10-09T13:38:05 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_TransactionDocuments_PayDetails" language="groovy" pageWidth="208" pageHeight="595" columnWidth="208" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Error" uuid="0a97fc10-2fd6-4a62-bff1-f4eebc0b7d5c">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
@@ -11,19 +11,20 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="Instance" value="true"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
+	<parameter name="INSTANCE" class="java.lang.Object">
+		<defaultValueExpression><![CDATA["5828.23709"]]></defaultValueExpression>
 	</parameter>
-	<field name="amount" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Amount]"/>
-	</field>
-	<field name="currency" class="java.lang.String">
-		<property name="Select" value="linkto[CurrencyLink].attribute[Symbol]"/>
-	</field>
-	<field name="rate" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Rate].label"/>
-	</field>
+	<queryString language="eFaps">
+		<![CDATA[print obj $P!{INSTANCE}
+select
+attribute[Amount] as amount,
+linkto[CurrencyLink].attribute[Symbol] as currency,
+attribute[Rate].label as rate]]>
+	</queryString>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="currency" class="java.lang.String"/>
+	<field name="rate" class="java.math.BigDecimal"/>
 	<detail>
 		<band height="12">
 			<property name="local_mesure_unitheight" value="pixel"/>
