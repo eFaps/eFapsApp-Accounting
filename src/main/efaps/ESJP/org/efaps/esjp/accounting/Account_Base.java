@@ -240,7 +240,7 @@ public abstract class Account_Base
 
         final InstanceQuery query = queryBuilder.getQuery();
         if (instance.getType().isKindOf(CIAccounting.ReportMultipleAbstract.getType())) {
-            query.setCompanyDepended(false);
+            query.setCompanyDependent(false);
         }
 
         final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
