@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
@@ -33,15 +30,15 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("ff265bae-8984-44ba-84cf-8529eb4424bb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("efapsApp-Accounting")
 public abstract class TransactionDocument_Base
     extends AbstractDocument
 {
@@ -62,7 +59,7 @@ public abstract class TransactionDocument_Base
         print.executeWithoutAccessCheck();
 
         final Insert insert = new Insert(CIAccounting.TransactionDocument);
-        insert.add(CIAccounting.TransactionDocument.Date, print.getAttribute(CIAccounting.Transaction.Date));
+        insert.add(CIAccounting.TransactionDocument.Date, print.<DateTime>getAttribute(CIAccounting.Transaction.Date));
 
         final Instance contactInst = Instance.get(_parameter
                         .getParameterValue(CIFormAccounting.Accounting_TransactionForm.contact.name));

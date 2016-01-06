@@ -1,5 +1,5 @@
 /*
-  * Copyright 2003 - 2010 The eFaps Team
+  * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting;
@@ -39,7 +36,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.admin.user.Company;
@@ -65,10 +62,9 @@ import org.efaps.util.cache.CacheReloadException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("e9b8eabd-7122-4b30-a78b-891d1cec1a90")
-@EFapsRevision("$Rev$")
+@EFapsApplication("efapsApp-Accounting")
 public abstract class Account_Base
     extends AbstractCommon
 {
@@ -649,13 +645,13 @@ public abstract class Account_Base
                         print.addAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink);
                         print.executeWithoutAccessCheck();
                         _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
-                                    print.getAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink));
+                                    print.<Long>getAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink));
                     } else if (accInst.getType().isKindOf(CIAccounting.CaseAbstract.getType())) {
                         final PrintQuery print = new PrintQuery(accInst);
                         print.addAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink);
                         print.executeWithoutAccessCheck();
                         _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
-                                        print.getAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink));
+                                        print.<Long>getAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink));
                     }
                 }
             }

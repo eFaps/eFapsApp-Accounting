@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting;
@@ -30,7 +27,7 @@ import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.Command;
 import org.efaps.db.AttributeQuery;
@@ -51,10 +48,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("948a690d-9934-470a-b8fb-b1e4d212010a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("efapsApp-Accounting")
 public abstract class SubPeriod_Base
     extends AbstractCommon
 {
@@ -243,7 +239,7 @@ public abstract class SubPeriod_Base
                 print.addAttribute(CIAccounting.SubPeriod.PeriodLink);
                 print.execute();
                 _queryBldr.addWhereAttrEqValue(CIAccounting.ReportAbstract.PeriodLink,
-                                print.getAttribute(CIAccounting.SubPeriod.PeriodLink));
+                                print.<Long>getAttribute(CIAccounting.SubPeriod.PeriodLink));
             }
         };
         return multi.execute(_parameter);
