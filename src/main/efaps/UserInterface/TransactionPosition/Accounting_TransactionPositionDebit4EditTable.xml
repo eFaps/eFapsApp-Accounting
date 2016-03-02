@@ -61,13 +61,6 @@
             <property name="Label">Accounting_TransactionPositionAbstract/RateCurrencyLink.Label</property>
             <property name="Required">true</property>
             <property name="Width">2</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue"
-                name="Accounting_TransactionPositionDebitTable.rateCurrencyLink_Debit.UI_FIELD_VALUE"
-                program="org.efaps.esjp.common.uiform.Field" >
-                <property name="Type">ERP_Currency</property>
-                <property name="Select">attribute[Name]</property>
-                <property name="SetSelected">true</property>
-            </trigger>
             <trigger event="UI_FIELD_UPDATE" method="update4Currency"
                 name="Accounting_TransactionPositionDebitTable.rateCurrencyLink_Debit.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.accounting.transaction.FieldUpdate">

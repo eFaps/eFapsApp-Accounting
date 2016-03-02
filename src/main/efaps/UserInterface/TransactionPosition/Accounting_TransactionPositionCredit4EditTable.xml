@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2e7343aa-c632-44eb-b9cb-db3fb264c069</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPositionCredit4EditTable</name>
@@ -56,13 +51,6 @@
             <property name="Label">Accounting_TransactionPositionAbstract/RateCurrencyLink.Label</property>
             <property name="Required">true</property>
             <property name="Width">2</property>
-             <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue"
-                name="Accounting_TransactionPositionDebitTable.rateCurrencyLink_Debit.UI_FIELD_VALUE"
-                program="org.efaps.esjp.common.uiform.Field" >
-                <property name="Type">ERP_Currency</property>
-                <property name="Select">attribute[Name]</property>
-                <property name="SetSelected">true</property>
-            </trigger>
             <trigger event="UI_FIELD_UPDATE" method="update4Currency"
                 name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Credit.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.accounting.transaction.FieldUpdate">

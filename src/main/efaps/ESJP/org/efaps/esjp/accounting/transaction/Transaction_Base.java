@@ -88,6 +88,7 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.models.cell.UIFormCell;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -633,7 +634,12 @@ public abstract class Transaction_Base
                         docInfo.setAmount((BigDecimal) docInfo.getFormater().parse(
                                         amountStr.isEmpty() ? "0" : amountStr));
                         currInst = Instance.get(CIERP.Currency.getType(), Long.parseLong(curr));
-                        docInfo.setDate(new DateTime(_parameter.getParameterValue("date")));
+                        if (_parameter.getParameterValue("date") != null) {
+                            docInfo.setDate(new DateTime(_parameter.getParameterValue("date")));
+                        } else {
+                            docInfo.setDate(DateUtil.getDateFromParameter(
+                                            _parameter.getParameterValue("date_eFapsDate")));
+                        }
                     }
 
                     final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getDate(), currInst);

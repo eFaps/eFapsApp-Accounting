@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -38,13 +35,15 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
@@ -65,6 +64,7 @@ import org.efaps.esjp.accounting.report.DocumentDetailsReport;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
+import org.efaps.esjp.admin.datamodel.RangesValue_Base.RangeValueOption;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
@@ -96,10 +96,9 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("5075c0e0-e95a-418c-864b-3a90c1dac404")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class FieldValue_Base
     extends Transaction
 {
@@ -337,10 +336,20 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Period period = new Period();
-        final Instance inst = period.evaluateCurrentPeriod(_parameter);
-        final String baseCurName = period.getCurrency(inst).getName();
-        ret.put(ReturnValues.VALUES, baseCurName);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (uiValue instanceof UIValue) {
+            final Period period = new Period();
+            final Instance inst = period.evaluateCurrentPeriod(_parameter);
+            final CurrencyInst baseCurInstObj = period.getCurrency(inst);
+
+            @SuppressWarnings("unchecked")
+            final List<RangeValueOption> values = (List<RangeValueOption>) ((UIValue) uiValue).getUIProvider()
+                            .getValue((UIValue) uiValue);
+            for (final RangeValueOption option : values) {
+                option.setSelected(option.getValue().equals(baseCurInstObj.getInstance().getId())) ;
+            }
+            ret.put(ReturnValues.VALUES, values);
+        }
         return ret;
     }
 
@@ -520,7 +529,7 @@ public abstract class FieldValue_Base
         final StringBuilder html = new StringBuilder();
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
-        final Table table = (Table) new Table().setStyle("width:350px;");
+        final Table table = new Table().setStyle("width:350px;");
         for (final Instance docInst : getSelectedDocInst(_parameter)) {
             final DocumentInfo doc = new DocumentInfo(docInst);
             addDocumentInfo(_parameter, table, doc);
