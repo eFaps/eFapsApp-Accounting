@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,6 +23,9 @@
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Accounting_PeriodTree_Transaction_Menu_Action_Create</name>
         <access>
             <role>Accounting_Admin</role>
@@ -35,7 +38,51 @@
                 <property name="StatusGroup">Accounting_TransactionDocumentStatus</property>
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
-                 <property name="NoDataSource">true</property>
+                <property name="NoDataSource">true</property>
+            </execute>
+            <validate program="org.efaps.esjp.accounting.transaction.Validation"
+                method="validate" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Accounting_PeriodTree_Transaction_Menu_Action_Create.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Accounting_Transaction</property>
+        <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>
+        <property name="TargetShowFile">true</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="HideDocLinK">true</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Accounting_PeriodTree_Transaction_Menu_Action_Create</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
+        <target>
+            <form>Accounting_TransactionForm</form>
+            <execute program="org.efaps.esjp.accounting.transaction.Create" method="create" >
+                <property name="JasperReport">Accounting_Transaction</property>
+                <property name="StatusGroup">Accounting_TransactionDocumentStatus</property>
+                <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
+                <property name="NoDataSource">true</property>
+
+                <!-- Projects_ProjectService2TransactionDocument -->
+                <property name="ConnectType01">522dc62d-0caf-47c1-8488-53fc7e1fab33</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">project</property>
+
             </execute>
             <validate program="org.efaps.esjp.accounting.transaction.Validation"
                 method="validate" />

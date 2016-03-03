@@ -74,9 +74,11 @@ public abstract class TransactionDocument_Base
 
         addStatus2DocCreate(_parameter, insert, ret);
         add2DocCreate(_parameter, insert, ret);
-
         insert.execute();
         ret.setInstance(insert.getInstance());
+
+        connect2Object(_parameter, ret);
+
         return ret;
     }
 
