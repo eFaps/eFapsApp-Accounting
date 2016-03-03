@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.transaction;
@@ -106,7 +103,6 @@ import net.sf.jasperreports.engine.JRDataSource;
  * Base class for transaction in accounting.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("803f24bc-7c4f-4168-97bc-a9cb01872f76")
 @EFapsApplication("eFapsApps-Accounting")
@@ -542,7 +538,7 @@ public abstract class Transaction_Base
                 }
                 break;
             default:
-                ret = SummarizeConfig.NONE;;
+                ret = SummarizeConfig.NONE;
                 break;
         }
         return ret;
@@ -591,6 +587,7 @@ public abstract class Transaction_Base
         }
 
         for (final String docOid : docOids) {
+            LOG.debug("Evaluating Document {}", docOid);
             final Instance docInst = Instance.get(docOid);
             final DocumentInfo docInfo = new DocumentInfo();
             if (caseInst.isValid() || docInst.isValid()
@@ -764,6 +761,7 @@ public abstract class Transaction_Base
      * @param _parameter Parameter as passed from the eFaps API.
      * @param _doc Document.
      * @param _accInst  instance of the account to be checked for
+     * @return true, if successful
      * @throws EFapsException on error.
      */
     protected boolean evalRelatedDocuments(final Parameter _parameter,
@@ -775,7 +773,8 @@ public abstract class Transaction_Base
         Instance relDocInst = null;
         if (_doc.getInstance().getType().isCIType(CISales.IncomingRetention)) {
             final PrintQuery print = new PrintQuery(_doc.getInstance());
-            final SelectBuilder selRelDoc = SelectBuilder.get().linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
+            final SelectBuilder selRelDoc = SelectBuilder.get()
+                            .linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
                             .linkto(CISales.IncomingRetention2IncomingInvoice.ToAbstractLink).instance();
             print.addSelect(selRelDoc);
             print.executeWithoutAccessCheck();
@@ -1126,7 +1125,8 @@ public abstract class Transaction_Base
 
             i++;
         }
-        ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs));
+        ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs, false, false, null,
+                        new Period().evaluateCurrentPeriod(_parameter).getOid()));
         return ret;
     }
 

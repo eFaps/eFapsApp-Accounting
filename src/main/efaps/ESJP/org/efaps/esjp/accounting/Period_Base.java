@@ -91,14 +91,9 @@ public abstract class Period_Base
     protected static final String REQKEY4CUR = Period.class.getName() + ".RequestKey4CurrentPeriod";
 
     /**
-     * Logger for this class.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(Period.class);
-
-    /**
      * Default setting to be added on creation of a period.
      */
-    public static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<String, String>();
+    protected static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<String, String>();
     {
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_NAME, null);
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
@@ -142,6 +137,19 @@ public abstract class Period_Base
     }
 
 
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Period.class);
+
+
+    /**
+     * Access check4 summarize trans.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return accessCheck4SummarizeTrans(final Parameter _parameter)
         throws EFapsException
     {
@@ -170,6 +178,13 @@ public abstract class Period_Base
     }
 
 
+    /**
+     * Access check by config.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return accessCheckByConfig(final Parameter _parameter)
         throws EFapsException
     {
@@ -393,6 +408,10 @@ public abstract class Period_Base
                 instance = _parameter.getCallInstance();
             }
 
+            // for the case of adding new positions to a table on javascript
+            if (instance == null || instance == null && !instance.isValid()) {
+                instance = Instance.get(_parameter.getParameterValue("eFapsExtraParameter"));
+            }
             if (instance != null && instance.isValid()) {
                 if (instance.getType().isKindOf(CIAccounting.Period)) {
                     ret = instance;
@@ -510,7 +529,13 @@ public abstract class Period_Base
         return ret;
     }
 
-
+    /**
+     * Gets the summarize definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the summarize definition
+     * @throws EFapsException on error
+     */
     public SummarizeDefinition getSummarizeDefinition(final Parameter _parameter)
         throws EFapsException
     {
@@ -520,6 +545,13 @@ public abstract class Period_Base
                         AccountingSettings.PERIOD_SUMMARIZETRANS, SummarizeDefinition.NEVER.name()));
     }
 
+    /**
+     * Gets the label definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the label definition
+     * @throws EFapsException on error
+     */
     public LabelDefinition getLabelDefinition(final Parameter _parameter)
         throws EFapsException
     {
@@ -906,6 +938,13 @@ public abstract class Period_Base
         return new MultiPrint().execute(_parameter);
     }
 
+    /**
+     * Gets the others collect.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the others collect
+     * @throws EFapsException on error
+     */
     public Return getOthersCollect(final Parameter _parameter)
         throws EFapsException
     {
@@ -925,7 +964,6 @@ public abstract class Period_Base
     {
         return new MultiPrint().execute(_parameter);
     }
-
 
     /**
      * Recursive method to get a Type with his children and children children
@@ -947,7 +985,6 @@ public abstract class Period_Base
         }
         return ret;
     }
-
 
     /**
      * MultiPrint for the Documents.
