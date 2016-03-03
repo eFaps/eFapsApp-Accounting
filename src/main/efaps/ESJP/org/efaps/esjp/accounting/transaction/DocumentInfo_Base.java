@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,6 +57,7 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -153,12 +154,14 @@ public abstract class DocumentInfo_Base
      */
     private SummarizeCriteria summarizeCriteria = SummarizeCriteria.ACCOUNT;
 
-
+    /** The doc insts. */
     private final Set<Instance> docInsts = new HashSet<>();
 
-    private  Map<Instance,BigDecimal> product2Amount;
+    /** The product2 amount. */
+    private  Map<Instance, BigDecimal> product2Amount;
 
-    private  Map<String,BigDecimal> key2Amount;
+    /** The key2 amount. */
+    private  Map<String, BigDecimal> key2Amount;
 
     /**
      * Constructor.
@@ -176,6 +179,12 @@ public abstract class DocumentInfo_Base
         setInstance(_instance);
     }
 
+    /**
+     * Gets the product2 amount.
+     *
+     * @return the product2 amount
+     * @throws EFapsException on error
+     */
     public Map<Instance, BigDecimal> getProduct2Amount()
         throws EFapsException
     {
@@ -194,13 +203,13 @@ public abstract class DocumentInfo_Base
                 while (multi.next()) {
                     final BigDecimal posamount = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
                     final Instance prodInst = multi.getSelect(selInst);
-                    BigDecimal amount;
+                    BigDecimal amountTmp;
                     if (this.product2Amount.containsKey(prodInst)) {
-                        amount = this.product2Amount.get(prodInst);
+                        amountTmp = this.product2Amount.get(prodInst);
                     } else {
-                        amount = BigDecimal.ZERO;
+                        amountTmp = BigDecimal.ZERO;
                     }
-                    this.product2Amount.put(prodInst, amount.add(posamount));
+                    this.product2Amount.put(prodInst, amountTmp.add(posamount));
                 }
             }
             ret = this.product2Amount;
@@ -210,6 +219,13 @@ public abstract class DocumentInfo_Base
         return ret;
     }
 
+
+    /**
+     * Gets the key2 amount.
+     *
+     * @return the key2 amount
+     * @throws EFapsException on error
+     */
     public Map<String, BigDecimal> getKey2Amount()
         throws EFapsException
     {
@@ -375,8 +391,11 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Adds the.
+     *
      * @param _accounts accounts to add to
      * @param _accInfo the new account
+     * @param _debit the debit
      * @throws EFapsException on error
      */
     protected void add(final Set<AccountInfo> _accounts,
@@ -402,7 +421,7 @@ public abstract class DocumentInfo_Base
                         if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
                                         .equals(_accInfo.getRateInfo().getCurrencyInstance())
                                 && (acc.getLabelInst() == null && _accInfo.getLabelInst() == null
-                                        || acc.getLabelInst() !=null
+                                        || acc.getLabelInst() != null
                                             && acc.getLabelInst().equals(_accInfo.getLabelInst()))) {
                             acc.addAmount(_accInfo.getAmount());
                             add = false;
@@ -413,10 +432,10 @@ public abstract class DocumentInfo_Base
                         if (acc.getInstance().equals(_accInfo.getInstance()) && acc.getRateInfo().getCurrencyInstance()
                                         .equals(_accInfo.getRateInfo().getCurrencyInstance())
                                 && (acc.getLabelInst() == null && _accInfo.getLabelInst() == null
-                                        || acc.getLabelInst() !=null
+                                        || acc.getLabelInst() != null
                                                 && acc.getLabelInst().equals(_accInfo.getLabelInst()))
                                 && (acc.getRemark() == null && _accInfo.getRemark() == null
-                                        || acc.getRemark() !=null
+                                        || acc.getRemark() != null
                                                 && acc.getRemark().equals(_accInfo.getRemark()))) {
                             acc.addAmount(_accInfo.getAmount());
                             add = false;
@@ -570,7 +589,11 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the credit sum.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the sum of credit accounts in base currency
+     * @throws EFapsException on error
      */
     public BigDecimal getCreditSum(final Parameter _parameter)
         throws EFapsException
@@ -583,6 +606,9 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the credit sum formated.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the sum of credit accounts formated
      * @throws EFapsException on error
      */
@@ -605,7 +631,11 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the debit sum.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the sum of all debit accounts in base currency
+     * @throws EFapsException on error
      */
     public BigDecimal getDebitSum(final Parameter _parameter)
         throws EFapsException
@@ -618,6 +648,9 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the debit sum formated.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the sum of all debit accounts formated
      * @throws EFapsException on error
      */
@@ -628,8 +661,12 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the difference.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the difference between the sum of debit accounts and the sum of
      *         credit accounts
+     * @throws EFapsException on error
      */
     public BigDecimal getDifference(final Parameter _parameter)
         throws EFapsException
@@ -638,6 +675,9 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the difference formated.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the difference between the sum of debit accounts and the sum of
      *         credit accounts formated
      * @throws EFapsException on error
@@ -711,7 +751,9 @@ public abstract class DocumentInfo_Base
     /**
      * Valid means not zero and equal.
      *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return true if valid, else false
+     * @throws EFapsException on error
      */
     public boolean isValid(final Parameter _parameter)
         throws EFapsException
@@ -733,7 +775,7 @@ public abstract class DocumentInfo_Base
     /**
      * Setter method for instance variable {@link #summarize}.
      *
-     * @param _summarize value for instance variable {@link #summarize}
+     * @param _config the new summarize config
      */
     public void setSummarizeConfig(final SummarizeConfig _config)
     {
@@ -741,8 +783,11 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @param _parameter
-     * @return
+     * Gets the description.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the description
+     * @throws EFapsException on error
      */
     public String getDescription(final Parameter _parameter)
         throws EFapsException
@@ -761,23 +806,6 @@ public abstract class DocumentInfo_Base
 
         final StrSubstitutor sub = new StrSubstitutor(getMap4Substitutor(_parameter));
         return sub.replace(labelStr);
-    }
-
-    public final Map<String, String> getMap4Substitutor(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<String, String> ret = new HashMap<String, String>();
-        final String transdateStr = _parameter.getParameterValue("date");
-        DateTime transdate;
-        if (transdateStr == null) {
-            transdate = new DateTime();
-        } else {
-            transdate = new DateTime(transdateStr);
-        }
-
-        ret.put("date", transdate.toString(DateTimeFormat.mediumDate().withLocale(
-                        Context.getThreadContext().getLocale())));
-        return ret;
     }
 
     /**
@@ -801,7 +829,9 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @param _docInst
+     * Adds the doc inst.
+     *
+     * @param _docInst the doc inst
      */
     public void addDocInst(final Instance _docInst)
     {
@@ -809,7 +839,9 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @_include include the instance of this info also
+     * Gets the doc insts.
+     *
+     * @param _include the include
      * @return array of instances to be connected
      */
     public Instance[] getDocInsts(final boolean _include)
@@ -822,8 +854,10 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @param _docInst
-     * @return
+     * Gets the amount4 doc.
+     *
+     * @param _docInst the doc inst
+     * @return the amount4 doc
      */
     public BigDecimal getAmount4Doc(final Instance _docInst)
     {
@@ -842,7 +876,11 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @return
+     * Gets the rate.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the rate
+     * @throws EFapsException on error
      */
     public BigDecimal getRate(final Parameter _parameter)
         throws EFapsException
@@ -851,7 +889,9 @@ public abstract class DocumentInfo_Base
     }
 
     /**
-     * @return
+     * Gets the rate prop key.
+     *
+     * @return the rate prop key
      */
     public String getRatePropKey()
     {
@@ -865,7 +905,8 @@ public abstract class DocumentInfo_Base
     /**
      * Setter method for instance variable {@link #rounding}.
      *
-     * @param _rounding value for instance variable {@link #rounding}
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
      */
     public void applyRounding(final Parameter _parameter)
         throws EFapsException
@@ -878,9 +919,8 @@ public abstract class DocumentInfo_Base
             final BigDecimal diffMax = new BigDecimal(props.getProperty(AccountingSettings.PERIOD_ROUNDINGMAXAMOUNT,
                             "0"));
             final BigDecimal diff = getDebitSum(_parameter).subtract(getCreditSum(_parameter));
-            boolean debit;
             if (diffMax.compareTo(diff.abs()) > 0) {
-                debit = diff.compareTo(BigDecimal.ZERO) < 0;
+                final boolean debit = diff.compareTo(BigDecimal.ZERO) < 0;
                 AccountInfo accInfo;
                 if (debit) {
                     accInfo = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGDEBIT);
@@ -903,8 +943,14 @@ public abstract class DocumentInfo_Base
         }
     }
 
-
-    public void applyExchangeGainLoss(final Parameter _parameter) throws EFapsException
+    /**
+     * Apply exchange gain loss.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
+    public void applyExchangeGainLoss(final Parameter _parameter)
+        throws EFapsException
     {
         final AccountInfo gainAcc = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_EXCHANGEGAIN);
         final AccountInfo lossAcc = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_EXCHANGELOSS);
@@ -932,12 +978,12 @@ public abstract class DocumentInfo_Base
                 final Instance curInst = multi.getSelect(selCurInst);
                 final Instance docCurInst = print.getSelect(selDocCurInst);
                 final DateTime docDate = print.getAttribute(CIERP.DocumentAbstract.Date);
-                final DateTime date = multi.getAttribute(CISales.Payment.Date);
-                final BigDecimal amount = multi.getAttribute(CISales.Payment.Amount);
+                final DateTime dateTmp = multi.getAttribute(CISales.Payment.Date);
+                final BigDecimal amountTmp = multi.getAttribute(CISales.Payment.Amount);
 
                 if (!curInst.equals(Currency.getBaseCurrency()) || !docCurInst.equals(Currency.getBaseCurrency())) {
                     final Currency currency = new Currency();
-                    final RateInfo[] rateInfos1 = currency.evaluateRateInfos(_parameter, date, curInst, docCurInst);
+                    final RateInfo[] rateInfos1 = currency.evaluateRateInfos(_parameter, dateTmp, curInst, docCurInst);
                     final RateInfo[] rateInfos2 = currency.evaluateRateInfos(_parameter, docDate, curInst, docCurInst);
                     int idx;
                     // payment in BaseCurreny ==> Document was not BaseCurrency therefore current against target
@@ -956,8 +1002,8 @@ public abstract class DocumentInfo_Base
                     final BigDecimal rate1 = RateInfo.getRate(_parameter, rateInfos1[idx], docInst.getType().getName());
                     final BigDecimal rate2 = RateInfo.getRate(_parameter, rateInfos2[idx], docInst.getType().getName());
                     if (rate1.compareTo(rate2) != 0) {
-                        final BigDecimal amount1 = amount.divide(rate1, BigDecimal.ROUND_HALF_UP);
-                        final BigDecimal amount2 = amount.divide(rate2, BigDecimal.ROUND_HALF_UP);
+                        final BigDecimal amount1 = amountTmp.divide(rate1, BigDecimal.ROUND_HALF_UP);
+                        final BigDecimal amount2 = amountTmp.divide(rate2, BigDecimal.ROUND_HALF_UP);
                         BigDecimal gainLoss = amount1.subtract(amount2);
                         if (idx == 2) {
                             gainLoss = gainLoss.multiply(rate1);
@@ -1018,8 +1064,6 @@ public abstract class DocumentInfo_Base
         }
     }
 
-
-
     /**
      * Getter method for the instance variable {@link #summarizeCriteria}.
      *
@@ -1040,6 +1084,15 @@ public abstract class DocumentInfo_Base
         this.summarizeCriteria = _summarizeCriteria;
     }
 
+    /**
+     * Gets the combined.
+     *
+     * @param _docInfos the doc infos
+     * @param _config the config
+     * @param _criteria the criteria
+     * @return the combined
+     * @throws EFapsException on error
+     */
     protected static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
                                               final SummarizeConfig _config,
                                               final SummarizeCriteria _criteria)
@@ -1068,6 +1121,50 @@ public abstract class DocumentInfo_Base
                     }
                 }
             }
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the map4 substitutor.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the map4 substitutor
+     * @throws EFapsException on error
+     */
+    public final Map<String, String> getMap4Substitutor(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<String, String> ret = new HashMap<String, String>();
+        final String transdateStr = _parameter.getParameterValue("date");
+        DateTime transdate;
+        if (transdateStr == null) {
+            if (_parameter.getParameterValue("date_eFapsDate") != null) {
+                transdate = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+            } else {
+                transdate = new DateTime();
+            }
+        } else {
+            transdate = new DateTime(transdateStr);
+        }
+
+        ret.put("transactionDate", transdate.toString(DateTimeFormat.mediumDate().withLocale(
+                        Context.getThreadContext().getLocale())));
+
+        ret.put("documentDate", getDate() == null ? "" : getDate().toString(DateTimeFormat.mediumDate().withLocale(
+                            Context.getThreadContext().getLocale())));
+
+        if (getInstance() != null && getInstance().isValid()) {
+            ret.put("documentType", getInstance().getType().getLabel());
+            if (getInstance().getType().isKindOf(CIERP.DocumentAbstract)) {
+                final PrintQuery print = new PrintQuery(getInstance());
+                print.addAttribute(CIERP.DocumentAbstract.Name);
+                print.executeWithoutAccessCheck();
+                ret.put("documentName", print.<String>getAttribute(CIERP.DocumentAbstract.Name));
+            }
+        } else {
+            ret.put("documentType", "");
+            ret.put("documentName", "");
         }
         return ret;
     }

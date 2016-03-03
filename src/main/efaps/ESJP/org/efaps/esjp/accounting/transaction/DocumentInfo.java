@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("ea1a8ce4-50e8-44dd-b43c-dd517ebadb2a")
 @EFapsApplication("eFapsApp-Accounting")
@@ -57,6 +56,15 @@ public class DocumentInfo
         super(_instance);
     }
 
+    /**
+     * Gets the combined.
+     *
+     * @param _docInfos the doc infos
+     * @param _config the config
+     * @param _criteria the criteria
+     * @return the combined
+     * @throws EFapsException on error
+     */
     public static DocumentInfo getCombined(final Collection<DocumentInfo> _docInfos,
                                            final SummarizeConfig _config,
                                            final SummarizeCriteria _criteria)
