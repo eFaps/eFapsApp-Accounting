@@ -382,12 +382,9 @@ public abstract class Transaction_Base
                         }
                     }
                     if (rate.compareTo(BigDecimal.ZERO) != 0) {
-                        if (amount.scale() < 2) {
-                            amount = amount.setScale(2);
-                        }
-                        amount = amount.divide(rate, BigDecimal.ROUND_HALF_UP);
+                        amount = amount.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP);
                     }
-                    ret = ret.add(amount);
+                    ret = ret.add(amount.setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
             }
         } catch (final ParseException e) {
