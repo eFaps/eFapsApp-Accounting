@@ -16,16 +16,18 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>38d67f53-88b6-49ee-a466-cd9ec5b533ca</uuid>
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1c78ee7b-8e6f-4c2e-9f0c-8c3fe7af7f81</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_TransactionTree_SubJournal_Menu_Action</name>
+        <name>Accounting_TransactionTree_SubJournal_Menu_Action_AddExisting_Search</name>
+        <default>
+            <command>Accounting_ReportSearch</command>
+        </default>
         <childs>
-            <child>Accounting_TransactionTree_SubJournal_Menu_Action_AddExisting</child>
-            <child>Accounting_TransactionTree_SubJournal_Menu_Action_Delete</child>
+            <child>Accounting_ReportSearch</child>
         </childs>
     </definition>
-</ui-menu>
+</ui-search>
