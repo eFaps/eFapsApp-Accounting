@@ -161,11 +161,11 @@ public abstract class FieldValue_Base
                                     .linkto(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract).instance();
                     print.addSelect(selTransInst, selDocInst);
                     print.execute();
-                     transInst = print.getSelect(selTransInst);
-                     docInst = print.getSelect(selDocInst);
+                    transInst = print.getSelect(selTransInst);
+                    docInst = print.getSelect(selDocInst);
                 } else {
-                     transInst = _parameter.getCallInstance();
-                     docInst = null;
+                    transInst = _parameter.getCallInstance();
+                    docInst = null;
                 }
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
                 queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
@@ -288,7 +288,7 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         Return ret = new Return();
-        final String type = getProperty(_parameter,"Type");
+        final String type = getProperty(_parameter, "Type");
         if (type != null) {
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
             _parameter.put(ParameterValues.INSTANCE, periodInstance);
@@ -316,7 +316,7 @@ public abstract class FieldValue_Base
                         final String strTmp = pos.getOption().toString();
                         if (StringUtils.endsWith(strTmp, trueStr)) {
                             pos.setOption(StringUtils.substringBeforeLast(strTmp, trueStr) + cross);
-                        } else {
+                        } else if (StringUtils.endsWith(strTmp, falseStr)) {
                             pos.setOption(StringUtils.substringBeforeLast(strTmp, falseStr) + net);
                         }
                     }
@@ -346,7 +346,7 @@ public abstract class FieldValue_Base
             final List<RangeValueOption> values = (List<RangeValueOption>) ((UIValue) uiValue).getUIProvider()
                             .getValue((UIValue) uiValue);
             for (final RangeValueOption option : values) {
-                option.setSelected(option.getValue().equals(baseCurInstObj.getInstance().getId())) ;
+                option.setSelected(option.getValue().equals(baseCurInstObj.getInstance().getId()));
             }
             ret.put(ReturnValues.VALUES, values);
         }
@@ -637,9 +637,10 @@ public abstract class FieldValue_Base
 
     /**
      * Internal method for {@link #getDocumentFieldValue(Parameter)}.
+     *
      * @param _parameter    Parameter as passed from eFaps to an esjp
+     * @param _table the table
      * @param _doc          Document
-     * @return StringBuilder
      * @throws EFapsException on error
      */
     protected void addDocumentInfo(final Parameter _parameter,
@@ -972,7 +973,8 @@ public abstract class FieldValue_Base
 
                     final BigDecimal cost = quantity.multiply(new BigDecimal(uom.getNumerator()))
                                         .divide(new BigDecimal(uom.getDenominator())).multiply(price);
-                    html.append("<td>").append(NumberFormatter.get().getTwoDigitsFormatter().format(price)).append("</td>")
+                    html.append("<td>").append(NumberFormatter.get().getTwoDigitsFormatter().format(price))
+                        .append("</td>")
                          .append("<td>").append(rateTmp.getCurrencyInstObj().getSymbol()).append("</td>");
 
                     if (script) {
@@ -1053,7 +1055,7 @@ public abstract class FieldValue_Base
      * form.
      *
      * @param _parameter        Parameter as passed from the eFaps API
-     * @param _doc              Instance of the Document the form was opened for
+     * @param _docs the docs
      * @return StringBuilder
      * @throws EFapsException on error
      */
@@ -1328,7 +1330,7 @@ public abstract class FieldValue_Base
                         final DateTime dateTmp = print.<DateTime>getSelect(select4date);
                         if (date == null) {
                             date = dateTmp;
-                        } else if (dateTmp.isAfter(date)){
+                        } else if (dateTmp.isAfter(date)) {
                             date = dateTmp;
                         }
                     }
@@ -1370,8 +1372,8 @@ public abstract class FieldValue_Base
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         if (!Display.NONE.equals(fieldValue.getDisplay())) {
             @SuppressWarnings("unchecked")
-            Map<Instance, String> values = (Map<Instance, String>)
-            Context.getThreadContext().getRequestAttribute(FieldValue_Base.SALESACC_REQKEY);
+            Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
+                            FieldValue_Base.SALESACC_REQKEY);
             if (values == null || values != null && !values.containsKey(_parameter.getInstance())) {
                 values = new HashMap<Instance, String>();
                 Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, values);
@@ -1379,17 +1381,16 @@ public abstract class FieldValue_Base
                 final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
                 if (instances != null) {
                     final MultiPrintQuery multi = new MultiPrintQuery(instances);
-                    final SelectBuilder selPayment = new SelectBuilder()
-                                    .linkfrom(CISales.Payment, CISales.Payment.CreateDocument).instance();
+                    final SelectBuilder selPayment = new SelectBuilder().linkfrom(CISales.Payment,
+                                    CISales.Payment.CreateDocument).instance();
                     multi.addSelect(selPayment);
                     multi.executeWithoutAccessCheck();
                     while (multi.next()) {
                         final Instance payment = multi.<Instance>getSelect(selPayment);
                         final PrintQuery print = new PrintQuery(payment);
-                        final SelectBuilder selAccount = new SelectBuilder()
-                                    .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
-                                    .linkto(CISales.TransactionAbstract.Account)
-                                    .attribute(CISales.AccountAbstract.Name);
+                        final SelectBuilder selAccount = new SelectBuilder().linkfrom(CISales.TransactionAbstract,
+                                        CISales.TransactionAbstract.Payment).linkto(CISales.TransactionAbstract.Account)
+                                        .attribute(CISales.AccountAbstract.Name);
                         print.addSelect(selAccount);
                         print.executeWithoutAccessCheck();
                         final String accountName = print.<String>getSelect(selAccount);
@@ -1470,6 +1471,13 @@ public abstract class FieldValue_Base
         return ret;
     }
 
+    /**
+     * Gets the value sum.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the value sum
+     * @throws EFapsException on error
+     */
     public Return getValueSum(final Parameter _parameter)
         throws EFapsException
     {
