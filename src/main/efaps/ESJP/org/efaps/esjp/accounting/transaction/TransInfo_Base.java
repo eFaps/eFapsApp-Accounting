@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.transaction;
@@ -60,7 +57,6 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("4968180a-4082-4663-8eb6-8f49de24ed83")
 @EFapsApplication("eFapsApps-Accounting")
@@ -71,26 +67,42 @@ public abstract class TransInfo_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(TransInfo.class);
 
+    /** The type. */
     private Type type;
 
+    /** The name. */
     private String name;
 
+    /** The description. */
     private String description;
 
+    /** The date. */
     private DateTime date;
 
+    /** The status. */
     private Status status;
 
+    /** The identifier. */
     private String identifier;
 
+    /** The period inst. */
     private Instance periodInst;
 
+    /** The instance. */
     private Instance instance;
 
+    /** The current group. */
     private Integer currentGroup = 0;
 
-    private final List<PositionInfo> postions = new ArrayList<>();
+    /** The positions. */
+    private final List<PositionInfo> positions = new ArrayList<>();
 
+    /**
+     * Creates the.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
     public void create(final Parameter _parameter)
         throws EFapsException
     {
@@ -110,7 +122,7 @@ public abstract class TransInfo_Base
             setInstance(insert.getInstance());
 
             int i = 1;
-            for (final PositionInfo pos : this.postions) {
+            for (final PositionInfo pos : this.positions) {
                 final Insert posInsert = new Insert(pos.getType());
                 posInsert.add(CIAccounting.TransactionPositionAbstract.Position, i);
                 posInsert.add(CIAccounting.TransactionPositionAbstract.TransactionLink, getInstance());
@@ -127,7 +139,7 @@ public abstract class TransInfo_Base
                 i++;
             }
             // connect labels
-            for (final PositionInfo pos : this.postions) {
+            for (final PositionInfo pos : this.positions) {
                 if (pos.getLabelInst() != null && pos.getLabelInst().isValid() && pos.getLabelRelType() != null) {
                     final Insert relInsert = new Insert(pos.getLabelRelType());
                     relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
@@ -136,19 +148,25 @@ public abstract class TransInfo_Base
                 }
             }
             // connect docs
-            for (final PositionInfo pos : this.postions) {
+            for (final PositionInfo pos : this.positions) {
                 if (pos.getDocInst() != null && pos.getDocInst().isValid() && pos.getDocRelType() != null) {
                     final Insert relInsert = new Insert(pos.getDocRelType());
-                relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
-                relInsert.add(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract, pos.getDocInst());
-                relInsert.execute();
+                    relInsert.add(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract, pos.getInstance());
+                    relInsert.add(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract, pos.getDocInst());
+                    relInsert.execute();
+                }
             }
-        }
         }
     }
 
+    /**
+     * Update.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
     public void update(final Parameter _parameter)
-                    throws EFapsException
+        throws EFapsException
     {
         if (isValid()) {
 
@@ -161,7 +179,7 @@ public abstract class TransInfo_Base
 
             final List<Instance> posInsts = new ArrayList<Instance>();
             int i = 1;
-            for (final PositionInfo pos : this.postions) {
+            for (final PositionInfo pos : this.positions) {
                 final Update posUpdate;
                 if (pos.getInstance() != null && pos.getInstance().isValid()) {
                     posUpdate = new Update(pos.getInstance());
@@ -207,7 +225,7 @@ public abstract class TransInfo_Base
             }
 
             // connect labels
-            for (final PositionInfo pos : this.postions) {
+            for (final PositionInfo pos : this.positions) {
                 // remove previos labels
                 final QueryBuilder labelQueryBldr = new QueryBuilder(CIAccounting.TransactionPosition2LabelAbstract);
                 labelQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract,
@@ -226,7 +244,7 @@ public abstract class TransInfo_Base
                 }
             }
             // connect docs
-            for (final PositionInfo pos : this.postions) {
+            for (final PositionInfo pos : this.positions) {
                 // remove previos labels
                 final QueryBuilder docQueryBldr = new QueryBuilder(CIAccounting.TransactionPosition2ERPDocument);
                 docQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionPosition2ObjectAbstract.FromLinkAbstract,
@@ -246,24 +264,31 @@ public abstract class TransInfo_Base
         }
     }
 
-
     /**
-     * @return
+     * Checks if is valid.
+     *
+     * @return true, if is valid
      */
     private boolean isValid()
     {
         BigDecimal amount = BigDecimal.ZERO;
-        for (final PositionInfo pos : this.postions) {
+        for (final PositionInfo pos : this.positions) {
             amount = amount.add(pos.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP));
         }
         return amount.compareTo(BigDecimal.ZERO) == 0;
     }
 
-
-    protected void sort(final Parameter _parameter) throws EFapsException
+    /**
+     * Sort.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
+    protected void sort(final Parameter _parameter)
+        throws EFapsException
     {
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(
+                        new Period().evaluateCurrentPeriod(_parameter));
         final TransPosOrder posOrder = TransPosOrder.valueOf(props.getProperty(AccountingSettings.PERIOD_TRANSPOSORDER,
                         TransPosOrder.DEBITCREDITGROUP.name()));
         final ComparatorChain<PositionInfo> chain = new ComparatorChain<PositionInfo>();
@@ -360,12 +385,18 @@ public abstract class TransInfo_Base
                 }
             });
         }
-        Collections.sort(this.postions, chain);
+        Collections.sort(this.positions, chain);
     }
 
+    /**
+     * Adds the position.
+     *
+     * @param _posInfo the pos info
+     * @return the trans info
+     */
     public TransInfo addPosition(final PositionInfo _posInfo)
     {
-        this.postions.add(_posInfo);
+        this.positions.add(_posInfo);
         return (TransInfo) this;
     }
 
@@ -383,6 +414,7 @@ public abstract class TransInfo_Base
      * Setter method for instance variable {@link #periodInst}.
      *
      * @param _periodInst value for instance variable {@link #periodInst}
+     * @return the trans info
      */
     public TransInfo setPeriodInst(final Instance _periodInst)
     {
@@ -404,6 +436,7 @@ public abstract class TransInfo_Base
      * Setter method for instance variable {@link #identifier}.
      *
      * @param _identifier value for instance variable {@link #identifier}
+     * @return the trans info
      */
     public TransInfo setIdentifier(final String _identifier)
     {
@@ -425,6 +458,7 @@ public abstract class TransInfo_Base
      * Setter method for instance variable {@link #date}.
      *
      * @param _date value for instance variable {@link #date}
+     * @return the trans info
      */
     public TransInfo setDate(final DateTime _date)
     {
@@ -440,13 +474,13 @@ public abstract class TransInfo_Base
     public Status getStatus()
     {
         return this.status;
-
     }
 
     /**
      * Setter method for instance variable {@link #status}.
      *
      * @param _status value for instance variable {@link #status}
+     * @return the trans info
      */
     public TransInfo setStatus(final Status _status)
     {
@@ -468,6 +502,7 @@ public abstract class TransInfo_Base
      * Setter method for instance variable {@link #name}.
      *
      * @param _name value for instance variable {@link #name}
+     * @return the trans info
      */
     public TransInfo setName(final String _name)
     {
@@ -489,6 +524,7 @@ public abstract class TransInfo_Base
      * Setter method for instance variable {@link #description}.
      *
      * @param _description value for instance variable {@link #description}
+     * @return the trans info
      */
     public TransInfo setDescription(final String _description)
     {
@@ -533,6 +569,7 @@ public abstract class TransInfo_Base
      * Setter method for instance variable {@link #instance}.
      *
      * @param _instance value for instance variable {@link #instance}
+     * @return the trans info
      */
     public TransInfo setInstance(final Instance _instance)
     {
@@ -540,12 +577,26 @@ public abstract class TransInfo_Base
         return (TransInfo) this;
     }
 
+    /**
+     * Gets the next group.
+     *
+     * @return the next group
+     */
     public Integer getNextGroup()
     {
         this.currentGroup++;
         return this.currentGroup;
     }
 
+    /**
+     * Gets the 4 doc info.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInfo the doc info
+     * @param _setDocInst the set doc inst
+     * @return the 4 doc info
+     * @throws EFapsException on error
+     */
     protected static TransInfo get4DocInfo(final Parameter _parameter,
                                            final DocumentInfo _docInfo,
                                            final boolean _setDocInst)
@@ -619,6 +670,15 @@ public abstract class TransInfo_Base
         return ret;
     }
 
+    /**
+     * Gets the rel pos infos.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _accInfo the acc info
+     * @param _type the type
+     * @return the rel pos infos
+     * @throws EFapsException on error
+     */
     protected static List<PositionInfo> getRelPosInfos(final Parameter _parameter,
                                                        final AccountInfo _accInfo,
                                                        final Type _type)
@@ -704,6 +764,15 @@ public abstract class TransInfo_Base
         return ret;
     }
 
+    /**
+     * Gets the 4 account info.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _type the type
+     * @param _accInfo the acc info
+     * @return the 4 account info
+     * @throws EFapsException on error
+     */
     public static PositionInfo get4AccountInfo(final Parameter _parameter,
                                                final Type _type,
                                                final AccountInfo _accInfo)
@@ -741,42 +810,65 @@ public abstract class TransInfo_Base
         return ToStringBuilder.reflectionToString(this);
     }
 
+    /**
+     * The Class PositionInfo.
+     *
+     */
     public static class PositionInfo
     {
+
+        /** The instance. */
         private Instance instance;
 
+        /** The order. */
         private Integer order = 0;
 
+        /** The conn order. */
         private Integer connOrder = 0;
 
+        /** The group id. */
         private Integer groupId = 0;
 
+        /** The type. */
         private Type type;
 
+        /** The acc inst. */
         private Instance accInst;
 
+        /** The acc name. */
         private String accName;
 
+        /** The curr inst. */
         private Instance currInst;
 
+        /** The rate curr inst. */
         private Instance rateCurrInst;
 
+        /** The label inst. */
         private Instance labelInst;
 
+        /** The label rel type. */
         private Type labelRelType;
 
+        /** The doc inst. */
         private Instance docInst;
 
+        /** The doc rel type. */
         private Type docRelType;
 
+        /** The rate. */
         private Object rate;
 
+        /** The rate amount. */
         private BigDecimal rateAmount;
 
+        /** The amount. */
         private BigDecimal amount;
 
+        /** The remark. */
         private String remark;
 
+        /** The pos type. */
         private TransPosType posType = TransPosType.MAIN;
 
         /**
@@ -793,6 +885,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #labelInst}.
          *
          * @param _labelInst value for instance variable {@link #labelInst}
+         * @return the position info
          */
         public PositionInfo setLabelInst(final Instance _labelInst)
         {
@@ -814,6 +907,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #accInst}.
          *
          * @param _accInst value for instance variable {@link #accInst}
+         * @return the position info
          */
         public PositionInfo setAccInst(final Instance _accInst)
         {
@@ -835,6 +929,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #currInst}.
          *
          * @param _currInst value for instance variable {@link #currInst}
+         * @return the position info
          */
         public PositionInfo setCurrInst(final Instance _currInst)
         {
@@ -857,6 +952,7 @@ public abstract class TransInfo_Base
          *
          * @param _rateCurrInst value for instance variable
          *            {@link #rateCurrInst}
+         * @return the position info
          */
         public PositionInfo setRateCurrInst(final Instance _rateCurrInst)
         {
@@ -878,6 +974,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #rate}.
          *
          * @param _rate value for instance variable {@link #rate}
+         * @return the position info
          */
         public PositionInfo setRate(final Object _rate)
         {
@@ -899,6 +996,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #rateAmount}.
          *
          * @param _rateAmount value for instance variable {@link #rateAmount}
+         * @return the position info
          */
         public PositionInfo setRateAmount(final BigDecimal _rateAmount)
         {
@@ -920,6 +1018,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #amount}.
          *
          * @param _amount value for instance variable {@link #amount}
+         * @return the position info
          */
         public PositionInfo setAmount(final BigDecimal _amount)
         {
@@ -965,6 +1064,7 @@ public abstract class TransInfo_Base
          *
          * @param _labelRelType value for instance variable
          *            {@link #labelRelType}
+         * @return the position info
          */
         public PositionInfo setLabelRelType(final Type _labelRelType)
         {
@@ -986,6 +1086,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #order}.
          *
          * @param _order value for instance variable {@link #order}
+         * @return the position info
          */
         public PositionInfo setOrder(final Integer _order)
         {
@@ -1007,6 +1108,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #connOrder}.
          *
          * @param _connOrder value for instance variable {@link #connOrder}
+         * @return the position info
          */
         public PositionInfo setConnOrder(final Integer _connOrder)
         {
@@ -1028,6 +1130,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #docRelType}.
          *
          * @param _docRelType value for instance variable {@link #docRelType}
+         * @return the position info
          */
         public PositionInfo setDocRelType(final Type _docRelType)
         {
@@ -1049,6 +1152,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #docInst}.
          *
          * @param _docInst value for instance variable {@link #docInst}
+         * @return the position info
          */
         public PositionInfo setDocInst(final Instance _docInst)
         {
@@ -1090,6 +1194,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #remark}.
          *
          * @param _remark value for instance variable {@link #remark}
+         * @return the position info
          */
         public PositionInfo setRemark(final String _remark)
         {
@@ -1111,6 +1216,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #groupId}.
          *
          * @param _groupId value for instance variable {@link #groupId}
+         * @return the position info
          */
         public PositionInfo setGroupId(final Integer _groupId)
         {
@@ -1132,6 +1238,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #posType}.
          *
          * @param _posType value for instance variable {@link #posType}
+         * @return the position info
          */
         public PositionInfo setPosType(final TransPosType _posType)
         {
@@ -1143,6 +1250,7 @@ public abstract class TransInfo_Base
          * Getter method for the instance variable {@link #accName}.
          *
          * @return value of instance variable {@link #accName}
+         * @throws EFapsException on error
          */
         public String getAccName()
             throws EFapsException
@@ -1160,6 +1268,7 @@ public abstract class TransInfo_Base
          * Setter method for instance variable {@link #accName}.
          *
          * @param _accName value for instance variable {@link #accName}
+         * @return the position info
          */
         public PositionInfo setAccName(final String _accName)
         {
@@ -1172,7 +1281,5 @@ public abstract class TransInfo_Base
         {
             return ToStringBuilder.reflectionToString(this);
         }
-
-
     }
 }

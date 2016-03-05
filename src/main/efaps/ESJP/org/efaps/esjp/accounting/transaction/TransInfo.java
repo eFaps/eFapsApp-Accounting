@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.transaction;
@@ -31,17 +28,21 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("00485da3-4c80-42f5-90bb-04b6eb3b3d85")
 @EFapsApplication("eFapsApps-Accounting")
 public class TransInfo
     extends TransInfo_Base
 {
+
     /**
-     * @param _parameter
-     * @param _docInfo
-     * @return
+     * Gets the 4 doc info.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInfo the doc info
+     * @param _setDocInst the set doc inst
+     * @return the 4 doc info
+     * @throws EFapsException on error
      */
     public static TransInfo get4DocInfo(final Parameter _parameter,
                                         final DocumentInfo _docInfo,

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -147,37 +148,78 @@ public abstract class Create_Base
         return new Return();
     }
 
-
+    /**
+     * Create4 others pay.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4OthersPay(final Parameter _parameter)
         throws EFapsException
     {
         return create4External(_parameter);
     }
 
+    /**
+     * Create4 others pay massiv.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4OthersPayMassiv(final Parameter _parameter)
         throws EFapsException
     {
         return create4ExternalMassive(_parameter);
     }
 
+    /**
+     * Create4 others collect.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4OthersCollect(final Parameter _parameter)
         throws EFapsException
     {
         return create4Doc(_parameter);
     }
 
+    /**
+     * Create4 others collect massive.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4OthersCollectMassive(final Parameter _parameter)
         throws EFapsException
     {
         return create4DocMassive(_parameter);
     }
 
+    /**
+     * Create4 payroll.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4Payroll(final Parameter _parameter)
         throws EFapsException
     {
         return create4Doc(_parameter);
     }
 
+    /**
+     * Create4 payroll massive.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4PayrollMassive(final Parameter _parameter)
         throws EFapsException
     {
@@ -287,6 +329,13 @@ public abstract class Create_Base
         return ret;
     }
 
+    /**
+     * Create4 external massive.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create4ExternalMassive(final Parameter _parameter)
         throws EFapsException
     {
@@ -609,6 +658,7 @@ public abstract class Create_Base
      * Get the list of documents.
      *
      * @param _parameter Parameter as passed from the eFaps API
+     * @param _docInfos the doc infos
      * @return List of document instances
      * @throws EFapsException on error
      */
@@ -649,7 +699,6 @@ public abstract class Create_Base
      * Create the base transaction.
      *
      * @param _parameter Parameter as passed from the eFaps API
-     * @param _description Description for the Transaction
      * @return Instance of the Transaction
      * @throws EFapsException on error
      */
@@ -677,8 +726,9 @@ public abstract class Create_Base
 
     /**
      * Connect the document to the Purchaserecord.
+     *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _instance instance of the document
+     * @param _docInsts the doc insts
      * @throws EFapsException   on error
      */
     protected void connectDocs2PurchaseRecord(final Parameter _parameter,
@@ -735,8 +785,11 @@ public abstract class Create_Base
     }
 
     /**
+     * Connect2 sub journal.
+     *
      * @param _parameter            Parameter as passed from the eFaps API
      * @param _transactionInstance  instance of the Transaction
+     * @param _docInstance the doc instance
      * @throws EFapsException on error
      */
     protected void connect2SubJournal(final Parameter _parameter,
@@ -751,9 +804,9 @@ public abstract class Create_Base
             final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
             String journalname = "NONE";
             if (_docInstance.getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
-                journalname = props.getProperty( AccountingSettings.PERIOD_SUBJOURNAL4PAYOUT, "NONE");
+                journalname = props.getProperty(AccountingSettings.PERIOD_SUBJOURNAL4PAYOUT, "NONE");
             } else if (_docInstance.getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
-                journalname = props.getProperty( AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "NONE");
+                journalname = props.getProperty(AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "NONE");
             }
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportSubJournal);
             queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal.PeriodLink, periodInst);
@@ -773,6 +826,16 @@ public abstract class Create_Base
     }
 
 
+    /**
+     * Analyse positions from ui.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _transInfo the trans info
+     * @param _postFix the post fix
+     * @param _accountOids the account oids
+     * @param _executeRels the execute rels
+     * @throws EFapsException on error
+     */
     public void analysePositionsFromUI(final Parameter _parameter,
                                        final TransInfo _transInfo,
                                        final String _postFix,
@@ -781,7 +844,7 @@ public abstract class Create_Base
         throws EFapsException
     {
         @SuppressWarnings("unchecked")
-        final Map<String,String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+        final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
 
         final String[] rowKeys = InterfaceUtils.getRowKeys(_parameter, "amount_" + _postFix,
                         "amount_Debit", "amount_Credit");
@@ -807,14 +870,16 @@ public abstract class Create_Base
                     final Instance rateCurrInst = CurrencyInst.get(Long.parseLong(rateCurIds[i])).getInstance();
                     final Instance accInst = Instance.get(accountOids[i]);
                     final Object[] rateObj = new Transaction().getRateObject(_parameter, "_" + _postFix, i);
-                    final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                                    BigDecimal.ROUND_HALF_UP);
+                    final BigDecimal rate = ((BigDecimal) rateObj[0]).setScale(12, RoundingMode.HALF_UP)
+                                    .divide((BigDecimal) rateObj[1], RoundingMode.HALF_UP);
                     final Type type = Type.get(Long.parseLong(types[i]));
 
-                    final BigDecimal rateAmount = ((BigDecimal) formater.parse(amounts[i]))
-                                    .setScale(6, BigDecimal.ROUND_HALF_UP);
+                    BigDecimal rateAmount = ((BigDecimal) formater.parse(amounts[i]))
+                                    .setScale(8, RoundingMode.HALF_UP);
                     final boolean isDebitTrans = type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid);
-                    final BigDecimal amount = rateAmount.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
+                    final BigDecimal amount = rateAmount.divide(rate, RoundingMode.HALF_UP)
+                                    .setScale(2, RoundingMode.HALF_UP);
+                    rateAmount = rateAmount.setScale(2, RoundingMode.HALF_UP);
 
                     final PositionInfo pos  = new PositionInfo();
                     _transInfo.addPosition(pos);
@@ -823,8 +888,8 @@ public abstract class Create_Base
                         .setCurrInst(curInstance)
                         .setRateCurrInst(rateCurrInst)
                         .setRate(rateObj)
-                        .setRateAmount( isDebitTrans ? rateAmount.negate() : rateAmount)
-                        .setAmount( isDebitTrans ? amount.negate() : amount)
+                        .setRateAmount(isDebitTrans ? rateAmount.negate() : rateAmount)
+                        .setAmount(isDebitTrans ? amount.negate() : amount)
                         .setOrder(i)
                         .setRemark(remarks == null ? null : remarks[i])
                         .setInstance(Instance.get(oidMap.get(rowKeys[i])));
@@ -850,7 +915,7 @@ public abstract class Create_Base
                                                 : CIAccounting.TransactionPositionCredit2SalesDocument.getType());
                             } else {
                                 pos.setDocInst(docInst)
-                                .setDocRelType(_postFix.equalsIgnoreCase("Debit")
+                                    .setDocRelType(_postFix.equalsIgnoreCase("Debit")
                                             ? CIAccounting.TransactionPositionDebit2PaymentDocument.getType()
                                             : CIAccounting.TransactionPositionCredit2PaymentDocument.getType());
                             }
@@ -927,7 +992,7 @@ public abstract class Create_Base
                                     connPos.setOrder(i)
                                         .setConnOrder(y)
                                         .setGroupId(group)
-                                        .setAccInst( multi.<Instance>getSelect(selAcc))
+                                        .setAccInst(multi.<Instance>getSelect(selAcc))
                                         .setCurrInst(curInstance)
                                         .setRateCurrInst(rateCurrInst)
                                         .setRate(rateObj)
