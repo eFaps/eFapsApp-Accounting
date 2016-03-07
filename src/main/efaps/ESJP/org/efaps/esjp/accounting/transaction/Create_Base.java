@@ -468,6 +468,17 @@ public abstract class Create_Base
     }
 
     /**
+     * @param _parameter as passed from the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error.
+     */
+    public Return create4Swap(final Parameter _parameter)
+        throws EFapsException
+    {
+        return create4Doc(_parameter);
+    }
+
+    /**
      * Create a Transaction for a PaymentDocument.
      * Connects the PaymentDocument and the related Document with the transaction.
      *

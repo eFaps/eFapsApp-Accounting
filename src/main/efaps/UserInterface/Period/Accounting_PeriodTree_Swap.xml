@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+ Copyright 2003 - 2016 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4c8a0b00-886b-48e7-82a7-78642cf6d75a</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_PeriodTree_Swap</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
+        <target>
+            <menu>Accounting_PeriodTree_Swap_Menu</menu>
+            <table>Accounting_PeriodSwapTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_Document2Document4Swap</property>
+            </evaluate>
+            <trigger event="UI_ACCESSCHECK" method="configObjectCheck"
+                name="Accounting_PeriodTree_Exchange.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="SystemConfig">Accounting-Configuration</property>
+                <property name="Key">ActivateSwap</property>
+            </trigger>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
+</ui-command>

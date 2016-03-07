@@ -514,6 +514,20 @@ public abstract class FieldValue_Base
     }
 
     /**
+     * Gets the document4 swap field value.
+     *
+     * @param _parameter the _parameter
+     * @return the document4 swap field value
+     * @throws EFapsException the e faps exception
+     */
+    public Return getDocument4SwapFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return null;
+    }
+
+
+    /**
      * Renders a field containing information about the selected document, sets
      * the description of the description field and set the values for the
      * accounts in debit and credit.
