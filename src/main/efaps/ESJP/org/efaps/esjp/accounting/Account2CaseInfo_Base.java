@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting;
@@ -42,33 +39,43 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("d1eefab1-b171-4c24-b190-3da41369fe30")
 @EFapsApplication("eFapsApp-Accounting")
 public abstract class Account2CaseInfo_Base
 {
 
+    /** The instance. */
     private Instance instance;
 
+    /** The account instance. */
     private Instance accountInstance;
 
+    /** The currency instance. */
     private Instance currencyInstance;
 
+    /** The configs. */
     private List<Account2CaseConfig> configs;
 
+    /** The denominator. */
     private Integer denominator;
 
+    /** The numerator. */
     private Integer numerator;
 
+    /** The link id. */
     private Long linkId;
 
+    /** The order. */
     private Integer order;
 
+    /** The amount. */
     private BigDecimal amount;
 
+    /** The key. */
     private String key;
 
+    /** The remark. */
     private String remark;
 
     /**
@@ -95,6 +102,7 @@ public abstract class Account2CaseInfo_Base
      * Setter method for instance variable {@link #configs}.
      *
      * @param _configs value for instance variable {@link #configs}
+     * @return the account2 case info
      */
     public Account2CaseInfo setConfigs(final List<Account2CaseConfig> _configs)
     {
@@ -117,6 +125,7 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _accountInstance value for instance variable
      *            {@link #accountInstance}
+     * @return the account2 case info
      */
     public Account2CaseInfo setAccountInstance(final Instance _accountInstance)
     {
@@ -139,6 +148,7 @@ public abstract class Account2CaseInfo_Base
      *
      * @param _currencyInstance value for instance variable
      *            {@link #currencyInstance}
+     * @return the account2 case info
      */
     public Account2CaseInfo setCurrencyInstance(final Instance _currencyInstance)
     {
@@ -160,6 +170,7 @@ public abstract class Account2CaseInfo_Base
      * Setter method for instance variable {@link #denominator}.
      *
      * @param _denominator value for instance variable {@link #denominator}
+     * @return the account2 case info
      */
     public Account2CaseInfo setDenominator(final Integer _denominator)
     {
@@ -181,6 +192,7 @@ public abstract class Account2CaseInfo_Base
      * Setter method for instance variable {@link #numerator}.
      *
      * @param _numerator value for instance variable {@link #numerator}
+     * @return the account2 case info
      */
     public Account2CaseInfo setNumerator(final Integer _numerator)
     {
@@ -202,6 +214,7 @@ public abstract class Account2CaseInfo_Base
      * Setter method for instance variable {@link #linkId}.
      *
      * @param _linkId value for instance variable {@link #linkId}
+     * @return the account2 case info
      */
     public Account2CaseInfo setLinkId(final Long _linkId)
     {
@@ -209,6 +222,11 @@ public abstract class Account2CaseInfo_Base
         return (Account2CaseInfo) this;
     }
 
+    /**
+     * Checks if is class relation.
+     *
+     * @return true, if is class relation
+     */
     public boolean isClassRelation()
     {
         return getType().equals(
@@ -216,6 +234,11 @@ public abstract class Account2CaseInfo_Base
                         || getType().equals(CIAccounting.Account2CaseDebit4Classification.getType());
     }
 
+    /**
+     * Checks if is category product.
+     *
+     * @return true, if is category product
+     */
     public boolean isCategoryProduct()
     {
         return getType().equals(
@@ -223,18 +246,30 @@ public abstract class Account2CaseInfo_Base
                         || getType().equals(CIAccounting.Account2CaseDebit4CategoryProduct.getType());
     }
 
+    /**
+     * Checks if is default.
+     *
+     * @return true, if is default
+     */
     public boolean isDefault()
     {
         return getConfigs() != null && getConfigs().contains(Account2CaseConfig.DEFAULTSELECTED);
     }
 
+    /**
+     * Checks if is apply label.
+     *
+     * @return true, if is apply label
+     */
     public boolean isApplyLabel()
     {
         return getConfigs() != null && getConfigs().contains(Account2CaseConfig.APPLYLABEL);
     }
 
     /**
-     * @return
+     * Checks if is credit.
+     *
+     * @return true, if is credit
      */
     public boolean isCredit()
     {
@@ -245,7 +280,9 @@ public abstract class Account2CaseInfo_Base
     }
 
     /**
-     * @return
+     * Checks if is debit.
+     *
+     * @return true, if is debit
      */
     public boolean isDebit()
     {
@@ -253,18 +290,143 @@ public abstract class Account2CaseInfo_Base
     }
 
     /**
+     * Checks if is check key.
      *
+     * @return true, if is check key
      */
     public boolean isCheckKey()
     {
         return this.key != null && !this.key.isEmpty();
     }
 
+    /**
+     * Checks if is check currency.
+     *
+     * @return true, if is check currency
+     */
     public boolean isCheckCurrency()
     {
         return getCurrencyInstance() != null && getCurrencyInstance().isValid();
     }
 
+    /**
+     * Getter method for the instance variable {@link #order}.
+     *
+     * @return value of instance variable {@link #order}
+     */
+    public Integer getOrder()
+    {
+        return this.order;
+    }
+
+    /**
+     * Setter method for instance variable {@link #order}.
+     *
+     * @param _order value for instance variable {@link #order}
+     * @return the account2 case info
+     */
+    public Account2CaseInfo setOrder(final Integer _order)
+    {
+        this.order = _order;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #instance}.
+     *
+     * @return value of instance variable {@link #instance}
+     */
+    public Instance getInstance()
+    {
+        return this.instance;
+    }
+
+    /**
+     * Setter method for instance variable {@link #instance}.
+     *
+     * @param _instance value for instance variable {@link #instance}
+     * @return the account2 case info
+     */
+    public Account2CaseInfo setInstance(final Instance _instance)
+    {
+        this.instance = _instance;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #amount}.
+     *
+     * @return value of instance variable {@link #amount}
+     */
+    public BigDecimal getAmount()
+    {
+        return this.amount == null ? BigDecimal.ZERO : this.amount;
+    }
+
+    /**
+     * Setter method for instance variable {@link #amount}.
+     *
+     * @param _amount value for instance variable {@link #amount}
+     * @return the account2 case info
+     */
+    public Account2CaseInfo setAmount(final BigDecimal _amount)
+    {
+        this.amount = _amount;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #key}.
+     *
+     * @return value of instance variable {@link #key}
+     */
+    public String getKey()
+    {
+        return this.key;
+    }
+
+    /**
+     * Setter method for instance variable {@link #key}.
+     *
+     * @param _key value for instance variable {@link #key}
+     * @return the account2 case info
+     */
+    public Account2CaseInfo setKey(final String _key)
+    {
+        this.key = _key;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #remark}.
+     *
+     * @return value of instance variable {@link #remark}
+     */
+    public String getRemark()
+    {
+        return this.remark;
+    }
+
+    /**
+     * Setter method for instance variable {@link #remark}.
+     *
+     * @param _remark value for instance variable {@link #remark}
+     * @return the account2 case info
+     */
+    public Account2CaseInfo setRemark(final String _remark)
+    {
+        this.remark = _remark;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Gets the standards.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _caseInst the case inst
+     * @return the standards
+     * @throws EFapsException on error
+     */
     protected static List<Account2CaseInfo> getStandards(final Parameter _parameter,
                                                          final Instance _caseInst)
         throws EFapsException
@@ -307,10 +469,13 @@ public abstract class Account2CaseInfo_Base
     }
 
     /**
-     * @param _parameter
-     * @param _caseInst
-     * @param _productInstance
-     * @return
+     * Gets the 4 product.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _caseInst the case inst
+     * @param _productInstance the product instance
+     * @return the 4 product
+     * @throws EFapsException on error
      */
     protected static Account2CaseInfo get4Product(final Parameter _parameter,
                                                   final Instance _caseInst,
@@ -361,6 +526,13 @@ public abstract class Account2CaseInfo_Base
         return ret;
     }
 
+    /**
+     * Gets the account2 case info.
+     *
+     * @param _queryBldr the query bldr
+     * @return the account2 case info
+     * @throws EFapsException on error
+     */
     protected static Account2CaseInfo getAccount2CaseInfo(final QueryBuilder _queryBldr)
         throws EFapsException
     {
@@ -381,123 +553,18 @@ public abstract class Account2CaseInfo_Base
         multi.execute();
         if (multi.next()) {
             ret = new Account2CaseInfo()
-                            .setInstance(multi.getCurrentInstance())
-                            .setConfigs(multi
-                                            .<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
-                            .setAccountInstance(multi.<Instance>getSelect(selAccInst))
-                            .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst))
-                            .setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))
-                            .setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
-                            .setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
-                            .setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
-                            .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key))
-                            .setRemark(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Remark));
+                    .setInstance(multi.getCurrentInstance())
+                    .setConfigs(multi
+                                    .<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
+                    .setAccountInstance(multi.<Instance>getSelect(selAccInst))
+                    .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst))
+                    .setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))
+                    .setNumerator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
+                    .setLinkId(multi.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
+                    .setOrder(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
+                    .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key))
+                    .setRemark(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Remark));
         }
         return ret;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #order}.
-     *
-     * @return value of instance variable {@link #order}
-     */
-    public Integer getOrder()
-    {
-        return this.order;
-    }
-
-    /**
-     * Setter method for instance variable {@link #order}.
-     *
-     * @param _order value for instance variable {@link #order}
-     */
-    public Account2CaseInfo setOrder(final Integer _order)
-    {
-        this.order = _order;
-        return (Account2CaseInfo) this;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #instance}.
-     *
-     * @return value of instance variable {@link #instance}
-     */
-    public Instance getInstance()
-    {
-        return this.instance;
-    }
-
-    /**
-     * Setter method for instance variable {@link #instance}.
-     *
-     * @param _instance value for instance variable {@link #instance}
-     */
-    public Account2CaseInfo setInstance(final Instance _instance)
-    {
-        this.instance = _instance;
-        return (Account2CaseInfo) this;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #amount}.
-     *
-     * @return value of instance variable {@link #amount}
-     */
-    public BigDecimal getAmount()
-    {
-        return this.amount;
-    }
-
-    /**
-     * Setter method for instance variable {@link #amount}.
-     *
-     * @param _amount value for instance variable {@link #amount}
-     */
-    public Account2CaseInfo setAmount(final BigDecimal _amount)
-    {
-        this.amount = _amount;
-        return (Account2CaseInfo) this;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #key}.
-     *
-     * @return value of instance variable {@link #key}
-     */
-    public String getKey()
-    {
-        return this.key;
-    }
-
-    /**
-     * Setter method for instance variable {@link #key}.
-     *
-     * @param _key value for instance variable {@link #key}
-     */
-    public Account2CaseInfo setKey(final String _key)
-    {
-        this.key = _key;
-        return (Account2CaseInfo) this;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #remark}.
-     *
-     * @return value of instance variable {@link #remark}
-     */
-    public String getRemark()
-    {
-        return this.remark;
-    }
-
-    /**
-     * Setter method for instance variable {@link #remark}.
-     *
-     * @param _remark value for instance variable {@link #remark}
-     */
-    public Account2CaseInfo setRemark(final String _remark)
-    {
-        this.remark = _remark;
-        return (Account2CaseInfo) this;
     }
 }

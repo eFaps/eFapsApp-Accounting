@@ -129,7 +129,7 @@ public interface AccountingSettings
     /**
      * Activate the mechanism for Swap.
      */
-    String PERIOD_ACTIVATESWAP= "ActivateSwap";
+    String PERIOD_ACTIVATESWAP = "ActivateSwap";
 
     /**
      * Activate the mechanism for Retention and Perception.

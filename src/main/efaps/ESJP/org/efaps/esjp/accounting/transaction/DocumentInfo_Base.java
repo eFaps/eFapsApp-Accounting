@@ -223,10 +223,11 @@ public abstract class DocumentInfo_Base
     /**
      * Gets the key2 amount.
      *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return the key2 amount
      * @throws EFapsException on error
      */
-    public Map<String, BigDecimal> getKey2Amount()
+    public Map<String, BigDecimal> getKey2Amount(final Parameter _parameter)
         throws EFapsException
     {
         Map<String, BigDecimal> ret;
@@ -246,6 +247,21 @@ public abstract class DocumentInfo_Base
                         } else {
                             this.key2Amount.put(entry.getKey(), entry.getValue());
                         }
+                    }
+                }
+                final Instance swapInstance = Instance.get(_parameter.getParameterValue("swapInstance"));
+                if (swapInstance.isValid()) {
+                    final PrintQuery print = CachedPrintQuery.get4Request(swapInstance);
+                    final SelectBuilder selFromInst = SelectBuilder.get().linkto(
+                                    CISales.Document2Document4Swap.FromLink).instance();
+                    final SelectBuilder selToInst = SelectBuilder.get().linkto(
+                                    CISales.Document2Document4Swap.ToLink).instance();
+                    print.addSelect(selFromInst, selToInst);
+                    print.execute();
+                    if (getInstance().equals(print.getSelect(selFromInst))) {
+                        this.key2Amount.put("From", getAmount());
+                    } else if (getInstance().equals(print.getSelect(selToInst))) {
+                        this.key2Amount.put("To", getAmount());
                     }
                 }
             }

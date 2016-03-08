@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
 
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -50,7 +49,7 @@
                 <property name="NoNetTotal">true</property>
                 <property name="NoLabel">true</property>
                 <property name="NoAction">true</property>
-                <property name="NoSwap">true</property>
+                <property name="NoSwap">false</property>
             </trigger>
         </field>
         <field name="case">
@@ -122,7 +121,9 @@
             <property name="Required">true</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFieldValue"
                 name="Accounting_TransactionCreate4SwapForm.date.UI_FIELD_VALUE"
-                program="org.efaps.esjp.accounting.transaction.FieldValue" />
+                program="org.efaps.esjp.accounting.transaction.FieldValue" >
+                <property name="Select4Date">linkto[ToAbstractLink].attribute[Date]</property>
+            </trigger>
             <trigger event="UI_FIELD_UPDATE" method="update4Date"
                 name="Accounting_TransactionCreate4SwapForm.date.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.accounting.transaction.FieldUpdate" />
@@ -138,12 +139,6 @@
                 program="org.efaps.esjp.common.uiform.Field">
                 <property name="DefaultValue">true</property>
             </trigger>
-        </field>
-        <field character="Group" name="descriptionGroup">
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="GroupCount">2</property>
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>

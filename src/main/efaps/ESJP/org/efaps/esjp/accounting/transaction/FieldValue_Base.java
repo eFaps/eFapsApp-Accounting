@@ -80,7 +80,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
-import org.efaps.esjp.sales.Swap_Base;
+import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -472,7 +472,7 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        if (_instance.isValid()) {
+        if (_instance.isValid() && _instance.getType().isKindOf(CIERP.DocumentAbstract)) {
             final PrintQuery print = new PrintQuery(_instance);
             print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
             print.execute();
@@ -523,9 +523,12 @@ public abstract class FieldValue_Base
     public Return getDocument4SwapFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        return null;
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, getDocumentFieldSnipplet(_parameter)
+                        .append("<input type=\"hidden\" name=\"swapInstance\" value=\"")
+                        .append(getSelectedInstances(_parameter).get(0).getOid()).append("\"/>"));
+        return ret;
     }
-
 
     /**
      * Renders a field containing information about the selected document, sets
@@ -540,7 +543,21 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final StringBuilder html = new StringBuilder();
+        ret.put(ReturnValues.SNIPLETT, getDocumentFieldSnipplet(_parameter));
+        return ret;
+    }
+
+    /**
+     * Gets the document field snipplet.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the document field snipplet
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getDocumentFieldSnipplet(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
         final Table table = new Table().setStyle("width:350px;");
@@ -549,8 +566,8 @@ public abstract class FieldValue_Base
             addDocumentInfo(_parameter, table, doc);
             final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
             if (taxInfo.isPerception()) {
-                final DocumentInfo percDoc = new DocumentInfo(
-                                taxInfo.getTaxDocInstance(CISales.IncomingPerceptionCertificate));
+                final DocumentInfo percDoc = new DocumentInfo(taxInfo.getTaxDocInstance(
+                                CISales.IncomingPerceptionCertificate));
                 addDocumentInfo(_parameter, table, percDoc);
             }
             rowspan.add(table.getRows().size());
@@ -563,10 +580,8 @@ public abstract class FieldValue_Base
             current = span;
             i++;
         }
-        html.append(table.toHtml())
-            .append(InterfaceUtils.wrappInScriptTag(_parameter, getScript(_parameter, docs), true, 0));
-
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+        ret.append(table.toHtml()).append(InterfaceUtils.wrappInScriptTag(_parameter, getScript(_parameter, docs), true,
+                        0));
         return ret;
     }
 
@@ -600,6 +615,16 @@ public abstract class FieldValue_Base
                                 ret.add(relInst);
                             }
                         }
+                    } else  if (docInst.getType().isCIType(CISales.Document2Document4Swap)) {
+                        final PrintQuery print = new PrintQuery(docInst);
+                        final SelectBuilder selFromInst = SelectBuilder.get().linkto(
+                                        CISales.Document2Document4Swap.FromLink).instance();
+                        final SelectBuilder selToInst = SelectBuilder.get().linkto(
+                                        CISales.Document2Document4Swap.ToLink).instance();
+                        print.addSelect(selFromInst, selToInst);
+                        print.execute();
+                        ret.add(print.<Instance>getSelect(selFromInst));
+                        ret.add(print.<Instance>getSelect(selToInst));
                     } else {
                         ret.add(docInst);
                     }
@@ -657,6 +682,7 @@ public abstract class FieldValue_Base
      * @param _doc          Document
      * @throws EFapsException on error
      */
+    @SuppressWarnings("checkstyle:methodlength")
     protected void addDocumentInfo(final Parameter _parameter,
                                    final Table _table,
                                    final DocumentInfo _doc)
@@ -884,7 +910,7 @@ public abstract class FieldValue_Base
             final InstanceQuery swapQuery = swapQueryBldr.getQuery();
             final List<Instance> relInst = swapQuery.execute();
             if (!relInst.isEmpty()) {
-                for (final SwapInfo info : Swap_Base.getSwapInfos(_parameter, _doc.getInstance(), relInst).values()) {
+                for (final SwapInfo info : Swap.getSwapInfos(_parameter, _doc.getInstance(), relInst).values()) {
                     _table.addRow()
                         .addColumn(info.getDirection()).addColumn(info.getDocument())
                         .addColumn(info.getAmount() + " " + CurrencyInst.get(info.getCurrencyInstance()).getSymbol());
@@ -1077,29 +1103,7 @@ public abstract class FieldValue_Base
                                       final List<DocumentInfo> _docs)
         throws EFapsException
     {
-        final boolean script = !"true".equalsIgnoreCase(getProperty(_parameter, "noScript"));
         final StringBuilder ret = new StringBuilder();
-
-        if (script) {
-            for (final DocumentInfo doc : _docs) {
-
-            }
-        }
-//        _doc.setInvert(_doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
-//
-//        if (script && !_doc.getDebitAccounts().isEmpty() && !_doc.getCreditAccounts().isEmpty()) {
-//            if (_doc.isSumsDoc()) {
-//                getPriceInformation(_parameter, _doc);
-//            }
-//
-//            for (final AccountInfo account : _doc.getDebitAccounts()) {
-//                account.setLink(getLinkString(account.getInstance(), "_Debit"));
-//            }
-//            for (final AccountInfo account : _doc.getCreditAccounts()) {
-//                account.setLink(getLinkString(account.getInstance(), "_Credit"));
-//            }
-//            ret.append(getTableJS(_parameter, "Debit", _doc.getDebitAccounts()))
-//                .append(getTableJS(_parameter, "Credit", _doc.getCreditAccounts()));
         return ret;
     }
 

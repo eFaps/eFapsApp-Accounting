@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting;
@@ -34,7 +31,6 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("2e44431b-f2fe-45ed-acd6-4d86c59cbeb2")
 @EFapsApplication("eFapsApp-Accounting")
@@ -42,6 +38,14 @@ public class Account2CaseInfo
     extends Account2CaseInfo_Base
 {
 
+    /**
+     * Gets the standards.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _caseInst the case inst
+     * @return the standards
+     * @throws EFapsException on error
+     */
     public static List<Account2CaseInfo> getStandards(final Parameter _parameter,
                                                       final Instance _caseInst)
         throws EFapsException
@@ -49,6 +53,15 @@ public class Account2CaseInfo
         return Account2CaseInfo_Base.getStandards(_parameter, _caseInst);
     }
 
+    /**
+     * Gets the 4 product.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _caseInst the case inst
+     * @param _productInstance the product instance
+     * @return the 4 product
+     * @throws EFapsException on error
+     */
     public static Account2CaseInfo get4Product(final Parameter _parameter,
                                                final Instance _caseInst,
                                                final Instance _productInstance)

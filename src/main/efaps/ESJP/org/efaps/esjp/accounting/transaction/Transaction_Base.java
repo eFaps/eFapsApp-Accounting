@@ -711,9 +711,9 @@ public abstract class Transaction_Base
                 }
 
                 if (acc2case.isCheckKey()) {
-                    if (_doc.getKey2Amount().containsKey(acc2case.getKey())) {
+                    if (_doc.getKey2Amount(_parameter).containsKey(acc2case.getKey())) {
                         isDefault = true;
-                        acc2case.setAmount(_doc.getKey2Amount().get(acc2case.getKey()));
+                        acc2case.setAmount(_doc.getKey2Amount(_parameter).get(acc2case.getKey()));
                     }
                 }
 
