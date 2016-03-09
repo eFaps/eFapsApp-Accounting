@@ -19,6 +19,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -79,6 +80,7 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -357,34 +359,34 @@ public abstract class Transaction_Base
                                 final BigDecimal _rate)
         throws EFapsException
     {
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        final Instance periodCurrenycInstance = new Period().getCurrency(periodInst).getInstance();
         BigDecimal ret = BigDecimal.ZERO;
         try {
             final DecimalFormat formater = NumberFormatter.get().getFormatter(null, null);
             final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
-            final String[] rates = _parameter.getParameterValues("rate_" + _postFix);
-            final String[] ratesInv = _parameter.getParameterValues("rate_" + _postFix + RateUI.INVERTEDSUFFIX);
             if (amounts != null) {
                 for (int i = 0; i < amounts.length; i++) {
-                    BigDecimal amount = amounts[i].isEmpty()
-                                    ? BigDecimal.ZERO : (BigDecimal) formater.parse(amounts[i]);
-
-                    BigDecimal rate = rates[i].isEmpty() ? BigDecimal.ONE : (BigDecimal) formater.parse(rates[i]);
-                    final boolean rateInv = "true".equalsIgnoreCase(ratesInv[i]);
-                    if (rateInv && rate.compareTo(BigDecimal.ZERO) != 0) {
-                        rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
-                    }
+                    final RateInfo rateInfo = getRateInfo4UI(_parameter, "_" + _postFix, i);
+                    BigDecimal rateAmount = amounts[i] != null ? ((BigDecimal) formater.parse(amounts[i]))
+                                    .setScale(8, RoundingMode.HALF_UP) : BigDecimal.ZERO;
                     if (_pos != null && i == _pos) {
-                        if (_amount != null) {
-                            amount = _amount;
-                        }
                         if (_rate != null) {
-                            rate = _rate;
+                            if (rateInfo.getCurrencyInstObj().isInvert()) {
+                                rateInfo.setRateUI(_rate);
+                                rateInfo.setSaleRate(_rate);
+                            } else {
+                                rateInfo.setRate(_rate);
+                                rateInfo.setSaleRate(_rate);
+                            }
+                        }
+                        if (_amount != null) {
+                            rateAmount = _amount;
                         }
                     }
-                    if (rate.compareTo(BigDecimal.ZERO) != 0) {
-                        amount = amount.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP);
-                    }
-                    ret = ret.add(amount.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    final BigDecimal amount = Currency.convertToCurrency(_parameter, rateAmount, rateInfo, null,
+                                    periodCurrenycInstance).setScale(2, RoundingMode.HALF_UP);
+                    ret = ret.add(amount);
                 }
             }
         } catch (final ParseException e) {
@@ -417,6 +419,35 @@ public abstract class Transaction_Base
         final boolean rInv = "true".equalsIgnoreCase(_parameter.getParameterValues("rate"
                         + _postfix + RateUI.INVERTEDSUFFIX)[_index]);
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
+    }
+
+    /**
+     * Gets a simulated rate info object that does not distinguish between sales
+     * and buy rate because the value is diffined by the User
+     *
+     * @param _parameter the _parameter
+     * @param _postFix the _postfix
+     * @param _index the _index
+     * @return the rate info
+     * @throws EFapsException the e faps exception
+     */
+    public RateInfo getRateInfo4UI(final Parameter _parameter,
+                                   final String _postFix,
+                                   final int _index) throws EFapsException
+    {
+        final Object[] rateObject = getRateObject(_parameter, _postFix, _index);
+        final String[] rateCurIds = _parameter.getParameterValues("rateCurrencyLink" + _postFix);
+
+        final RateInfo ret = RateInfo.getDummyRateInfo();
+        ret.setCurrencyInstance(CurrencyInst.get(Long.parseLong(rateCurIds[_index])).getInstance());
+        if (ret.getCurrencyInstObj().isInvert()) {
+            ret.setRateUI((BigDecimal) rateObject[1]);
+            ret.setSaleRateUI((BigDecimal) rateObject[1]);
+        } else {
+            ret.setRate((BigDecimal) rateObject[0]);
+            ret.setSaleRate((BigDecimal) rateObject[0]);
+        }
+        return ret;
     }
 
     /**
@@ -667,8 +698,12 @@ public abstract class Transaction_Base
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
         if (caseInst.isValid()) {
             _doc.setCaseInst(caseInst);
+
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+            final Instance periodCurrenycInstance = new Period().getCurrency(periodInst).getInstance();
+
             final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance(),
-                            new Period().evaluateCurrentPeriod(_parameter));
+                            periodInst);
 
             final Map<Instance, Account2CaseInfo> inst2caseInfo = new HashMap<>();
             for (final Entry<Instance, BigDecimal> entry : _doc.getProduct2Amount().entrySet()) {
@@ -722,13 +757,14 @@ public abstract class Transaction_Base
                 if (add) {
                     final BigDecimal mul = new BigDecimal(acc2case.getNumerator()).setScale(12).divide(
                                     new BigDecimal(acc2case.getDenominator()),
-                                    BigDecimal.ROUND_HALF_UP);
+                                    RoundingMode.HALF_UP);
                     final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
                                     || acc2case.isCheckKey()
                                     ? acc2case.getAmount() : _doc.getAmount();
-                    final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, BigDecimal.ROUND_HALF_UP);
-                    final BigDecimal accAmountRate = accAmount.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                    .divide(_doc.getRate(_parameter), BigDecimal.ROUND_HALF_UP);
+                    final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, RoundingMode.HALF_UP);
+                    final BigDecimal accAmountRate = Currency.convertToCurrency(_parameter, accAmount,
+                                    _doc.getRateInfo(), _doc.getRatePropKey(), periodCurrenycInstance);
+
                     final AccountInfo account = new AccountInfo(acc2case.getAccountInstance(), accAmount);
                     account.setRemark(acc2case.getRemark());
                     if (acc2case.isApplyLabel() && !labelInsts.isEmpty()) {

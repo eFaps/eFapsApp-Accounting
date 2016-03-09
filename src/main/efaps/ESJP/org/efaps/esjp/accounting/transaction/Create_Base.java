@@ -65,8 +65,10 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -880,17 +882,16 @@ public abstract class Create_Base
                 for (int i = 0; i < amounts.length; i++) {
                     final Instance rateCurrInst = CurrencyInst.get(Long.parseLong(rateCurIds[i])).getInstance();
                     final Instance accInst = Instance.get(accountOids[i]);
-                    final Object[] rateObj = new Transaction().getRateObject(_parameter, "_" + _postFix, i);
-                    final BigDecimal rate = ((BigDecimal) rateObj[0]).setScale(12, RoundingMode.HALF_UP)
-                                    .divide((BigDecimal) rateObj[1], RoundingMode.HALF_UP);
-                    final Type type = Type.get(Long.parseLong(types[i]));
+                    final Object[] rateObj = getRateObject(_parameter, "_" + _postFix, i);
+                    final RateInfo rateInfo = getRateInfo4UI(_parameter, "_" + _postFix, i);
 
-                    BigDecimal rateAmount = ((BigDecimal) formater.parse(amounts[i]))
-                                    .setScale(8, RoundingMode.HALF_UP);
+                    final Type type = Type.get(Long.parseLong(types[i]));
                     final boolean isDebitTrans = type.getUUID().equals(CIAccounting.TransactionPositionDebit.uuid);
-                    final BigDecimal amount = rateAmount.divide(rate, RoundingMode.HALF_UP)
+
+                    final BigDecimal rateAmount = ((BigDecimal) formater.parse(amounts[i]))
                                     .setScale(2, RoundingMode.HALF_UP);
-                    rateAmount = rateAmount.setScale(2, RoundingMode.HALF_UP);
+                    final BigDecimal amount = Currency.convertToCurrency(_parameter, rateAmount, rateInfo, null,
+                                    curInstance).setScale(2, RoundingMode.HALF_UP);
 
                     final PositionInfo pos  = new PositionInfo();
                     _transInfo.addPosition(pos);
