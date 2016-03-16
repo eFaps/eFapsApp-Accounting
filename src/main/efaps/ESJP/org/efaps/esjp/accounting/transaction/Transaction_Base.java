@@ -347,16 +347,14 @@ public abstract class Transaction_Base
      * @param _parameter Parameter as passed from the eFaps API
      * @param _postFix postfix for the field names
      * @param _pos position
-     * @param _amount amount
-     * @param _rate rate
+     * @param _rateInfo the _rate info
      * @return sum for the table
      * @throws EFapsException on error
      */
-    protected BigDecimal getSum(final Parameter _parameter,
-                                final String _postFix,
-                                final Integer _pos,
-                                final BigDecimal _amount,
-                                final BigDecimal _rate)
+    protected BigDecimal getSum4UI(final Parameter _parameter,
+                                   final String _postFix,
+                                   final Integer _pos,
+                                   final RateInfo _rateInfo)
         throws EFapsException
     {
         final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
@@ -367,23 +365,12 @@ public abstract class Transaction_Base
             final String[] amounts = _parameter.getParameterValues("amount_" + _postFix);
             if (amounts != null) {
                 for (int i = 0; i < amounts.length; i++) {
-                    final RateInfo rateInfo = getRateInfo4UI(_parameter, "_" + _postFix, i);
-                    BigDecimal rateAmount = amounts[i] != null ? ((BigDecimal) formater.parse(amounts[i]))
-                                    .setScale(8, RoundingMode.HALF_UP) : BigDecimal.ZERO;
-                    if (_pos != null && i == _pos) {
-                        if (_rate != null) {
-                            if (rateInfo.getCurrencyInstObj().isInvert()) {
-                                rateInfo.setRateUI(_rate);
-                                rateInfo.setSaleRate(_rate);
-                            } else {
-                                rateInfo.setRate(_rate);
-                                rateInfo.setSaleRate(_rate);
-                            }
-                        }
-                        if (_amount != null) {
-                            rateAmount = _amount;
-                        }
-                    }
+                    final RateInfo rateInfo = _pos != null && i == _pos && _rateInfo != null
+                                    ? _rateInfo
+                                    : getRateInfo4UI(_parameter, "_" + _postFix, i);
+                    final BigDecimal rateAmount = amounts[i] != null && !amounts[i].isEmpty()
+                                    ? ((BigDecimal) formater.parse(amounts[i])).setScale(8, RoundingMode.HALF_UP)
+                                    : BigDecimal.ZERO;
                     final BigDecimal amount = Currency.convertToCurrency(_parameter, rateAmount, rateInfo, null,
                                     periodCurrenycInstance).setScale(2, RoundingMode.HALF_UP);
                     ret = ret.add(amount);

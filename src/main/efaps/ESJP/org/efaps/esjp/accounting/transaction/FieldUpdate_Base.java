@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -62,10 +59,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("af9547fa-3caf-4013-9e81-d637736ac62b")
-@EFapsApplication("eFapsApp-Sales")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class FieldUpdate_Base
     extends Transaction
 {
@@ -81,8 +77,7 @@ public abstract class FieldUpdate_Base
     public Return update4Account(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String postfix = (String) properties.get("TypePostfix");
+        final String postfix = getProperty(_parameter, "TypePostfix");
         final String[] accountOIDs = _parameter.getParameterValues("accountLink_" + postfix);
 
         final int pos = getSelectedRow(_parameter);
@@ -91,7 +86,7 @@ public abstract class FieldUpdate_Base
         final Instance accInst = Instance.get(accountOID);
 
         final AccountInfo accInfo = new AccountInfo();
-        accInfo.setInstance(accInst).setPostFix("_" + postfix);;
+        accInfo.setInstance(accInst).setPostFix("_" + postfix);
 
         final Map<String, Object> map = new HashMap<String, Object>();
 
@@ -121,8 +116,7 @@ public abstract class FieldUpdate_Base
     {
         final Return retVal = new Return();
         try {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String postfix = (String) properties.get("TypePostfix");
+            final String postfix = getProperty(_parameter, "TypePostfix");
             final String[] amounts = _parameter.getParameterValues("amount_" + postfix);
             final String[] rates = _parameter.getParameterValues("rate_" + postfix);
             final String[] ratesInv = _parameter.getParameterValues("rate_" + postfix + RateUI.INVERTEDSUFFIX);
@@ -141,9 +135,9 @@ public abstract class FieldUpdate_Base
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
-            final BigDecimal sum = getSum(_parameter, postfix, null, null, null);
+            final BigDecimal sum = getSum4UI(_parameter, postfix, null, null);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
-            final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
+            final BigDecimal sum2 = getSum4UI(_parameter, postfix2, null, null);
             final String sumStr = formater.format(sum) + " "
                             + new Period().getCurrency(periodInstance).getSymbol();
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
@@ -173,8 +167,7 @@ public abstract class FieldUpdate_Base
     {
         final Return ret = new Return();
         try {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String postfix = (String) properties.get("TypePostfix");
+            final String postfix = getProperty(_parameter, "TypePostfix");
 
             final String[] currIds = _parameter.getParameterValues("rateCurrencyLink_" + postfix);
             final String[] amounts = _parameter.getParameterValues("amount_" + postfix);
@@ -191,9 +184,9 @@ public abstract class FieldUpdate_Base
             final BigDecimal amountRate = amounts[pos].isEmpty() ? BigDecimal.ZERO
                             : (BigDecimal) rateFormater.parse(amounts[pos]);
 
-            final BigDecimal sum = getSum(_parameter, postfix, pos, null, rate.getRate());
+            final BigDecimal sum = getSum4UI(_parameter, postfix, pos, rate);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
-            final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
+            final BigDecimal sum2 = getSum4UI(_parameter, postfix2, null, null);
             final String sumStr = formater.format(sum) + " "
                             + new Period().getCurrency(periodInstance).getSymbol();
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
@@ -325,10 +318,15 @@ public abstract class FieldUpdate_Base
         final StringBuilder js = new StringBuilder();
         if (SummarizeDefinition.CASE.equals(summarizeDef) || SummarizeDefinition.CASEUSER.equals(summarizeDef)) {
             final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
-            final PrintQuery print = new CachedPrintQuery(caseInst,Case.CACHEKEY);
-            print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
-            print.executeWithoutAccessCheck();
-            final SummarizeConfig config = print.getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+            final SummarizeConfig config;
+            if (caseInst.isValid()) {
+                final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
+                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                print.executeWithoutAccessCheck();
+                config = print.getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+            } else {
+                config = SummarizeConfig.NONE;
+            }
 
             final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
                             .summarizeConfig.name;
@@ -365,8 +363,7 @@ public abstract class FieldUpdate_Base
         final Return retVal = new Return();
 
         try {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String postfix = (String) properties.get("TypePostfix");
+            final String postfix = getProperty(_parameter, "TypePostfix");
 
             final String[] amounts = _parameter.getParameterValues("amount_" + postfix);
             final String[] rates = _parameter.getParameterValues("rate_" + postfix);
@@ -386,9 +383,9 @@ public abstract class FieldUpdate_Base
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
-            final BigDecimal sum = getSum(_parameter, postfix, null, null, null);
+            final BigDecimal sum = getSum4UI(_parameter, postfix, null, null);
             final String postfix2 = "Debit".equals(postfix) ? "Credit" : "Debit";
-            final BigDecimal sum2 = getSum(_parameter, postfix2, null, null, null);
+            final BigDecimal sum2 = getSum4UI(_parameter, postfix2, null, null);
             final String sumStr = formater.format(sum) + " "
                             + new Period().getCurrency(periodInstance).getSymbol();
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 216 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.transaction;
@@ -28,6 +25,8 @@ import java.util.List;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.erp.AbstractPositionWarning;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
@@ -42,8 +41,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
+@EFapsUUID("3af252ad-bfc4-4b28-af9b-aed39a65fdfc")
+@EFapsApplication("eFapsApps-Accounting")
 public abstract class Validation_Base
     extends Transaction
 {
@@ -84,8 +84,8 @@ public abstract class Validation_Base
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<>();
-        final BigDecimal debit = getSum(_parameter, "Debit", null, null, null);
-        final BigDecimal credit = getSum(_parameter, "Credit", null, null, null);
+        final BigDecimal debit = getSum4UI(_parameter, "Debit", null, null);
+        final BigDecimal credit = getSum4UI(_parameter, "Credit", null, null);
         if (debit.compareTo(BigDecimal.ZERO) == 0) {
             ret.add(new AmountGreateZeroWarning());
         } else if (credit.compareTo(BigDecimal.ZERO) == 0) {
