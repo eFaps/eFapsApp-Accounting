@@ -16,19 +16,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>995cfc82-4fea-4261-9e01-611097d7f507</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4DocForm</name>
@@ -74,6 +67,7 @@
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Case"
