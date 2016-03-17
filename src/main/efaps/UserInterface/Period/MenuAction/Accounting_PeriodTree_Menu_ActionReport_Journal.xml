@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,20 +16,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
-<ui-command
-    xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b6400f6c-d58d-48bc-aa5d-2cd382719e24</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_Menu_ActionReport_Journal</name>
@@ -45,8 +37,7 @@
                 <property name="DataSourceClass">org.efaps.esjp.accounting.report.JournalReport51DS</property>
                 <property name="FileName">Libro Diario</property>
             </execute>
-            <validate program="org.efaps.esjp.accounting.report.Report"
-                method="validateDates" />
+            <validate program="org.efaps.esjp.accounting.report.Report" method="validateDates" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>

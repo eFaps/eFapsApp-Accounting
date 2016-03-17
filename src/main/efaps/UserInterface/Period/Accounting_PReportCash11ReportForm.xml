@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,24 +14,18 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5f754b70-1745-4d43-a741-a6cb15b4c5d6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PReportCash11ReportForm</name>
         <field name="mime">
-            <property name="ModeCreate">READONLY</property>
-            <property name="Label">Common_Main_PrintForm.mime.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_Report_PrintForm.mime.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="getMimeFieldValueUI"
                 name="Accounting_PReportCash11ReportForm.mime.UI_FIELD_VALUE"
                 program="org.efaps.esjp.ui.print.UserInterface"/>
