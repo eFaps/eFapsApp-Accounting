@@ -68,7 +68,6 @@ import org.efaps.esjp.sales.document.AbstractDocumentSum;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.IncomingInvoice;
-import org.efaps.esjp.sales.document.IncomingInvoice_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.util.Sales;
@@ -294,7 +293,7 @@ public abstract class ExternalVoucher_Base
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
-            Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
+            Context.getThreadContext().setSessionAttribute(IncomingInvoice.REVISIONKEY, revision);
             _insert.add(CIAccounting.ExternalVoucher.Revision, revision);
             _createdDoc.addValue(getFieldName4Attribute(_parameter, CIAccounting.ExternalVoucher.Revision.name),
                             revision);
