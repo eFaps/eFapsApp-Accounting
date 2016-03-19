@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>780c429c-16ed-4740-804b-eab3d3d6a39a</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodPaymentDocumentTable</name>
@@ -41,7 +36,8 @@
                 name="Accounting_SubPeriodPaymentDocumentTable.code.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessOnField">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocument</property>
+                <property name="Attribute">org.efaps.sales.payment.DeactivateCodeGeneration</property>
+                <property name="Inverse">true</property>
             </trigger>
         </field>
         <field name="name">
