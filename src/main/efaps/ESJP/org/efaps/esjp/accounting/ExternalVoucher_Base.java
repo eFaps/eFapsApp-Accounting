@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
@@ -71,7 +70,6 @@ import org.efaps.esjp.sales.document.IncomingInvoice;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -287,10 +285,7 @@ public abstract class ExternalVoucher_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration config = Sales.getSysConfig();
-        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGINVOICESEQUENCE);
-
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGINVOICEREVSEQ.get()));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice.REVISIONKEY, revision);
