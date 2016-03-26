@@ -52,7 +52,6 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.transaction.Create;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.util.Accounting;
-import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
@@ -343,14 +342,14 @@ public abstract class ExternalVoucher_Base
         if (net.compareTo(cross) == 0) {
             taxfree = taxfree.add(net);
         } else {
-            final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
+            final Instance vatProdInst = Accounting.CTP4VAT.get();
             final Calculator cals = getCalculator(_parameter, null, vatProdInst.getOid(), "1",
                                 prodPriceIsNet ? unitFrmt.format(net) : unitFrmt.format(cross), "0", false, 0);
             ret.add(cals);
         }
 
         if (taxfree.compareTo(BigDecimal.ZERO) > 0) {
-            final Instance freeProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4FREE);
+            final Instance freeProdInst = Accounting.CTP4FREE.get();
             final Calculator calsTmp = getCalculator(_parameter, null, freeProdInst.getOid(), "1",
                             unitFrmt.format(taxfree), "0", false, 0);
             ret.add(calsTmp);
@@ -405,7 +404,7 @@ public abstract class ExternalVoucher_Base
             if (taxFreeStr != null && !taxFreeStr.isEmpty()) {
                 taxfree =  (BigDecimal) formater.parse(taxFreeStr);
             }
-            final Instance vatProdInst = Accounting.getSysConfig().getLink(AccountingSettings.CTP4VAT);
+            final Instance vatProdInst = Accounting.CTP4VAT.get();
 
             final PrintQuery print = new PrintQuery(vatProdInst);
             print.addAttribute(CISales.ProductAbstract.TaxCategory);

@@ -54,7 +54,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.util.Accounting;
-import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.StandartReport;
@@ -510,7 +509,7 @@ public abstract class Report_Base
                 //TODO evaluate that
                 //final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
 
-                if (Accounting.getSysConfig().getAttributeValueAsBoolean(AccountingSettings.CURRATEEQ)) {
+                if (Accounting.CURRATEEQ.get()) {
                     typeRet = super.getType4ExchangeRate(_parameter);
                 } else {
                     typeRet = CIAccounting.ERP_CurrencyRateAccounting.getType();

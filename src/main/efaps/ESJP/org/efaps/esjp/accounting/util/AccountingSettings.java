@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 9599 $
- * Last Changed:    $Date: 2013-06-12 13:56:55 -0500 (mié, 12 jun 2013) $
- * Last Changed By: $Author: jan@moxter.net $
  */
 
 
 package org.efaps.esjp.accounting.util;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -29,32 +26,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: AccountingSettings.java 9599 2013-06-12 18:56:55Z jan@moxter.net $
  */
 @EFapsUUID("21f06c50-bd20-4ed5-8325-3df5426e5986")
-@EFapsRevision("$Rev: 9599 $")
+@EFapsApplication("eFapsApp-Accounting")
 public interface AccountingSettings
 {
-
-    /**
-     * Boolean: true/false
-     * The CurrencyRate for Accounting is the same as the one for sales.
-     * Means only one CurrencyRate for the system is used.
-     */
-    String CURRATEEQ = "org.efaps.accounting.CurrencyRate4AccountingEqualsSales";
-
-    /**
-     * Link to a Products_ProductCostTextPosition used for creating Positions
-     * in an External Voucher applying VAT.
-     */
-    String CTP4VAT = "org.efaps.accounting.CostTextPosition4VAT";
-
-    /**
-     * Link to a Products_ProductCostTextPosition used for creating Positions
-     * in an External Voucher without Tax.
-     */
-    String CTP4FREE = "org.efaps.accounting.CostTextPosition4TaxFree";
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     //Setting belonging to a period, therefore only one word and not a org.efaps...
@@ -173,6 +149,7 @@ public interface AccountingSettings
     String PERIOD_ACTIVATEFTBSWD = "ActivateFundsToBeSettledWithoutDoc";
 
 
+    /** The period transposorder. */
     String PERIOD_TRANSPOSORDER = "TransPosOrder";
 
     /**
@@ -180,22 +157,52 @@ public interface AccountingSettings
      */
     String PERIOD_RETENTIONCASE = "Case4RetentionCertificate";
 
+    /** The PERIO d_ repor t11 account. */
     String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";
 
+    /** The PERIO d_ repor t302 account. */
     String PERIOD_REPORT302ACCOUNT = "ReportBalance302Account";
+
+    /** The PERIO d_ repor t303 account. */
     String PERIOD_REPORT303ACCOUNT = "ReportBalance303Account";
+
+    /** The PERIO d_ repor t304 account. */
     String PERIOD_REPORT304ACCOUNT = "ReportBalance304Account";
+
+    /** The PERIO d_ repor t305 account. */
     String PERIOD_REPORT305ACCOUNT = "ReportBalance305Account";
+
+    /** The PERIO d_ repor t306 account. */
     String PERIOD_REPORT306ACCOUNT = "ReportBalance306Account";
+
+    /** The PERIO d_ repor t307 account. */
     String PERIOD_REPORT307ACCOUNT = "ReportBalance307Account";
+
+    /** The PERIO d_ repor t308 account. */
     String PERIOD_REPORT308ACCOUNT = "ReportBalance308Account";
+
+    /** The PERIO d_ repor t309 account. */
     String PERIOD_REPORT309ACCOUNT = "ReportBalance309Account";
+
+    /** The PERIO d_ repor t310 account. */
     String PERIOD_REPORT310ACCOUNT = "ReportBalance310Account";
+
+    /** The PERIO d_ repor t311 account. */
     String PERIOD_REPORT311ACCOUNT = "ReportBalance311Account";
+
+    /** The PERIO d_ repor t312 account. */
     String PERIOD_REPORT312ACCOUNT = "ReportBalance312Account";
+
+    /** The PERIO d_ repor t313 account. */
     String PERIOD_REPORT313ACCOUNT = "ReportBalance313Account";
+
+    /** The PERIO d_ repor t314 account. */
     String PERIOD_REPORT314ACCOUNT = "ReportBalance314Account";
+
+    /** The PERIO d_ repor t315 account. */
     String PERIOD_REPORT315ACCOUNT = "ReportBalance315Account";
+
+    /** The PERIO d_ repor t316 account. */
     String PERIOD_REPORT316ACCOUNT = "ReportBalance316Account";
 
 }

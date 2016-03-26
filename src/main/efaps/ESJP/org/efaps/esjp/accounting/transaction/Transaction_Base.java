@@ -258,7 +258,7 @@ public abstract class Transaction_Base
                                     final Instance _currentCurrencyInst)
         throws EFapsException
     {
-        Instance instance;
+        final Instance instance;
         if (_instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
             final PrintQuery print = new CachedPrintQuery(_instance, SubPeriod_Base.CACHEKEY);
             final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
@@ -302,8 +302,8 @@ public abstract class Transaction_Base
             protected Type getType4ExchangeRate(final Parameter _parameter)
                 throws EFapsException
             {
-                Type typeRet;
-                if (Accounting.getSysConfig().getAttributeValueAsBoolean(AccountingSettings.CURRATEEQ)) {
+                final Type typeRet;
+                if (Accounting.CURRATEEQ.get()) {
                     typeRet = super.getType4ExchangeRate(_parameter);
                 } else {
                     typeRet = CIAccounting.ERP_CurrencyRateAccounting.getType();
@@ -410,7 +410,7 @@ public abstract class Transaction_Base
 
     /**
      * Gets a simulated rate info object that does not distinguish between sales
-     * and buy rate because the value is diffined by the User
+     * and buy rate because the value is diffined by the User.
      *
      * @param _parameter the _parameter
      * @param _postFix the _postfix
