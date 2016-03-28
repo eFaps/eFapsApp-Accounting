@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b7b08d6c-a8f4-4a20-8984-d968a65a8853</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_PayMenu_External_Menu_Action_Create</name>
@@ -38,7 +33,7 @@
                 <property name="StatusGroup">Accounting_ExternalVoucherStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Transaction">
+            <validate method="validate" program="org.efaps.esjp.accounting.transaction.Validation">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>
             <validate program="org.efaps.esjp.accounting.ExternalVoucher" method="validate" index="1">
@@ -61,7 +56,6 @@
             </trigger>
             <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Accounting_Transaction</property>
         <property name="TargetConnectAttribute">Accounting_Transaction/PeriodLink</property>

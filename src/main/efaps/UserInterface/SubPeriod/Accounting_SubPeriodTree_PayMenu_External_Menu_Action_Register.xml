@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>584a6fbe-ef53-4c2c-93c9-65c196cac21c</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_SubPeriodTree_PayMenu_External_Menu_Action_Register</name>
@@ -37,7 +32,7 @@
             <execute method="create4External"
                 program="org.efaps.esjp.accounting.transaction.Create" />
             <validate method="validate"
-                program="org.efaps.esjp.accounting.transaction.Transaction" />
+                program="org.efaps.esjp.accounting.transaction.Validation" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_SubPeriodTree_External_Menu_Action_Register.UI_ACCESSCHECK.1"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI"
