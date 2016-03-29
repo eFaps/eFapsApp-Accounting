@@ -284,7 +284,10 @@ public abstract class ExternalVoucher_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGINVOICEREVSEQ.get()));
+        final String seqKey = Sales.INCOMINGINVOICEREVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice.REVISIONKEY, revision);
