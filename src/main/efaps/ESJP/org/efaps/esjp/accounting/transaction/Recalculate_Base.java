@@ -35,14 +35,14 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -76,10 +76,9 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("3748924a-3e33-45d5-805e-9c749d9fb1d6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Recalculate_Base
     extends Transaction
 {
@@ -96,7 +95,7 @@ public abstract class Recalculate_Base
         final Return ret = new Return();
         final Instance docInst = Instance.get(_parameter.getParameterValue("selectedRow"));
         if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
             final StringBuilder html = new StringBuilder();
             html.append("<span name=\"").append(fieldValue.getField().getName()).append("\" ")
                             .append(UIInterface.EFAPSTMPTAG).append(">")
@@ -630,7 +629,13 @@ public abstract class Recalculate_Base
         return _sale ? rateInfos[2].getSaleRate() : rateInfos[2].getRate();
     }
 
-
+    /**
+     * Creates the gain loss4 document account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return createGainLoss4DocumentAccount(final Parameter _parameter)
         throws EFapsException
     {
@@ -812,12 +817,20 @@ public abstract class Recalculate_Base
         return new Return();
     }
 
+    /**
+     * Gets the accounts4 document config.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the accounts4 document config
+     * @throws EFapsException on error
+     */
     protected Set<String> getAccounts4DocumentConfig(final Parameter _parameter)
         throws EFapsException
     {
         final Set<String> set = new HashSet<String>();
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountConfigDocument2Period);
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAccounting.AccountConfigDocument2Period.FromLink);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                        CIAccounting.AccountConfigDocument2Period.FromLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         queryBldr.addWhereAttrInQuery(CIAccounting.AccountAbstract.ID, attrQuery);
@@ -829,6 +842,9 @@ public abstract class Recalculate_Base
         return set;
     }
 
+    /**
+     * The Class Accounting4DocSum.
+     */
     public class Accounting4DocSum
         extends AbstractDocumentSum
     {

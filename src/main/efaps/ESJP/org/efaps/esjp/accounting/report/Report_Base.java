@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.report;
@@ -33,14 +30,14 @@ import java.util.TreeMap;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.jasper.JasperUtil;
 import org.efaps.ci.CIAdminProgram;
@@ -84,14 +81,12 @@ import net.sf.jasperreports.engine.design.JasperDesign;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("0f3596f4-bcfa-4541-8d6b-551562a9b223")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Report_Base
     extends StandartReport
 {
-
     /**
      * Date the transaction must be older.
      */
@@ -102,7 +97,7 @@ public abstract class Report_Base
      */
     private DateTime dateTo;
 
-
+    /** The indent. */
     private boolean indent;
 
     /**
@@ -113,10 +108,10 @@ public abstract class Report_Base
      */
     public Return getMimeTypeFieldValueUI(final Parameter _parameter)
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ").append(
+        html.append("<select name=\"").append(uiValue.getField().getName()).append("\" ").append(
                         UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
 
         final Map<String, String> values = new TreeMap<String, String>();
@@ -208,7 +203,7 @@ public abstract class Report_Base
                                final boolean _from)
         throws EFapsException
     {
-        DateTime ret;
+        final DateTime ret;
         final SelectBuilder sel = new SelectBuilder();
         Instance inst = null;
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
@@ -338,9 +333,9 @@ public abstract class Report_Base
         try {
 
             final JasperReportBuilder jrb = DynamicReports.report();
-            boolean addTitle;
-            boolean addPageHeader;
-            boolean addPageFooter;
+            final boolean addTitle;
+            final boolean addPageHeader;
+            final boolean addPageFooter;
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final String name = (String) properties.get("JasperReport");
             if (name != null) {
@@ -437,6 +432,13 @@ public abstract class Report_Base
 
 
 
+    /**
+     * Adds the page footer.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _jrb the jrb
+     * @param _dataTree the data tree
+     */
     protected void addPageFooter(final Parameter _parameter,
                                  final JasperReportBuilder _jrb,
                                  final ReportTree _dataTree)
@@ -444,6 +446,13 @@ public abstract class Report_Base
         // for implementation purpose
     }
 
+    /**
+     * Adds the title.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _jrb the jrb
+     * @param _dataTree the data tree
+     */
     protected void addTitle(final Parameter _parameter,
                             final JasperReportBuilder _jrb,
                             final ReportTree _dataTree)
@@ -452,6 +461,13 @@ public abstract class Report_Base
     }
 
 
+    /**
+     * Adds the page header.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _jrb the jrb
+     * @param _dataTree the data tree
+     */
     protected void addPageHeader(final Parameter _parameter,
                                  final JasperReportBuilder _jrb,
                                  final ReportTree _dataTree)
@@ -461,6 +477,13 @@ public abstract class Report_Base
                         DynamicReports.cmp.text(_dataTree.getDescription())));
     }
 
+    /**
+     * Gets the number style.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _y the _y
+     * @return the number style
+     */
     protected StyleBuilder getNumberStyle(final Parameter _parameter,
                                           final Integer _y)
     {
@@ -473,6 +496,13 @@ public abstract class Report_Base
                         .setPadding(DynamicReports.stl.padding().setRight(5)).addConditionalStyle(condition1);
     }
 
+    /**
+     * Gets the text style.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _y the _y
+     * @return the text style
+     */
     protected StyleBuilder getTextStyle(final Parameter _parameter,
                                         final Integer _y)
     {
@@ -485,16 +515,35 @@ public abstract class Report_Base
                         .addConditionalStyle(condition1);
     }
 
+    /**
+     * Gets the total label.
+     *
+     * @param _parent the parent
+     * @return the total label
+     */
     protected String getTotalLabel(final AbstractNode _parent)
     {
         return "TOTAL " +  _parent.getLabel();
     }
 
+    /**
+     * Checks if is indent.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return true, if is indent
+     */
     protected boolean isIndent(final Parameter _parameter)
     {
         return !_parameter.getInstance().getType().isKindOf(CIAccounting.ReportProfitLoss.getType());
     }
 
+    /**
+     * Gets the currency.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the currency
+     * @throws EFapsException on error
+     */
     protected Currency getCurrency(final Parameter _parameter)
         throws EFapsException
     {
@@ -505,7 +554,7 @@ public abstract class Report_Base
             protected Type getType4ExchangeRate(final Parameter _parameter)
                 throws EFapsException
             {
-                Type typeRet;
+                final Type typeRet;
                 //TODO evaluate that
                 //final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
 
@@ -520,18 +569,23 @@ public abstract class Report_Base
         return ret;
     }
 
-
-
+    /**
+     * The Class BoldCondition.
+     */
     private class BoldCondition
         extends AbstractSimpleExpression<Boolean>
     {
 
         private static final long serialVersionUID = 1L;
+
+        /** The idx. */
         private final Integer idx;
 
         /**
-         * @param _parameter
-         * @param _y
+         * Instantiates a new bold condition.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _idx the idx
          */
         public BoldCondition(final Parameter _parameter,
                              final Integer _idx)
@@ -610,6 +664,9 @@ public abstract class Report_Base
         }
 
         /**
+         * Adds the children.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
          * @throws EFapsException on error.
          */
         public void addChildren(final Parameter _parameter)
@@ -779,6 +836,7 @@ public abstract class Report_Base
         private int level;
 
 
+        /** The text only. */
         private boolean textOnly = false;
 
 
@@ -792,13 +850,11 @@ public abstract class Report_Base
             return this.textOnly;
         }
 
-
         /**
          * Setter method for instance variable {@link #total}.
          *
-         * @param _total value for instance variable {@link #total}
+         * @param _textOnly the new text only
          */
-
         public void setTextOnly(final boolean _textOnly)
         {
             this.textOnly = _textOnly;
@@ -897,6 +953,8 @@ public abstract class Report_Base
 
         /**
          * Add the children to this node instance.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
          * @param _level levle for the child nodes
          * @throws EFapsException on error
          */
@@ -1232,22 +1290,23 @@ public abstract class Report_Base
                     final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
                     if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
                         if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
-                            RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInstTxnPos.getInstance());
+                            RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInstTxnPos
+                                            .getInstance());
                             BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
-                            final BigDecimal amountTmp = print
-                                        .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
-                                        .divide(rate, BigDecimal.ROUND_HALF_UP);
-                            rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst.getInstance());
+                            final BigDecimal amountTmp = print.<BigDecimal>getAttribute(
+                                            CIAccounting.TransactionPositionAbstract.RateAmount).divide(rate,
+                                                            BigDecimal.ROUND_HALF_UP);
+                            rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst
+                                            .getInstance());
                             rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
                             amount = amountTmp.divide(rate, BigDecimal.ROUND_HALF_UP);
                         } else {
-                            final RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst.getInstance());
+                            final RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst
+                                            .getInstance());
                             final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
-                            amount = print
-                                        .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
-                                        .divide(rate, BigDecimal.ROUND_HALF_UP);
+                            amount = print.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
+                                            .divide(rate, BigDecimal.ROUND_HALF_UP);
                         }
-
                     } else {
                         amount = print.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount);
                     }

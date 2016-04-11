@@ -34,7 +34,6 @@ import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.datamodel.ui.UIValue;
@@ -148,7 +147,7 @@ public abstract class FieldValue_Base
         if (uiObject instanceof FieldValue) {
             if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
                             && org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(
-                                            ((FieldValue) uiObject).getDisplay())) {
+                                            ((IUIValue) uiObject).getDisplay())) {
                 final List<DropDownPosition> values = new ArrayList<>();
                 final Instance transInst;
                 final Instance docInst;
@@ -186,7 +185,7 @@ public abstract class FieldValue_Base
                     values.add(drpD);
                 }
                 ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
-            } else if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+            } else if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
                 final List<Instance> insts = getSelectedDocInst(_parameter);
                 final List<DropDownPosition> values = new ArrayList<>();
                 int i = 1;
@@ -391,7 +390,7 @@ public abstract class FieldValue_Base
         }
 
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
                         .append(UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
@@ -646,8 +645,7 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final org.efaps.admin.datamodel.ui.FieldValue fieldValue = (FieldValue) _parameter
-                        .get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         html.append("<span name=\"").append(fieldValue.getField().getName()).append("_span\">");
         for (final Instance docInst : getSelectedDocInst(_parameter)) {
             html.append(getDocDetail(_parameter, docInst));
@@ -1260,8 +1258,8 @@ public abstract class FieldValue_Base
     {
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+        if (uiObject instanceof IUIValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
                 final List<DropDownPosition> values = new ArrayList<>();
                 Instance labelInst = null;
                 if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
@@ -1354,8 +1352,8 @@ public abstract class FieldValue_Base
                     }
                 }
             } else if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-                final Object objTmp = fieldValue.getValue();
+                final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+                final Object objTmp = fieldValue.getObject();
                 if (objTmp != null && objTmp instanceof DateTime) {
                     date = (DateTime) objTmp;
                 }
@@ -1387,7 +1385,7 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (!Display.NONE.equals(fieldValue.getDisplay())) {
             @SuppressWarnings("unchecked")
             Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(

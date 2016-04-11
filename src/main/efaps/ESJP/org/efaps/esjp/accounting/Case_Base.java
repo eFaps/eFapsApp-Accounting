@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting;
 
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
@@ -42,10 +39,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("d240e6e6-b3e9-44a7-9bed-81452240a555")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Case_Base
 {
 
@@ -113,8 +109,8 @@ public abstract class Case_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Long value = (Long) fieldvalue.getValue();
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Long value = (Long) fieldvalue.getObject();
         final StringBuilder html = new StringBuilder();
 
         if (value != null && value > 0) {
@@ -175,6 +171,13 @@ public abstract class Case_Base
         return ret;
     }
 
+    /**
+     * Key access check.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return keyAccessCheck(final Parameter _parameter)
         throws EFapsException
     {

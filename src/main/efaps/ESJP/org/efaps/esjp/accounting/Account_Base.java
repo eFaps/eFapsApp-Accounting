@@ -30,6 +30,7 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -130,7 +131,7 @@ public abstract class Account_Base
     public Return getTypeFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Return ret = new Return();
         final Type rootType = CIAccounting.AccountAbstract.getType();
         final List<Type> types = getChildren(rootType);
@@ -222,7 +223,7 @@ public abstract class Account_Base
                                 Context.getThreadContext().getPerson().getCompanies().toArray());
             }
         } else {
-            QueryBuilder attrQueryBldr;
+            final QueryBuilder attrQueryBldr;
             if (postfix.equalsIgnoreCase("debit")) {
                 attrQueryBldr = new QueryBuilder(CIAccounting.Account2CaseDebit);
             } else {
@@ -288,7 +289,7 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Instance instance = _parameter.getCallInstance();
-        long period;
+        final long period;
         boolean parent = false;
         if ("Accounting_Period".equals(instance.getType().getName())) {
             period = instance.getId();
@@ -373,7 +374,7 @@ public abstract class Account_Base
     public Return getProducClassFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Return ret = new Return();
 
         final Type rootClass = Type.get("Products_Class");
@@ -607,11 +608,13 @@ public abstract class Account_Base
     {
         final Return ret = new Return();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final BigDecimal value = (BigDecimal) fieldvalue.getValue();
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final BigDecimal value = (BigDecimal) fieldvalue.getObject();
         if (value != null && !Display.NONE.equals(fieldvalue.getDisplay())) {
             BigDecimal retValue = null;
-            fieldvalue.setValue(null);
+            if (fieldvalue instanceof FieldValue) {
+                ((FieldValue) fieldvalue).setValue(null);
+            }
             if ("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1
                             || !"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1) {
                 retValue = value.abs();
