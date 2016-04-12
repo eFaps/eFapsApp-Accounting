@@ -46,7 +46,7 @@
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2Document4Swap/ToLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="toLinkStatus">
             <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>

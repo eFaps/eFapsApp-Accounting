@@ -92,7 +92,7 @@
             <property name="Phrase">$&lt;linkto[TransactionLink].attribute[Name]&gt; - $&lt;linkto[TransactionLink].attribute[Date]&gt;</property>
             <property name="Label">Accounting_TransactionPositionForm.transactionLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>

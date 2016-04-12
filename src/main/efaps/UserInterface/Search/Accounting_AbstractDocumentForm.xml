@@ -36,7 +36,7 @@
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_IncomingInvoice/Revision.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

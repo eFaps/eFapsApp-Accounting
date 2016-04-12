@@ -30,13 +30,13 @@
         <name>Accounting_TransactionCreate4FundsToBeSettledMassiveForm</name>
         <field name="date">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Label">Accounting_TransactionCreate4PettyCashMassiveForm.date.Label</property>
         </field>
         <field name="useDate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4PettyCashMassiveForm.useDate.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4PettyCashMassiveForm.useDate.UI_Field_Value"
                 program="org.efaps.esjp.common.uiform.Field">
@@ -46,7 +46,7 @@
         <field name="docStatus">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.docStatus.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4DocToBookForm.docStatus.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
@@ -56,7 +56,7 @@
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionForm.case.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4PettyCashMassiveForm.case.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
@@ -73,7 +73,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.purchaseRecord.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getPurchaseRecordFieldValue"
                 name="Accounting_CasePettyCashReceiptRegister.purchaseRecord.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
@@ -90,7 +90,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getStoreOIDsFieldValue"
                 name="Accounting_TransactionCreate4PettyCashMassiveForm.javaScript.UI_Field_Value"
                 program="org.efaps.esjp.common.uiform.Field" />

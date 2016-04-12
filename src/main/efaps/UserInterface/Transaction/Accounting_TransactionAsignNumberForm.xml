@@ -31,7 +31,7 @@
         <field name="date">
             <property name="Columns">12</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Required">true</property>
             <property name="Label">Accounting_TransactionAsignNumberForm.date.Label</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFieldValue"

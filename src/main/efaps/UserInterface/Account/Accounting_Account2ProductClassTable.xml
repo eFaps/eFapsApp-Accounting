@@ -44,7 +44,7 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="toProductClassID">
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="SelectAlternateOID">>linkto[ToProductClassLink].oid</property>
             <property name="Select">linkto[ToProductClassLink].attribute[Name]</property>

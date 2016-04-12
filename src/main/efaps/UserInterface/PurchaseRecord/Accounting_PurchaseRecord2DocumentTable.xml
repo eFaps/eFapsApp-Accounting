@@ -41,7 +41,7 @@
             <property name="Phrase">$&lt;linkto[ToLink].type.label&gt; -  $&lt;linkto[ToLink].attribute[Name]&gt;</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.toLink.Label</property>
             <property name="HRef">TREEMENU</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
             <property name="Select">linkto[ToLink].attribute[Date]</property>
@@ -72,14 +72,14 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Phrase">$&lt;linkto[TypeLink].attribute[Name]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="revision">
             <property name="Select">linkto[ToLink].attribute[Revision]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
         </field>
         <field name="docTaxInfo">
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Accounting_IncomingDocumentTable.docTaxInfo.Label</property>
             <property name="ModeSearch">READONLY</property>
             <trigger program="org.efaps.esjp.accounting.PurchaseRecord"
@@ -104,7 +104,7 @@
             <property name="Phrase">$&lt;linkto[ToLink].type.label&gt; -  $&lt;linkto[ToLink].attribute[Name]&gt;</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.toLink.Label</property>
             <property name="HRef">TREEMENU</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
             <property name="Select">linkto[ToLink].attribute[Date]</property>
@@ -135,14 +135,14 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Phrase">$&lt;linkto[TypeLink].attribute[Name]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="revision">
             <property name="Select">linkto[ToLink].attribute[Revision]</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentTable.revision.Label</property>
         </field>
          <field name="docTaxInfo">
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Accounting_IncomingDocumentTable.docTaxInfo.Label</property>
             <property name="ModeSearch">READONLY</property>
             <trigger program="org.efaps.esjp.accounting.PurchaseRecord"

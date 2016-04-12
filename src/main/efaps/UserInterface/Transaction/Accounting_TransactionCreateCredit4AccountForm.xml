@@ -64,7 +64,7 @@
         <field name="type_Credit">
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Accounting_TransactionPositionAbstract/Type.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getTypeFieldValue"
                 name="Accounting_TransactionPositionCreditTable.type.UI_FIELD_VALUE"
@@ -80,12 +80,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">8</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Accounting_TransactionCreateCredit4AccountForm.amount_Credit.Label</property>
         </field>
         <field name="rateCurrencyLink_Credit">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Accounting_TransactionCreateCredit4AccountForm.rateCurrencyLink_Credit.Label</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
@@ -105,7 +105,7 @@
         </field>
         <field name="rate_Credit">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.RateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.RateUI</property>
             <property name="Label">Accounting_TransactionCreateCredit4AccountForm.rate_Credit.Label</property>
             <property name="Required">true</property>
             <property name="Columns">8</property>
@@ -145,12 +145,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.sumDebit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

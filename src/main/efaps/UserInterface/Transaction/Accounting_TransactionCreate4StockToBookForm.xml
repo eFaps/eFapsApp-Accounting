@@ -31,7 +31,7 @@
         <field name="document">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.document.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDocumentFieldValue"
                 name="Accounting_TransactionCreate4StockToBookForm.document.UI_FIELD_VALUE"
@@ -41,7 +41,7 @@
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionForm.case.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4StockToBookForm.case.UI_FIELD_VALUE"
@@ -89,7 +89,7 @@
         <field name="checkbox4Account" >
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4DocForm.select4Account.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_TransactionCreate4StockToBookForm.checkbox4Account.UI_FIELD_VALUE"
@@ -124,7 +124,7 @@
         <field name="sumDebit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumDebit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="transactionPositionCredit" character="Heading">
             <property name="Level">2</property>
@@ -142,12 +142,12 @@
         <field name="sumCredit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

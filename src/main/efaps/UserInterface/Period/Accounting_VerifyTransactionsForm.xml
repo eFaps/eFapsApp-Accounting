@@ -31,7 +31,7 @@
         <!-- fields -->
         <field name="data">
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
                     method="getHtml4InvalidTransactions"
                     name="Accounting_VerifyTransactionsForm.data.UI_FIELD_VALUE"

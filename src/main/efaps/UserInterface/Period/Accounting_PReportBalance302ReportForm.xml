@@ -33,7 +33,7 @@
         <field name="dateFrom">
             <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
                 name="Accounting_PReportBalance32ReportForm.dateFrom.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.report.Report"/>
@@ -41,7 +41,7 @@
         <field name="dateTo">
             <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
                 name="Accounting_PReportBalance32ReportForm.dateFrom.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.report.Report"/>

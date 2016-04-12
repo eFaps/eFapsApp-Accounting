@@ -45,7 +45,7 @@
             <property name="SelectAlternateOID">linkto[FromAccountLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAccountLink].attribute[Name]&gt; - $&lt;linkto[FromAccountLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_Account2AccountAbstractTable.fromAccountLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="HRef">TREE</property>
         </field>
         <field name="numerator">
@@ -59,7 +59,7 @@
         <field name="toAccountLink">
             <property name="SelectAlternateOID">linkto[ToAccountLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToAccountLink].attribute[Name]&gt; - $&lt;linkto[ToAccountLink].attribute[Description]&gt;</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Accounting_Account2AccountAbstractTabl.toAccountLink.Label</property>
             <property name="HRef">TREE</property>
         </field>

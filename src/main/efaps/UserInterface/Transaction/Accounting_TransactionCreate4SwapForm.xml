@@ -42,7 +42,7 @@
         <field name="document">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.document.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getDocument4SwapFieldValue"
                 name="Accounting_TransactionCreate4SwapForm.document.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
@@ -166,7 +166,7 @@
         <field name="sumDebit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4SwapForm.sumDebit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="transactionPositionCredit">
             <property name="Level">2</property>
@@ -184,12 +184,12 @@
         <field name="sumCredit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4SwapForm.sumCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4SwapForm.sumTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

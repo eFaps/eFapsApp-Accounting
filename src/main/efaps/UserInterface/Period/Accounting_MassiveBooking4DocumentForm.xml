@@ -32,7 +32,7 @@
         <name>Accounting_MassiveBooking4DocumentForm</name>
         <field name="storeOIDS">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Accounting_MassiveRegister4DocumentForm.storeOIDS.UI_FIELD_VALUE"
@@ -41,12 +41,12 @@
         <field name="date">
             <property name="Label">Accounting_MassiveBooking4DocumentForm.date.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
         </field>
         <field name="useDate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_MassiveBooking4DocumentForm.useDate.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
@@ -57,7 +57,7 @@
         <field name="useRounding">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_MassiveBooking4DocumentForm.useRounding.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Insur_Accounting_DocumentForm.useDate.UI_Field_Value"
@@ -68,7 +68,7 @@
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionForm.case.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4DocForm.case.UI_FIELD_VALUE"

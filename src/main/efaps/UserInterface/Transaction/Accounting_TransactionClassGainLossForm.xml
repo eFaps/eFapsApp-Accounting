@@ -44,7 +44,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Accounting_TransactionClassGainLossForm.rateCurrencyLink.Label</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="rateCurrencyFieldValueUI"
                 name="Accounting_TransactionPositionForm.rateCurrencyLink.UI_FIELD_VALUE"

@@ -30,7 +30,7 @@
         <field name="type_Debit">
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Accounting_TransactionPositionAbstract/Type.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getTypeFieldValue"
                 name="Accounting_TransactionPositionDebitTable.type.UI_FIELD_VALUE"
@@ -93,7 +93,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Width">1</property>
             <property name="Label">Accounting_TransactionPositionTable.amountRate.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="accountLink_Debit">
             <property name="SelectAlternateOID">linkto[AccountLink].oid</property>
@@ -172,7 +172,7 @@
         <field name="account2account_Debit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionPositionCreditTable.account2account.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Width">10</property>
         </field>
     </definition>

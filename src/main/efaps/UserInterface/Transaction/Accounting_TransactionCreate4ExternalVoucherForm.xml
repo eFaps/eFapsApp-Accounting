@@ -145,7 +145,7 @@
         <field name="typeLink">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                     method="dropDown4DocumentType"
                     name="Accounting_TransactionCreate4ExternalVoucherForm.typeLink.UI_FIELD_VALUE"
@@ -183,7 +183,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="accessCheck4FieldPicker"
                 name="Accounting_TransactionCreate4ExternalForm.contact.UI_ACCESSCHECK"
@@ -206,7 +206,7 @@
             <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Accounting_Contacts_CreateClassSupplierPicker"/>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="accessCheck4FieldPicker"
@@ -232,7 +232,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="extDueDate">
             <property name="Columns">12</property>
@@ -250,14 +250,14 @@
         <field name="amountExternal">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.amountExternal.Label</property>
         </field>
         <field name="currencyExternal">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.currencyExternal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionCreate4ExternalForm.currencyExternal.UI_FIELD_VALUE"
@@ -269,7 +269,7 @@
         </field>
          <field name="amountExternalWithoutTax">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.amountExternalWithoutTax.Label</property>
         </field>
         <field name="description">
@@ -315,7 +315,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">2</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.perceptionPercent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="updateFields4PerceptionPercent"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.perceptionPercent.UI_FIELD_UPDATE"
@@ -329,7 +329,7 @@
         <field name="perceptionValue">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.perceptionValue.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.perceptionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
@@ -361,7 +361,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">2</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.retentionPercent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="updateFields4RetentionPercent"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.retentionPercent.UI_FIELD_UPDATE"
@@ -375,7 +375,7 @@
         <field name="retentionValue">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.retentionValue.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.retentionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
@@ -397,7 +397,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">2</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.detractionPercent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
              <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="updateFields4DetractionPercent"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.detractionPercent.UI_FIELD_UPDATE"
@@ -408,7 +408,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.detractionValue.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
 
         <field name="transactionPositionDebit" character="Heading">
@@ -427,7 +427,7 @@
         <field name="sumDebit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.sumDebit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="transactionPositionCredit" character="Heading">
             <property name="Level">2</property>
@@ -445,19 +445,19 @@
         <field name="sumCredit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.sumCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.sumTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="taxDocJavaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                 method="getJavaScript4TaxDocUIValue"
                 name="Accounting_TransactionCreate4ExternalVoucherForm.taxDocJavaScript.UI_FIELD_VALUE"

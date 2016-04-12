@@ -37,7 +37,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Accounting_PeriodForm.accountTable.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.file.FileField"
                     method="getFieldValueUI"
                     name="Accounting_PeriodForm.accountTable.UI_FIELD_VALUE"

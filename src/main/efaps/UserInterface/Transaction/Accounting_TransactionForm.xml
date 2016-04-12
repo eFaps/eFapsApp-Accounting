@@ -107,7 +107,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Accounting_TransactionForm.amountExternal.Label</property>
         </field>
         <field name="currencyExternal">
@@ -115,7 +115,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.currencyExternal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionForm.case.UI_FIELD_VALUE"
@@ -131,7 +131,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_TransactionForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -150,7 +150,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="note">
             <property name="ModePrint">NONE</property>
@@ -160,7 +160,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
             <property name="Rows">5</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -259,7 +259,7 @@
         <field name="debit">
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.debitOrCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getValueSum"
                 name="Accounting_TransactionForm.debit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_TransactionPositionDebit</property>
@@ -269,7 +269,7 @@
         <field name="credit">
             <property name="ModeEdit">NONE</property>
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getValueSum"
                 name="Accounting_TransactionForm.credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_TransactionPositionCredit</property>
@@ -310,7 +310,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumDebit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="transactionPositionCredit" character="Heading">
             <property name="Level">2</property>
@@ -346,14 +346,14 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
          <field name="docHeading" character="Heading">
             <property name="Level">2</property>
@@ -466,7 +466,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Accounting_TransactionForm.amountExternal.Label</property>
         </field>
         <field name="currencyExternal">
@@ -474,7 +474,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.currencyExternal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionForm.case.UI_FIELD_VALUE"
@@ -490,7 +490,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">80</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_TransactionForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -509,7 +509,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project">
             <property name="Label">Accounting_TransactionForm.project.Label</property>
@@ -517,7 +517,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">100</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
                 name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE"
@@ -539,7 +539,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="note">
             <property name="ModePrint">NONE</property>
@@ -549,7 +549,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
             <property name="Rows">5</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -648,7 +648,7 @@
         <field name="debit">
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.debitOrCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getValueSum"
                 name="Accounting_TransactionForm.debit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_TransactionPositionDebit</property>
@@ -658,7 +658,7 @@
         <field name="credit">
             <property name="ModeEdit">NONE</property>
             <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getValueSum"
                 name="Accounting_TransactionForm.credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_TransactionPositionCredit</property>
@@ -699,7 +699,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumDebit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="transactionPositionCredit" character="Heading">
             <property name="Level">2</property>
@@ -735,14 +735,14 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumCredit.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="sumTotal">
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Accounting_TransactionForm.sumTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
          <field name="docHeading" character="Heading">
             <property name="Level">2</property>

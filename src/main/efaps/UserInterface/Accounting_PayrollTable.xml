@@ -42,7 +42,7 @@
             <property name="HRef">TREE</property>
             <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
             <property name="Label">Payroll_Payslip/employee.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
          </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
@@ -110,7 +110,7 @@
             <property name="HRef">TREE</property>
             <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
             <property name="Label">Payroll_Payslip/employee.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
          </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>

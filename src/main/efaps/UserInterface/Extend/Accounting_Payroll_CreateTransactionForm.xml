@@ -42,7 +42,7 @@
         </field>
         <field name="storeSelectedRowOIDs">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Accounting_Payroll_CreateTransactionForm.oids.UI_FIELD_VALUE" event="UI_FIELD_VALUE">

@@ -34,7 +34,7 @@
         <field name="dateFrom">
             <property name="Label">Accounting_Journal_CreateForm.dateFrom.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateFromFieldValue"
                 name="Accounting_DocTransactionsForm.dateFrom.UI_FIELD_VALUE"
@@ -43,7 +43,7 @@
         <field name="dateTo">
             <property name="Label">Accounting_Journal_CreateForm.dateTo.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
         </field>
 
         <field name="filterHeading" character="Heading">
@@ -54,7 +54,7 @@
         <field name="filterActive">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_DocTransactionsForm.filterActive.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_DocTransactionsForm.filterActive.UI_FIELD_VALUE"
@@ -65,7 +65,7 @@
        <field name="contact">
             <property name="Label">Accounting_DocTransactionsForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">60</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
@@ -75,13 +75,13 @@
         <field name="debitAccount" character="Set">
             <property name="Label">Accounting_DocTransactionsForm.debitAccount.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="HideLabel">true</property>
         </field>
         <field name="creditAccount" character="Set">
             <property name="Label">Accounting_DocTransactionsForm.creditAccount.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="HideLabel">true</property>
         </field>
     </definition>

@@ -47,7 +47,7 @@
             <property name="Phrase">$&lt;linkto[FromAccountAbstractLink].type.label&gt; -  $&lt;linkto[FromAccountAbstractLink].attribute[Name]&gt; - $&lt;linkto[FromAccountAbstractLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_Account2CaseAbstract/FromAccountAbstractLink.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="config">
             <property name="Attribute">Config</property>

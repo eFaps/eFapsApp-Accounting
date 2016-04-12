@@ -66,7 +66,7 @@
         <field name="description_Debit">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionOpeningBalance.description.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
 
         <field name="transactionPosition" character="Heading">

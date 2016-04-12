@@ -51,7 +51,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;linkto[TypeLink].attribute[Name]&gt; - $&lt;linkto[TypeLink].attribute[Description]&gt;</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="typeLink4Edit">
             <property name="ModeCreate">NONE</property>

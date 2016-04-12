@@ -37,7 +37,7 @@
         <!-- fields -->
         <field name="selectedOIDs">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Accounting_Journal_CreateForm.selectedOIDs.UI_FIELD_VALUE"
@@ -46,7 +46,7 @@
         <field name="mime">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_Report_PrintForm.mime.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getMimeTypeFieldValueUI"
                 name="Accounting_Journal_CreateForm.mime.UI_FIELD_VALUE"
@@ -55,7 +55,7 @@
         <field name="dateFrom">
             <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateFromFieldValue"
@@ -65,7 +65,7 @@
         <field name="dateTo">
             <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.accounting.report.Report"
                 method="getDateToFieldValue"
@@ -80,7 +80,7 @@
         <field name="filterActive">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.filterActive.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_Report_PrintForm.filterActive.UI_FIELD_VALUE"
@@ -91,7 +91,7 @@
         <field name="currency">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.currency.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="rateCurrencyFieldValueUI"
                 name="Accounting_Report_PrintForm.currency.UI_FIELD_VALUE"
@@ -100,7 +100,7 @@
         <field name="rateCurrencyType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.currencyType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getTypeDropDownFieldValue"
                 name="Accounting_Report_PrintForm.forTypeId.UI_FIELD_VALUE"
