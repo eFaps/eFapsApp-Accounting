@@ -43,8 +43,7 @@
             <form>Accounting_TransactionCreate4StockToBookForm</form>
             <execute program="org.efaps.esjp.accounting.transaction.Create"
                 method="create4Doc" />
-            <validate program="org.efaps.esjp.accounting.transaction.Transaction"
-                method="validate" />
+
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

@@ -34,7 +34,7 @@
         </access>
         <target>
             <form>Accounting_TransactionCreate4PettyCashReceiptForm</form>
-            <execute method="create4PettyCashReceipt" program="org.efaps.esjp.accounting.ExternalVoucher" />
+            <execute method="create" program="org.efaps.esjp.accounting.ExternalVoucher" />
             <validate method="validate" program="org.efaps.esjp.accounting.transaction.Validation">
                 <property name="Types">Accounting_ExternalVoucher</property>
             </validate>

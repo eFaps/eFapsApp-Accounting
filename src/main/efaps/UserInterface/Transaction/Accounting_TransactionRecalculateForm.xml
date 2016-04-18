@@ -53,10 +53,6 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionRecalculateForm.rate.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="setCurrencyRate"
-                name="Accounting_TransactionCreate4RecalculateRateForm.rate.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
         </field>
         <field name="transactions">
             <property name="ModeCreate">READONLY</property>
