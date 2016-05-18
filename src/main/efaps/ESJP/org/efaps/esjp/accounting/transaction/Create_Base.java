@@ -1327,7 +1327,7 @@ public abstract class Create_Base
             if (add) {
                 insert3.add(CIAccounting.TransactionPositionAbstract.TransactionLink, _transInst.getId());
                 insert3.add(CIAccounting.TransactionPositionAbstract.AccountLink,
-                                multi.getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
+                                multi.<Long>getAttribute(CIAccounting.Account2AccountAbstract.ToAccountLink));
                 insert3.add(CIAccounting.TransactionPositionAbstract.CurrencyLink, curInstance);
                 insert3.add(CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
                                 _account.getRateInfo().getCurrencyInstance());
