@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+x` * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.dataexporter.DataExporter;
 import org.efaps.dataexporter.LineSeparatorType;
 import org.efaps.dataexporter.model.RowDetails;
-import org.efaps.dataexporter.output.text.TextExportOptions;
-import org.efaps.dataexporter.output.text.TextWriter;
+import org.efaps.dataexporter.output.texttable.TextTableExportOptions;
+import org.efaps.dataexporter.output.texttable.TextTableExportStyle;
+import org.efaps.dataexporter.output.texttable.TextTableWriter;
 import org.efaps.esjp.accounting.ple.AbstractExport_Base;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
@@ -71,7 +72,7 @@ public abstract class AbstractSCExport_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final TextExportOptions exportOption = new TextExportOptions();
+        final TextTableExportOptions exportOption = new TextTableExportOptions();
         configureReport(_parameter, exportOption);
         try {
             final File file = new FileUtil().getFile(getFileName(_parameter));
@@ -120,6 +121,13 @@ public abstract class AbstractSCExport_Base
                                          final Exporter _exporter)
         throws EFapsException;
 
+    /**
+     * Gets the file name.
+     *
+     * @param _parameter the _parameter
+     * @return the file name
+     * @throws EFapsException the e faps exception
+     */
     public abstract String getFileName(final Parameter _parameter)
         throws EFapsException;
 
@@ -130,10 +138,10 @@ public abstract class AbstractSCExport_Base
      * @param _exportOption the _export option
      */
     protected void configureReport(final Parameter _parameter,
-                                   final TextExportOptions _exportOption)
+                                   final TextTableExportOptions _exportOption)
     {
         _exportOption.setLineSeparator(LineSeparatorType.WINDOWS);
-        _exportOption.setDelimiter("");
+        _exportOption.setStyle(new TextTableExportStyle("", "", "", "", "", ""));
         _exportOption.setPrintHeaders(false);
     }
 
@@ -146,7 +154,7 @@ public abstract class AbstractSCExport_Base
      * @return new Exporter
      */
     protected Exporter getExporter(final Parameter _parameter,
-                                   final TextExportOptions _options,
+                                   final TextTableExportOptions _options,
                                    final Writer _output)
     {
         return new Exporter(_parameter, _options, _output);
@@ -165,24 +173,17 @@ public abstract class AbstractSCExport_Base
          * @param _output       writer
          */
         protected Exporter(final Parameter _parameter,
-                           final TextExportOptions _options,
+                           final TextTableExportOptions _options,
                            final Writer _output)
         {
-            super(new TextWriter(_options, _output)
+            super(new TextTableWriter(_options, _output)
             {
-
                 @Override
                 public void beforeRow(final RowDetails _rowDetails)
                 {
                     if (_rowDetails.getRowIndex() > 0) {
                         println();
                     }
-                }
-
-                @Override
-                public void afterRow(final RowDetails _rowDetails)
-                {
-                    print(_options.getDelimiter());
                 }
             });
         }

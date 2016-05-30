@@ -30,8 +30,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("91f4e4eb-dbde-4a21-bddc-f55f0d623e6e")
 @EFapsApplication("eFapsApp-Accounting")
-public class Journal
-    extends Journal_Base
+public class JournalSC1617
+    extends JournalSC1617_Base
 {
 
 }
