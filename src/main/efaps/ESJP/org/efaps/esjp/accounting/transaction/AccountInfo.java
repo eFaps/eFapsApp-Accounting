@@ -35,6 +35,7 @@ import org.efaps.util.EFapsException;
 public class AccountInfo
     extends AccountInfo_Base
 {
+
     /**
      *
      */
@@ -63,8 +64,16 @@ public class AccountInfo
         super(_instance, _amount);
     }
 
+    /**
+     * Gets the 4 config.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key the key
+     * @return the 4 config
+     * @throws EFapsException on error
+     */
     public static AccountInfo get4Config(final Parameter _parameter,
-                                            final String _key)
+                                         final String _key)
         throws EFapsException
     {
         return AccountInfo_Base.get4Config(_parameter, _key);

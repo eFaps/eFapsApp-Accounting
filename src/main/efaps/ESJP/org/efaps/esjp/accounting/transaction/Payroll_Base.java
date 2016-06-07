@@ -26,7 +26,7 @@ import java.util.UUID;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -47,13 +47,19 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("f9def40c-2334-4313-b2ac-d9e60beb1934")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApps-Accounting")
 public abstract class Payroll_Base
 {
 
+    /**
+     * Creates the transaction4 pay slip.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return createTransaction4PaySlip(final Parameter _parameter)
         throws EFapsException
     {
@@ -67,6 +73,13 @@ public abstract class Payroll_Base
         return new Return();
     }
 
+    /**
+     * Creates the transaction4 pay slips.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return createTransaction4PaySlips(final Parameter _parameter)
         throws EFapsException
     {
@@ -106,9 +119,13 @@ public abstract class Payroll_Base
 
 
     /**
+     * Creates the transaction.
+     *
      * @param _parameter as passed from eFaps API.
-     * @param lstPos
-     * @return
+     * @param _periodInst the period inst
+     * @param _docInst the doc inst
+     * @param _transDate the trans date
+     * @return the return
      * @throws EFapsException on error.
      */
     protected Return createTransaction(final Parameter _parameter,
@@ -172,7 +189,7 @@ public abstract class Payroll_Base
             };
 
             while (multi.next()) {
-                final PrintQuery print2 = new PrintQuery( multi.<Instance>getSelect(selCaseInst));
+                final PrintQuery print2 = new PrintQuery(multi.<Instance>getSelect(selCaseInst));
                 final SelectBuilder selActionInst = new SelectBuilder().linkto("ActionDefinitionLink").instance();
                 print2.addSelect(selActionInst);
                 print2.execute();

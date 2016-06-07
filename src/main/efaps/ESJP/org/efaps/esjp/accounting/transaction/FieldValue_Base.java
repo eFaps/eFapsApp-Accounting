@@ -135,6 +135,8 @@ public abstract class FieldValue_Base
     }
 
     /**
+     * Gets the document link field value.
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return values for dropdown
      * @throws EFapsException on error
@@ -143,65 +145,58 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
-                            && org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(
-                                            ((IUIValue) uiObject).getDisplay())) {
-                final List<DropDownPosition> values = new ArrayList<>();
-                final Instance transInst;
-                final Instance docInst;
-                if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-                    final PrintQuery print = new PrintQuery(_parameter.getInstance());
-                    final SelectBuilder selTransInst = SelectBuilder.get()
-                                    .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink).instance();
-                    final SelectBuilder selDocInst = SelectBuilder.get()
-                                    .linkfrom(CIAccounting.TransactionPosition2ERPDocument.FromLinkAbstract)
-                                    .linkto(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract).instance();
-                    print.addSelect(selTransInst, selDocInst);
-                    print.execute();
-                    transInst = print.getSelect(selTransInst);
-                    docInst = print.getSelect(selDocInst);
-                } else {
-                    transInst = _parameter.getCallInstance();
-                    docInst = null;
-                }
-                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
-                queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
-                queryBldr.addOrderByAttributeAsc(CIAccounting.Transaction2ERPDocument.Position);
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selCurDocInst = SelectBuilder.get()
-                                .linkto(CIAccounting.Transaction2ERPDocument.ToLinkAbstract).instance();
-                multi.addSelect(selCurDocInst);
-                multi.addAttribute(CIAccounting.Transaction2ERPDocument.Position);
-                multi.setEnforceSorted(true);
-                multi.execute();
-                while (multi.next()) {
-                    final Instance curDocInst = multi.getSelect(selCurDocInst);
-                    final DropDownPosition drpD = new DropDownPosition(curDocInst.getOid(),
-                                    String.valueOf(multi.getAttribute(CIAccounting.Transaction2ERPDocument.Position))
-                                                    + ".");
-                    drpD.setSelected(curDocInst.equals(docInst));
-                    values.add(drpD);
-                }
-                ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
-            } else if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
-                final List<Instance> insts = getSelectedDocInst(_parameter);
-                final List<DropDownPosition> values = new ArrayList<>();
-                int i = 1;
-                for (final Instance inst : insts) {
-                    values.add(new DropDownPosition(inst.getOid(), i + "."));
-                    i++;
-                }
-                if (values.size() > 1) {
-                    values.add(0, new DropDownPosition("", "-"));
-                }
-                ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final List<DropDownPosition> values = new ArrayList<>();
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
+                        && org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(uiValue.getDisplay())) {
+            final Instance transInst;
+            final Instance docInst;
+            if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                final SelectBuilder selTransInst = SelectBuilder.get().linkto(
+                                CIAccounting.TransactionPositionAbstract.TransactionLink).instance();
+                final SelectBuilder selDocInst = SelectBuilder.get().linkfrom(
+                                CIAccounting.TransactionPosition2ERPDocument.FromLinkAbstract).linkto(
+                                                CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract).instance();
+                print.addSelect(selTransInst, selDocInst);
+                print.execute();
+                transInst = print.getSelect(selTransInst);
+                docInst = print.getSelect(selDocInst);
             } else {
-                ret.put(ReturnValues.SNIPLETT, "");
+                transInst = _parameter.getCallInstance();
+                docInst = null;
+            }
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
+            queryBldr.addOrderByAttributeAsc(CIAccounting.Transaction2ERPDocument.Position);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selCurDocInst = SelectBuilder.get().linkto(
+                            CIAccounting.Transaction2ERPDocument.ToLinkAbstract).instance();
+            multi.addSelect(selCurDocInst);
+            multi.addAttribute(CIAccounting.Transaction2ERPDocument.Position);
+            multi.setEnforceSorted(true);
+            multi.execute();
+            while (multi.next()) {
+                final Instance curDocInst = multi.getSelect(selCurDocInst);
+                final DropDownPosition drpD = new DropDownPosition(curDocInst.getOid(), String.valueOf(multi
+                                .getAttribute(CIAccounting.Transaction2ERPDocument.Position)) + ".");
+                drpD.setSelected(curDocInst.equals(docInst));
+                values.add(drpD);
+            }
+        } else if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(uiValue.getDisplay())) {
+            final List<Instance> insts = getSelectedDocInst(_parameter);
+
+            int i = 1;
+            for (final Instance inst : insts) {
+                values.add(new DropDownPosition(inst.getOid(), i + "."));
+                i++;
+            }
+            if (values.size() > 1) {
+                values.add(0, new DropDownPosition("", "-"));
             }
         }
-         return ret;
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
     }
 
     /**

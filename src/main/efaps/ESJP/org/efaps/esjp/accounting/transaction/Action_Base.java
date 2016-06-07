@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.transaction;
@@ -28,7 +25,7 @@ import java.util.Properties;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
@@ -55,18 +52,20 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO comment!
+ * TODO comment!.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("ca033fa0-4682-49b8-aa4a-6efdeef44dbe")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Action_Base
 {
 
     /**
+     * Insert positions.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _transactionInstance Instance of the Transaction the position will
      *            be connected to
@@ -160,6 +159,14 @@ public abstract class Action_Base
         }
     }
 
+    /**
+     * Gets the period instance.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _transactionInstance the transaction instance
+     * @return the period instance
+     * @throws EFapsException on error
+     */
     protected Instance getPeriodInstance(final Parameter _parameter,
                                          final Instance _transactionInstance)
         throws EFapsException
@@ -171,6 +178,14 @@ public abstract class Action_Base
         return print.<Instance>getSelect(sel);
     }
 
+    /**
+     * Gets the exchange date.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _transactionInstance the transaction instance
+     * @return the exchange date
+     * @throws EFapsException on error
+     */
     protected DateTime getExchangeDate(final Parameter _parameter,
                                        final Instance _transactionInstance)
         throws EFapsException
@@ -182,6 +197,8 @@ public abstract class Action_Base
     }
 
     /**
+     * Create4 external.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
@@ -200,8 +217,11 @@ public abstract class Action_Base
     }
 
     /**
+     * Eval action def4 incoming.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
+     * @return the incoming action def
      * @throws EFapsException on error
      */
     protected IncomingActionDef evalActionDef4Incoming(final Parameter _parameter,
@@ -333,6 +353,8 @@ public abstract class Action_Base
     }
 
     /**
+     * Create4 petty cash receipt.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
@@ -351,6 +373,8 @@ public abstract class Action_Base
     }
 
     /**
+     * Create4 funds to be settled receipt.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
@@ -369,6 +393,8 @@ public abstract class Action_Base
     }
 
     /**
+     * Create4 incoming exchange.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
@@ -385,6 +411,8 @@ public abstract class Action_Base
     }
 
     /**
+     * Create4 doc.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _actionRelInst relation Instance
      * @throws EFapsException on error
@@ -400,8 +428,16 @@ public abstract class Action_Base
         }
     }
 
+    /**
+     * Eval action def4 doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _actionRelInst the action rel inst
+     * @return the doc action def
+     * @throws EFapsException on error
+     */
     protected DocActionDef evalActionDef4Doc(final Parameter _parameter,
-                                          final Instance _actionRelInst)
+                                             final Instance _actionRelInst)
         throws EFapsException
     {
         final DocActionDef ret = getDocActionDef(_parameter);
@@ -425,7 +461,7 @@ public abstract class Action_Base
         multi.addSelect(selCaseInst, selLabelInst);
         multi.addAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
         multi.execute();
-        while( multi.next()) {
+        while (multi.next()) {
             final List<ActDef2Case4DocConfig> configs = multi
                             .getAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
             if (configs != null) {
@@ -474,8 +510,11 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter
-     * @param _actionRelInst
+     * Create4 others pay.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _actionRelInst the action rel inst
+     * @throws EFapsException on error
      */
     public void create4OthersPay(final Parameter _parameter,
                                  final Instance _actionRelInst)
@@ -493,8 +532,11 @@ public abstract class Action_Base
     }
 
     /**
-     * @param _parameter
-     * @param _actionRelInst
+     * Create4 others collect.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _actionRelInst the action rel inst
+     * @throws EFapsException on error
      */
     public void create4OthersCollect(final Parameter _parameter,
                                      final Instance _actionRelInst)
@@ -511,20 +553,39 @@ public abstract class Action_Base
         }
     }
 
+    /**
+     * Gets the doc action def.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the doc action def
+     */
     protected DocActionDef getDocActionDef(final Parameter _parameter)
     {
         return new DocActionDef();
     }
 
+    /**
+     * Gets the incoming action def.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the incoming action def
+     */
     protected IncomingActionDef getIncomingActionDef(final Parameter _parameter)
     {
         return new IncomingActionDef();
     }
 
+    /**
+     * Gets the label ui field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the label ui field value
+     * @throws EFapsException on error
+     */
     public Return getLabelUIFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final Field field = new Field(){
+        final Field field = new Field() {
             @Override
             protected void add2QueryBuilder4List(final Parameter _parameter,
                                                  final QueryBuilder _queryBldr)
@@ -538,8 +599,15 @@ public abstract class Action_Base
         return field.dropDownFieldValue(_parameter);
     }
 
-    public static abstract class AbstractActionDef {
+    /**
+     * The Class AbstractActionDef.
+     *
+     * @author The eFaps Team
+     */
+    public abstract static class AbstractActionDef
+    {
 
+        /** The doc type inst. */
         private Instance docTypeInst;
 
         /**
@@ -575,11 +643,11 @@ public abstract class Action_Base
         /**
          * Setter method for instance variable {@link #_parameter}.
          *
-         * @param __parameter value for instance variable {@link #_parameter}
+         * @param _parameter the new parameter used to simulate the forms
          */
-        public void setParameter(final Parameter __parameter)
+        public void setParameter(final Parameter _parameter)
         {
-            this.parameter = __parameter;
+            this.parameter = _parameter;
         }
 
         /**
@@ -642,7 +710,6 @@ public abstract class Action_Base
             this.docTypeInst = _docTypeInst;
         }
 
-
         /**
          * Getter method for the instance variable {@link #caseInst}.
          *
@@ -652,7 +719,6 @@ public abstract class Action_Base
         {
             return this.caseInst;
         }
-
 
         /**
          * Setter method for instance variable {@link #caseInst}.
@@ -665,7 +731,9 @@ public abstract class Action_Base
         }
     }
 
-
+    /**
+     * The Class DocActionDef.
+     */
     public static class DocActionDef
         extends AbstractActionDef
     {
@@ -695,6 +763,11 @@ public abstract class Action_Base
         }
     }
 
+    /**
+     * The Class IncomingActionDef.
+     *
+     * @author The eFaps Team
+     */
     public static class IncomingActionDef
         extends AbstractActionDef
     {

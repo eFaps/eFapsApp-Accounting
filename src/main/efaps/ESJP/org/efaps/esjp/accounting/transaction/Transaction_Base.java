@@ -78,6 +78,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -1187,38 +1188,41 @@ public abstract class Transaction_Base
     protected DateTime[] getDateMaxMin(final Parameter _parameter)
         throws EFapsException
     {
-        Instance periodInst = _parameter.getInstance();
-        DateTime fromDate = null;
-        DateTime toDate = null;
-        if (periodInst.getType().isKindOf(CIAccounting.Period.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
+        Instance instance = _parameter.getInstance();
+        if (!InstanceUtils.isValid(instance)) {
+            instance = _parameter.getCallInstance();
+        }
+        DateTime fromDate = new DateTime();
+        DateTime toDate = new DateTime();
+        if (instance.getType().isKindOf(CIAccounting.Period.getType())) {
+            final PrintQuery print = new CachedPrintQuery(instance, Period.CACHEKEY);
             print.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.ToDate);
             print.execute();
             fromDate = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
             toDate = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
-        } else if (periodInst.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, SubPeriod_Base.CACHEKEY);
+        } else if (instance.getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(instance, SubPeriod_Base.CACHEKEY);
             final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink).instance();
             print.addSelect(selPeriod);
             print.addAttribute(CIAccounting.SubPeriod.FromDate, CIAccounting.SubPeriod.ToDate);
             print.execute();
             fromDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.FromDate);
             toDate = print.<DateTime>getAttribute(CIAccounting.SubPeriod.ToDate);
-            periodInst = print.getSelect(selPeriod);
-        } else if (periodInst.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
-            final PrintQuery print = new CachedPrintQuery(periodInst, Period.CACHEKEY);
+            instance = print.getSelect(selPeriod);
+        } else if (instance.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
+            final PrintQuery print = new CachedPrintQuery(instance, Period.CACHEKEY);
             final SelectBuilder selPeriod = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodLink);
             final SelectBuilder selInst = new SelectBuilder(selPeriod).instance();
             final SelectBuilder selDateFrom = new SelectBuilder(selPeriod).attribute(CIAccounting.Period.FromDate);
             final SelectBuilder selDateTo = new SelectBuilder(selPeriod).attribute(CIAccounting.Period.ToDate);
             print.addSelect(selInst, selDateFrom, selDateTo);
             print.execute();
-            periodInst = print.getSelect(selInst);
+            instance = print.getSelect(selInst);
             fromDate = print.getSelect(selDateFrom);
             toDate = print.getSelect(selDateTo);
         }
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodLink, periodInst);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodLink, instance);
         queryBldr.addWhereAttrEqValue(CIAccounting.Transaction.Status,
                         Status.find(CIAccounting.TransactionStatus.Booked));
         queryBldr.addOrderByAttributeDesc(CIAccounting.Transaction.Date);

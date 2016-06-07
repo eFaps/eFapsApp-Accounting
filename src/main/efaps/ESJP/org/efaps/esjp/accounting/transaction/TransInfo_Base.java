@@ -314,7 +314,7 @@ public abstract class TransInfo_Base
                 public int compare(final PositionInfo _o1,
                                    final PositionInfo _o2)
                 {
-                    int ret;
+                    final int ret;
                     if (_o1.getType().equals(_o2.getType())) {
                         ret = 0;
                     } else if (_o1.getType().equals(CIAccounting.TransactionPositionDebit.getType())) {
@@ -332,7 +332,7 @@ public abstract class TransInfo_Base
                 public int compare(final PositionInfo _o1,
                                    final PositionInfo _o2)
                 {
-                    int ret;
+                    final int ret;
                     if (_o1.getType().equals(_o2.getType())) {
                         ret = 0;
                     } else if (_o1.getType().equals(CIAccounting.TransactionPositionDebit.getType())) {

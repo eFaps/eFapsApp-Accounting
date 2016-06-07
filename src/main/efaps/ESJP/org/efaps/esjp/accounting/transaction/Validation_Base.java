@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 216 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,13 @@ public abstract class Validation_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(Validation.class);
 
+    /**
+     * Validate.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return validate(final Parameter _parameter)
         throws EFapsException
     {
@@ -80,6 +87,13 @@ public abstract class Validation_Base
         return ret;
     }
 
+    /**
+     * Validate sums.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the list< i warning>
+     * @throws EFapsException on error
+     */
     protected List<IWarning> validateSums(final Parameter _parameter)
         throws EFapsException
     {

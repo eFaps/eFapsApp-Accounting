@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -23,7 +20,7 @@ package org.efaps.esjp.accounting.transaction;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
@@ -33,10 +30,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("28e080be-74e1-4ed8-a632-763404fa13ba")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApps-Accounting")
 public abstract class Edit_Base
     extends Transaction
 {
@@ -56,9 +52,7 @@ public abstract class Edit_Base
         final Create create = new Create();
         create.analysePositionsFromUI(_parameter, transInfo, "Debit", null, false);
         create.analysePositionsFromUI(_parameter, transInfo, "Credit", null, false);
-
         transInfo.update(_parameter);
-
         return new Return();
     }
 }

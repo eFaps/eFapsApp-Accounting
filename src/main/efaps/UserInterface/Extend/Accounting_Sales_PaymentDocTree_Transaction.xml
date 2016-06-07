@@ -14,17 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4d17bb1a-51ef-4a2d-a511-052b1a88def3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Sales_PaymentDocTree_Transaction</name>
@@ -38,6 +32,26 @@
                 <property name="LinkFrom">ToLink</property>
             </evaluate>
         </target>
+        <parents>
+            <parent>Sales_PaymentCashOutTree</parent>
+           <parent>Sales_PaymentCashTree</parent>
+           <parent>Sales_PaymentCheckOutTree</parent>
+           <parent>Sales_PaymentCheckTree</parent>
+           <parent>Sales_PaymentCreditCardTree</parent>
+           <parent>Sales_PaymentDebitCardTree</parent>
+           <parent>Sales_PaymentDepositOutTree</parent>
+           <parent>Sales_PaymentDepositTree</parent>
+           <parent>Sales_PaymentDetractionOutTree</parent>
+           <parent>Sales_PaymentDetractionTree</parent>
+           <parent>Sales_PaymentExchangeOutTree</parent>
+           <parent>Sales_PaymentExchangeTree</parent>
+           <parent>Sales_PaymentInternalTree</parent>
+           <parent>Sales_PaymentRetentionOutTree</parent>
+           <parent>Sales_PaymentRetentionTree</parent>
+           <parent>Sales_PaymentSupplierOutTree</parent>
+           <parent>Sales_PaymentTree</parent>
+           <parent>Sales_PaymentScheduleTree</parent>
+        </parents>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

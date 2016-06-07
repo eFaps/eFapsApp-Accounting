@@ -97,17 +97,23 @@ public abstract class AccountInfo_Base
      */
     private StringBuilder linkCreditHtml;
 
+    /** The doc link. */
     private Instance docLink;
 
+    /** The post fix. */
     private String postFix;
 
+    /** The rate prop key. */
     private String ratePropKey;
 
+    /** The label inst. */
     private Instance labelInst;
 
+    /** The remark. */
     private String remark;
+
     /**
-     *
+     * Instantiates a new account info_ base.
      */
     protected AccountInfo_Base()
     {
@@ -220,8 +226,8 @@ public abstract class AccountInfo_Base
      * Setter method for instance variable {@link #amount}.
      *
      * @param _amount value for instance variable {@link #amount}
+     * @return the account info
      */
-
     public AccountInfo setAmount(final BigDecimal _amount)
     {
         this.amount = _amount;
@@ -232,8 +238,8 @@ public abstract class AccountInfo_Base
      * Setter method for instance variable {@link #currInstance}.
      *
      * @param _currInstance value for instance variable {@link #currInstance}
+     * @return the account info
      */
-
     public AccountInfo setCurrInstance(final Instance _currInstance)
     {
         this.currInstance = _currInstance;
@@ -243,7 +249,9 @@ public abstract class AccountInfo_Base
     /**
      * Getter method for the instance variable {@link #amountRate}.
      *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return value of instance variable {@link #amountRate}
+     * @throws EFapsException on error
      */
     public BigDecimal getAmountRate(final Parameter _parameter)
         throws EFapsException
@@ -266,6 +274,9 @@ public abstract class AccountInfo_Base
     }
 
     /**
+     * Gets the amount rate formated.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @return amunt rate formated
      * @throws EFapsException on error
      */
@@ -279,6 +290,7 @@ public abstract class AccountInfo_Base
      * Getter method for the instance variable {@link #link}.
      *
      * @return value of instance variable {@link #link}
+     * @throws EFapsException on error
      */
     public StringBuilder getLinkCreditHtml()
         throws EFapsException
@@ -291,6 +303,7 @@ public abstract class AccountInfo_Base
      * Getter method for the instance variable {@link #link}.
      *
      * @return value of instance variable {@link #link}
+     * @throws EFapsException on error
      */
     public StringBuilder getLinkDebitHtml()
         throws EFapsException
@@ -299,6 +312,11 @@ public abstract class AccountInfo_Base
         return this.linkDebitHtml;
     }
 
+    /**
+     * Inits the link html.
+     *
+     * @throws EFapsException on error
+     */
     protected void initLinkHtml()
         throws EFapsException
     {
@@ -325,13 +343,13 @@ public abstract class AccountInfo_Base
                                 .<Integer>getAttribute(CIAccounting.Account2AccountAbstract.Denominator);
                 final BigDecimal percent = new BigDecimal(numerator).divide(new BigDecimal(denominator),
                                 BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
-                final Instance instance = multi.getCurrentInstance();
+                final Instance tmpInstance = multi.getCurrentInstance();
                 if (configs != null && configs.contains(Accounting.Account2AccountConfig.DEACTIVATABLE)) {
                     tmpBldr.append("<input type='checkbox' name='acc2acc").append(getPostFix())
-                                    .append("' checked='checked' value='").append(instance.getOid()).append("'/>");
+                                    .append("' checked='checked' value='").append(tmpInstance.getOid()).append("'/>");
                 }
                 tmpBldr.append(DBProperties.getFormatedDBProperty(
-                                Transaction.class.getName() + ".LinkString4" + instance.getType().getName(),
+                                Transaction.class.getName() + ".LinkString4" + tmpInstance.getType().getName(),
                                 new Object[] { percent, StringEscapeUtils.escapeEcmaScript(to) }));
                 if (configs != null && configs.contains(Accounting.Account2AccountConfig.APPLY4DEBIT)) {
                     this.linkDebitHtml = tmpBldr;
@@ -357,6 +375,7 @@ public abstract class AccountInfo_Base
      * Setter method for instance variable {@link #rateInfo}.
      *
      * @param _rateInfo value for instance variable {@link #rateInfo}
+     * @param _ratePropKey the rate prop key
      * @return this for chaining
      */
     public AccountInfo setRateInfo(final RateInfo _rateInfo,
@@ -367,27 +386,44 @@ public abstract class AccountInfo_Base
         return (AccountInfo) this;
     }
 
-
     /**
-     * @param _parameter
-     * @return
+     * Gets the rate object.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the rate object
+     * @throws EFapsException on error
      */
-    public Object[] getRateObject(final Parameter _parameter) throws EFapsException
+    public Object[] getRateObject(final Parameter _parameter)
+        throws EFapsException
     {
         return RateInfo.getRateObject(_parameter, getRateInfo(), getRatePropKey());
     }
 
-    public BigDecimal getRate(final Parameter _parameter) throws EFapsException
+    /**
+     * Gets the rate.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the rate
+     * @throws EFapsException on error
+     */
+    public BigDecimal getRate(final Parameter _parameter)
+        throws EFapsException
     {
         return RateInfo.getRate(_parameter, getRateInfo(), getRatePropKey());
     }
 
-    public String getRateUIFrmt(final Parameter _parameter) throws EFapsException
+    /**
+     * Gets the rate ui frmt.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the rate ui frmt
+     * @throws EFapsException on error
+     */
+    public String getRateUIFrmt(final Parameter _parameter)
+        throws EFapsException
     {
         return RateInfo.getRateUIFrmt(_parameter, getRateInfo(), getRatePropKey());
     }
-
-
 
     /**
      * Getter method for the instance variable {@link #ratePropKey}.
@@ -448,7 +484,8 @@ public abstract class AccountInfo_Base
     /**
      * Setter method for instance variable {@link #docLink}.
      *
-     * @param _docInfo value for instance variable {@link #docLink}
+     * @param _docLink the doc link
+     * @return the account info
      */
     public AccountInfo setDocLink(final Instance _docLink)
     {
@@ -535,6 +572,14 @@ public abstract class AccountInfo_Base
         this.remark = _remark;
     }
 
+    /**
+     * Gets the info for a config.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key the key
+     * @return the 4 config
+     * @throws EFapsException on error
+     */
     protected static AccountInfo get4Config(final Parameter _parameter,
                                             final String _key)
         throws EFapsException
@@ -553,6 +598,4 @@ public abstract class AccountInfo_Base
         }
         return ret;
     }
-
-
 }

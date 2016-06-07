@@ -188,7 +188,7 @@ public abstract class DocumentInfo_Base
     public Map<Instance, BigDecimal> getProduct2Amount()
         throws EFapsException
     {
-        Map<Instance, BigDecimal> ret;
+        final Map<Instance, BigDecimal> ret;
         if (isSumsDoc()) {
             if (this.product2Amount == null) {
                 this.product2Amount = new HashMap<>();
@@ -203,7 +203,7 @@ public abstract class DocumentInfo_Base
                 while (multi.next()) {
                     final BigDecimal posamount = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
                     final Instance prodInst = multi.getSelect(selInst);
-                    BigDecimal amountTmp;
+                    final BigDecimal amountTmp;
                     if (this.product2Amount.containsKey(prodInst)) {
                         amountTmp = this.product2Amount.get(prodInst);
                     } else {
@@ -230,7 +230,7 @@ public abstract class DocumentInfo_Base
     public Map<String, BigDecimal> getKey2Amount(final Parameter _parameter)
         throws EFapsException
     {
-        Map<String, BigDecimal> ret;
+        final Map<String, BigDecimal> ret;
         if (isSumsDoc()) {
             if (this.key2Amount == null) {
                 this.key2Amount = new HashMap<>();
@@ -937,7 +937,7 @@ public abstract class DocumentInfo_Base
             final BigDecimal diff = getDebitSum(_parameter).subtract(getCreditSum(_parameter));
             if (diffMax.compareTo(diff.abs()) > 0) {
                 final boolean debit = diff.compareTo(BigDecimal.ZERO) < 0;
-                AccountInfo accInfo;
+                final AccountInfo accInfo;
                 if (debit) {
                     accInfo = AccountInfo.get4Config(_parameter, AccountingSettings.PERIOD_ROUNDINGDEBIT);
                 } else {
@@ -1001,7 +1001,7 @@ public abstract class DocumentInfo_Base
                     final Currency currency = new Currency();
                     final RateInfo[] rateInfos1 = currency.evaluateRateInfos(_parameter, dateTmp, curInst, docCurInst);
                     final RateInfo[] rateInfos2 = currency.evaluateRateInfos(_parameter, docDate, curInst, docCurInst);
-                    int idx;
+                    final int idx;
                     // payment in BaseCurreny ==> Document was not BaseCurrency therefore current against target
                     if (curInst.equals(Currency.getBaseCurrency())) {
                         idx = 2;
@@ -1030,7 +1030,7 @@ public abstract class DocumentInfo_Base
                                 final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) > 0;
                                 for (final AccountInfo accinfo : getCreditAccounts()) {
                                     if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(docInst)) {
-                                        BigDecimal accAmount;
+                                        final BigDecimal accAmount;
                                         if (accinfo.getRateInfo().getCurrencyInstance()
                                                         .equals(Currency.getBaseCurrency())) {
                                             accAmount = gainLoss;
@@ -1053,7 +1053,7 @@ public abstract class DocumentInfo_Base
                                 final boolean gain = gainLoss.compareTo(BigDecimal.ZERO) < 0;
                                 for (final AccountInfo accinfo : getDebitAccounts()) {
                                     if (accinfo.getDocLink() != null && accinfo.getDocLink().equals(docInst)) {
-                                        BigDecimal accAmount;
+                                        final BigDecimal accAmount;
                                         if (!accinfo.getRateInfo().getCurrencyInstance()
                                                         .equals(Currency.getBaseCurrency())) {
                                             accAmount = gainLoss;
@@ -1114,7 +1114,7 @@ public abstract class DocumentInfo_Base
                                               final SummarizeCriteria _criteria)
         throws EFapsException
     {
-        DocumentInfo ret;
+        final DocumentInfo ret;
         if (_docInfos.size() == 1) {
             ret = _docInfos.iterator().next();
         } else {
@@ -1153,7 +1153,7 @@ public abstract class DocumentInfo_Base
     {
         final Map<String, String> ret = new HashMap<String, String>();
         final String transdateStr = _parameter.getParameterValue("date");
-        DateTime transdate;
+        final DateTime transdate;
         if (transdateStr == null) {
             if (_parameter.getParameterValue("date_eFapsDate") != null) {
                 transdate = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
