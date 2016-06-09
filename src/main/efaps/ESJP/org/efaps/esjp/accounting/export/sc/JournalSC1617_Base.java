@@ -166,6 +166,10 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.dateFrom.name));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.dateTo.name));
+        final Instance subJournalInst = Instance.get(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.subJournal.name));
+        final String origin = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
@@ -173,6 +177,13 @@ public abstract class JournalSC1617_Base
                         dateTo.withTimeAtStartOfDay().plusDays(1));
         transAttrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date,
                         dateFrom.withTimeAtStartOfDay().minusSeconds(1));
+
+        if (InstanceUtils.isValid(subJournalInst)) {
+            final QueryBuilder attrQueryBuilder = new QueryBuilder(CIAccounting.ReportSubJournal2Transaction);
+            attrQueryBuilder.addWhereAttrEqValue(CIAccounting.ReportSubJournal2Transaction.FromLink, subJournalInst);
+            transAttrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID,
+                            attrQueryBuilder.getAttributeQuery(CIAccounting.ReportSubJournal2Transaction.ToLink));
+        }
         final AttributeQuery transAttrQuery = transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID);
 
         queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, transAttrQuery);
@@ -220,7 +231,7 @@ public abstract class JournalSC1617_Base
         final List<DataBean> beans = new ArrayList<>();
         while (multi.next()) {
             final DataBean bean = new DataBean()
-                            .setOrigin("01")
+                            .setOrigin(origin)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
                             .setTransDoc(multi.getSelect(selTransIdentifier))
                             .setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position))
