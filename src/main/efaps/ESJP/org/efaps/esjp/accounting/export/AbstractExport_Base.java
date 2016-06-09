@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.export;
@@ -32,6 +29,8 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.dataexporter.DataExporter;
 import org.efaps.dataexporter.LineSeparatorType;
 import org.efaps.dataexporter.output.csv.CsvExportOptions;
@@ -45,8 +44,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
  */
+@EFapsUUID("e9b019b5-3e7d-4c9c-9c4b-24ae3a50bbf9")
+@EFapsApplication("efapsApp-Accounting")
 public abstract class AbstractExport_Base
 {
     /**
@@ -89,6 +89,7 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseRetPer.uuid, "CaseRetentionPerception");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseSecurities.uuid, "CaseSecurities");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseStockBooking.uuid, "CaseStockBooking");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseSwap.uuid, "CaseSwap");
 
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit.uuid, "Credit");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit.uuid, "Debit");

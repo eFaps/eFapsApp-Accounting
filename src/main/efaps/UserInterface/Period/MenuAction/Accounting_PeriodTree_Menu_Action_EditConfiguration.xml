@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,39 +15,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>d44608dc-c1a7-40ec-9abd-7552d23bf834</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_Menu_Action_EditConfiguration</name>
-
         <access>
             <role>Accounting_Admin</role>
             <role>Administration</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Accounting_PeriodConfigurationForm</form>
-            <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf" method="updateObjectAttribute">
+            <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
+                method="updateObjectAttribute">
                 <!-- Accounting-Configuration -->
                 <property name="SystemConfigurationUUID">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
                 <property name="FieldName">systemConfigurationObject</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">460</property>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.export;
@@ -29,6 +26,8 @@ import java.util.Map;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminDataModel;
 import org.efaps.dataexporter.DataExporter;
 import org.efaps.db.AttributeQuery;
@@ -46,19 +45,17 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
  */
+@EFapsUUID("4ba89008-3b9d-433d-a022-2830831b995a")
+@EFapsApplication("efapsApp-Accounting")
 public abstract class ExportCase_Base
     extends AbstractExport
 {
-    /**
-    *
-    */
+
+    /** The Constant PREFIX. */
     public static final String PREFIX = "ExpDef";
 
-    /**
-    *
-    */
+    /** The Constant SUFFIX. */
     public static final String SUFFIX = "csv";
 
     @Override
@@ -148,7 +145,7 @@ public abstract class ExportCase_Base
             final String acc2CaseAcc = multi.<String>getSelect(selAccountName);
             final Long currencyId = multi.getAttribute(CIAccounting.Account2CaseAbstract.CurrencyLink);
             final String currency;
-            if (currencyId == null) {
+            if (currencyId == null || currencyId == 0) {
                 currency = "";
             } else {
                 currency = CurrencyInst.get(currencyId).getISOCode();
