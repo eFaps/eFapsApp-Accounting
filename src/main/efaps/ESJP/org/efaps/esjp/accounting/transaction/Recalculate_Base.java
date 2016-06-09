@@ -36,7 +36,6 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.IUIValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -44,6 +43,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.api.ui.IUserInterface;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -98,7 +98,7 @@ public abstract class Recalculate_Base
             final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
             final StringBuilder html = new StringBuilder();
             html.append("<span name=\"").append(fieldValue.getField().getName()).append("\" ")
-                            .append(UIInterface.EFAPSTMPTAG).append(">")
+                            .append(IUserInterface.EFAPSTMPTAG).append(">")
                             .append(getRecalculateInfo(_parameter, docInst)).append("</span>");
             ret.put(ReturnValues.SNIPLETT, html.toString());
         }

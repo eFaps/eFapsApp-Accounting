@@ -87,7 +87,6 @@ import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
-import org.efaps.ui.wicket.models.cell.UIFormCell;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -1027,8 +1026,8 @@ public abstract class Transaction_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String addAccount = (String) properties.get("addAccount");
         if (addAccount != null && addAccount.length() > 0) {
-            final UIFormCell uiform = (UIFormCell) _parameter.get(ParameterValues.CLASS);
-            final Instance instance = Instance.get(uiform.getParent().getInstanceKey());
+            //final UIFormCell uiform = (UIFormCell) _parameter.get(ParameterValues.CLASS);
+            final Instance instance = null; //Instance.get(uiform.getParent().getInstanceKey());
             final BigDecimal amount = _doc.getAmount();
 
             final AccountInfo account = new AccountInfo(instance);

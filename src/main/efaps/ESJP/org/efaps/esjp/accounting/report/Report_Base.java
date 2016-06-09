@@ -31,7 +31,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.IUIValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -40,6 +39,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.jasper.JasperUtil;
+import org.efaps.api.ui.IUserInterface;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Delete;
@@ -112,7 +112,7 @@ public abstract class Report_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         html.append("<select name=\"").append(uiValue.getField().getName()).append("\" ").append(
-                        UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
+                        IUserInterface.EFAPSTMPTAG).append(" size=\"1\">");
 
         final Map<String, String> values = new TreeMap<String, String>();
         values.put(DBProperties.getProperty("org.efaps.esjp.accounting.report.Report.pdf"), "pdf");

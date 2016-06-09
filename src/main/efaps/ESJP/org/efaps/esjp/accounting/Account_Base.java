@@ -29,9 +29,7 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.IUIValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -41,6 +39,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.admin.user.Company;
+import org.efaps.api.ui.IUserInterface;
 import org.efaps.ci.CIAttribute;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -147,7 +146,7 @@ public abstract class Account_Base
         }
         final StringBuilder html = new StringBuilder();
         html.append("<select name=\"").append(fieldvalue.getField().getName()).append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" >");
+                        .append(IUserInterface.EFAPSTMPTAG).append(" >");
         for (final Entry<String, Long> entry : values.entrySet()) {
             html.append("<option value=\"").append(entry.getValue());
             html.append("\">").append(entry.getKey()).append("</option>");
@@ -392,7 +391,7 @@ public abstract class Account_Base
         }
         final StringBuilder html = new StringBuilder();
         html.append("<select name=\"").append(fieldvalue.getField().getName()).append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" >");
+                        .append(IUserInterface.EFAPSTMPTAG).append(" >");
         for (final Entry<String, Long> entry : values.entrySet()) {
             html.append("<option value=\"").append(entry.getValue());
             html.append("\">").append(entry.getKey()).append("</option>");
@@ -612,9 +611,6 @@ public abstract class Account_Base
         final BigDecimal value = (BigDecimal) fieldvalue.getObject();
         if (value != null && !Display.NONE.equals(fieldvalue.getDisplay())) {
             BigDecimal retValue = null;
-            if (fieldvalue instanceof FieldValue) {
-                ((FieldValue) fieldvalue).setValue(null);
-            }
             if ("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1
                             || !"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1) {
                 retValue = value.abs();

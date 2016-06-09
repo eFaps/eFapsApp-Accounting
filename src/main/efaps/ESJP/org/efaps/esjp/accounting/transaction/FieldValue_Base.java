@@ -35,7 +35,6 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.IUIValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -46,6 +45,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.api.ui.IUserInterface;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
 import org.efaps.db.CachedPrintQuery;
@@ -388,7 +388,7 @@ public abstract class FieldValue_Base
         final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" size=\"1\">");
+                        .append(IUserInterface.EFAPSTMPTAG).append(" size=\"1\">");
         for (final Entry<String, Long> entry : values.entrySet()) {
             html.append("<option value=\"").append(entry.getValue());
             html.append("\">").append(entry.getKey()).append("</option>");
