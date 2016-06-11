@@ -72,6 +72,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Accounting_Account2CaseDebit4Classification/ClassificationLink.Label</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getClassificationDropDownFieldValue"
                 name="Accounting_Account2CaseTable.classificationLink.UI_FIELD_VALUE"

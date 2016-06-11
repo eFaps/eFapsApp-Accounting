@@ -54,7 +54,7 @@
         <field name="filterActive">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_DocTransactionsForm.filterActive.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_DocTransactionsForm.filterActive.UI_FIELD_VALUE"

@@ -25,24 +25,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreate4DocForm</name>
-        <field name="caseGroup" character="Group">
-            <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">3</property>
-            <trigger program="org.efaps.esjp.accounting.Period"
-                method="accessCheck4SummarizeTrans"
-                name="Accounting_TransactionCreate4DocForm.checkbox4Summarize.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <property name="Inverse">true</property>
-            </trigger>
-        </field>
-        <field name="caseGroup2" character="Group">
-            <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">4</property>
-            <trigger program="org.efaps.esjp.accounting.Period"
-                method="accessCheck4SummarizeTrans"
-                name="Accounting_TransactionCreate4DocForm.checkbox4Summarize.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK"></trigger>
-        </field>
         <field name="document">
             <property name="ModeCreate">READONLY</property>
             <property name="RowSpan">2</property>
@@ -52,6 +34,24 @@
                 method="getDocumentFieldValue"
                 name="Accounting_TransactionCreate4DocForm.document.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
+        </field>
+        <field name="caseGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">2</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4DocForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Inverse">true</property>
+            </trigger>
+        </field>
+        <field name="caseGroup2" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4DocForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
         </field>
         <field name="case">
             <property name="ModeCreate">EDITABLE</property>

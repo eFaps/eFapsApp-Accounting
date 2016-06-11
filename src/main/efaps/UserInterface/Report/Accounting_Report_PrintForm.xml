@@ -80,7 +80,7 @@
         <field name="filterActive">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.filterActive.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="checkboxFieldValue"
                 name="Accounting_Report_PrintForm.filterActive.UI_FIELD_VALUE"
@@ -100,7 +100,7 @@
         <field name="rateCurrencyType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.currencyType.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getTypeDropDownFieldValue"
                 name="Accounting_Report_PrintForm.forTypeId.UI_FIELD_VALUE"
