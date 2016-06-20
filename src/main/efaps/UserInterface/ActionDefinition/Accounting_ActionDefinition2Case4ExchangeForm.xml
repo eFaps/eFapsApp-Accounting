@@ -18,11 +18,11 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5e8fab95-e91e-41de-b7b7-265b2be132b1</uuid>
+    <uuid>24ea07cf-15ea-4593-8123-751a66f364da</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ActionDefinition2Case4OthersPayForm</name>
+        <name>Accounting_ActionDefinition2Case4ExchangeForm</name>
         <field name="type">
             <property name="Attribute">Type</property>
         </field>
@@ -30,19 +30,18 @@
             <property name="Attribute">Config</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
-         <field name="labelLink">
+        <field name="labelLink">
             <property name="Attribute">LabelLink</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.Action"
-                method="getLabelUIFieldValue"
+            <trigger event="UI_FIELD_VALUE" method="getLabelUIFieldValue"
                 name="Accounting_ActionDefinition2Case4PettyCashReceiptForm.labelLink.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+                program="org.efaps.esjp.accounting.transaction.Action">
                 <property name="Type">Accounting_LabelAbstract</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="SetSelected">true</property>
-                <property name="emptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
         </field>
         <field name="labelLink4view">

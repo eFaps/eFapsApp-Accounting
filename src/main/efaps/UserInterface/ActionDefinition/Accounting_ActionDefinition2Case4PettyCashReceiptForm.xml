@@ -14,17 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>73aa5a49-1cd9-48d7-bca5-e0cd8c8f50ca</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinition2Case4PettyCashReceiptForm</name>
@@ -39,6 +33,7 @@
             <property name="Attribute">LabelLink</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.Action"
                 method="getLabelUIFieldValue"
                 name="Accounting_ActionDefinition2Case4PettyCashReceiptForm.labelLink.UI_FIELD_VALUE"

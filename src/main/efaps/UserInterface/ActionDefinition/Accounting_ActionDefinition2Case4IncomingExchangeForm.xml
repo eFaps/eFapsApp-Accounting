@@ -14,15 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>aabc5714-8c68-4002-bd43-6a6ae5264af6</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinition2Case4IncomingExchangeForm</name>
@@ -33,18 +30,18 @@
             <property name="Attribute">Config</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
-         <field name="labelLink">
+        <field name="labelLink">
             <property name="Attribute">LabelLink</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.Action"
-                method="getLabelUIFieldValue"
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.Action" method="getLabelUIFieldValue"
                 name="Accounting_ActionDefinition2Case4PettyCashReceiptForm.labelLink.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_LabelAbstract</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="SetSelected">true</property>
-                <property name="emptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
         </field>
         <field name="labelLink4view">
