@@ -29,7 +29,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="RowSpan">2</property>
             <property name="Label">Accounting_TransactionForm.document.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDocumentFieldValue"
                 name="Accounting_TransactionCreate4DocForm.document.UI_FIELD_VALUE"
@@ -153,7 +153,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">120</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDescriptionFieldValue"
                 name="Accounting_TransactionCreate4DocForm.description.UI_FIELD_VALUE"

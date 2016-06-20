@@ -1254,8 +1254,8 @@ public abstract class FieldValue_Base
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof IUIValue) {
+            final List<DropDownPosition> values = new ArrayList<>();
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
-                final List<DropDownPosition> values = new ArrayList<>();
                 Instance labelInst = null;
                 if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
                     final PrintQuery print = new PrintQuery(_parameter.getInstance());
@@ -1294,10 +1294,8 @@ public abstract class FieldValue_Base
                     default:
                         break;
                 }
-                ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values).toString());
-            } else {
-                ret.put(ReturnValues.SNIPLETT, "");
             }
+            ret.put(ReturnValues.VALUES, values);
         }
         return ret;
     }
@@ -1505,9 +1503,7 @@ public abstract class FieldValue_Base
             final BigDecimal amount = multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
             value = value.add(amount.abs());
         }
-
         ret.put(ReturnValues.VALUES, value);
-
         return ret;
     }
 }

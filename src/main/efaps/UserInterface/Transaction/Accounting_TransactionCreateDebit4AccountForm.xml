@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2014 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,19 +16,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
-
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>48a166f9-a773-4193-a3fe-8f522a18a963</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionCreateDebit4AccountForm</name>
@@ -44,14 +36,10 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getDateFieldValue"
-                name="Accounting_TransactionCreate4StockToBookForm.date.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="update4Date"
-                name="Accounting_TransactionForm.date.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getDateFieldValue"
+                name="Accounting_TransactionCreate4StockToBookForm.date.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate" method="update4Date"
+                name="Accounting_TransactionForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
@@ -61,14 +49,12 @@
             <property name="Required">true</property>
             <property name="Columns">80</property>
         </field>
-         <field name="type_Debit">
+        <field name="type_Debit">
             <property name="ModeCreate">HIDDEN</property>
             <property name="Label">Accounting_TransactionPositionAbstract/Type.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getTypeFieldValue"
-                name="Accounting_TransactionPositionDebitTable.type.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getTypeFieldValue"
+                name="Accounting_TransactionPositionDebitTable.type.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Accounting_TransactionPositionDebit</property>
             </trigger>
         </field>
@@ -88,16 +74,14 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Accounting_TransactionCreateDebit4AccountForm.rateCurrencyLink_Debit.Label</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getCurrencySelectFieldValue"
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getCurrencySelectFieldValue"
                 name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Debit.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
+                event="UI_FIELD_VALUE">
                 <property name="Type">ERP_Currency</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="update4Currency"
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate" method="update4Currency"
                 name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Debit.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
                 <property name="TypePostfix">Debit</property>
@@ -109,15 +93,11 @@
             <property name="Label">Accounting_TransactionCreateDebit4AccountForm.rate_Debit.Label</property>
             <property name="Required">true</property>
             <property name="Columns">8</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getRateFieldValue"
-                name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getRateFieldValue"
+                name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
             </trigger>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
-                method="update4Rate"
-                name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE">
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate" method="update4Rate"
+                name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
                 <property name="TypePostfix">Debit</property>
             </trigger>
         </field>

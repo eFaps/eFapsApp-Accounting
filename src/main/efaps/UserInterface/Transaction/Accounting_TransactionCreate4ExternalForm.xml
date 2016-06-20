@@ -179,7 +179,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">120</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDescriptionFieldValue"
                 name="Accounting_TransactionCreate4DocForm.description.UI_FIELD_VALUE"
