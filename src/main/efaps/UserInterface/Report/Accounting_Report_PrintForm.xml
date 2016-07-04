@@ -100,7 +100,7 @@
         <field name="rateCurrencyType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.currencyType.Label</property>
-            <property name="UIType">SNIPPLET</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getTypeDropDownFieldValue"
                 name="Accounting_Report_PrintForm.forTypeId.UI_FIELD_VALUE"
@@ -109,7 +109,5 @@
                 <property name="IncludeAbstract">false</property>
             </trigger>
         </field>
-
-
     </definition>
 </ui-form>
