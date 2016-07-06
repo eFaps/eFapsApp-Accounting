@@ -80,7 +80,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">NONE</property>
             <property name="Attribute">Label</property>
-            <property name="Columns">100</property>
+            <property name="Width">100</property>
         </field>
         <field name="periodLink">
             <property name="SelectAlternateOID">linkto[PeriodAbstractLink].oid</property>

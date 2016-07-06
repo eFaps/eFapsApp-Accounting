@@ -24,12 +24,11 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>740a26a5-4ba2-46c3-9a3c-4ed3d95d24b6</uuid>
     <file-application>eFapsApp-Commons</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_AbstractDocumentForm</name>
         <field name="revision">
-            <property name="Columns">40</property>
+            <property name="Width">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Revision</property>

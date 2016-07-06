@@ -59,7 +59,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
         </field>
         <field name="status">
             <property name="ModeEdit">READONLY</property>

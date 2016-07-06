@@ -47,7 +47,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
         </field>
         <field name="type_Debit">
             <property name="ModeCreate">HIDDEN</property>
@@ -65,7 +65,7 @@
         <field name="amount_Debit">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">8</property>
+            <property name="Width">8</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Label">Accounting_TransactionCreateDebit4AccountForm.amount_Debit.Label</property>
         </field>
@@ -92,7 +92,7 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.RateUI</property>
             <property name="Label">Accounting_TransactionCreateDebit4AccountForm.rate_Debit.Label</property>
             <property name="Required">true</property>
-            <property name="Columns">8</property>
+            <property name="Width">8</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getRateFieldValue"
                 name="Accounting_TransactionPositionCreditTable.rate_Credit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
             </trigger>

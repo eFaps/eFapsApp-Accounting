@@ -55,7 +55,6 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
-            <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>

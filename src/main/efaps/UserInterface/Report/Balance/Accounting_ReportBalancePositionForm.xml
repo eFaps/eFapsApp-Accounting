@@ -45,7 +45,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Label</property>
             <property name="Required">true</property>
-            <property name="Columns">80</property>
+            <property name="Width">80</property>
         </field>
         <field name="config">
             <property name="ModeCreate">EDITABLE</property>

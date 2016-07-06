@@ -275,7 +275,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
-            <property name="Columns">120</property>
+            <property name="Width">120</property>
         </field>
 
         <field name="headingTaxDoc" character="Heading">
@@ -312,7 +312,7 @@
         </field>
         <field name="perceptionPercent">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.perceptionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
@@ -358,7 +358,7 @@
         </field>
         <field name="retentionPercent">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.retentionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
@@ -394,7 +394,7 @@
         </field>
         <field name="detractionPercent">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Accounting_TransactionCreate4ExternalVoucherForm.detractionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
              <trigger program="org.efaps.esjp.accounting.ExternalVoucher"

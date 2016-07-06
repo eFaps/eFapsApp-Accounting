@@ -38,7 +38,7 @@
         </field>
         <field name="contact">
             <property name="Attribute">Contact</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Accounting_ExternalVoucher/Contact.Label</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher" method="autoComplete4Contact"
@@ -48,7 +48,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Accounting_ExternalVoucher/Name.Label</property>
         </field>

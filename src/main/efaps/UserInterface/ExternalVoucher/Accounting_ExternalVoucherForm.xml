@@ -105,7 +105,7 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
+            <property name="Width">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
@@ -142,7 +142,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">100</property>
+            <property name="Width">100</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Accounting_ExternalVoucherForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -389,7 +389,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Sales_IncomingInvoiceForm.perceptionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -451,7 +451,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Sales_IncomingInvoiceForm.retentionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -503,7 +503,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Columns">2</property>
+            <property name="Width">2</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
