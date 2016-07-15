@@ -68,10 +68,6 @@
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
             <property name="Width">120</property>
-            <trigger event="UI_FIELD_VALUE" method="getDescriptionFieldValue"
-                name="Accounting_TransactionCreate4DocForm.description.UI_FIELD_VALUE"
-                program="org.efaps.esjp.accounting.transaction.FieldValue">
-            </trigger>
         </field>
         <field character="Heading" name="transactionPositionDebit">
             <property name="Level">2</property>

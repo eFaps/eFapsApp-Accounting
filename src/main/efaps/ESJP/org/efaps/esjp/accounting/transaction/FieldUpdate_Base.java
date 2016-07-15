@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -82,13 +81,13 @@ public abstract class FieldUpdate_Base
 
         final int pos = getSelectedRow(_parameter);
         final String accountOID = accountOIDs[pos];
-        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> list = new ArrayList<>();
         final Instance accInst = Instance.get(accountOID);
 
         final AccountInfo accInfo = new AccountInfo();
         accInfo.setInstance(accInst).setPostFix("_" + postfix);
 
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<>();
 
         map.put("description" + (postfix.equals("") ? "" : "_" + postfix), accInfo.getDescription());
         final StringBuilder js = new StringBuilder();
@@ -132,7 +131,7 @@ public abstract class FieldUpdate_Base
             if (rateInv && rate.compareTo(BigDecimal.ZERO) != 0) {
                 rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
             }
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final List<Map<String, String>> list = new ArrayList<>();
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
             final BigDecimal sum = getSum4UI(_parameter, postfix, null, null);
@@ -143,7 +142,7 @@ public abstract class FieldUpdate_Base
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
                             + new Period().getCurrency(periodInstance).getSymbol();
 
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put("sum" + postfix, sumStr);
             map.put("amountRate_" + postfix,
                             formater.format(amount.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP)));
@@ -192,8 +191,8 @@ public abstract class FieldUpdate_Base
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
                             + new Period().getCurrency(periodInstance).getSymbol();
 
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, String>> list = new ArrayList<>();
+            final Map<String, String> map = new HashMap<>();
             map.put("rate_" + postfix, rate.getRateUIFrmt());
             map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.isInvert());
             map.put("sum" + postfix, sumStr);
@@ -220,8 +219,8 @@ public abstract class FieldUpdate_Base
         final Return ret = new Return();
         final String cur = _parameter.getParameterValue("rateCurrencyLink");
         final CurrencyInst inst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), cur));
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
         map.put("rate" + RateUI.INVERTEDSUFFIX, "" + inst.isInvert());
         list.add(map);
         ret.put(ReturnValues.VALUES, list);
@@ -237,10 +236,8 @@ public abstract class FieldUpdate_Base
     public Return update4Date(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, String> map = new HashMap<>();
 
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
         final DateTime date = DateUtil.getDateFromParameter(dateStr);
@@ -275,25 +272,6 @@ public abstract class FieldUpdate_Base
                     .append("});");
             }
         }
-
-        if ("true".equalsIgnoreCase((String) props.get("UpdateDocInfo"))) {
-            final String docOid = _parameter.getParameterValue("document");
-            final Instance docInst = Instance.get(docOid);
-            if (docInst.isValid()) {
-//                final DocumentInfo doc = new DocumentInfo(docInst);
-//                final FieldValue fielValue = new FieldValue();
-//                js.append("document.getElementsByName(\"document_span\")[0].innerHTML='")
-//                    .append(StringEscapeUtils.escapeEcmaScript(
-//                                    fielValue.getDocumentFieldValue(_parameter, doc).toString()))
-//                    .append(StringEscapeUtils.escapeEcmaScript(
-//                                    fielValue.getCostInformation(_parameter, date, doc).toString()))
-//                    .append("'; ")
-//                    .append(fielValue.getScript(_parameter, doc));
-            }
-        }
-
-       // js.append(getCurrencyJS(_parameter, "rateCurrencyLink_Debit", "rate_Debit"))
-       //     .append(getCurrencyJS(_parameter, "rateCurrencyLink_Credit", "rate_Credit"));
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
         final Return retVal = new Return();
@@ -380,7 +358,7 @@ public abstract class FieldUpdate_Base
             if (rateInv && rate.compareTo(BigDecimal.ZERO) != 0) {
                 rate = BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP);
             }
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final List<Map<String, String>> list = new ArrayList<>();
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
             final BigDecimal sum = getSum4UI(_parameter, postfix, null, null);
@@ -391,7 +369,7 @@ public abstract class FieldUpdate_Base
             final String sumStr2 = formater.format(sum.subtract(sum2).abs()) + " "
                             + new Period().getCurrency(periodInstance).getSymbol();
 
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put("sum" + postfix, sumStr);
             map.put("amountRate_" + postfix,
                             formater.format(amount.setScale(8).divide(rate, BigDecimal.ROUND_HALF_UP)));

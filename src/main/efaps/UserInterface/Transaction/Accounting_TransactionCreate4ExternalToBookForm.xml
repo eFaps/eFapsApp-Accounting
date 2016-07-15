@@ -182,11 +182,6 @@
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
             <property name="Width">120</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getDescriptionFieldValue"
-                name="Accounting_TransactionCreate4ExternalToBookForm.description.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-            </trigger>
         </field>
         <field name="docStatus">
             <property name="HideLabel">true</property>

@@ -579,7 +579,7 @@ public abstract class Create_Base
 
         for (final String oid : oids) {
             final Instance docInst = Instance.get(oid);
-            final String description = new FieldValue().getDescription(_parameter, docInst);
+            final String description = "TODO";
             final PrintQuery print = new PrintQuery(oid);
             print.addAttribute(CIERP.DocumentAbstract.Name);
             print.execute();

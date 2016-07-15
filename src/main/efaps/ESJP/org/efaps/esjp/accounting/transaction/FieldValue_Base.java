@@ -87,8 +87,6 @@ import org.efaps.esjp.ui.html.Table;
 import org.efaps.esjp.ui.html.Table_Base.Row;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 
 /**
@@ -435,49 +433,6 @@ public abstract class FieldValue_Base
             }
         };
         return field.dropDownFieldValue(_parameter);
-    }
-
-    /**
-     * Get the value for the description field for transaction for documents.
-     * @param _parameter Paremter as passed from the eFaps API
-     * @return Return
-     * @throws EFapsException on error
-     */
-    public Return getDescriptionFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final String selected = Context.getThreadContext().getParameter("selectedRow");
-        if (selected != null) {
-            ret.put(ReturnValues.VALUES, getDescription(_parameter, Instance.get(selected)));
-        }
-        return ret;
-    }
-
-    /**
-     * Get the value for the description field for transaction for documents.
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _instance instance of the document
-     * @return description
-     * @throws EFapsException on error
-     */
-    public String getDescription(final Parameter _parameter,
-                                 final Instance _instance)
-        throws EFapsException
-    {
-        final StringBuilder ret = new StringBuilder();
-        if (_instance.isValid() && _instance.getType().isKindOf(CIERP.DocumentAbstract)) {
-            final PrintQuery print = new PrintQuery(_instance);
-            print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
-            print.execute();
-            final DateTime datetime = print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date);
-            final DateTimeFormatter formatter = DateTimeFormat.mediumDate();
-            final String dateStr = datetime.withChronology(Context.getThreadContext().getChronology()).toString(
-                            formatter.withLocale(Context.getThreadContext().getLocale()));
-            final String name = print.<String>getAttribute(CIERP.DocumentAbstract.Name);
-            ret.append(_instance.getType().getLabel()).append(" ").append(name).append(" ").append(dateStr);
-        }
-        return ret.toString();
     }
 
     /**
@@ -1326,25 +1281,7 @@ public abstract class FieldValue_Base
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))
                         || TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             DateTime date = null;
-            final String[] oids = _parameter.getParameterValues("selectedRow");
-            if (oids != null) {
-                final String select4date = getProperty(_parameter, "Select4Date",
-                                SelectBuilder.get().attribute(CISales.DocumentAbstract.Date).toString());
-                for (final String docOid  :oids) {
-                    final Instance docInst = Instance.get(docOid);
-                    if (docInst.isValid()) {
-                        final PrintQuery print = new PrintQuery(docInst);
-                        print.addSelect(select4date);
-                        print.executeWithoutAccessCheck();
-                        final DateTime dateTmp = print.<DateTime>getSelect(select4date);
-                        if (date == null) {
-                            date = dateTmp;
-                        } else if (dateTmp.isAfter(date)) {
-                            date = dateTmp;
-                        }
-                    }
-                }
-            } else if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
                 final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
                 final Object objTmp = fieldValue.getObject();
                 if (objTmp != null && objTmp instanceof DateTime) {
