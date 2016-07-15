@@ -92,9 +92,6 @@
             <!-- connect the Accounting_Sales_Document_PLEReport to Sales_Document_ReportMyDesk menu -->
             update.add2Menu("0bbae7f9-a7ae-4569-a08f-083930135f12", "218a4858-af25-4ad8-8a28-7283cd629766", -1);
 
-            <!-- connect the Accounting_ActionDefinitionTree_Case to ERP_ActionDefinitionTree menu -->
-            update.add2Menu("cda69309-ad64-4da9-8a8b-7a53b5f8f862", "789a0cb2-921c-4a2b-98e4-19123b1d567c", -1);
-
             <!-- Accounting_Accounting, Admin_Help_MainMenu -->
             update.add2Help("906bd8c4-2e7f-4234-936b-6a1ee74bdf37", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
 

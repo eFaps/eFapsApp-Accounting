@@ -647,6 +647,14 @@ public abstract class Action_Base
          */
         public void setParameter(final Parameter _parameter)
         {
+            //an action is for every document therfore one transaction wanted
+            if (_parameter.getParameterValue("oneTransPerDoc") == null) {
+                ParameterUtil.setParmeterValue(_parameter, "oneTransPerDoc", "true");
+            }
+            //an action is inserted in the moment of the execution. therfor use the transaction date
+            if (_parameter.getParameterValue("useDate") == null) {
+                ParameterUtil.setParmeterValue(_parameter, "useDate", "true");
+            }
             this.parameter = _parameter;
         }
 

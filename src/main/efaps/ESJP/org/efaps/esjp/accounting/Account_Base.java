@@ -134,7 +134,7 @@ public abstract class Account_Base
         final Return ret = new Return();
         final Type rootType = CIAccounting.AccountAbstract.getType();
         final List<Type> types = getChildren(rootType);
-        final Map<String, Long> values = new TreeMap<String, Long>();
+        final Map<String, Long> values = new TreeMap<>();
         for (final Type type : types) {
             String name = DBProperties.getProperty(type.getName() + ".Label");
             Type curType = type;
@@ -166,7 +166,7 @@ public abstract class Account_Base
     protected List<Type> getChildren(final Type _parent)
         throws CacheReloadException
     {
-        final List<Type> ret = new ArrayList<Type>();
+        final List<Type> ret = new ArrayList<>();
         for (final Type child : _parent.getChildTypes()) {
             ret.addAll(getChildren(child));
             ret.add(child);
@@ -191,7 +191,7 @@ public abstract class Account_Base
         final boolean caseFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Account"));
         final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
 
-        final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> orderMap = new TreeMap<>();
 
         final boolean showSumAccount = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowSumAccount"));
         String postfix = "";
@@ -263,14 +263,14 @@ public abstract class Account_Base
             } else {
                 choice = description + " - " + name;
             }
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
             orderMap.put(choice, map);
         }
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         list.addAll(orderMap.values());
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
@@ -379,7 +379,7 @@ public abstract class Account_Base
         final Type rootClass = Type.get("Products_Class");
 
         final List<Type> types = getChildClassifications((Classification) rootClass);
-        final Map<String, Long> values = new TreeMap<String, Long>();
+        final Map<String, Long> values = new TreeMap<>();
         for (final Type type : types) {
             Classification clazz = (Classification) type;
             String label = DBProperties.getProperty(type.getName() + ".Label");
@@ -410,7 +410,7 @@ public abstract class Account_Base
     protected List<Type> getChildClassifications(final Classification _parent)
         throws CacheReloadException
     {
-        final List<Type> ret = new ArrayList<Type>();
+        final List<Type> ret = new ArrayList<>();
         for (final Type child : _parent.getChildClassifications()) {
             ret.addAll(getChildClassifications((Classification) child));
             ret.add(child);
@@ -487,8 +487,8 @@ public abstract class Account_Base
      */
     public Return reCalculateAccounts(final Parameter _parameter) throws EFapsException
     {
-        final Map<Instance, BigDecimal> acc2sumBooked = new HashMap<Instance, BigDecimal>();
-        final Map<Instance, BigDecimal> acc2sumReport = new HashMap<Instance, BigDecimal>();
+        final Map<Instance, BigDecimal> acc2sumBooked = new HashMap<>();
+        final Map<Instance, BigDecimal> acc2sumReport = new HashMap<>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodLink, _parameter.getInstance().getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -606,16 +606,15 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final BigDecimal value = (BigDecimal) fieldvalue.getObject();
         if (value != null && !Display.NONE.equals(fieldvalue.getDisplay())) {
             BigDecimal retValue = null;
-            if ("negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == -1
-                            || !"negativ".equalsIgnoreCase((String) props.get("Signum")) && value.signum() == 1) {
+            if ("negativ".equalsIgnoreCase(getProperty(_parameter, "Signum")) && value.signum() == -1
+                            || !"negativ".equalsIgnoreCase(getProperty(_parameter, "Signum")) && value.signum() == 1) {
                 retValue = value.abs();
             }
-            ret.put(ReturnValues.VALUES, retValue);
+            ret.put(ReturnValues.VALUES, retValue == null ? IUIValue.NULL : retValue);
         }
         return ret;
     }

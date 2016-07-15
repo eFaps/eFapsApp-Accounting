@@ -179,7 +179,7 @@ public abstract class FieldValue_Base
             while (multi.next()) {
                 final Instance curDocInst = multi.getSelect(selCurDocInst);
                 final DropDownPosition drpD = new DropDownPosition(curDocInst.getOid(), String.valueOf(multi
-                                .getAttribute(CIAccounting.Transaction2ERPDocument.Position)) + ".");
+                                .<Object>getAttribute(CIAccounting.Transaction2ERPDocument.Position)) + ".");
                 drpD.setSelected(curDocInst.equals(docInst));
                 values.add(drpD);
             }
@@ -377,7 +377,7 @@ public abstract class FieldValue_Base
         final MultiPrintQuery print = queryBldr.getPrint();
         print.addAttribute(CIERP.DocumentType.ID, CIERP.DocumentType.Name, CIERP.DocumentType.Description);
         print.execute();
-        final Map<String, Long> values = new TreeMap<String, Long>();
+        final Map<String, Long> values = new TreeMap<>();
         while (print.next()) {
             values.put(print.<String>getAttribute(CIERP.DocumentType.Name)
                             + " - " + print.<String>getAttribute(CIERP.DocumentType.Description),
@@ -1384,7 +1384,7 @@ public abstract class FieldValue_Base
             Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
                             FieldValue_Base.SALESACC_REQKEY);
             if (values == null || values != null && !values.containsKey(_parameter.getInstance())) {
-                values = new HashMap<Instance, String>();
+                values = new HashMap<>();
                 Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, values);
                 @SuppressWarnings("unchecked")
                 final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);

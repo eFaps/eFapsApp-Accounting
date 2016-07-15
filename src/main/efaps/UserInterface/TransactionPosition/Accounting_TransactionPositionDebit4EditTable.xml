@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c22a3c82-b014-4d5b-804b-c494fd0fd703</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_TransactionPositionDebit4EditTable</name>
@@ -126,6 +120,7 @@
             <property name="Label">Accounting_TransactionPositionDebitTable.docLink_Debit.Label</property>
             <property name="Required">true</property>
             <property name="Width">2</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDocLinkFieldValue"
                 name="Accounting_TransactionPositionDebitTable.docLink_Debit.UI_FIELD_VALUE"
@@ -145,6 +140,7 @@
             <property name="Label">Accounting_TransactionPositionAbstract/labelLink.Label</property>
             <property name="Required">true</property>
             <property name="Width">2</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="getLabelFieldValue"
                 name="Accounting_TransactionPositionDebitTable.labelLink_Debit.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue" />
