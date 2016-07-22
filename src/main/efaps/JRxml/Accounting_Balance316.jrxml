@@ -17,6 +17,7 @@
     bottomMargin="20"
     isFloatColumnFooter="true"
     uuid="3cfcf0e0-63bc-4b15-bd7b-a1f0ae0f8d0c">
+    <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Accounting"/>
     <property
         name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1"
         value="pageHeader" />

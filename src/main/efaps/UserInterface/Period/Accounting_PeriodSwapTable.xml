@@ -17,13 +17,13 @@
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>465575b7-781a-4a36-8ea5-0e1f34c38d03</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodSwapTable</name>
-         <field name="fromLink">
+        <field name="fromLink">
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
@@ -40,6 +40,7 @@
             <property name="Label">Sales_Document2Document4Swap/Amount.Label</property>
             <property name="Align">right</property>
             <property name="SortSelect">attribute[Amount]</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="toLink">
             <property name="HRef">TREE</property>
