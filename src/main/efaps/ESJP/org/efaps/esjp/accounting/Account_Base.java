@@ -64,7 +64,7 @@ import org.efaps.util.cache.CacheReloadException;
  * @author The eFaps Team
  */
 @EFapsUUID("e9b8eabd-7122-4b30-a78b-891d1cec1a90")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Account_Base
     extends AbstractCommon
 {

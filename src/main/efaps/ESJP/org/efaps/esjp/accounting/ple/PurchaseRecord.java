@@ -21,9 +21,8 @@
 
 package org.efaps.esjp.accounting.ple;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -34,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("be77e172-38dc-4a48-8edb-1cb997a3b898")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class PurchaseRecord
     extends PurchaseRecord_Base
 {

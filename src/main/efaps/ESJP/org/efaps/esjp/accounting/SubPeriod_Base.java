@@ -50,7 +50,7 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  */
 @EFapsUUID("948a690d-9934-470a-b8fb-b1e4d212010a")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class SubPeriod_Base
     extends AbstractCommon
 {

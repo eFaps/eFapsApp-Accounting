@@ -38,7 +38,7 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  */
 @EFapsUUID("ff265bae-8984-44ba-84cf-8529eb4424bb")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class TransactionDocument_Base
     extends AbstractDocument
 {

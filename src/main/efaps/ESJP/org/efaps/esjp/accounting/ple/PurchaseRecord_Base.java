@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.dataexporter.model.BooleanColumn.Format;
 import org.efaps.esjp.accounting.report.PurchaseRecordReport;
@@ -40,7 +40,6 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
-
 /**
  * TODO comment!
  *
@@ -48,7 +47,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("dc809e4c-205b-4f85-9367-b86e94ff1949")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class PurchaseRecord_Base
     extends AbstractExport
 {
@@ -136,7 +135,7 @@ public abstract class PurchaseRecord_Base
         final PurchaseRecordReport report = new PurchaseRecordReport();
 
         final DateTime date4Purchase = report.getDate4Purchase(_parameter);
-        final Map<String, Object> jrParameters = new HashMap<String, Object>();
+        final Map<String, Object> jrParameters = new HashMap<>();
         report.init(null, _parameter, null, jrParameters);
         final List<Map<String, Object>> values = report.getValues();
         for (final Map<String, Object> value : values) {

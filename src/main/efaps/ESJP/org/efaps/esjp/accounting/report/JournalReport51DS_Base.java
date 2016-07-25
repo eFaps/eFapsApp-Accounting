@@ -28,12 +28,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -47,6 +44,8 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
 /**
  * TODO comment!
  *
@@ -55,7 +54,7 @@ import org.joda.time.DateTime;
  *          jan@moxter.net $
  */
 @EFapsUUID("9994200b-40b2-466a-b1fe-bfd6e927e92e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class JournalReport51DS_Base
     extends AbstractReportDS
 {

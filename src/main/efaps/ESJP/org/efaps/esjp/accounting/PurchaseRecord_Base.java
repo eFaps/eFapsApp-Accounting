@@ -15,7 +15,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.AttributeQuery;
@@ -73,7 +73,7 @@ import org.joda.time.DateTime;
  *          jan@moxter.net $
  */
 @EFapsUUID("2198d008-b65f-4d3c-b84d-48250c047708")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class PurchaseRecord_Base
     extends CommonDocument
 {
@@ -373,7 +373,7 @@ public abstract class PurchaseRecord_Base
             rel2doc.put(multi.getCurrentInstance(), multi.<Instance>getSelect(sel));
         }
 
-        AbstractDocumentTax.evaluateDocTaxInfo(_parameter, new ArrayList<Instance>(rel2doc.values()));
+        AbstractDocumentTax.evaluateDocTaxInfo(_parameter, new ArrayList<>(rel2doc.values()));
         final StringBuilder html = AbstractDocumentTax.getSmallTaxField4Doc(_parameter,
                         rel2doc.get(_parameter.getInstance()));
         ret.put(ReturnValues.SNIPLETT, html.toString());

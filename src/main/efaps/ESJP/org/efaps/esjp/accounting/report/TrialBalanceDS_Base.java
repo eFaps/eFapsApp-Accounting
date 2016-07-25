@@ -19,7 +19,6 @@
  */
 
 package org.efaps.esjp.accounting.report;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,12 +31,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
@@ -51,6 +47,9 @@ import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
+
 /**
  * TODO comment!
  *
@@ -58,7 +57,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("8c892184-88d0-4c28-ac34-2bff22632dc9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class TrialBalanceDS_Base
     extends AbstractReportDS
 {
@@ -73,7 +72,7 @@ public abstract class TrialBalanceDS_Base
         super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
 
         final Map<Instance, DataBean> mapping = new HashMap<>();
-        final List<Instance> instances = new ArrayList<Instance>();
+        final List<Instance> instances = new ArrayList<>();
 
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_PReportTrialBalanceForm.dateFrom.name));

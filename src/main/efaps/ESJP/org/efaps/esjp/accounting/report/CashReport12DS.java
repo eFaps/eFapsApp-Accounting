@@ -21,9 +21,8 @@
 
 package org.efaps.esjp.accounting.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 
 /**
@@ -35,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("feb4d81b-411d-4881-9ab3-2785799ebce5")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class CashReport12DS
     extends CashReport12DS_Base
 {

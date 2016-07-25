@@ -21,11 +21,10 @@
 
 package org.efaps.esjp.accounting.listener;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsListener;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.cache.CacheReloadException;
-
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -36,7 +35,7 @@ import org.efaps.util.cache.CacheReloadException;
  * @version $Id$
  */
 @EFapsUUID("74e00d00-66b7-4608-8410-634fa162f3d0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 @EFapsListener
 public class OnRetentionCertificateClose
     extends OnRetentionCertificateClose_Base

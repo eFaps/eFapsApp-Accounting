@@ -21,10 +21,9 @@
 
 package org.efaps.esjp.accounting.listener;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsListener;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
@@ -34,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("18d82806-32ec-42df-a9c4-2df00a678f11")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 @EFapsListener
 public class OnPayment
     extends OnPayment_Base

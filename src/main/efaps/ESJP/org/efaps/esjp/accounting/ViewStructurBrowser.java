@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.accounting;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("ec4f2865-7ea2-42dc-bb86-0cc569bd1e4f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class ViewStructurBrowser
     extends ViewStructurBrowser_Base
 {

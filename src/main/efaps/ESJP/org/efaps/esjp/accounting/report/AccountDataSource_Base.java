@@ -31,7 +31,7 @@ import java.util.Set;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -54,7 +54,6 @@ import org.joda.time.DateTime;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperReport;
-
 /**
  * TODO comment!
  *
@@ -62,7 +61,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id$
  */
 @EFapsUUID("bcdd8bf3-b076-403a-af2f-f09b52bb92e7")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AccountDataSource_Base
     extends EFapsDataSource
 {
@@ -82,7 +81,7 @@ public abstract class AccountDataSource_Base
                      final Map<String, Object> _jrParameters)
                          throws EFapsException
     {
-        final List<Instance> instances = new ArrayList<Instance>();
+        final List<Instance> instances = new ArrayList<>();
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
                         && _parameter.getInstance().getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
             instances.add(_parameter.getInstance());
@@ -93,7 +92,7 @@ public abstract class AccountDataSource_Base
             _jrParameters.put("FileName", name);
         } else {
             final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("selectedOIDs");
-            final Set<Instance> instSet = new LinkedHashSet<Instance>();
+            final Set<Instance> instSet = new LinkedHashSet<>();
             for (final String oid : oids) {
                 final Instance instancetmp = Instance.get(oid);
                 if (instancetmp.isValid()) {
@@ -102,10 +101,10 @@ public abstract class AccountDataSource_Base
             }
             instances.addAll(instSet);
         }
-        final List<Instance> posInstances = new ArrayList<Instance>();
+        final List<Instance> posInstances = new ArrayList<>();
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
-        final Map<DateTime, BigDecimal> rates = new HashMap<DateTime, BigDecimal>();
+        final Map<DateTime, BigDecimal> rates = new HashMap<>();
         _jrParameters.put("Rates", rates);
         if ("true".equalsIgnoreCase(_parameter.getParameterValue("filterActive"))) {
             final Instance curr = Instance.get(CIERP.Currency.getType(),
@@ -163,7 +162,7 @@ public abstract class AccountDataSource_Base
                                                 final Instance _instance)
                                                     throws EFapsException
     {
-        final Set<Instance> ret = new LinkedHashSet<Instance>();
+        final Set<Instance> ret = new LinkedHashSet<>();
         final PrintQuery print = new PrintQuery(_instance);
         print.addAttribute(CIAccounting.AccountAbstract.Summary);
         print.execute();
@@ -187,7 +186,7 @@ public abstract class AccountDataSource_Base
                                                            final DateTime _to)
                                                                throws EFapsException
     {
-        final Map<DateTime, BigDecimal> map = new HashMap<DateTime, BigDecimal>();
+        final Map<DateTime, BigDecimal> map = new HashMap<>();
         DateTime fromAux = _from;
         final Currency currency = getCurrency(_parameter);
 

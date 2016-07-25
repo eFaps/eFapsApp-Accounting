@@ -31,7 +31,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -52,7 +52,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("b446f672-1871-418f-a90a-fd928ec89d8f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class View_Base
 {
 
@@ -108,12 +108,12 @@ public abstract class View_Base
         if (Context.getThreadContext().containsRequestAttribute(View_Base.REQUESTKEY)) {
             values = (Map<Instance, BigDecimal>) Context.getThreadContext().getRequestAttribute(View_Base.REQUESTKEY);
         } else {
-            values = new HashMap<Instance, BigDecimal>();
+            values = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(View_Base.REQUESTKEY, values);
         }
 
         final List<Instance> requestInst = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
-        final List<Long> queryId = new ArrayList<Long>();
+        final List<Long> queryId = new ArrayList<>();
         for (final Instance instance : requestInst) {
             if (!values.containsKey(instance)) {
                 queryId.add(instance.getId());

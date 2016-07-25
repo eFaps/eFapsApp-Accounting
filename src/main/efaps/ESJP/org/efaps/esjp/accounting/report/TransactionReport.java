@@ -20,8 +20,7 @@
 
 
 package org.efaps.esjp.accounting.report;
-
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -34,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("7ea384ee-a2c2-485d-bb8c-103def84fc9d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class TransactionReport
     extends TransactionReport_Base
 {

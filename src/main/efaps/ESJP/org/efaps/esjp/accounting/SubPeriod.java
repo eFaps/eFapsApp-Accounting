@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("4783ff9e-5410-41a3-8a5c-bce4897a8429")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class SubPeriod
     extends SubPeriod_Base
 {

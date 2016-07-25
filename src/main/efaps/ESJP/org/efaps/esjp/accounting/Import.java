@@ -19,8 +19,7 @@
  */
 
 package org.efaps.esjp.accounting;
-
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -32,7 +31,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: Period.java 3878 2010-03-25 13:37:03Z miguel.a.aranya $
  */
 @EFapsUUID("bd671ba4-f891-49f7-a3f1-6827012db1a3")
-@EFapsRevision("$Rev: 3878 $")
+@EFapsApplication("eFapsApp-Accounting")
 public class Import extends Import_Base
 {
 

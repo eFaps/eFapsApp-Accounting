@@ -31,7 +31,7 @@ import java.util.Map;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -48,7 +48,6 @@ import org.joda.time.DateTime;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
-
 /**
  * TODO comment!
  *
@@ -56,7 +55,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id$
  */
 @EFapsUUID("b03be6a2-6681-4e06-9629-0795fe8d830d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class TransactionDataSource_Base
     extends EFapsMapDataSource
 {
@@ -121,7 +120,7 @@ public abstract class TransactionDataSource_Base
         query.execute();
 
         if (query.next()) {
-            final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+            final List<Map<String, Object>> values = new ArrayList<>();
             values.addAll(getValues(query.getCurrentValue(), true));
 
             // search the child to be grouped
@@ -132,7 +131,7 @@ public abstract class TransactionDataSource_Base
             multi.addAttribute(CIAccounting.ReportNodeTree.Label, CIAccounting.ReportNodeTree.Position);
             multi.execute();
             while (multi.next()) {
-                final Map<DateTime, Map<String, Object>> sumMap = new HashMap<DateTime, Map<String, Object>>();
+                final Map<DateTime, Map<String, Object>> sumMap = new HashMap<>();
                 final Long sort = multi.<Long>getAttribute(CIAccounting.ReportNodeTree.Position);
                 for (final Map<String, Object> map : getValues(multi.getCurrentInstance(), false)) {
                     final DateTime date = (DateTime) map.get(TransactionDataSource_Base.Field.DATE.getKey());
@@ -210,12 +209,12 @@ public abstract class TransactionDataSource_Base
                                                   final boolean _sortable)
         throws EFapsException
     {
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> values = new ArrayList<>();
         final QueryBuilder accQueryBldr = new QueryBuilder(CIAccounting.ReportNodeAccount);
         accQueryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeAccount.ParentLink,
                                          _instance.getId());
         final AttributeQuery accQuery = accQueryBldr.getAttributeQuery(CIAccounting.ReportNodeAccount.AccountLink);
-        final Map<Long, Long> sortMap = new HashMap<Long, Long>();
+        final Map<Long, Long> sortMap = new HashMap<>();
         if (_sortable) {
             final QueryBuilder acc2QueryBldr = new QueryBuilder(CIAccounting.ReportNodeAccount);
             acc2QueryBldr.addWhereAttrEqValue(CIAccounting.ReportNodeAccount.ParentLink,
@@ -252,7 +251,7 @@ public abstract class TransactionDataSource_Base
                         CIAccounting.TransactionPositionAbstract.AccountLink);
         multi.execute();
         while (multi.next()) {
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<>();
             values.add(map);
             final boolean credit = CIAccounting.TransactionPositionCredit.getType().equals(
                             multi.getCurrentInstance().getType());

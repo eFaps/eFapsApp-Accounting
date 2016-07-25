@@ -20,8 +20,7 @@
 
 
 package org.efaps.esjp.accounting.report;
-
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -35,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("d0188dbd-da93-421c-896c-ae453ea06c3b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class TrialBalanceDS
     extends TrialBalanceDS_Base
 {

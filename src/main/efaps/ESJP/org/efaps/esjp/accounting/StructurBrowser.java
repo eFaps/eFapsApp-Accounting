@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.accounting;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -33,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("18251cf7-8cfc-47ce-9a86-08fbb281e432")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class StructurBrowser
     extends StructurBrowser_Base
 {

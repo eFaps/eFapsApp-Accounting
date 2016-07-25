@@ -29,7 +29,7 @@ import java.util.Map;
 import org.apache.commons.collections.comparators.ComparatorChain;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -48,7 +48,6 @@ import org.joda.time.DateTime;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
-
 /**
  * TODO comment!
  *
@@ -56,7 +55,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id$
  */
 @EFapsUUID("412cf393-f815-4029-b1e8-d2c42a98383b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class DocTransactionsSource_Base
     extends EFapsMapDataSource
 {
@@ -161,7 +160,7 @@ public abstract class DocTransactionsSource_Base
                                                                 .isKindOf(CIAccounting.TransactionPositionCredit.getType())
                                                                     ? creditAccount
                                                                     : debitAccount))) {
-                    final Map<String, Object> row = new HashMap<String, Object>();
+                    final Map<String, Object> row = new HashMap<>();
                     row.put("docName", docName);
                     row.put("docType", docType);
                     row.put("docDate", docDate);

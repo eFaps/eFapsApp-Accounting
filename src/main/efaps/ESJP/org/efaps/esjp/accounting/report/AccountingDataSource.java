@@ -22,11 +22,10 @@ package org.efaps.esjp.accounting.report;
 
 import java.util.List;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.accounting.report.Report_Base.AbstractNode;
 import org.efaps.util.EFapsException;
-
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
@@ -37,7 +36,7 @@ import org.efaps.util.EFapsException;
  *          miguel.a.aranya $
  */
 @EFapsUUID("7e96dfca-eecc-487b-95e3-0a1c933d1f51")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class AccountingDataSource
     extends AccountingDataSource_Base
 {

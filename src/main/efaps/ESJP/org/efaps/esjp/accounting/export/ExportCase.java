@@ -29,7 +29,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("46a17b5c-addc-439a-8dac-b4b4361f675c")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class ExportCase
     extends ExportCase_Base
 {

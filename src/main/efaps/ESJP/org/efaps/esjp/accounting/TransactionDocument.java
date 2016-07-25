@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("823f099b-63fd-4d6a-999d-00f7906d85e9")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class TransactionDocument
     extends TransactionDocument_Base
 {

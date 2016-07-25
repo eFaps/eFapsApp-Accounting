@@ -23,16 +23,15 @@ package org.efaps.esjp.accounting.report;
 import java.math.BigDecimal;
 import java.util.List;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRField;
-
 import org.apache.commons.lang3.StringUtils;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.accounting.report.Report_Base.AbstractNode;
 import org.efaps.util.EFapsException;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
 /**
  * TODO comment!
  *
@@ -41,7 +40,7 @@ import org.efaps.util.EFapsException;
  *          jan.moxter $
  */
 @EFapsUUID("fa9df3f8-ff95-4cbd-868a-48ed8e23741d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AccountingDataSource_Base
     implements JRDataSource
 {
@@ -73,6 +72,7 @@ public abstract class AccountingDataSource_Base
      * @return value for the given field
      * @throws JRException on error
      */
+    @Override
     public Object getFieldValue(final JRField _field)
         throws JRException
     {
@@ -100,6 +100,7 @@ public abstract class AccountingDataSource_Base
      * @return true if a next value exist, else false
      * @throws JRException on error
      */
+    @Override
     public boolean next()
         throws JRException
     {

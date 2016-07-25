@@ -21,9 +21,8 @@
 
 package org.efaps.esjp.accounting.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 
 /**
@@ -35,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("3cfb8bf0-2db3-49ec-ac3b-1d71c98d0491")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class ExpenseReport
     extends ExpenseReport_Base
 {

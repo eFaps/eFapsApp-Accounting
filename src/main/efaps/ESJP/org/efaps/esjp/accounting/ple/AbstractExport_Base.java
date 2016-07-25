@@ -29,7 +29,7 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.dataexporter.DataExporter;
 import org.efaps.dataexporter.LineSeparatorType;
@@ -38,7 +38,6 @@ import org.efaps.dataexporter.output.csv.CsvExportOptions;
 import org.efaps.dataexporter.output.csv.CsvWriter;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
-
 /**
  * TODO comment!
  *
@@ -46,7 +45,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("638174fb-6560-448a-913b-942337e8531e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AbstractExport_Base
 {
 

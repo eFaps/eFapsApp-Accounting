@@ -23,10 +23,9 @@ package org.efaps.esjp.accounting.report;
 
 import java.math.BigDecimal;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.joda.time.DateTime;
-
 
 
 /**
@@ -36,7 +35,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("006f758a-dba6-4b09-b697-fa290503bb1b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AbstractCashReportDS_Base
     extends AbstractReportDS
 {

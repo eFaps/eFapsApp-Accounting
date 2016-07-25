@@ -28,7 +28,7 @@ import java.util.Properties;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
@@ -45,7 +45,6 @@ import org.efaps.util.EFapsException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
-
 /**
  * TODO comment!
  *
@@ -53,7 +52,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id$
  */
 @EFapsUUID("778ba07a-7111-45cd-9a76-fe12f9f67054")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AbstractReportDS_Base
     extends AbstractBeanCollectionDataSource
 {

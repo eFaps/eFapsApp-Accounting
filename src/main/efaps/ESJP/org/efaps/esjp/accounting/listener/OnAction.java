@@ -21,8 +21,8 @@
 
 package org.efaps.esjp.accounting.listener;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsListener;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("1ab2e75f-5845-415b-b727-be55c1c2e946")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 @EFapsListener
 public class OnAction
     extends OnAction_Base

@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  */
 @EFapsUUID("65fa65d4-39b7-4593-904f-9e1d08c86c8f")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class ExportAccount_Base
     extends AbstractExport
 {

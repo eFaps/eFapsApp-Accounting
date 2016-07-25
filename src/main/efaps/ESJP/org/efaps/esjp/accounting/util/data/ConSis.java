@@ -39,7 +39,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 import au.com.bytecode.opencsv.CSVReader;
 
 
-
 /**
  * Importation etc for Syscon and Concar.
  *
@@ -63,7 +62,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * @version $Id$
  */
 @EFapsUUID("68b27549-d0ed-4d9a-a897-eda16c422a60")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public class ConSis
 {
    private static Logger LOG = LoggerFactory.getLogger(ConSis.class);
@@ -172,7 +171,7 @@ public class ConSis
         throws IOException
     {
         final BufferedReader in = new BufferedReader(new FileReader(_file));
-        final List<Account> ret = new ArrayList<Account>();
+        final List<Account> ret = new ArrayList<>();
         final Pattern accPattern = Pattern.compile("^(\\d)*");
 
         while (in.ready()) {
@@ -197,7 +196,7 @@ public class ConSis
     protected List<Account> readAccounts4SaldoConcar(final File _file)
         throws IOException, ParseException
     {
-        final List<Account> ret = new ArrayList<Account>();
+        final List<Account> ret = new ArrayList<>();
         final BufferedReader in = new BufferedReader(new FileReader(_file));
         final CSVReader reader = new CSVReader(in);
         final List<String[]> rows = reader.readAll();

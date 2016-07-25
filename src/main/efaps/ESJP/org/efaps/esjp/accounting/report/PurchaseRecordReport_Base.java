@@ -36,7 +36,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -61,7 +61,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
-
 /**
  * TODO comment!
  *
@@ -69,7 +68,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id$
  */
 @EFapsUUID("49f0e409-000e-45f2-8e46-80dec6218365")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class PurchaseRecordReport_Base
     extends EFapsMapDataSource
 {
@@ -239,7 +238,7 @@ public abstract class PurchaseRecordReport_Base
     {
         QueryCache.cleanByKey(PurchaseRecordReport_Base.CACHEDQUERYKEY);
 
-        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> values = new ArrayList<>();
         final List<Instance> instances = getInstances(_parameter);
 
         if (instances.size() > 0) {
@@ -300,7 +299,7 @@ public abstract class PurchaseRecordReport_Base
             multi.execute();
 
             while (multi.next()) {
-                final Map<String, Object> map = new HashMap<String, Object>();
+                final Map<String, Object> map = new HashMap<>();
                 final Type docType = multi.<Type>getSelect(selRelDocType);
                 final Instance instDoc = multi.<Instance>getSelect(selRelDocInst);
                 final String docName = multi.<String>getSelect(selRelDocName);
@@ -533,7 +532,7 @@ public abstract class PurchaseRecordReport_Base
     protected Map<Instance, PosSum4Doc> getPosSums(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<Instance, PosSum4Doc> ret = new HashMap<Instance, PosSum4Doc>();
+        final Map<Instance, PosSum4Doc> ret = new HashMap<>();
         if (_parameter.getInstance() != null) {
             final Instance purchaseInst = _parameter.getInstance();
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
@@ -582,8 +581,8 @@ public abstract class PurchaseRecordReport_Base
     protected List<Instance> getInstances(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Instance> ret = new ArrayList<Instance>();
-        final Map<String, List<Instance>> values = new TreeMap<String, List<Instance>>();
+        final List<Instance> ret = new ArrayList<>();
+        final Map<String, List<Instance>> values = new TreeMap<>();
         if (_parameter.getInstance() != null) {
             final Instance purchaseInst = _parameter.getInstance();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
@@ -682,9 +681,9 @@ public abstract class PurchaseRecordReport_Base
     public static class PosSum4Doc
     {
 
-        private final Map<Instance, BigDecimal> taxCat2cross = new HashMap<Instance, BigDecimal>();
+        private final Map<Instance, BigDecimal> taxCat2cross = new HashMap<>();
 
-        private final Map<Instance, BigDecimal> taxCat2net = new HashMap<Instance, BigDecimal>();
+        private final Map<Instance, BigDecimal> taxCat2net = new HashMap<>();
 
         /**
          * @param _cross

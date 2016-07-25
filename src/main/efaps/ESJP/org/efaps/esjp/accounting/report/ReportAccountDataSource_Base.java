@@ -28,7 +28,7 @@ import java.util.Map;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -51,7 +51,6 @@ import org.joda.time.DateTime;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
-
 /**
  * TODO comment!
  *
@@ -59,7 +58,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * @version $Id$
  */
 @EFapsUUID("28b48013-d393-4e99-8068-89d57ae2d879")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class ReportAccountDataSource_Base
     extends EFapsMapDataSource
 {
@@ -152,7 +151,7 @@ public abstract class ReportAccountDataSource_Base
                 final PrintQuery print = new PrintQuery(accInst);
                 print.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
                 print.execute();
-                final Map<String, Object> values = new HashMap<String, Object>();
+                final Map<String, Object> values = new HashMap<>();
                 values.put(ReportAccountDataSource.Field.ACCNAME.getKey(),
                                 print.getAttribute(CIAccounting.AccountAbstract.Name));
                 values.put(ReportAccountDataSource.Field.ACCDESC.getKey(),

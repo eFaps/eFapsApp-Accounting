@@ -47,7 +47,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  */
 @EFapsUUID("4ba89008-3b9d-433d-a022-2830831b995a")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class ExportCase_Base
     extends AbstractExport
 {

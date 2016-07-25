@@ -22,7 +22,7 @@ package org.efaps.esjp.accounting.listener;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
@@ -35,7 +35,6 @@ import org.efaps.esjp.sales.listener.IOnPayment;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.esjp.sales.util.Sales.AccountAutomation;
 import org.efaps.util.EFapsException;
-
 /**
  * TODO comment!
  *
@@ -44,7 +43,7 @@ import org.efaps.util.EFapsException;
  *          jan@moxter.net $
  */
 @EFapsUUID("7985e04b-a2e2-45f5-a516-f973a45548a1")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class OnPayment_Base
     implements IOnPayment
 {

@@ -32,7 +32,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  */
 @EFapsUUID("0261a998-4e71-4c73-8f4d-e83bdc70fcd2")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public interface IOnDocumentInfo
     extends IEsjpListener
 {

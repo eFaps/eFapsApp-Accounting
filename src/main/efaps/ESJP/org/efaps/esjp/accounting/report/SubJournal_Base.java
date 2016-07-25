@@ -34,7 +34,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -69,7 +69,6 @@ import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 /**
  * TODO comment!
  *
@@ -77,7 +76,7 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
  * @version $Id$
  */
 @EFapsUUID("2fb19c5b-419b-4503-9f70-11d5d0544713")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class SubJournal_Base
 {
 
@@ -173,9 +172,9 @@ public abstract class SubJournal_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final List<SubJournalData> datasource = new ArrayList<SubJournalData>();
+            final List<SubJournalData> datasource = new ArrayList<>();
 
-            final Map<Instance, SubJournalData> values = new HashMap<Instance, SubJournalData>();
+            final Map<Instance, SubJournalData> values = new HashMap<>();
             final Instance subJourInst = _parameter.getCallInstance();
             final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ReportSubJournal2Transaction);
             queryBldr.addWhereAttrEqValue(CIAccounting.ReportSubJournal2Transaction.FromLink, subJourInst);
@@ -230,7 +229,7 @@ public abstract class SubJournal_Base
             while (posMulti.next()) {
                 final Instance transInst = posMulti.<Instance>getSelect(selTransInst2);
                 final SubJournalData data = values.get(transInst);
-                final Map<String, Object> map = new HashMap<String, Object>();
+                final Map<String, Object> map = new HashMap<>();
                 final BigDecimal amount = posMulti
                                 .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount);
                 if (amount.compareTo(BigDecimal.ZERO) < 0) {
@@ -382,7 +381,7 @@ public abstract class SubJournal_Base
         private String name;
         private String descr;
         private Date date;
-        private final Collection<Map<String, Object>> positions = new ArrayList<Map<String, Object>>();
+        private final Collection<Map<String, Object>> positions = new ArrayList<>();
 
         /**
          * Getter method for the instance variable {@link #number}.

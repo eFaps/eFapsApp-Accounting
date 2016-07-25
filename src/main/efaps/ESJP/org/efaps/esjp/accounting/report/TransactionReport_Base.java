@@ -20,8 +20,7 @@
 
 
 package org.efaps.esjp.accounting.report;
-
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 
@@ -33,7 +32,7 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
  * @version $Id$
  */
 @EFapsUUID("3f62bea4-80cf-4226-83e8-f8e899d83a8a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class TransactionReport_Base
     extends StandartReport
 {

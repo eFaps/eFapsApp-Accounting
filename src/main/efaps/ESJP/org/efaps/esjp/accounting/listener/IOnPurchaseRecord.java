@@ -21,13 +21,12 @@
 package org.efaps.esjp.accounting.listener;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
 import org.efaps.db.Instance;
 import org.efaps.esjp.accounting.util.Accounting.Taxed4PurchaseRecord;
 import org.efaps.util.EFapsException;
-
 /**
  * Contains methods that are executed during the process of executing queries
  * against the eFaps Database like Autocompletes or MultiPrints.
@@ -36,7 +35,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("29fcd1de-8f95-4fb6-90e9-0f1765fa1620")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public interface IOnPurchaseRecord
     extends IEsjpListener
 {

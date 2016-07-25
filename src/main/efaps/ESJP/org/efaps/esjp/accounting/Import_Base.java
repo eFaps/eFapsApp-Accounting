@@ -19,7 +19,6 @@
  */
 
 package org.efaps.esjp.accounting;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +39,7 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
@@ -74,7 +73,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * @version $Id: Period_Base.java 7855 2012-08-03 01:35:53Z jan@moxter.net $
  */
 @EFapsUUID("4f7c8d48-01d0-4862-82e7-2efcf6761e5a")
-@EFapsRevision("$Rev: 7855 $")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Import_Base
 {
     /**
@@ -85,7 +84,7 @@ public abstract class Import_Base
     /**
      * Mapping of types as written in the csv and the name in eFaps.
      */
-    private static final Map<String, UUID> TYPE2TYPE = new HashMap<String, UUID>();
+    private static final Map<String, UUID> TYPE2TYPE = new HashMap<>();
     static {
         for (final Entry<UUID, String> entry : AbstractExport_Base.TYPE2TYPE.entrySet()) {
             Import_Base.TYPE2TYPE.put(entry.getValue(), entry.getKey());
@@ -94,7 +93,7 @@ public abstract class Import_Base
     /**
      * Mapping of types as written in the csv and the name in eFaps.
      */
-    private static final Map<String, UUID> ACC2ACC = new HashMap<String, UUID>();
+    private static final Map<String, UUID> ACC2ACC = new HashMap<>();
     static {
         Import_Base.ACC2ACC.put("ViewSumAccount", CIAccounting.ViewSum2Account.uuid);
         Import_Base.ACC2ACC.put("AccountCosting", CIAccounting.Account2AccountCosting.uuid);
@@ -106,7 +105,7 @@ public abstract class Import_Base
     /**
      * Mapping of types as written in the csv and the name in eFaps.
      */
-    private static final Map<String, UUID> ACC2CASE = new HashMap<String, UUID>();
+    private static final Map<String, UUID> ACC2CASE = new HashMap<>();
     static {
         Import_Base.ACC2CASE.put("Credit", CIAccounting.Account2CaseCredit.uuid);
         Import_Base.ACC2CASE.put("Debit", CIAccounting.Account2CaseDebit.uuid);
@@ -162,7 +161,7 @@ public abstract class Import_Base
                                                                 final Instance _instance)
         throws EFapsException
     {
-        final Map<String, ImportAccount> ret = new HashMap<String, ImportAccount>();
+        final Map<String, ImportAccount> ret = new HashMap<>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -219,7 +218,7 @@ public abstract class Import_Base
                 }
 
                 entries.remove(0);
-                final Map<String, ImportReport> reports = new HashMap<String, ImportReport>();
+                final Map<String, ImportReport> reports = new HashMap<>();
                 ImportReport report = null;
                 for (final String[] row : entries) {
                     report = getImportReport(_periodInst, colName2Index, row, reports);
@@ -278,12 +277,12 @@ public abstract class Import_Base
                                                                 final FileParameter _accountTable)
         throws EFapsException
     {
-        final HashMap<String, ImportAccount> accounts = new HashMap<String, ImportAccount>();
+        final HashMap<String, ImportAccount> accounts = new HashMap<>();
         try {
             final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
             reader.close();
-            final Map<String, List<String>> relAccountColumns = new HashMap<String, List<String>>();
+            final Map<String, List<String>> relAccountColumns = new HashMap<>();
             final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAccount.values(),
                             entries.get(0), relAccountColumns);
             entries.remove(0);
@@ -366,13 +365,13 @@ public abstract class Import_Base
                                                                 final FileParameter _accountTable)
         throws EFapsException
     {
-        final HashMap<String, ImportAccount> accounts = new HashMap<String, ImportAccount>();
-        final HashMap<String, ImportAccount> accountsVal = new HashMap<String, ImportAccount>();
+        final HashMap<String, ImportAccount> accounts = new HashMap<>();
+        final HashMap<String, ImportAccount> accountsVal = new HashMap<>();
         try {
             final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
             reader.close();
-            final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
+            final Map<String, List<String>> validateMap = new HashMap<>();
             final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnAccount.values(),
                             entries.get(0), validateMap);
             entries.remove(0);
@@ -450,11 +449,11 @@ public abstract class Import_Base
             final CSVReader reader = new CSVReader(new InputStreamReader(_accountTable.getInputStream(), "UTF-8"));
             final List<String[]> entries = reader.readAll();
             reader.close();
-            final Map<String, List<String>> validateMap = new HashMap<String, List<String>>();
+            final Map<String, List<String>> validateMap = new HashMap<>();
             final Map<String, Integer> colName2Index = evaluateCSVFileHeader(ColumnCase.values(),
                             entries.get(0), validateMap);
             entries.remove(0);
-            final List<ImportCase> cases = new ArrayList<ImportCase>();
+            final List<ImportCase> cases = new ArrayList<>();
             int i = 1;
             boolean valid = true;
             for (final String[] row : entries) {
@@ -500,7 +499,7 @@ public abstract class Import_Base
         // evaluate header
         int idx = 0;
 
-        final Map<String, Integer> ret = new HashMap<String, Integer>();
+        final Map<String, Integer> ret = new HashMap<>();
         for (final String column : _headerLine) {
             if (_columns == null) {
                 ret.put(column, idx);
@@ -516,7 +515,7 @@ public abstract class Import_Base
                                 final List<String> lst = _relAccountColumns.get(num);
                                 lst.add(column);
                             } else {
-                                final ArrayList<String> lst = new ArrayList<String>();
+                                final ArrayList<String> lst = new ArrayList<>();
                                 lst.add(column);
                                 _relAccountColumns.put(num, lst);
                             }
@@ -829,10 +828,10 @@ public abstract class Import_Base
                              final Map<String, ImportAccount> _accounts)
             throws EFapsException
         {
-            this.lstTypeConn = new ArrayList<Type>();
-            this.lstTargetConn = new ArrayList<String>();
-            this.lstNumerator = new ArrayList<BigDecimal>();
-            this.lstDenominator = new ArrayList<BigDecimal>();
+            this.lstTypeConn = new ArrayList<>();
+            this.lstTargetConn = new ArrayList<>();
+            this.lstNumerator = new ArrayList<>();
+            this.lstDenominator = new ArrayList<>();
 
             this.value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
             this.description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
@@ -913,10 +912,10 @@ public abstract class Import_Base
         public ImportAccount(final Map<String, Integer> _colName2Index,
                               final String[] _row)
         {
-            this.lstTypeConn = new ArrayList<Type>();
-            this.lstTargetConn = new ArrayList<String>();
-            this.lstNumerator = new ArrayList<BigDecimal>();
-            this.lstDenominator = new ArrayList<BigDecimal>();
+            this.lstTypeConn = new ArrayList<>();
+            this.lstTargetConn = new ArrayList<>();
+            this.lstNumerator = new ArrayList<>();
+            this.lstDenominator = new ArrayList<>();
 
             this.value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
             this.description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
@@ -1123,7 +1122,7 @@ public abstract class Import_Base
         /**
          * Mapping of node to node level.
          */
-        private final Map<Integer, List<ImportNode>> level2Nodes = new HashMap<Integer, List<ImportNode>>();
+        private final Map<Integer, List<ImportNode>> level2Nodes = new HashMap<>();
 
         /**
          * @param _periodInst instance of the period.
@@ -1188,7 +1187,7 @@ public abstract class Import_Base
             if (this.level2Nodes.containsKey(level)) {
                 nodes = this.level2Nodes.get(level);
             } else {
-                nodes = new ArrayList<ImportNode>();
+                nodes = new ArrayList<>();
                 this.level2Nodes.put(level, nodes);
             }
             final ImportNode node = new ImportNode(_colName2Index, _row, levelkey, parentInst, _accounts, nodes.size());

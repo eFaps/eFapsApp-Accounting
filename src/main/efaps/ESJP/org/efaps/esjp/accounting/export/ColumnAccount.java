@@ -27,7 +27,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("481a82c4-1d0e-420e-a693-1cacb015ca93")
-@EFapsApplication("efapsApp-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public enum ColumnAccount
     implements IColumn
 {

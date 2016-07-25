@@ -19,14 +19,13 @@
  */
 
 package org.efaps.esjp.accounting;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
@@ -48,7 +47,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("35d9cfa6-4231-42bf-9018-246ace6fe095")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Label_Base
 {
 

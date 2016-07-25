@@ -23,7 +23,7 @@ package org.efaps.esjp.accounting;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
 
@@ -35,7 +35,7 @@ import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
  * @version $Id$
  */
 @EFapsUUID("1a783876-93da-4db1-8557-b2e36cafc594")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class ViewStructurBrowser_Base
     extends StandartStructurBrowser
 {
