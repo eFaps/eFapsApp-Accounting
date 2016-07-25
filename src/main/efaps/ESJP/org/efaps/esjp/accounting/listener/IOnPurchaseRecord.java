@@ -32,7 +32,7 @@ import org.efaps.util.EFapsException;
  * against the eFaps Database like Autocompletes or MultiPrints.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("29fcd1de-8f95-4fb6-90e9-0f1765fa1620")
 @EFapsApplication("eFapsApp-Accounting")

@@ -29,7 +29,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * Functional description can be found in the related "<code>_base</code>"
  * class.
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("e29444aa-4c04-4812-a001-0723b121e1f1")
 @EFapsApplication("eFapsApp-Accounting")

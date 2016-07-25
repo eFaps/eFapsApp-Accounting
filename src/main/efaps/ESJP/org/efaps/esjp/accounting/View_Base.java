@@ -49,7 +49,7 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("b446f672-1871-418f-a90a-fd928ec89d8f")
 @EFapsApplication("eFapsApp-Accounting")

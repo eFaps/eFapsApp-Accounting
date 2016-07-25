@@ -49,7 +49,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("778ba07a-7111-45cd-9a76-fe12f9f67054")
 @EFapsApplication("eFapsApp-Accounting")

@@ -59,7 +59,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * Importation etc for Syscon and Concar.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("68b27549-d0ed-4d9a-a897-eda16c422a60")
 @EFapsApplication("eFapsApp-Accounting")

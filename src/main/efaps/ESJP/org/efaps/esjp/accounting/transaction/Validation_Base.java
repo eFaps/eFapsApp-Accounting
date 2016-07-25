@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author The eFaps Team
  */
 @EFapsUUID("3af252ad-bfc4-4b28-af9b-aed39a65fdfc")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Validation_Base
     extends Transaction
 {

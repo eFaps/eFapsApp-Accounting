@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("38e78f5d-b8cf-4bb7-a94d-9adfb0201af8")
 @EFapsApplication("eFapsApp-Accounting")

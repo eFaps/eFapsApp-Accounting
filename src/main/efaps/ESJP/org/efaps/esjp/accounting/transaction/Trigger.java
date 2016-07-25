@@ -28,10 +28,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("176728b7-7144-423c-95f8-d299a0e398dd")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class Trigger
     extends Trigger_Base
 {

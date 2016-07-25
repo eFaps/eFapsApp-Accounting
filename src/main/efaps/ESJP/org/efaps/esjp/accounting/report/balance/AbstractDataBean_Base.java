@@ -22,14 +22,18 @@ package org.efaps.esjp.accounting.report.balance;
 
 import java.math.BigDecimal;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
+@EFapsUUID("4481e803-1e9f-4c94-a589-217f1e1403ab")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AbstractDataBean_Base
 {
 

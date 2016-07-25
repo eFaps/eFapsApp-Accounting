@@ -49,7 +49,7 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  */
 @EFapsUUID("f9def40c-2334-4313-b2ac-d9e60beb1934")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Payroll_Base
 {
 

@@ -29,7 +29,7 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("3f62bea4-80cf-4226-83e8-f8e899d83a8a")
 @EFapsApplication("eFapsApp-Accounting")

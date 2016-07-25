@@ -44,6 +44,8 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -67,8 +69,10 @@ import au.com.bytecode.opencsv.CSVReader;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
+@EFapsUUID("0f14dd2e-fdf8-40ca-a759-d0cd6b9be298")
+@EFapsApplication("eFapsApp-Accounting")
 public class ImportDetails
 {
     private static Logger LOG = LoggerFactory.getLogger(ImportDetails.class);
@@ -76,7 +80,7 @@ public class ImportDetails
     public Return importDetailsInvoice(final Parameter _parameter) throws ParseException
     {
         final String[] params = _parameter.getParameterValues("valueField");
-        final Map<String, String> paramMap = new HashMap<String, String>();
+        final Map<String, String> paramMap = new HashMap<>();
         int cont = 0;
         for (final String param : params) {
             final String key = _parameter.getParameterValues("keyField")[cont];
@@ -128,7 +132,7 @@ public class ImportDetails
         final CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(_file), "UTF-8"));
         final List<String[]> entries = reader.readAll();
         reader.close();
-        final Map<String, Instance> ret = new HashMap<String, Instance>();
+        final Map<String, Instance> ret = new HashMap<>();
         entries.remove(0);
         String docNumber = "";
         int i = 1;
@@ -183,13 +187,13 @@ public class ImportDetails
                                            final Boolean _inverse)
         throws IOException, EFapsException
     {
-        final List<Document> ret = new ArrayList<Document>();
+        final List<Document> ret = new ArrayList<>();
         final CSVReader reader = new CSVReader(new InputStreamReader(new FileInputStream(_file), "UTF-8"));
         final List<String[]> entries = reader.readAll();
         reader.close();
         entries.remove(0);
         int i = 1;
-        final Map<String, Document> map = new HashMap<String, Document>();
+        final Map<String, Document> map = new HashMap<>();
         for (final String[] row : entries) {
             i++;
             final String docNumber = row[0];
@@ -443,7 +447,7 @@ public class ImportDetails
             this.amountMEDebit = BigDecimal.ZERO;
             this.amountMNCredit = BigDecimal.ZERO;
             this.amountMNDebit = BigDecimal.ZERO;
-            this.accounts = new HashMap<String, Account>();
+            this.accounts = new HashMap<>();
         }
 
         /**

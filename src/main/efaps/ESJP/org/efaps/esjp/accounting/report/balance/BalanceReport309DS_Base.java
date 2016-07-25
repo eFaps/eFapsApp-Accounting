@@ -21,6 +21,8 @@
 package org.efaps.esjp.accounting.report.balance;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.accounting.report.balance.BalanceReport309DS_Base.Bean309;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.util.EFapsException;
@@ -30,8 +32,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
+@EFapsUUID("bd180a3f-f8be-4cbe-8262-96639902fc6b")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class BalanceReport309DS_Base
     extends AbstractBalanceReportDS<Bean309>
 {

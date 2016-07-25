@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("68d7f12f-25f7-4ba2-91a5-577806f5238d")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class Edit
     extends Edit_Base
 {

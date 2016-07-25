@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("674ca4d7-c622-48ba-9025-d4b41301d91e")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class Payroll
     extends Payroll_Base
 {

@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("ffd4cd11-e67b-4ba1-a16e-af2ae08b3460")
 @EFapsApplication("eFapsApp-Accounting")

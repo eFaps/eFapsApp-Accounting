@@ -32,7 +32,7 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("006f758a-dba6-4b09-b697-fa290503bb1b")
 @EFapsApplication("eFapsApp-Accounting")

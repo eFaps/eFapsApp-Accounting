@@ -22,6 +22,6 @@
  * The main package for the Accounting App.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 package org.efaps.esjp.accounting;

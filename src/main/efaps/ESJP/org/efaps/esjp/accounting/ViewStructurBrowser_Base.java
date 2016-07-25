@@ -32,7 +32,7 @@ import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("1a783876-93da-4db1-8557-b2e36cafc594")
 @EFapsApplication("eFapsApp-Accounting")

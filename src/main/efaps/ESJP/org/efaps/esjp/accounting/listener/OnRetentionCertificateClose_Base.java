@@ -47,7 +47,7 @@ import org.efaps.util.cache.CacheReloadException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("7ae2bb2c-0e1c-4aef-bc36-1cb5e9b8dc1f")
 @EFapsApplication("eFapsApp-Accounting")

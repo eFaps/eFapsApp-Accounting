@@ -21,13 +21,17 @@
 
 package org.efaps.esjp.accounting.report.balance;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
+@EFapsUUID("9e6c0383-0ad9-4439-9368-bc6a0f43f736")
+@EFapsApplication("eFapsApp-Accounting")
 public class BalanceReport304DS
     extends BalanceReport304DS_Base
 {

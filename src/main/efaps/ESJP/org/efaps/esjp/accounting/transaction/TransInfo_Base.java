@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author The eFaps Team
  */
 @EFapsUUID("4968180a-4082-4663-8eb6-8f49de24ed83")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class TransInfo_Base
 {
     /**

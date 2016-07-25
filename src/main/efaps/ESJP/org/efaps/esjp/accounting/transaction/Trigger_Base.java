@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @author The eFaps Team
  */
 @EFapsUUID("137e3d98-fe02-466e-8af4-4bb7287b82bf")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Trigger_Base
 {
     /**

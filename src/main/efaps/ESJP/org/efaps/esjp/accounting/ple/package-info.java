@@ -22,6 +22,6 @@
  * Classes related to the "Programa Libros Electronicos".
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 package org.efaps.esjp.accounting.ple;

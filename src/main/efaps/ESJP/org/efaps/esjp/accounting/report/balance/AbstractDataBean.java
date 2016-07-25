@@ -21,13 +21,17 @@
 
 package org.efaps.esjp.accounting.report.balance;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
+@EFapsUUID("0c41e297-a8dc-421c-836a-06298e62ef3f")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class AbstractDataBean
     extends AbstractDataBean_Base
 {

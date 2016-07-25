@@ -107,7 +107,7 @@ import net.sf.jasperreports.engine.JRDataSource;
  * @author The eFaps Team
  */
 @EFapsUUID("803f24bc-7c4f-4168-97bc-a9cb01872f76")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Transaction_Base
     extends CommonDocument
 {

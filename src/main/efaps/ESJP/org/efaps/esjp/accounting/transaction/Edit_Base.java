@@ -32,7 +32,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  */
 @EFapsUUID("28e080be-74e1-4ed8-a632-763404fa13ba")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class Edit_Base
     extends Transaction
 {

@@ -27,12 +27,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -42,13 +41,18 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
+
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
+@EFapsUUID("00fe7399-5f01-4797-aa66-ec3880317d41")
+@EFapsApplication("eFapsApp-Accounting")
 public abstract class BalanceReport303DS_Base
     extends AbstractReportDS
 {

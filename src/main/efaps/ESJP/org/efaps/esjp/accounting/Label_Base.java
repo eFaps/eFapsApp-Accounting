@@ -44,7 +44,7 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("35d9cfa6-4231-42bf-9018-246ace6fe095")
 @EFapsApplication("eFapsApp-Accounting")

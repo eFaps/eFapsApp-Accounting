@@ -61,7 +61,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * 
  */
 @EFapsUUID("88456845-0a0a-4480-acf5-66829d63c076")
 @EFapsApplication("eFapsApp-Accounting")

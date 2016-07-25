@@ -30,7 +30,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  */
 @EFapsUUID("00485da3-4c80-42f5-90bb-04b6eb3b3d85")
-@EFapsApplication("eFapsApps-Accounting")
+@EFapsApplication("eFapsApp-Accounting")
 public class TransInfo
     extends TransInfo_Base
 {
