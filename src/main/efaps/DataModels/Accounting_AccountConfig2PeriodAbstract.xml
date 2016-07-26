@@ -46,7 +46,7 @@
             <name>IsSale</name>
             <type>Boolean</type>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
-            <sqlcolumn>ACTIVE</sqlcolumn>
+            <sqlcolumn>ORD</sqlcolumn>
             <defaultvalue>false</defaultvalue>
         </attribute>
     </definition>
