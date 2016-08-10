@@ -20,6 +20,7 @@ package org.efaps.esjp.accounting;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
@@ -33,6 +34,8 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.db.InstanceUtils;
+import org.efaps.esjp.products.TreeView;
 import org.efaps.util.EFapsException;
 
 /**
@@ -229,9 +232,8 @@ public abstract class Account2CaseInfo_Base
      */
     public boolean isClassRelation()
     {
-        return getType().equals(
-                        CIAccounting.Account2CaseCredit4Classification.getType())
-                        || getType().equals(CIAccounting.Account2CaseDebit4Classification.getType());
+        return getType().isCIType(CIAccounting.Account2CaseCredit4Classification)
+                        || getType().isCIType(CIAccounting.Account2CaseDebit4Classification);
     }
 
     /**
@@ -241,9 +243,18 @@ public abstract class Account2CaseInfo_Base
      */
     public boolean isCategoryProduct()
     {
-        return getType().equals(
-                        CIAccounting.Account2CaseCredit4CategoryProduct.getType())
-                        || getType().equals(CIAccounting.Account2CaseDebit4CategoryProduct.getType());
+        return getType().isCIType(CIAccounting.Account2CaseCredit4CategoryProduct)
+                        || getType().isCIType(CIAccounting.Account2CaseDebit4CategoryProduct);
+    }
+
+    /**
+     * Checks if is category product.
+     *
+     * @return true, if is category product
+     */
+    public boolean isTreeView()
+    {
+        return getType().isKindOf(CIAccounting.Account2Case4ProductTreeViewAbstract.getType());
     }
 
     /**
@@ -483,7 +494,7 @@ public abstract class Account2CaseInfo_Base
         throws EFapsException
     {
         Account2CaseInfo ret = null;
-        // first priority is CategoryProduct and then Classification
+        // first priority is CategoryProduct then TreeView and then Classification
         final QueryBuilder prodAttrQueryBldr = new QueryBuilder(CIAccounting.CategoryProduct2Product);
         prodAttrQueryBldr.addWhereAttrEqValue(CIAccounting.CategoryProduct2Product.ToLink, _productInstance);
 
@@ -499,6 +510,36 @@ public abstract class Account2CaseInfo_Base
         queryBldr.addWhereAttrInQuery(CIAccounting.Account2CaseAbstract.LinkValue,
                         attrQueryBldr.getAttributeQuery(CIAccounting.CategoryProduct.ID));
         ret = getAccount2CaseInfo(queryBldr);
+
+        if (ret == null) {
+            final QueryBuilder tvQueryBldr = new QueryBuilder(CIAccounting.Account2Case4ProductTreeViewAbstract);
+            tvQueryBldr.addWhereAttrEqValue(CIAccounting.Account2Case4ProductTreeViewAbstract.ToCaseAbstractLink,
+                            _caseInst);
+            final MultiPrintQuery tvMulti = tvQueryBldr.getPrint();
+            final SelectBuilder selNodeInst = SelectBuilder.get()
+                            .linkto(CIAccounting.Account2Case4ProductTreeViewAbstract.ProductTreeViewLink).instance();
+            tvMulti.addSelect(selNodeInst);
+            tvMulti.execute();
+
+            int current = Integer.MAX_VALUE;
+            Instance treeViewInst = null;
+            while (tvMulti.next()) {
+                final Instance nodeInst = tvMulti.getSelect(selNodeInst);
+                final Set<Instance> products = TreeView.getProductDescendants(_parameter, nodeInst);
+                if (products.contains(_productInstance) && products.size() < current) {
+                    current = products.size();
+                    treeViewInst = nodeInst;
+                }
+            }
+            if (InstanceUtils.isValid(treeViewInst)) {
+                final QueryBuilder ciQueryBldr = new QueryBuilder(CIAccounting.Account2Case4ProductTreeViewAbstract);
+                ciQueryBldr.addWhereAttrEqValue(CIAccounting.Account2Case4ProductTreeViewAbstract.ToCaseAbstractLink,
+                                _caseInst);
+                ciQueryBldr.addWhereAttrEqValue(CIAccounting.Account2Case4ProductTreeViewAbstract.ProductTreeViewLink,
+                                treeViewInst);
+                ret = getAccount2CaseInfo(ciQueryBldr);
+            }
+        }
 
         if (ret == null) {
             final PrintQuery print = new PrintQuery(_productInstance);

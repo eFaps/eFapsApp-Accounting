@@ -739,8 +739,8 @@ public abstract class Transaction_Base
                     }
                 }
 
-                final boolean add = (isDefault || acc2case.isClassRelation() || acc2case.isCategoryProduct())
-                                && currencyCheck;
+                final boolean add = (isDefault || acc2case.isClassRelation() || acc2case.isCategoryProduct()
+                                || acc2case.isTreeView()) && currencyCheck;
                 if (add) {
                     final BigDecimal mul = new BigDecimal(acc2case.getNumerator()).setScale(12).divide(
                                     new BigDecimal(acc2case.getDenominator()),
@@ -1113,10 +1113,10 @@ public abstract class Transaction_Base
         final StringBuilder ret = new StringBuilder()
                         .append(getTableRemoveScript(_parameter, tableName));
         final StringBuilder onJs = new StringBuilder();
-        final Collection<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final Collection<Map<String, Object>> values = new ArrayList<>();
         int i = 0;
         for (final AccountInfo account : _accounts) {
-            final Map<String, Object> map = new HashMap<String, Object>();
+            final Map<String, Object> map = new HashMap<>();
             values.add(map);
 
             map.put("amount_" + _postFix, account.getAmountFormated());
@@ -1395,7 +1395,7 @@ public abstract class Transaction_Base
         {
             final DRDataSource dataSource = new DRDataSource("date", "transaction", "accountName",
                             "accountDescription", "debit", "credit");
-            final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
+            final List<Map<String, Object>> lst = new ArrayList<>();
             ConnectionResource con = null;
             final String complStmt = "select date,descr,accName,accDescr,amount,rateamount,S1"
                         + " from t_acctransaction t0 inner join "
@@ -1414,7 +1414,7 @@ public abstract class Transaction_Base
                     stmt = con.getConnection().createStatement();
                     final ResultSet rs = stmt.executeQuery(complStmt);
                     while (rs.next()) {
-                        final Map<String, Object> map = new HashMap<String, Object>();
+                        final Map<String, Object> map = new HashMap<>();
                         map.put("date", rs.getDate("date"));
                         map.put("transaction", rs.getString("descr"));
                         map.put("accountName", rs.getString("accName"));

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2016 The eFaps Team
 
@@ -19,16 +17,16 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>668a98cd-86e9-4552-b141-a4101a2dad6c</uuid>
+    <uuid>af623561-0202-4332-8930-7547e7c77f93</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Account2CaseTree</name>
+        <name>Accounting_Account2Case4ProductTreeViewTree</name>
         <target>
-            <menu>Accounting_Account2CaseTree_Menu</menu>
-            <form>Accounting_Account2CaseForm</form>
+            <menu>Accounting_Account2Case4ProductTreeViewTree_Menu</menu>
+            <form>Accounting_Account2Case4ProductTreeViewForm</form>
         </target>
-        <type>Accounting_Account2CaseAbstract</type>
+        <type>Accounting_Account2Case4ProductTreeViewAbstract</type>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

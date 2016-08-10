@@ -17,6 +17,9 @@
 
 package org.efaps.esjp.accounting;
 
+import java.util.List;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.IUIValue;
@@ -188,5 +191,33 @@ public abstract class Case_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    /**
+     *
+     * @param _parameter Paremeter as passed from the eFaPS API
+     * @return Return SNIPPLET
+     * @throws EFapsException on error
+     */
+    public Return assignNode(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Edit edit = new Edit()
+        {
+
+            @Override
+            protected void add2MainUpdate(final Parameter _parameter,
+                                          final Update _update)
+                throws EFapsException
+            {
+                super.add2MainUpdate(_parameter, _update);
+                final List<Instance> instances = getSelectedInstances(_parameter);
+                if (CollectionUtils.isNotEmpty(instances)) {
+                    _update.add(CIAccounting.Account2Case4ProductTreeViewAbstract.ProductTreeViewLink,
+                                    instances.get(0));
+                }
+            }
+        };
+        return edit.execute(_parameter);
     }
 }

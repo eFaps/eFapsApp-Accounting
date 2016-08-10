@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,27 +14,21 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>194aa8b8-7591-41b1-833d-e3de37b2e1a9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_Period2AccountForm</name>
-        <!-- fields -->
         <field name="salesAccountLink4Edit">
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">SalesAccountLink</property>
             <property name="Label">Accounting_Period2Account/SalesAccountLink.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getOptionListFieldValue"
                 name="Accounting_Period2AccountForm.salesAccountLink4Edit.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
