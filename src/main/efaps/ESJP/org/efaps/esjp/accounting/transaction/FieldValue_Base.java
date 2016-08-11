@@ -397,14 +397,13 @@ public abstract class FieldValue_Base
         return ret;
     }
 
-
     /**
      * Set the currency for the drop down.
      * @param _parameter    Parameter as passed form the eFaps API
      * @return  html snipplet
      * @throws EFapsException on errro
      */
-    public Return getCurrencySelectFieldValue(final Parameter _parameter)
+    public Return getCurrencyOptionListFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         Instance inst = _parameter.getCallInstance();
@@ -432,7 +431,7 @@ public abstract class FieldValue_Base
                 return position;
             }
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**

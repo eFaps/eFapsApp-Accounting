@@ -93,7 +93,7 @@ public abstract class Period_Base
     /**
      * Default setting to be added on creation of a period.
      */
-    protected static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<String, String>();
+    protected static final Map<String, String> DEFAULTSETTINGS4PERIOD = new LinkedHashMap<>();
     {
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_NAME, null);
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ROUNDINGCREDIT, null);
@@ -135,8 +135,12 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
                         SummarizeDefinition.CASEUSER.name());
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_LABELDEF, LabelDefinition.COST.name());
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATECATEGORY, "true");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATECLASSIFICATION, "true");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATEFAMILY, "true");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATEKEY, "true");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATETREEVIEW, "true");
     }
-
 
     /**
      * Logger for this class.
@@ -157,7 +161,7 @@ public abstract class Period_Base
         final Return ret = new Return();
         final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
         final SummarizeDefinition summarize = getSummarizeDefinition(_parameter);
-        boolean access;
+        final boolean access;
         switch (summarize) {
             case NEVER:
             case ALWAYS:
@@ -257,7 +261,7 @@ public abstract class Period_Base
     public CurrencyInst getCurrency(final Instance _instance)
         throws EFapsException
     {
-        CurrencyInst ret;
+        final CurrencyInst ret;
         if (_instance.getType().isKindOf(CIAccounting.TransactionAbstract.getType())) {
             final PrintQuery print = new CachedPrintQuery(_instance, Period_Base.CACHEKEY);
             final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.TransactionAbstract.PeriodLink)
@@ -344,7 +348,7 @@ public abstract class Period_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "ID";
 
-        final Map<String, Map<String, String>> orderMap = new TreeMap<String, Map<String, String>>();
+        final Map<String, Map<String, String>> orderMap = new TreeMap<>();
 
         final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.Period);
         queryBuilder.addWhereAttrMatchValue(CIAccounting.Period.Name, input + "*").setIgnoreCase(true);
@@ -363,14 +367,14 @@ public abstract class Period_Base
                             .withLocale(Context.getThreadContext().getLocale()));
 
             final String choice = name + ": " + fromDateStr + " - " + toDateStr;
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), keyVal);
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
             orderMap.put(choice, map);
         }
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         list.addAll(orderMap.values());
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
@@ -510,7 +514,7 @@ public abstract class Period_Base
                                            final DateTime _date)
         throws EFapsException
     {
-        DateTime date;
+        final DateTime date;
         if (_date == null) {
             LOG.warn("Evaluation Period by current Date only!!!!!");
             date = new DateTime();
@@ -701,7 +705,7 @@ public abstract class Period_Base
                 print.execute();
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
                 _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
-                final List<Status> statusArrayBalance = new ArrayList<Status>();
+                final List<Status> statusArrayBalance = new ArrayList<>();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.FundsToBeSettledBalance);
                 if (containsProperty(_parameter, "FundsToBeSettledBalanceStatus")) {
@@ -768,7 +772,7 @@ public abstract class Period_Base
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
                 _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
 
-                final List<Status> statusArrayBalance = new ArrayList<Status>();
+                final List<Status> statusArrayBalance = new ArrayList<>();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
                 if (containsProperty(_parameter, "PettyCashBalanceStatus")) {
@@ -979,7 +983,7 @@ public abstract class Period_Base
                                     final Type _type)
         throws CacheReloadException
     {
-        final Set<Type> ret = new HashSet<Type>();
+        final Set<Type> ret = new HashSet<>();
         ret.add(_type);
         for (final Type child : _type.getChildTypes()) {
             ret.addAll(getTypeList(_parameter, child));

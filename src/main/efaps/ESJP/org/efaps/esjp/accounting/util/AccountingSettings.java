@@ -148,14 +148,38 @@ public interface AccountingSettings
      */
     String PERIOD_ACTIVATEFTBSWD = "ActivateFundsToBeSettledWithoutDoc";
 
+    /**
+     * Activate the TreeView relation for Cases.
+     */
+    String PERIOD_CASEACTIVATETREEVIEW = "Case.ActivateTreeView";
 
-    /** The period transposorder. */
-    String PERIOD_TRANSPOSORDER = "TransPosOrder";
+    /**
+     * Activate the TreeView relation for Cases.
+     */
+    String PERIOD_CASEACTIVATEFAMILY = "Case.ActivateFamily";
+
+    /**
+     * Activate the TreeView relation for Cases.
+     */
+    String PERIOD_CASEACTIVATECATEGORY = "Case.ActivateCategory";
+
+    /**
+     * Activate the TreeView relation for Cases.
+     */
+    String PERIOD_CASEACTIVATEKEY = "Case.ActivateKey";
+
+    /**
+     * Activate the TreeView relation for Cases.
+     */
+    String PERIOD_CASEACTIVATECLASSIFICATION = "Case.ActivateClassification";
 
     /**
      * Activate the mechanism for Retention and Perception.
      */
-    String PERIOD_RETENTIONCASE = "Case4RetentionCertificate";
+    String PERIOD_RETENTIONCASE = "Case.RetentionCertificate";
+
+    /** The period transposorder. */
+    String PERIOD_TRANSPOSORDER = "TransPosOrder";
 
     /** The PERIO d_ repor t11 account. */
     String PERIOD_REPORT11ACCOUNT = "ReportCash11Account";

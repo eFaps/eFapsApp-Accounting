@@ -145,7 +145,7 @@
         <field name="typeLink">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.typeLink.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.ExternalVoucher"
                     method="dropDown4DocumentType"
                     name="Accounting_TransactionCreate4ExternalVoucherForm.typeLink.UI_FIELD_VALUE"
@@ -176,7 +176,7 @@
         </field>
          <field name="contactGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">2</property>
         </field>
         <field name="contact">
             <property name="Label">Accounting_TransactionCreate4ExternalForm.contact.Label</property>
@@ -225,14 +225,6 @@
                     <property name="fieldName">contactData</property>
              </trigger>
         </field>
-        <field name="contactData">
-            <property name="ModePrint">NONE</property>
-            <property name="Label">Accounting_TransactionCreate4ExternalForm.contactData.Label</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
         <field name="extDueDate">
             <property name="Columns">12</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.extDueDate.Label</property>
@@ -241,8 +233,15 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
-
-       <field name="amountGroup" character="Group">
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="amountGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>
         </field>
@@ -256,9 +255,9 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Accounting_TransactionCreate4ExternalForm.currencyExternal.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getCurrencySelectFieldValue"
+                method="getCurrencyOptionListFieldValue"
                 name="Accounting_TransactionCreate4ExternalForm.currencyExternal.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">ERP_Currency</property>

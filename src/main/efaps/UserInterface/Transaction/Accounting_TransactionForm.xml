@@ -115,9 +115,9 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.currencyExternal.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getCurrencySelectFieldValue"
+                method="getCurrencyOptionListFieldValue"
                 name="Accounting_TransactionForm.case.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">ERP_Currency</property>
@@ -474,9 +474,9 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.currencyExternal.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
-                method="getCurrencySelectFieldValue"
+                method="getCurrencyOptionListFieldValue"
                 name="Accounting_TransactionForm.case.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">ERP_Currency</property>

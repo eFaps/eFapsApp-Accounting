@@ -71,10 +71,11 @@
         </field>
         <field name="rateCurrencyLink_Credit">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="Label">Accounting_TransactionCreateCredit4AccountForm.rateCurrencyLink_Credit.Label</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue" method="getCurrencySelectFieldValue"
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getCurrencyOptionListFieldValue"
                 name="Accounting_TransactionPositionCreditTable.rateCurrencyLink_Credit.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">ERP_Currency</property>

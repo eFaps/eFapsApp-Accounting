@@ -33,6 +33,11 @@
                 <property name="ConnectParentAttribute">ToCaseAbstractLink</property>
                 <property name="ConnectType">Accounting_Account2CaseCredit4ProductFamily</property>
             </execute>
+            <trigger program="org.efaps.esjp.accounting.Period" method="accessCheckByConfig"
+                name="Accounting_CaseTree_Account_Menu_Action_AddExistingAsCredit4ProductFamily.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Key">Case.ActivateFamily</property>
+            </trigger>
         </target>
         <property name="Target">modal</property>
     </definition>
