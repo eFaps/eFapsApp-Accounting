@@ -52,7 +52,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Description</property>
-            <property name="Required">true</property>
+            <property name="Width">80</property>
+        </field>
+         <field name="booleanGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="active">
             <property name="ModeCreate">EDITABLE</property>
@@ -68,6 +72,10 @@
             <property name="Attribute">IsCross</property>
             <property name="Required">true</property>
         </field>
+        <field name="configGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
         <field name="summarizeConfig">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -75,12 +83,19 @@
             <property name="Attribute">SummarizeConfig</property>
             <property name="Required">true</property>
         </field>
+        <field name="exchangeConfig">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">NONE</property>
+            <property name="Attribute">ExchangeConfig</property>
+            <property name="Required">true</property>
+        </field>
         <field name="label">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">NONE</property>
             <property name="Attribute">Label</property>
-            <property name="Width">100</property>
+            <property name="Width">80</property>
         </field>
         <field name="periodLink">
             <property name="SelectAlternateOID">linkto[PeriodAbstractLink].oid</property>

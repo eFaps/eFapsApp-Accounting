@@ -47,6 +47,7 @@ import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.listener.IOnDocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -110,14 +111,22 @@ public abstract class DocumentInfo_Base
     private DateTime date;
 
     /**
+     * Date used for rateevaluation
+     */
+    private DateTime rateDate;
+
+    /** The rate prop key. */
+    private ExchangeConfig exchangeConfig;
+
+    /**
      * List of TargetAccounts for debit.
      */
-    private final Set<AccountInfo> debitAccounts = new LinkedHashSet<AccountInfo>();
+    private final Set<AccountInfo> debitAccounts = new LinkedHashSet<>();
 
     /**
      * List of TargetAccounts for credit.
      */
-    private final Set<AccountInfo> creditAccounts = new LinkedHashSet<AccountInfo>();
+    private final Set<AccountInfo> creditAccounts = new LinkedHashSet<>();
 
     /**
      * Amount of this Account.
@@ -527,6 +536,29 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the date used for rateevaluation.
+     *
+     * @return the date used for rateevaluation
+     */
+    public DateTime getRateDate()
+    {
+        if (this.rateDate == null) {
+            this.rateDate = getDate();
+        }
+        return this.rateDate;
+    }
+
+    /**
+     * Sets the date used for rateevaluation.
+     *
+     * @param _rateDate the new date used for rateevaluation
+     */
+    public void setRateDate(final DateTime _rateDate)
+    {
+        this.rateDate = _rateDate;
+    }
+
+    /**
      * @return Date as String
      * @throws EFapsException on error
      */
@@ -912,7 +944,9 @@ public abstract class DocumentInfo_Base
     public String getRatePropKey()
     {
         String ret = "";
-        if (getInstance() != null && getInstance().isValid()) {
+        if (this.exchangeConfig != null) {
+            ret = this.exchangeConfig.name();
+        } else if (getInstance() != null && getInstance().isValid()) {
             ret = getInstance().getType().getName();
         }
         return ret;
@@ -1101,6 +1135,26 @@ public abstract class DocumentInfo_Base
     }
 
     /**
+     * Gets the rate prop key.
+     *
+     * @return the rate prop key
+     */
+    public ExchangeConfig getExchangeConfig()
+    {
+        return this.exchangeConfig;
+    }
+
+    /**
+     * Sets the rate prop key.
+     *
+     * @param _exchangeConfig the new rate prop key
+     */
+    public void setExchangeConfig(final ExchangeConfig _exchangeConfig)
+    {
+        this.exchangeConfig = _exchangeConfig;
+    }
+
+    /**
      * Gets the combined.
      *
      * @param _docInfos the doc infos
@@ -1151,7 +1205,7 @@ public abstract class DocumentInfo_Base
     public final Map<String, String> getMap4Substitutor(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<String, String> ret = new HashMap<String, String>();
+        final Map<String, String> ret = new HashMap<>();
         final String transdateStr = _parameter.getParameterValue("date");
         final DateTime transdate;
         if (transdateStr == null) {

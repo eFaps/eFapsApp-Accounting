@@ -125,7 +125,7 @@ public final class Accounting
      *
      */
     public enum ActDef2Case4IncomingConfig
-       implements IBitEnum
+        implements IBitEnum
     {
         /** Internal Report. */
         PURCHASERECORD,
@@ -412,6 +412,32 @@ public final class Accounting
         }
     }
 
+    /**
+     * The Enum SubJournalConfig.
+     *
+     */
+    public enum ExchangeConfig
+        implements IEnum
+    {
+
+        /** The docdatepurchase. */
+        DOCDATEPURCHASE,
+
+        /** The docdatesale. */
+        DOCDATESALE,
+
+        /** The transdatepurchase. */
+        TRANSDATEPURCHASE,
+
+        /** The transdatesale. */
+        TRANSDATESALE;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
 
     /**
      * @return the SystemConfigruation for Accounting

@@ -67,6 +67,7 @@ import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
+import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
@@ -653,8 +654,28 @@ public abstract class Transaction_Base
                                             _parameter.getParameterValue("date_eFapsDate")));
                         }
                     }
+                    final ExchangeConfig exConfig = getExchangeConfig(_parameter, caseInst);
+                    docInfo.setExchangeConfig(exConfig);
+                    switch (exConfig) {
+                        case DOCDATEPURCHASE:
+                            docInfo.setRateDate(docInfo.getDate());
+                            break;
+                        case DOCDATESALE:
+                            docInfo.setRateDate(docInfo.getDate());
+                            break;
+                        case TRANSDATEPURCHASE:
+                        case TRANSDATESALE:
+                        default:
+                            if (_parameter.getParameterValue("date") != null) {
+                                docInfo.setRateDate(new DateTime(_parameter.getParameterValue("date")));
+                            } else {
+                                docInfo.setRateDate(DateUtil.getDateFromParameter(
+                                                _parameter.getParameterValue("date_eFapsDate")));
+                            }
+                            break;
+                    }
 
-                    final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getDate(), currInst);
+                    final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getRateDate(), currInst);
                     docInfo.setRateInfo(rateInfo);
 
                     add2Doc4Case(_parameter, docInfo);
@@ -1322,6 +1343,33 @@ public abstract class Transaction_Base
         dyRp.setFileName("NO LO");
         final String html = dyRp.getHtmlSnipplet(_parameter);
         ret.put(ReturnValues.SNIPLETT, html);
+        return ret;
+    }
+
+    /**
+     * Gets the exchange config.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _caseInst the case inst
+     * @return the exchange config
+     * @throws EFapsException on error
+     */
+    protected ExchangeConfig getExchangeConfig(final Parameter _parameter,
+                                               final Instance _caseInst)
+        throws EFapsException
+    {
+        final ExchangeConfig ret;
+        if (_parameter.getParameterValue("exchangeConfig") != null) {
+            final int exConfOrd = Integer.parseInt(_parameter.getParameterValue("exchangeConfig"));
+            ret = Accounting.ExchangeConfig.values()[exConfOrd];
+        } else if (InstanceUtils.isValid(_caseInst)) {
+            final PrintQuery print = new CachedPrintQuery(_caseInst, Case.CACHEKEY);
+            print.addAttribute(CIAccounting.CaseAbstract.ExchangeConfig);
+            print.execute();
+            ret = print.getAttribute(CIAccounting.CaseAbstract.ExchangeConfig);
+        } else {
+            ret = ExchangeConfig.TRANSDATESALE;
+        }
         return ret;
     }
 

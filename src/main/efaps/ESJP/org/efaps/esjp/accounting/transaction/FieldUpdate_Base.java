@@ -37,6 +37,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
@@ -45,6 +46,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
@@ -172,13 +174,39 @@ public abstract class FieldUpdate_Base
             final String[] amounts = _parameter.getParameterValues("amount_" + postfix);
 
             final int pos = getSelectedRow(_parameter);
-            final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-            final DateTime date = DateUtil.getDateFromParameter(dateStr);
-            final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
 
+            final ExchangeConfig exConf = getExchangeConfig(_parameter, null);
+            final DateTime date;
+            switch (exConf) {
+                case DOCDATEPURCHASE:
+                case DOCDATESALE:
+                    final Instance docInst = Instance.get(_parameter.getParameterValues("docLink_" + postfix)[pos]);
+                    if (InstanceUtils.isValid(docInst)) {
+                        final PrintQuery print = CachedPrintQuery.get4Request(docInst);
+                        print.addAttribute(CIERP.DocumentAbstract.Date);
+                        print.execute();
+                        date = print.getAttribute(CIERP.DocumentAbstract.Date);
+                    } else {
+                        final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+                        date = DateUtil.getDateFromParameter(dateStr);
+                    }
+                    break;
+                case TRANSDATESALE:
+                case TRANSDATEPURCHASE:
+                default:
+                    final String dateStr = _parameter.getParameterValue("date_eFapsDate");
+                    date = DateUtil.getDateFromParameter(dateStr);
+                    break;
+            }
+
+            final boolean sale = ExchangeConfig.TRANSDATESALE.equals(exConf)
+                            || ExchangeConfig.DOCDATESALE.equals(exConf);
+
+            final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
             final RateInfo rate = evaluateRate(_parameter, periodInstance, date,
                             Instance.get(CIERP.Currency.getType(), currIds[pos]));
-            final DecimalFormat rateFormater = rate.getFormatter().getFrmt4RateUI();
+            final DecimalFormat rateFormater = sale ? rate.getFormatter().getFrmt4SaleRateUI()
+                            : rate.getFormatter().getFrmt4RateUI();
             final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
             final BigDecimal amountRate = amounts[pos].isEmpty() ? BigDecimal.ZERO
                             : (BigDecimal) rateFormater.parse(amounts[pos]);
@@ -193,11 +221,11 @@ public abstract class FieldUpdate_Base
 
             final List<Map<String, String>> list = new ArrayList<>();
             final Map<String, String> map = new HashMap<>();
-            map.put("rate_" + postfix, rate.getRateUIFrmt());
+            map.put("rate_" + postfix, sale ? rate.getSaleRateUIFrmt() : rate.getRateUIFrmt());
             map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.isInvert());
             map.put("sum" + postfix, sumStr);
-            map.put("amountRate_" + postfix,
-                            formater.format(amountRate.setScale(12).divide(rate.getRate(), BigDecimal.ROUND_HALF_UP)));
+            map.put("amountRate_" + postfix, formater.format(amountRate.setScale(12)
+                                        .divide(sale ? rate.getSaleRate() : rate.getRate(), BigDecimal.ROUND_HALF_UP)));
             map.put("sumTotal", sumStr2);
             list.add(map);
             ret.put(ReturnValues.VALUES, list);
@@ -297,29 +325,31 @@ public abstract class FieldUpdate_Base
         if (SummarizeDefinition.CASE.equals(summarizeDef) || SummarizeDefinition.CASEUSER.equals(summarizeDef)) {
             final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
             final SummarizeConfig config;
+            final ExchangeConfig exchangeConfig;
             if (caseInst.isValid()) {
                 final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
-                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig, CIAccounting.CaseAbstract.ExchangeConfig);
                 print.executeWithoutAccessCheck();
                 config = print.getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                exchangeConfig = print.getAttribute(CIAccounting.CaseAbstract.ExchangeConfig);
             } else {
                 config = SummarizeConfig.NONE;
+                exchangeConfig = ExchangeConfig.TRANSDATESALE;
             }
 
             final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
                             .summarizeConfig.name;
-            js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"][value=")
-                .append(config.getInt())
-                .append("] \").forEach(function(node){\n")
-                .append(" domAttr.set(node, \"checked\", true); \n")
-                .append("});\n");
+
+            final Map<String, Object> map = new HashMap<>();
+            map.put("exchangeConfig", exchangeConfig == null
+                            ? ExchangeConfig.TRANSDATESALE.ordinal() : exchangeConfig.ordinal());
+            map.put(fieldName, config.ordinal());
 
             if (SummarizeDefinition.CASE.equals(summarizeDef)) {
                 js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
                     .append(" domAttr.set(node, \"readonly\", true); \n").append("});\n");
             }
 
-            final Map<String, Object> map = new HashMap<>();
             list.add(map);
             InterfaceUtils.appendScript4FieldUpdate(map,
                             InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMATTR));

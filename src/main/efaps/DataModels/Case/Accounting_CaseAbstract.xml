@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,23 +15,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>09eab419-0460-4f23-b18b-247f8d4905e0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseAbstract</name>
-        <purpose abstract="true"/>
+        <purpose abstract="true" />
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -96,6 +88,13 @@
             <className>org.efaps.esjp.accounting.util.Accounting$SummarizeConfig</className>
             <sqltable>Accounting_CaseSQLTable</sqltable>
             <sqlcolumn>SUMMARIZE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ExchangeConfig</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$ExchangeConfig</className>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>EXCHANGE</sqlcolumn>
         </attribute>
         <attribute>
             <name>Label</name>
