@@ -668,9 +668,11 @@ public abstract class Transaction_Base
                         default:
                             if (_parameter.getParameterValue("date") != null) {
                                 docInfo.setRateDate(new DateTime(_parameter.getParameterValue("date")));
-                            } else {
+                            } else if (_parameter.getParameterValue("date_eFapsDate") != null) {
                                 docInfo.setRateDate(DateUtil.getDateFromParameter(
                                                 _parameter.getParameterValue("date_eFapsDate")));
+                            } else {
+                                docInfo.setRateDate(docInfo.getDate());
                             }
                             break;
                     }
