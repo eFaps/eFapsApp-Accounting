@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -1440,6 +1441,37 @@ public abstract class FieldValue_Base
             value = value.add(amount.abs());
         }
         ret.put(ReturnValues.VALUES, value);
+        return ret;
+    }
+
+    /**
+     * Pos select field value.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return posSelectFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String id = RandomStringUtils.randomAlphanumeric(12);
+
+        final StringBuilder html = new StringBuilder()
+                .append("<input id=\"").append(id).append("\" type=\"hidden\" name=\"")
+                    .append(fieldValue.getField().getName()).append("\"/>")
+                .append("<input data-dojo-type=\"dijit/form/CheckBox\" >")
+                .append("<script type=\"dojo/on\" data-dojo-event=\"change\">")
+                .append("var dom = require(\"dojo/dom\");")
+                .append("arguments[0] ?  dom.byId('")
+                .append(id)
+                .append("').value='true' : dom.byId('")
+                .append(id)
+                .append("').value='false';\"")
+                .append("</script>")
+                .append("</input>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 }

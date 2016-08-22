@@ -1433,6 +1433,19 @@ public abstract class Transaction_Base
     }
 
     /**
+     * Calculate button.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     */
+    public Return calculateButton(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+      //_parameter.getParameterValues("posSelect_Debit")
+        return ret;
+    }
+
+    /**
      *
      */
     public class TransactionInvalid
