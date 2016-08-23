@@ -73,7 +73,7 @@ public abstract class OnPayment_Base
                         }
                     case FULL:
                         final Parameter parameter = ParameterUtil.clone(_parameter);
-                        ParameterUtil.setParmeterValue(parameter, "document", paymentDocInst.getOid());
+                        ParameterUtil.setParameterValues(parameter, "document", paymentDocInst.getOid());
                         new Create().create4PaymentMassive(parameter);
                         break;
                     default:

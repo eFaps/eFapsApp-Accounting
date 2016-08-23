@@ -413,7 +413,7 @@ public final class Accounting
     }
 
     /**
-     * The Enum SubJournalConfig.
+     * The Enum ExchangeConfig.
      *
      */
     public enum ExchangeConfig
@@ -431,6 +431,25 @@ public final class Accounting
 
         /** The transdatesale. */
         TRANSDATESALE;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
+
+    /**
+     * The Enum CalculateConfig.
+     */
+    public enum CalculateConfig
+        implements IEnum
+    {
+
+        EXCHANGERATE,
+
+        REVERSEEXCHANGE;
+
 
         @Override
         public int getInt()

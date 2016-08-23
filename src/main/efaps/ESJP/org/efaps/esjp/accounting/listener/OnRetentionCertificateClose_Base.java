@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.listener;
@@ -47,7 +44,7 @@ import org.efaps.util.cache.CacheReloadException;
  * class.
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("7ae2bb2c-0e1c-4aef-bc36-1cb5e9b8dc1f")
 @EFapsApplication("eFapsApp-Accounting")
@@ -55,6 +52,11 @@ public abstract class OnRetentionCertificateClose_Base
     extends AbstractSetStatusListener
 {
 
+    /**
+     * Instantiates a new on retention certificate close base.
+     *
+     * @throws CacheReloadException the cache reload exception
+     */
     public OnRetentionCertificateClose_Base()
         throws CacheReloadException
     {
@@ -79,7 +81,7 @@ public abstract class OnRetentionCertificateClose_Base
             query.executeWithoutAccessCheck();
             if (query.next()) {
                 final Parameter parameter = ParameterUtil.clone(_parameter);
-                ParameterUtil.setParmeterValue(parameter, "selectedRow", _instance.getOid());
+                ParameterUtil.setParameterValues(parameter, "selectedRow", _instance.getOid());
 
                 final List<Instance> instances = new FieldValue().getSelectedDocInst(parameter);
                 final String[] oids = new String[instances.size()];
@@ -88,8 +90,8 @@ public abstract class OnRetentionCertificateClose_Base
                     oids[i] = inst.getOid();
                     i++;
                 }
-                ParameterUtil.setParmeterValue(parameter, "case", query.getCurrentValue().getOid());
-                ParameterUtil.setParmeterValue(parameter, "document", oids);
+                ParameterUtil.setParameterValues(parameter, "case", query.getCurrentValue().getOid());
+                ParameterUtil.setParameterValues(parameter, "document", oids);
 
                 final Create create = new Create();
                 create.create4RetPerMassive(parameter);
