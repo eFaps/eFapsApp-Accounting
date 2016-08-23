@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ public abstract class ExternalVoucher_Base
         new IncomingInvoice().createUpdateTaxDoc(_parameter, createdDoc, false);
 
         _parameter.put(ParameterValues.INSTANCE, createdDoc.getInstance());
-        ParameterUtil.setParmeterValue(_parameter, "document", createdDoc.getInstance().getOid());
+        ParameterUtil.setParameterValues(_parameter, "document", createdDoc.getInstance().getOid());
         return  new Create().create4External(_parameter);
     }
 
@@ -334,7 +334,7 @@ public abstract class ExternalVoucher_Base
     protected List<Calculator> analyseAmountsFromUI(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Calculator> ret = new ArrayList<Calculator>();
+        final List<Calculator> ret = new ArrayList<>();
         final BigDecimal[] amounts = evalAmountsFromUI(_parameter);
         final BigDecimal net = amounts[0];
         final BigDecimal cross = amounts[1];

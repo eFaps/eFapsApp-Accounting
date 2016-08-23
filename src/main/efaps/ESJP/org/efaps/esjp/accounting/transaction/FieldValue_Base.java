@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -1445,32 +1444,38 @@ public abstract class FieldValue_Base
     }
 
     /**
-     * Pos select field value.
+     * Pos select field value. Renders a checkbox with an hidden input.
      *
      * @param _parameter the parameter
      * @return the return
-     * @throws EFapsException the e faps exception
+     * @throws EFapsException the eFaps exception
      */
     public Return posSelectFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
         final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        final String id = RandomStringUtils.randomAlphanumeric(12);
 
         final StringBuilder html = new StringBuilder()
-                .append("<input id=\"").append(id).append("\" type=\"hidden\" name=\"")
-                    .append(fieldValue.getField().getName()).append("\"/>")
-                .append("<input data-dojo-type=\"dijit/form/CheckBox\" >")
-                .append("<script type=\"dojo/on\" data-dojo-event=\"change\">")
-                .append("var dom = require(\"dojo/dom\");")
-                .append("arguments[0] ?  dom.byId('")
-                .append(id)
-                .append("').value='true' : dom.byId('")
-                .append(id)
-                .append("').value='false';\"")
-                .append("</script>")
-                .append("</input>");
+            .append("<input type=\"hidden\" name=\"").append(fieldValue.getField().getName()).append("\"/>");
+
+        final StringBuilder js = new StringBuilder()
+            .append("query(\"input[name^='posSelect_']\").forEach(function (node) {")
+            .append("if (node.nextSibling.tagName != \"DIV\") {")
+            .append("var nn = domConstruct.create(\"div\");")
+            .append("domConstruct.place(nn, node, \"after\");")
+            .append("var checkBox = new CheckBox({")
+            .append("name: \"checkBox\",")
+            .append("checked: false,")
+            .append("onChange: function(b){ ")
+            .append("b ? node.value = \"true\" : node.value = \"false\";")
+            .append("}")
+            .append("}, nn).startup();")
+            .append("}")
+            .append("});");
+        html.append(InterfaceUtils.wrappInScriptTag(_parameter,
+                        InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMCONSTRUCT,
+                                        DojoLibs.CHECKBOX), true, 10));
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }

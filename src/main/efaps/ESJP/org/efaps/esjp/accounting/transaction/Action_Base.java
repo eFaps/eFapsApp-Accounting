@@ -52,7 +52,6 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
-// TODO: Auto-generated Javadoc
 /**
  * TODO comment!.
  *
@@ -323,14 +322,14 @@ public abstract class Action_Base
                 final InstanceQuery prQuery = prQueryBldr.getQuery();
                 prQuery.execute();
                 if (prQuery.next()) {
-                    ParameterUtil.setParmeterValue(ret.getParameter(), "purchaseRecord", prQuery
+                    ParameterUtil.setParameterValues(ret.getParameter(), "purchaseRecord", prQuery
                                     .getCurrentValue()
                                     .getOid());
                 }
             }
             if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.TRANSACTION)) {
-                ParameterUtil.setParmeterValue(ret.getParameter(), "case", ret.getCaseInst().getOid());
-                ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
+                ParameterUtil.setParameterValues(ret.getParameter(), "case", ret.getCaseInst().getOid());
+                ParameterUtil.setParameterValues(ret.getParameter(), "document", ret.getDocInst().getOid());
                 if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.SUBJOURNAL)) {
                     final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
                     sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, ret.getCaseInst());
@@ -340,12 +339,12 @@ public abstract class Action_Base
                     sjMulti.addSelect(sel);
                     sjMulti.execute();
                     if (sjMulti.next()) {
-                        ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
+                        ParameterUtil.setParameterValues(ret.getParameter(), "subJournal",
                                         sjMulti.<String>getSelect(sel));
                     }
                 }
                 if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.SETSTATUS)) {
-                    ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
+                    ParameterUtil.setParameterValues(ret.getParameter(), "docStatus", "true");
                 }
             }
         }
@@ -486,9 +485,9 @@ public abstract class Action_Base
             }
         }
         if (ret.getCaseInst() != null && ret.getCaseInst().isValid()) {
-            ParameterUtil.setParmeterValue(ret.getParameter(), "document", ret.getDocInst().getOid());
+            ParameterUtil.setParameterValues(ret.getParameter(), "document", ret.getDocInst().getOid());
             if (ret.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
-                ParameterUtil.setParmeterValue(ret.getParameter(), "case", ret.getCaseInst().getOid());
+                ParameterUtil.setParameterValues(ret.getParameter(), "case", ret.getCaseInst().getOid());
                 if (ret.getConfigs().contains(ActDef2Case4DocConfig.SUBJOURNAL)) {
                     final QueryBuilder sjQueryBldr = new QueryBuilder(CIAccounting.Report2Case);
                     sjQueryBldr.addWhereAttrEqValue(CIAccounting.Report2Case.ToLink, ret.getCaseInst());
@@ -497,13 +496,13 @@ public abstract class Action_Base
                     sjMulti.addSelect(sel);
                     sjMulti.execute();
                     if (sjMulti.next()) {
-                        ParameterUtil.setParmeterValue(ret.getParameter(), "subJournal",
+                        ParameterUtil.setParameterValues(ret.getParameter(), "subJournal",
                                         sjMulti.<String>getSelect(sel));
                     }
                 }
             }
             if (ret.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
-                ParameterUtil.setParmeterValue(ret.getParameter(), "docStatus", "true");
+                ParameterUtil.setParameterValues(ret.getParameter(), "docStatus", "true");
             }
         }
         return ret;
@@ -649,11 +648,11 @@ public abstract class Action_Base
         {
             //an action is for every document therfore one transaction wanted
             if (_parameter.getParameterValue("oneTransPerDoc") == null) {
-                ParameterUtil.setParmeterValue(_parameter, "oneTransPerDoc", "true");
+                ParameterUtil.setParameterValues(_parameter, "oneTransPerDoc", "true");
             }
             //an action is inserted in the moment of the execution. therfor use the transaction date
             if (_parameter.getParameterValue("useDate") == null) {
-                ParameterUtil.setParmeterValue(_parameter, "useDate", "true");
+                ParameterUtil.setParameterValues(_parameter, "useDate", "true");
             }
             this.parameter = _parameter;
         }

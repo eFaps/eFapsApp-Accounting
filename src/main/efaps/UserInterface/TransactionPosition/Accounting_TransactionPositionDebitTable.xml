@@ -180,7 +180,7 @@
         <field name="posSelect_Debit">
             <property name="ModeCreate">EDITABLE</property>
             <property name="UIType">SNIPPLET</property>
-            <property name="Label">Accounting_TransactionPositionCreditTable.posSelect.Label</property>
+            <property name="Label">Accounting_TransactionPositionDebitTable.posSelect.Label</property>
              <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="posSelectFieldValue"
                 name="Accounting_TransactionPositionCreditTable.posSelect_Debit.UI_FIELD_VALUE"
