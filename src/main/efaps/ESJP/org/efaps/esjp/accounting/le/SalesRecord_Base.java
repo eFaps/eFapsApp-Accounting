@@ -40,8 +40,7 @@ import org.joda.time.DateTime;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
- * TODO comment!
- *
+ * 14.1 REGISTRO DE VENTAS E INGRESOS V5 30/12/2015
  * @author The eFaps Team
  */
 @EFapsUUID("67776b3b-0aa9-45cf-a1a5-542e52bd619c")
@@ -89,14 +88,18 @@ public abstract class SalesRecord_Base
     public void addColumnDefinition(final Parameter _parameter,
                                     final Exporter _exporter)
     {
-        _exporter.addColumns(new FrmtDateTimeColumn("", 8, "yyyyMM00"));  //1
+        _exporter.addColumns(new FrmtDateTimeColumn("", 8, "yyyyMM00"));//1
         _exporter.addColumns(new LineNumberColumn("corr", 40)); //2
-        _exporter.addColumns(new FrmtDateTimeColumn(Column.DOCDATE.getKey(), 10, "dd/MM/yyyy")); //3
-        _exporter.addColumns(new FrmtDateTimeColumn(Column.DOCDUEDATE.getKey(), 10, "dd/MM/yyyy")); //4
-        _exporter.addColumns(new FrmtColumn(Column.DOCDOCTYPE.getKey()).setMaxWidth(2)); //5
-        _exporter.addColumns(new FrmtColumn(Column.DOCSN.getKey()).setMaxWidth(20)); //6
-        _exporter.addColumns(new FrmtColumn(Column.DOCNUMBER.getKey()).setMaxWidth(20)); //7
-        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(4)); //8
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //3
+        _exporter.addColumns(new FrmtDateTimeColumn(Column.DOCDATE.getKey(), 10, "dd/MM/yyyy")); //4
+        _exporter.addColumns(new FrmtDateTimeColumn(Column.DOCDUEDATE.getKey(), 10, "dd/MM/yyyy")); //5
+        _exporter.addColumns(new FrmtColumn(Column.DOCDOCTYPE.getKey()).setMaxWidth(2)); //6
+        _exporter.addColumns(new FrmtColumn(Column.DOCSN.getKey()).setMaxWidth(20)); //7
+        _exporter.addColumns(new FrmtColumn(Column.DOCNUMBER.getKey()).setMaxWidth(20)); //8
+
+
+
+        //_exporter.addColumns(new FrmtColumn("no").setMaxWidth(4)); //8
         _exporter.addColumns(new FrmtColumn("no").setMaxWidth(20)); //9
         _exporter.addColumns(new FrmtColumn(Column.DOCDOCTYPE.getKey()).setMaxWidth(1)); //10
         _exporter.addColumns(new FrmtColumn(Column.CONTACTDOINUMBER.getKey()).setMaxWidth(15)); //11
@@ -116,6 +119,14 @@ public abstract class SalesRecord_Base
         _exporter.addColumns(new FrmtColumn(Column.RELSN.getKey()).setMaxWidth(20)); //25
         _exporter.addColumns(new FrmtColumn(Column.RELNUMBER.getKey()).setMaxWidth(20)); //26
         _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //27
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //28
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //29
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //30
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //31
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //32
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //33
+        _exporter.addColumns(new FrmtColumn("no").setMaxWidth(1)); //34
+
     }
 
     @Override
@@ -131,12 +142,16 @@ public abstract class SalesRecord_Base
         final JRMapCollectionDataSource values = report.getDynSalesRecord().getDataSource(_parameter);
         for (final Map<String, ?> value : values.getData()) {
             _exporter.addRow(date, //1, 2 is generated on the fly
-                            value.get(Column.DOCDATE.getKey()), //3
-                            value.get(Column.DOCDUEDATE.getKey()),  //4
-                            value.get(Column.DOCDOCTYPE.getKey()),  //5
-                            value.get(Column.DOCSN.getKey()),       //6
-                            value.get(Column.DOCNUMBER.getKey()),   //7
-                            null,                                   //8
+                            null, //3
+                            value.get(Column.DOCDATE.getKey()), //4
+                            value.get(Column.DOCDUEDATE.getKey()),  //5
+                            value.get(Column.DOCDOCTYPE.getKey()),  //6
+                            value.get(Column.DOCSN.getKey()),       //7
+                            value.get(Column.DOCNUMBER.getKey()),   //8
+
+
+
+                            //null,                                   //8
                             null,                                   //9
                             value.get(Column.CONTACTDOINUMBER.getKey()),   //10
                             value.get(Column.CONTACTNAME.getKey()),  //11
@@ -155,7 +170,14 @@ public abstract class SalesRecord_Base
                             value.get(Column.RELDOCTYPE.getKey()), //24
                             value.get(Column.RELSN.getKey()), //25
                             value.get(Column.RELNUMBER.getKey()), //26
-                            null //27
+                            null, //27
+                            null, //28
+                            null, //29
+                            null, //30
+                            null, //31
+                            null, //32
+                            null, //33
+                            null //34
                             );
 
         }
