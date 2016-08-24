@@ -37,7 +37,9 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -153,9 +155,6 @@ public abstract class Transaction_Base
         }
         return new Return();
     }
-
-
-
 
     /**
      * Numbering of the transaction.
@@ -414,7 +413,7 @@ public abstract class Transaction_Base
 
     /**
      * Gets a simulated rate info object that does not distinguish between sales
-     * and buy rate because the value is diffined by the User.
+     * and buy rate because the value is defined by the User.
      *
      * @param _parameter the _parameter
      * @param _postFix the _postfix
@@ -1450,9 +1449,10 @@ public abstract class Transaction_Base
 
         final int exConfOrd = Integer.parseInt(_parameter.getParameterValue("calculateConfig"));
         final CalculateConfig config = Accounting.CalculateConfig.values()[exConfOrd];
+        final Parameter parameter = ParameterUtil.clone(_parameter);
         switch (config) {
             case EXCHANGERATE:
-                final Parameter parameter = ParameterUtil.clone(_parameter);
+
                 // update Rate
                 js.append(getJS4ExchangeRate(_parameter, parameter, "Debit"))
                     .append(getJS4ExchangeRate(_parameter, parameter, "Credit"));
@@ -1473,11 +1473,95 @@ public abstract class Transaction_Base
                 js.append(getSetFieldValue(0, "sumDebit", sumDebitStr)).append(getSetFieldValue(0, "sumCredit",
                                 sumCreditStr)).append(getSetFieldValue(0, "sumTotal", sumTotalStr));
                 break;
+            case FILLUPAMOUNT:
+                js.append(getJS4FillUp(_parameter, parameter));
 
+                break;
             default:
                 break;
         }
         ret.put(ReturnValues.SNIPLETT, js.toString());
+        return ret;
+    }
+
+
+    /**
+     * Gets the JS for fill up.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _parameterClone the parameter clone
+     * @return the JS 4 fill up
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getJS4FillUp(final Parameter _parameter,
+                                         final Parameter _parameterClone)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        try {
+            String postfix = null;
+            boolean eval = true;
+            while (eval) {
+                eval = postfix == null;
+                postfix = postfix == null ? "Debit" : "Credit";
+                final String[] selected = _parameter.getParameterValues("posSelect_" + postfix);
+                if (ArrayUtils.isNotEmpty(selected)) {
+                    for (int i = 0; i < selected.length; i++) {
+                        if (BooleanUtils.toBoolean(selected[i])) {
+                            eval = false;
+                            final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
+
+                            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameterClone);
+                            final Instance periodCurrenycInstance = new Period().getCurrency(periodInst).getInstance();
+
+                            final BigDecimal sumDebit = getSum4UI(_parameter, "Debit", null, null);
+                            final BigDecimal sumCredit = getSum4UI(_parameter, "Credit", null, null);
+                            final BigDecimal diff = sumDebit.subtract(sumCredit);
+                            final String currAmountStr = _parameter.getParameterValues("amount_" + postfix)[i];
+                            final BigDecimal currAmount = StringUtils.isEmpty(currAmountStr)
+                                            ? BigDecimal.ZERO : (BigDecimal) formater.parse(currAmountStr);
+
+                            final RateInfo rateInfo = getRateInfo4UI(_parameterClone, "_" + postfix, i);
+
+                            final BigDecimal currAmountRate = Currency.convertToCurrency(_parameter, currAmount,
+                                            rateInfo, null, periodCurrenycInstance).setScale(2, RoundingMode.HALF_UP);
+                            final BigDecimal targetRate = currAmountRate.add(diff);
+
+                            final RateInfo revRateInfo = rateInfo.reverse();
+                            final BigDecimal target =  Currency.convertToCurrency(_parameter, targetRate,
+                                            revRateInfo, null, rateInfo.getCurrencyInstance())
+                                            .setScale(2, RoundingMode.HALF_UP);
+
+                            final String amountStr = formater.format(target);
+                            final String amountRateStr = formater.format(targetRate);
+
+                            ret.append(getSetFieldValue(i, "amount_" + postfix, amountStr))
+                                .append(getSetFieldValue(i, "amountRate_" + postfix, amountRateStr));
+                            ParameterUtil.setParameterValue(_parameterClone, "amount_" + postfix, i, amountStr);
+                            ParameterUtil.setParameterValue(_parameterClone, "amountRate_" + postfix, i, amountRateStr);
+
+                            final BigDecimal sumDebit2 = getSum4UI(_parameterClone, "Debit", null, null);
+                            final BigDecimal sumCredit2 = getSum4UI(_parameterClone, "Credit", null, null);
+
+
+                            final String sumDebitStr = formater.format(sumDebit2) + " " + new Period().getCurrency(
+                                            periodInst).getSymbol();
+                            final String sumCreditStr = formater.format(sumCredit2) + " " + new Period().getCurrency(
+                                            periodInst).getSymbol();
+                            final String sumTotalStr = formater.format(sumDebit2.subtract(sumCredit2).abs()) + " "
+                                            + new Period().getCurrency(periodInst).getSymbol();
+
+                            ret.append(getSetFieldValue(0, "sumDebit", sumDebitStr))
+                                .append(getSetFieldValue(0, "sumCredit", sumCreditStr))
+                                .append(getSetFieldValue(0, "sumTotal", sumTotalStr));
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (final ParseException e) {
+            throw new EFapsException(Transaction_Base.class, "update4Currency.ParseException", e);
+        }
         return ret;
     }
 

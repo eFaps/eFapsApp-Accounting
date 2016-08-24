@@ -445,11 +445,14 @@ public final class Accounting
     public enum CalculateConfig
         implements IEnum
     {
-
+        /** Calculate exchange rate for selected rows. */
         EXCHANGERATE,
 
-        REVERSEEXCHANGE;
+        /** Calculate the selected row to fill up perfectly. */
+        FILLUPAMOUNT,
 
+        /** Calculate the selected row to fill up perfectly. */
+        FILLUPEXRATE;
 
         @Override
         public int getInt()
