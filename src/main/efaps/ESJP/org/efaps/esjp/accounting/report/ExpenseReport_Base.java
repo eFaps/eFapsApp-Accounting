@@ -30,7 +30,7 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.sales.report.DocReport;
+import org.efaps.esjp.sales.report.SalesRecordReport;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -44,7 +44,7 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsUUID("25cc9a9b-0cd9-49e4-ae2e-70540a6edead")
 @EFapsApplication("eFapsApp-Accounting")
 public abstract class ExpenseReport_Base
-    extends DocReport
+    extends SalesRecordReport
 {
 
     /**
@@ -54,7 +54,6 @@ public abstract class ExpenseReport_Base
      * @param _to   to date
      * @return name of the report
      */
-    @Override
     protected String getReportName(final Parameter _parameter,
                                    final DateTime _from,
                                    final DateTime _to)
@@ -64,7 +63,7 @@ public abstract class ExpenseReport_Base
             + "-" + _to.toString(DateTimeFormat.shortDate());
     }
 
-    @Override
+
     protected List<Instance> getInstances(final Parameter _parameter,
                                           final DateTime _from,
                                           final DateTime _to)

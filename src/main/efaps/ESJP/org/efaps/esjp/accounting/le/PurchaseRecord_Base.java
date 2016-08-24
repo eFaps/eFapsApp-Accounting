@@ -19,7 +19,7 @@
  */
 
 
-package org.efaps.esjp.accounting.ple;
+package org.efaps.esjp.accounting.le;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -17,31 +15,16 @@
  limitations under the License.
 
 -->
-
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>250c6cd3-f4c4-4dd2-aa12-6f497260afce</uuid>
+    <uuid>5a74ba77-82a9-485c-b7c2-fc88509eb6f3</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_MyDesk</name>
-        <icon>Accounting_MyDeskImg</icon>
+        <name>Accounting_SalesRecords</name>
         <childs>
-            <child>Accounting_PeriodMyDesk</child>
-            <child>Accounting_SubPeriodMyDesk</child>
-            <child>Accounting_DocumentMyDesk</child>
-            <child>Accounting_IncomingDocumentsMyDesk</child>
-            <child>Accounting_PurchaseRecordMyDesk</child>
-            <child>Accounting_SalesRecords</child>
-            <child>Accounting_IncomingRetentionMyDesk</child>
-            <child>Accounting_IncomingDetractionMyDesk</child>
-            <child>Accounting_IncomingPerceptionMyDesk</child>
-            <child>Products_KardexMyDesk</child>
-            <child>Accounting_ConfigurationMyDesk</child>
-            <child>Accounting_ReportMyDesk</child>
+            <child>Sales_SalesRecordReportMyDesk</child>
+            <child>Accounting_LE_SalesRecord</child>
         </childs>
-        <parents>
-            <parent>MainToolBar</parent>
-        </parents>
     </definition>
 </ui-menu>

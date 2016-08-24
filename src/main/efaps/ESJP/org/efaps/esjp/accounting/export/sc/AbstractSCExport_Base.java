@@ -35,7 +35,7 @@ import org.efaps.dataexporter.model.RowDetails;
 import org.efaps.dataexporter.output.texttable.TextTableExportOptions;
 import org.efaps.dataexporter.output.texttable.TextTableExportStyle;
 import org.efaps.dataexporter.output.texttable.TextTableWriter;
-import org.efaps.esjp.accounting.ple.AbstractExport_Base;
+import org.efaps.esjp.accounting.le.AbstractExport_Base;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;

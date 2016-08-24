@@ -18,10 +18,24 @@
  * Last Changed By: $Author$
  */
 
+
+package org.efaps.esjp.accounting.le;
+
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 /**
- * Classes related to the "Programa Libros Electronicos".
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
  *
  * @author The eFaps Team
  * 
  */
-package org.efaps.esjp.accounting.ple;
+@EFapsUUID("1f8cab20-9bc8-4e7a-8aaa-c582b41563e3")
+@EFapsApplication("eFapsApp-Accounting")
+public abstract class AbstractExport
+    extends AbstractExport_Base
+{
+
+}
