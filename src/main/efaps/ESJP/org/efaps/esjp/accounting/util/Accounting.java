@@ -451,8 +451,8 @@ public final class Accounting
         /** Calculate the selected row to fill up perfectly. */
         FILLUPAMOUNT,
 
-        /** Calculate the selected row to fill up perfectly. */
-        FILLUPEXRATE;
+        /** Calculate the selected row to fit the exchange rate. */
+        FITEXRATE;
 
         @Override
         public int getInt()
