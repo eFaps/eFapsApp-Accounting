@@ -232,7 +232,7 @@ public abstract class ExternalVoucher_Base
     protected Object[] getRateObject(final Parameter _parameter)
         throws EFapsException
     {
-        Object[] ret;
+        final Object[] ret;
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             ret = super.getRateObject(_parameter);
         } else {
@@ -246,7 +246,7 @@ public abstract class ExternalVoucher_Base
                                                final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        Instance ret;
+        final Instance ret;
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             ret = super.getRateCurrencyInstance(_parameter, _createdDoc);
         } else {
@@ -284,7 +284,7 @@ public abstract class ExternalVoucher_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String seqKey = Sales.INCOMINGINVOICEREVSEQ.get();
+        final String seqKey = Sales.INCOMINGINVOICE_REVSEQ.get();
         final NumberGenerator numgen = isUUID(seqKey)
                         ? NumberGenerator.get(UUID.fromString(seqKey))
                         : NumberGenerator.get(seqKey);
