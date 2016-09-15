@@ -25,18 +25,6 @@
         <field character="Group" name="caseGroup">
             <property name="ModeCreate">READONLY</property>
             <property name="GroupCount">3</property>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4SummarizeTrans"
-                name="Accounting_TransactionCreate4IncomingExchangeForm.checkbox4Summarize.UI_ACCESSCHECK"
-                program="org.efaps.esjp.accounting.Period">
-                <property name="Inverse">true</property>
-            </trigger>
-        </field>
-        <field character="Group" name="caseGroup2">
-            <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">4</property>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4SummarizeTrans"
-                name="Accounting_TransactionCreate4IncomingExchangeForm.checkbox4Summarize.UI_ACCESSCHECK"
-                program="org.efaps.esjp.accounting.Period" />
         </field>
         <field name="document">
             <property name="ModeCreate">READONLY</property>

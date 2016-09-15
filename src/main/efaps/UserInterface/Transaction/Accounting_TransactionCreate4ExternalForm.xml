@@ -26,13 +26,12 @@
         <name>Accounting_TransactionCreate4ExternalForm</name>
         <field name="caseGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
         </field>
         <field name="document">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.document.Label</property>
             <property name="UIType">SNIPPLET</property>
-            <property name="RowSpan">2</property>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
                 method="getDocumentFieldValue"
                 name="Accounting_TransactionCreate4DocForm.document.UI_FIELD_VALUE"

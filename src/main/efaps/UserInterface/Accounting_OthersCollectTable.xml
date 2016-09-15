@@ -24,7 +24,7 @@
         <name>Accounting_OthersCollectTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">Sales_PaymentOrder/TYpe.Label</property>
+            <property name="Label">ERP_DocumentAbstract/Type.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
