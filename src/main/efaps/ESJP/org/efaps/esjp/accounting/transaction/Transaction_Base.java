@@ -542,10 +542,12 @@ public abstract class Transaction_Base
                     }
                 } else if (_parameter.getParameterValue("case") != null) {
                     final Instance caseInst2 = Instance.get(_parameter.getParameterValue("case"));
-                    final PrintQuery print2 = new CachedPrintQuery(caseInst2, Case.CACHEKEY);
-                    print2.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
-                    print2.executeWithoutAccessCheck();
-                    ret = print2.<SummarizeConfig>getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                    if (InstanceUtils.isValid(caseInst2)) {
+                        final PrintQuery print2 = new CachedPrintQuery(caseInst2, Case.CACHEKEY);
+                        print2.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                        print2.executeWithoutAccessCheck();
+                        ret = print2.<SummarizeConfig>getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
+                    }
                 } else {
                     ret = SummarizeConfig.NONE;
                 }

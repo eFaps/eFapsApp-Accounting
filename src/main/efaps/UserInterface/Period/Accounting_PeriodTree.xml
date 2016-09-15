@@ -37,8 +37,7 @@
             <child>Accounting_PeriodTree_CollectMenu</child>
             <child>Accounting_PeriodTree_StockToBook</child>
             <child>Accounting_PeriodTree_RetPer</child>
-            <child>Accounting_PeriodTree_PaymentInternal</child>
-            <child>Accounting_PeriodTree_PaymentInternal</child>
+            <child>Accounting_PeriodTree_TransferDocument</child>
             <child>Accounting_PeriodTree_GainLoss</child>
             <child>Accounting_PeriodTree_Swap</child>
             <child>Accounting_PeriodTree_Transaction</child>

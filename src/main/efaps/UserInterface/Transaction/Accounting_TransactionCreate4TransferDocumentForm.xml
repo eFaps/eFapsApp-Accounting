@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2016 The eFaps Team
 
@@ -18,14 +17,14 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4aeacec3-7fd6-4e99-ba9c-451b073291a7</uuid>
+    <uuid>baa1c895-66ca-433d-8d2f-ac5a2da2bfd0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_TransactionCreate4PaymentForm</name>
+        <name>Accounting_TransactionCreate4TransferDocumentForm</name>
         <field character="Group" name="caseGroup">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
         </field>
         <field name="document">
             <property name="ModeCreate">READONLY</property>
@@ -37,13 +36,29 @@
                 <property name="NoAction">true</property>
             </trigger>
         </field>
+        <field name="case">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionForm.case.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger event="UI_FIELD_VALUE" method="getCaseFieldValue"
+                name="Accounting_TransactionCreate4OthersPayForm.case.UI_FIELD_VALUE"
+                program="org.efaps.esjp.accounting.transaction.FieldValue">
+                <property name="Type01">Accounting_CasePaymentInDoc</property>
+                <property name="Type02">Accounting_CasePaymentOutDoc</property>
+                <property name="LinkFrom">PeriodAbstractLink</property>
+                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="ValueSelect">oid</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
+        </field>
         <field character="Command" name="updateButton">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4PaymentForm.updateButton.Label</property>
             <property name="CmdIcon">ACCEPT</property>
             <trigger event="UI_FIELD_CMD" method="executeButton"
-                name="Accounting_TransactionCreate4PaymentForm.case.UI_FIELD_CMD"
-                program="org.efaps.esjp.accounting.transaction.Transaction">
+                name="Accounting_TransactionCreate4PaymentForm.case.UI_FIELD_CMD" program="org.efaps.esjp.accounting.transaction.Transaction">
             </trigger>
         </field>
         <field character="Heading" name="infoHeading">

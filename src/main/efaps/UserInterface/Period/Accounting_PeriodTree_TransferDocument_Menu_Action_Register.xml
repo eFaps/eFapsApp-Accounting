@@ -21,14 +21,14 @@
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_PaymentInternal_Menu_Action_Register</name>
+        <name>Accounting_PeriodTree_TransferDocument_Menu_Action_Register</name>
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4PaymentForm</form>
-            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create" >
+            <form>Accounting_TransactionCreate4TransferDocumentForm</form>
+            <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create">
                 <property name="JasperReport">Accounting_Transaction</property>
                 <property name="NoDataSource">true</property>
             </execute>

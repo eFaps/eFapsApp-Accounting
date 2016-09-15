@@ -27,7 +27,7 @@
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4PaymentForm</form>
+            <form>Accounting_TransactionCreate4PaymentOutForm</form>
             <execute method="create4Payment" program="org.efaps.esjp.accounting.transaction.Create" >
                 <property name="JasperReport">Accounting_Transaction</property>
                 <property name="NoDataSource">true</property>
