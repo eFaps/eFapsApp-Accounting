@@ -65,18 +65,25 @@
             <property name="HideLabel">true</property>
             <property name="Label">Accounting_Report_PrintForm.level.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="radioFieldValue"
+            <property name="UIType">RADIO</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getOptionList4Properties"
                 name="Accounting_PReportTrialBalanceForm.level.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
+                <property name="DBProperty01">Accounting_PReportTrialBalanceForm.level.1</property>
                 <property name="Value01">0</property>
+                <property name="DBProperty02">Accounting_PReportTrialBalanceForm.level.2</property>
                 <property name="Value02">1</property>
+                <property name="DBProperty03">Accounting_PReportTrialBalanceForm.level.3</property>
                 <property name="Value03">2</property>
+                <property name="DBProperty04">Accounting_PReportTrialBalanceForm.level.4</property>
                 <property name="Value04">3</property>
+                <property name="DBProperty05">Accounting_PReportTrialBalanceForm.level.5</property>
                 <property name="Value05">4</property>
+                <property name="DBProperty06">Accounting_PReportTrialBalanceForm.level.6</property>
                 <property name="Value06">5</property>
+                <property name="DBProperty07">Accounting_PReportTrialBalanceForm.level.7</property>
                 <property name="Value07">6</property>
-                <property name="Selected">0</property>
+                <property name="Selected">1</property>
             </trigger>
         </field>
     </definition>
