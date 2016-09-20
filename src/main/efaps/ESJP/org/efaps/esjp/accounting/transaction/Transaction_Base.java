@@ -866,15 +866,29 @@ public abstract class Transaction_Base
                             .linkto(CISales.Payment.CreateDocument)
                             .instance();
             multi.addSelect(selCurInst, selSalesAccInst, selDocInst);
-            multi.addAttribute(CISales.TransactionAbstract.Amount);
+            multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.CurrencyId);
             multi.execute();
             while (multi.next()) {
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
                 final Instance salesAccInst = multi.<Instance>getSelect(selSalesAccInst);
-                final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst).addAmount(amount);
+                final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst)
+                                .addAmount(amount);
                 final Instance docInst = multi.getSelect(selDocInst);
                 account.setDocLink(docInst);
-                account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                // special handling for transferdocument
+                if (InstanceUtils.isKindOf(_doc.getInstance(), CISales.TransferDocument)) {
+                    final CurrencyInst currInst = CurrencyInst.get(multi.<Long>getAttribute(
+                                    CISales.TransactionAbstract.CurrencyId));
+                    final Period period = new Period();
+                    if (currInst.getInstance().equals(period.getCurrency(
+                                    period.evaluateCurrentPeriod(_parameter)).getInstance())) {
+                        account.setRateInfo(RateInfo.getDummyRateInfo(), _doc.getInstance().getType().getName());
+                    } else {
+                        account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                    }
+                } else {
+                    account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                }
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
                     _doc.addDebit(account);
                 } else {

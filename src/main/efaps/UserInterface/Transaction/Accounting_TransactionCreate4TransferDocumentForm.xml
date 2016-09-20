@@ -36,15 +36,14 @@
                 <property name="NoAction">true</property>
             </trigger>
         </field>
-        <field name="case">
+         <field name="case">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Accounting_TransactionForm.case.Label</property>
             <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE" method="getCaseFieldValue"
                 name="Accounting_TransactionCreate4OthersPayForm.case.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
-                <property name="Type01">Accounting_CasePaymentInDoc</property>
-                <property name="Type02">Accounting_CasePaymentOutDoc</property>
+                <property name="Type">Accounting_CaseTransferDocument</property>
                 <property name="LinkFrom">PeriodAbstractLink</property>
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="ValueSelect">oid</property>
@@ -58,7 +57,24 @@
             <property name="Label">Accounting_TransactionCreate4PaymentForm.updateButton.Label</property>
             <property name="CmdIcon">ACCEPT</property>
             <trigger event="UI_FIELD_CMD" method="executeButton"
-                name="Accounting_TransactionCreate4PaymentForm.case.UI_FIELD_CMD" program="org.efaps.esjp.accounting.transaction.Transaction">
+                name="Accounting_TransactionCreate4PaymentForm.case.UI_FIELD_CMD"
+                program="org.efaps.esjp.accounting.transaction.Transaction">
+            </trigger>
+        </field>
+        <field name="docDetailHeader" character="Heading">
+            <property name="Level">4</property>
+            <property name="Collapsed">true</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalToBookForm.docDetailHeading.Heading</property>
+        </field>
+        <field name="docDetail">
+            <property name="ModeCreate">READONLY</property>
+            <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getDocDetailFieldValue"
+                name="Accounting_TransactionCreate4ExternalToBookForm.docDetail.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
             </trigger>
         </field>
         <field character="Heading" name="infoHeading">
@@ -66,23 +82,141 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionCreate4ExternalToBookForm.infoHeading.Heading</property>
         </field>
+  <field name="dateGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">4</property>
+        </field>
         <field name="date">
             <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_VALUE" method="getDateFieldValue"
-                name="Accounting_TransactionCreate4PaymentForm.date.UI_FIELD_VALUE"
-                program="org.efaps.esjp.accounting.transaction.FieldValue" />
-            <trigger event="UI_FIELD_UPDATE" method="update4Date"
-                name="Accounting_TransactionCreate4PaymentForm.date.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.accounting.transaction.FieldUpdate" />
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getDateFieldValue"
+                name="Accounting_TransactionCreate4DocForm.date.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Date"
+                name="Accounting_TransactionCreate4ExternalToBookForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="subJournal">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Accounting_TransactionForm.subJournal.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldValue"
+                method="getSubJournalFieldValue"
+                name="Accounting_TransactionCreate4ExternalToBookForm.subJournal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Accounting_ReportSubJournal</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="ValueSelect">oid</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
+        </field>
+        <field name="checkbox4Account" >
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionCreate4DocForm.select4Account.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getDefault4BooleanValue"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DefaultValue">true</property>
+            </trigger>
+        </field>
+        <field name="docStatus">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.docStatus.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getDefault4BooleanValue"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Account.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DefaultValue">true</property>
+            </trigger>
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
             <property name="Width">120</property>
+        </field>
+        <field name="additional" character="Heading">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Collapsed">true</property>
+            <property name="Level">4</property>
+            <property name="Label">Accounting_TransactionForm.additional.Heading</property>
+        </field>
+        <field name="configGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">2</property>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4DocForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
+        </field>
+        <field name="exchangeConfig" >
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Accounting_TransactionForm.exchangeConfig.Label</property>
+            <property name="UIType">RADIO</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalForm.exchangeConfig.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$ExchangeConfig</property>
+                <property name="DefaultValue">TRANSDATESALE</property>
+            </trigger>
+        </field>
+        <field name="summarizeConfig" >
+            <property name="Label">Accounting_TransactionForm.summarizeConfig.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalVoucherForm.subJournal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$SummarizeConfig</property>
+                <property name="DefaultValue">NONE</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.Period"
+                method="accessCheck4SummarizeTrans"
+                name="Accounting_TransactionCreate4ExternalForm.checkbox4Summarize.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"></trigger>
+        </field>
+        <field name="calculateGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="calculateConfig" >
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="RadioRowLength">2</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalVoucherForm.calculateConfig.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$CalculateConfig</property>
+                <property name="DefaultValue">EXCHANGERATE</property>
+            </trigger>
+        </field>
+        <field name="calculateButton" character="Command">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Accounting_TransactionCreate4ExternalForm.calculateButton.Label</property>
+            <property name="CmdIcon">ACCEPT</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.Calculation"
+                method="calculateButton"
+                name="Accounting_TransactionCreate4ExternalForm.calculateButton.UI_FIELD_CMD"
+                event="UI_FIELD_CMD">
+            </trigger>
         </field>
         <field character="Heading" name="transactionPositionDebit">
             <property name="Level">2</property>
