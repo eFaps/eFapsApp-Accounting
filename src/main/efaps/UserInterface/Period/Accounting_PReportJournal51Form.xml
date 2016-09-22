@@ -25,7 +25,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PReportJournal51Form</name>
         <field name="mime">
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Accounting_Report_PrintForm.mime.Label</property>
             <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE"
@@ -35,7 +35,7 @@
         </field>
         <field name="dateFrom">
             <property name="Label">Accounting_Report_PrintForm.dateFrom.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="getDateFromFieldValue"
@@ -44,12 +44,27 @@
         </field>
         <field name="dateTo">
             <property name="Label">Accounting_Report_PrintForm.dateTo.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="getDateToFieldValue"
                 name="Accounting_Journal_CreateForm.dateFrom.UI_FIELD_VALUE"
                 program="org.efaps.esjp.accounting.report.Report" />
+        </field>
+        <field name="additional" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Accounting_PReportJournal51Form.additional.Heading</property>
+        </field>
+        <field name="currency">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Accounting_PReportJournal51Form.currency.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.accounting.report.Report"
+                name="Accounting_PReportJournal51Form.currency.UI_FIELD_VALUE"
+                method="getCurrencyOptionList"
+                event="UI_FIELD_VALUE">
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

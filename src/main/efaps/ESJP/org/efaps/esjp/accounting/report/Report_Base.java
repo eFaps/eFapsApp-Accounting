@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -50,11 +51,13 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
@@ -114,7 +117,7 @@ public abstract class Report_Base
         html.append("<select name=\"").append(uiValue.getField().getName()).append("\" ").append(
                         IUserInterface.EFAPSTMPTAG).append(" size=\"1\">");
 
-        final Map<String, String> values = new TreeMap<String, String>();
+        final Map<String, String> values = new TreeMap<>();
         values.put(DBProperties.getProperty("org.efaps.esjp.accounting.report.Report.pdf"), "pdf");
         values.put(DBProperties.getProperty("org.efaps.esjp.accounting.report.Report.xls"), "xls");
 
@@ -570,6 +573,30 @@ public abstract class Report_Base
     }
 
     /**
+     * Gets the currency option list.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the currency option list
+     * @throws EFapsException on error
+     */
+    public Return getCurrencyOptionList(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Currency currency = new Currency();
+        final Return ret = currency.currencyDropDownFieldValue(_parameter);
+        @SuppressWarnings("unchecked")
+        final List<DropDownPosition> values = (List<DropDownPosition>) ret.get(ReturnValues.VALUES);
+        final CurrencyInst curInstObj = new Period().evaluteCurrentCurrency(_parameter);
+        for (final ListIterator<DropDownPosition> iter = values.listIterator(); iter.hasNext(); ) {
+             final DropDownPosition element = iter.next();
+             if (element.getValue().equals(curInstObj.getInstance().getOid())) {
+                 iter.remove();
+             }
+        }
+        return ret;
+    }
+
+    /**
      * The Class BoldCondition.
      */
     private class BoldCondition
@@ -613,7 +640,7 @@ public abstract class Report_Base
         /**
          * List of nodes belonging to this report.
          */
-        private final List<AbstractNode> rootNodes = new ArrayList<AbstractNode>();
+        private final List<AbstractNode> rootNodes = new ArrayList<>();
 
         /**
          * Instance of this report.
@@ -708,7 +735,7 @@ public abstract class Report_Base
          */
         public List<List<AbstractNode>> getTable()
         {
-            final List<List<AbstractNode>> ret = new ArrayList<List<AbstractNode>>();
+            final List<List<AbstractNode>> ret = new ArrayList<>();
             for (final AbstractNode node : this.rootNodes) {
                 ret.add(flatten(node));
             }
@@ -721,7 +748,7 @@ public abstract class Report_Base
          */
         private List<AbstractNode> flatten(final AbstractNode _parent)
         {
-            final List<AbstractNode> ret = new ArrayList<AbstractNode>();
+            final List<AbstractNode> ret = new ArrayList<>();
             boolean added = false;
             if ((_parent.isShowAllways()
                             || _parent.isShowSum() && _parent.getSum().compareTo(BigDecimal.ZERO) != 0)
@@ -793,7 +820,7 @@ public abstract class Report_Base
         /**
          * List of children for this node.
          */
-        private final List<Report.AbstractNode> children = new ArrayList<Report.AbstractNode>();
+        private final List<Report.AbstractNode> children = new ArrayList<>();
 
         /**
          * OID of this node.

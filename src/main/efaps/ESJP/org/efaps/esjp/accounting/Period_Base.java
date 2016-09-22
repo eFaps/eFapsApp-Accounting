@@ -281,6 +281,20 @@ public abstract class Period_Base
     }
 
     /**
+     * Evalute current currency.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    public CurrencyInst evaluteCurrentCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance periodInst = evaluateCurrentPeriod(_parameter);
+        return getCurrency(periodInst);
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return new Return
      * @throws EFapsException on error

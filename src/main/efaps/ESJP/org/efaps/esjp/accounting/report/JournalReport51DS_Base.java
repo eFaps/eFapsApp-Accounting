@@ -18,6 +18,7 @@
 package org.efaps.esjp.accounting.report;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,6 +39,8 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -94,33 +97,43 @@ public abstract class JournalReport51DS_Base
                         .attribute(CIAccounting.TransactionAbstract.Name);
         final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(CIAccounting.TransactionAbstract.Date);
 
+        final SelectBuilder selCurInst = SelectBuilder.get().linkto(
+                        CIAccounting.TransactionPositionAbstract.CurrencyLink).instance();
+        final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(
+                        CIAccounting.TransactionPositionAbstract.RateCurrencyLink).instance();
         multi.addSelect(selAccName, selAccDescr, selTransIdentifier, selTransOID, selTransName, selTransDescr,
-                        selTransDate);
+                        selTransDate, selCurInst, selRateCurInst);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.Amount,
-                        CIAccounting.TransactionPositionAbstract.Position);
+                        CIAccounting.TransactionPositionAbstract.Position,
+                        CIAccounting.TransactionPositionAbstract.RateAmount);
         multi.execute();
         final List<DataBean> values = new ArrayList<>();
         final Map<String, DataBean> map = new HashMap<>();
         while (multi.next()) {
-            final String transOID = multi.<String>getSelect(selTransOID);
+            final String transOID = multi.getSelect(selTransOID);
             final DataBean bean;
             if (map.containsKey(transOID)) {
                 bean = map.get(transOID);
             } else {
-                bean = new DataBean();
+                bean = new DataBean()
+                            .setParameter(_parameter)
+                            .setTransOID(transOID)
+                            .setTransName(multi.getSelect(selTransName))
+                            .setTransDate(multi.getSelect(selTransDate))
+                            .setTransDescr(multi.getSelect(selTransDescr))
+                            .setTransIdentifier(multi.getSelect(selTransIdentifier));
                 values.add(bean);
                 map.put(transOID, bean);
-                bean.setTransOID(transOID);
-                bean.setTransName(multi.<String>getSelect(selTransName));
-                bean.setTransDate(multi.<DateTime>getSelect(selTransDate));
-                bean.setTransDescr(multi.<String>getSelect(selTransDescr));
-                bean.setTransIdentifier(multi.<String>getSelect(selTransIdentifier));
             }
-            final DetailBean detailBean = new DetailBean();
-            detailBean.setAccName(multi.<String>getSelect(selAccName));
-            detailBean.setAccDescr(multi.<String>getSelect(selAccDescr));
-            detailBean.setAmount(multi.<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.Amount));
-            detailBean.setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position));
+            final DetailBean detailBean = new DetailBean()
+                        .setAccName(multi.getSelect(selAccName))
+                        .setAccDescr(multi.getSelect(selAccDescr))
+                        .setAmount(multi.getAttribute(CIAccounting.TransactionPositionAbstract.Amount))
+                        .setCurrencyInstance(multi.getSelect(selCurInst))
+                        .setRateAmount(multi.getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount))
+                        .setCurrencyInstance(multi.getSelect(selCurInst))
+                        .setPosition(multi.getAttribute(CIAccounting.TransactionPositionAbstract.Position))
+                        .setRateCurrencyInstance(multi.getSelect(selRateCurInst));
             bean.addDetail(detailBean);
         }
 
@@ -158,9 +171,9 @@ public abstract class JournalReport51DS_Base
         subJMulti.execute();
         while (subJMulti.next()) {
             final Instance transInst = subJMulti.getSelect(transSel2);
-            final DataBean bean = map.get(transInst.getOid());
-            bean.addDocReg(subJMulti.<String>getSelect(subJNameSel));
-            bean.addDocNum(subJMulti.<String>getAttribute(CIAccounting.ReportSubJournal2Transaction.Number));
+            map.get(transInst.getOid())
+                .addDocReg(subJMulti.<String>getSelect(subJNameSel))
+                .addDocNum(subJMulti.<String>getAttribute(CIAccounting.ReportSubJournal2Transaction.Number));
         }
 
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
@@ -206,6 +219,8 @@ public abstract class JournalReport51DS_Base
      */
     public static class DataBean
     {
+        /** The parameter. */
+        private Parameter parameter;
 
         /** The trans OID. */
         private String transOID;
@@ -238,13 +253,14 @@ public abstract class JournalReport51DS_Base
          * Gets the debit.
          *
          * @return the debit
+         * @throws EFapsException on error
          */
-        public BigDecimal getDebit()
+        public BigDecimal getDebit() throws EFapsException
         {
             BigDecimal ret = BigDecimal.ZERO;
             for (final DetailBean bean : this.details) {
-                if (bean.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-                    ret = ret.add(bean.getAmount().abs());
+                if (bean.getReportAmount().compareTo(BigDecimal.ZERO) < 0) {
+                    ret = ret.add(bean.getReportAmount().abs());
                 }
             }
             return ret;
@@ -254,13 +270,15 @@ public abstract class JournalReport51DS_Base
          * Gets the credit.
          *
          * @return the credit
+         * @throws EFapsException on error
          */
         public BigDecimal getCredit()
+            throws EFapsException
         {
             BigDecimal ret = BigDecimal.ZERO;
             for (final DetailBean bean : this.details) {
-                if (bean.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                    ret = ret.add(bean.getAmount());
+                if (bean.getReportAmount().compareTo(BigDecimal.ZERO) > 0) {
+                    ret = ret.add(bean.getReportAmount());
                 }
             }
             return ret;
@@ -270,42 +288,48 @@ public abstract class JournalReport51DS_Base
          * Adds the doc.
          *
          * @param _docName the doc name
+         * @return the data bean
          */
-        public void addDoc(final String _docName)
+        public DataBean addDoc(final String _docName)
         {
             if (getDocName() == null) {
                 setDocName(_docName);
             } else {
                 setDocName(getDocName() + ", " + _docName);
             }
+            return this;
         }
 
         /**
          * Adds the doc reg.
          *
          * @param _docReg the doc reg
+         * @return the data bean
          */
-        public void addDocReg(final String _docReg)
+        public DataBean addDocReg(final String _docReg)
         {
             if (getDocReg() == null) {
                 setDocReg(_docReg);
             } else {
                 setDocReg(getDocReg() + ", " + _docReg);
             }
+            return this;
         }
 
         /**
          * Adds the doc num.
          *
          * @param _docNum the doc num
+         * @return the data bean
          */
-        public void addDocNum(final String _docNum)
+        public DataBean addDocNum(final String _docNum)
         {
             if (getDocNum() == null) {
                 setDocNum(_docNum);
             } else {
                 setDocNum(getDocNum() + ", " + _docNum);
             }
+            return this;
         }
 
         /**
@@ -322,20 +346,25 @@ public abstract class JournalReport51DS_Base
          * Adds the detail.
          *
          * @param _detailBean the detail bean
+         * @return the data bean
          */
-        public void addDetail(final DetailBean _detailBean)
+        public DataBean addDetail(final DetailBean _detailBean)
         {
             getDetails().add(_detailBean);
+            _detailBean.setParent(this);
+            return this;
         }
 
         /**
          * Setter method for instance variable {@link #transDate}.
          *
          * @param _transDate value for instance variable {@link #transDate}
+         * @return the data bean
          */
-        public void setTransDate(final DateTime _transDate)
+        public DataBean setTransDate(final DateTime _transDate)
         {
             this.transDate = _transDate;
+            return this;
         }
 
         /**
@@ -352,10 +381,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #transDescr}.
          *
          * @param _transDescr value for instance variable {@link #transDescr}
+         * @return the data bean
          */
-        public void setTransDescr(final String _transDescr)
+        public DataBean setTransDescr(final String _transDescr)
         {
             this.transDescr = _transDescr;
+            return this;
         }
 
         /**
@@ -372,10 +403,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #transName}.
          *
          * @param _transName value for instance variable {@link #transName}
+         * @return the data bean
          */
-        public void setTransName(final String _transName)
+        public DataBean setTransName(final String _transName)
         {
             this.transName = _transName;
+            return this;
         }
 
         /**
@@ -392,10 +425,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #transOID}.
          *
          * @param _transOID value for instance variable {@link #transOID}
+         * @return the data bean
          */
-        public void setTransOID(final String _transOID)
+        public DataBean setTransOID(final String _transOID)
         {
             this.transOID = _transOID;
+            return this;
         }
 
         /**
@@ -422,10 +457,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #details}.
          *
          * @param _details value for instance variable {@link #details}
+         * @return the data bean
          */
-        public void setDetails(final List<DetailBean> _details)
+        public DataBean setDetails(final List<DetailBean> _details)
         {
             this.details = _details;
+            return this;
         }
 
         /**
@@ -443,10 +480,12 @@ public abstract class JournalReport51DS_Base
          *
          * @param _transIdentifier value for instance variable
          *            {@link #transIdentifier}
+         * @return the data bean
          */
-        public void setTransIdentifier(final String _transIdentifier)
+        public DataBean setTransIdentifier(final String _transIdentifier)
         {
             this.transIdentifier = _transIdentifier;
+            return this;
         }
 
         /**
@@ -463,10 +502,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #docReg}.
          *
          * @param _docReg value for instance variable {@link #docReg}
+         * @return the data bean
          */
-        public void setDocReg(final String _docReg)
+        public DataBean setDocReg(final String _docReg)
         {
             this.docReg = _docReg;
+            return this;
         }
 
         /**
@@ -483,10 +524,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #docNum}.
          *
          * @param _docNum value for instance variable {@link #docNum}
+         * @return the data bean
          */
-        public void setDocNum(final String _docNum)
+        public DataBean setDocNum(final String _docNum)
         {
             this.docNum = _docNum;
+            return this;
         }
 
         /**
@@ -503,10 +546,34 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #docName}.
          *
          * @param _docName value for instance variable {@link #docName}
+         * @return the data bean
          */
-        public void setDocName(final String _docName)
+        public DataBean setDocName(final String _docName)
         {
             this.docName = _docName;
+            return this;
+        }
+
+        /**
+         * Gets the parameter.
+         *
+         * @return the parameter
+         */
+        public Parameter getParameter()
+        {
+            return this.parameter;
+        }
+
+        /**
+         * Sets the parameter.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the data bean
+         */
+        public DataBean setParameter(final Parameter _parameter)
+        {
+            this.parameter = _parameter;
+            return this;
         }
     }
 
@@ -516,6 +583,9 @@ public abstract class JournalReport51DS_Base
      */
     public static class DetailBean
     {
+
+        /** The parameter. */
+        private DataBean parent;
 
         /** The acc name. */
         private String accName;
@@ -528,6 +598,37 @@ public abstract class JournalReport51DS_Base
 
         /** The amount. */
         private BigDecimal amount;
+
+        /** The amount. */
+        private BigDecimal rateAmount;
+
+        /** The currency instance. */
+        private Instance currencyInstance;
+
+        /** The rate currency instance. */
+        private Instance rateCurrencyInstance;
+
+        /**
+         * Gets the parameter.
+         *
+         * @return the parameter
+         */
+        public DataBean getParent()
+        {
+            return this.parent;
+        }
+
+        /**
+         * Sets the parent.
+         *
+         * @param _parent the parent
+         * @return the detail bean
+         */
+        public DetailBean setParent(final DataBean _parent)
+        {
+            this.parent = _parent;
+            return this;
+        }
 
         /**
          * Getter method for the instance variable {@link #accName}.
@@ -543,10 +644,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #accName}.
          *
          * @param _accName value for instance variable {@link #accName}
+         * @return the detail bean
          */
-        public void setAccName(final String _accName)
+        public DetailBean setAccName(final String _accName)
         {
             this.accName = _accName;
+            return this;
         }
 
         /**
@@ -563,10 +666,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #accDescr}.
          *
          * @param _accDescr value for instance variable {@link #accDescr}
+         * @return the detail bean
          */
-        public void setAccDescr(final String _accDescr)
+        public DetailBean setAccDescr(final String _accDescr)
         {
             this.accDescr = _accDescr;
+            return this;
         }
 
         /**
@@ -583,10 +688,12 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #position}.
          *
          * @param _position value for instance variable {@link #position}
+         * @return the detail bean
          */
-        public void setPosition(final Integer _position)
+        public DetailBean setPosition(final Integer _position)
         {
             this.position = _position;
+            return this;
         }
 
         /**
@@ -603,10 +710,107 @@ public abstract class JournalReport51DS_Base
          * Setter method for instance variable {@link #amount}.
          *
          * @param _amount value for instance variable {@link #amount}
+         * @return the detail bean
          */
-        public void setAmount(final BigDecimal _amount)
+        public DetailBean setAmount(final BigDecimal _amount)
         {
             this.amount = _amount;
+            return this;
+        }
+
+        /**
+         * Gets the amount.
+         *
+         * @return the amount
+         */
+        public BigDecimal getRateAmount()
+        {
+            return this.rateAmount;
+        }
+
+        /**
+         * Sets the rate amount.
+         *
+         * @param _rateAmount the rate amount
+         * @return the detail bean
+         */
+        public DetailBean setRateAmount(final BigDecimal _rateAmount)
+        {
+            this.rateAmount = _rateAmount;
+            return this;
+        }
+
+        /**
+         * Gets the currency instance.
+         *
+         * @return the currency instance
+         */
+        public Instance getCurrencyInstance()
+        {
+            return this.currencyInstance;
+        }
+
+        /**
+         * Sets the currency instance.
+         *
+         * @param _currencyInstance the currency instance
+         * @return the detail bean
+         */
+        public DetailBean setCurrencyInstance(final Instance _currencyInstance)
+        {
+            this.currencyInstance = _currencyInstance;
+            return this;
+        }
+
+        /**
+         * Gets the rate currency instance.
+         *
+         * @return the rate currency instance
+         */
+        public Instance getRateCurrencyInstance()
+        {
+            return this.rateCurrencyInstance;
+        }
+
+        /**
+         * Sets the rate currency instance.
+         *
+         * @param _rateCurrencyInstance the rate currency instance
+         * @return the detail bean
+         */
+        public DetailBean setRateCurrencyInstance(final Instance _rateCurrencyInstance)
+        {
+            this.rateCurrencyInstance = _rateCurrencyInstance;
+            return this;
+        }
+
+        /**
+         * Gets the report amount.
+         *
+         * @return the report amount
+         * @throws EFapsException on error
+         */
+        public BigDecimal getReportAmount()
+            throws EFapsException
+        {
+            BigDecimal ret;
+            final Instance currencyInstance = Instance.get(ParameterUtil.getParameterValue(getParent().getParameter(),
+                            "currency"));
+            if (currencyInstance.isValid()) {
+                if (currencyInstance.equals(getCurrencyInstance())) {
+                    ret = getAmount();
+                } else if (currencyInstance.equals(getRateCurrencyInstance())) {
+                    ret = getRateAmount();
+                } else {
+                    final RateInfo[] rateInfos = new Report().getCurrency(getParent().getParameter())
+                                    .evaluateRateInfos(getParent().getParameter(), getParent()
+                                    .getTransDate(), getRateCurrencyInstance(), currencyInstance);
+                    ret = getRateAmount().divide(rateInfos[2].getRate(), 8, RoundingMode.HALF_UP);
+                }
+            } else {
+                ret = getAmount();
+            }
+            return ret;
         }
     }
 }

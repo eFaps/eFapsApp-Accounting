@@ -17,26 +17,26 @@
     </queryString>
     <field name="accName" class="java.lang.String"/>
     <field name="accDescr" class="java.lang.String"/>
-    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="reportAmount" class="java.math.BigDecimal"/>
     <variable name="debit" class="java.math.BigDecimal" resetType="None">
-        <variableExpression><![CDATA[$F{amount}.compareTo(java.math.BigDecimal.ZERO) < 0
-?$F{amount}.abs()
+        <variableExpression><![CDATA[$F{reportAmount}.compareTo(java.math.BigDecimal.ZERO) < 0
+?$F{reportAmount}.abs()
 :null]]></variableExpression>
     </variable>
     <variable name="credit" class="java.math.BigDecimal" resetType="None">
-        <variableExpression><![CDATA[$F{amount}.compareTo(java.math.BigDecimal.ZERO) < 0
+        <variableExpression><![CDATA[$F{reportAmount}.compareTo(java.math.BigDecimal.ZERO) < 0
 ?null
-:$F{amount}]]></variableExpression>
+:$F{reportAmount}]]></variableExpression>
     </variable>
     <variable name="debitSum" class="java.math.BigDecimal" resetType="None" calculation="Sum">
-        <variableExpression><![CDATA[$F{amount}.compareTo(java.math.BigDecimal.ZERO) < 0
-?$F{amount}.abs()
+        <variableExpression><![CDATA[$F{reportAmount}.compareTo(java.math.BigDecimal.ZERO) < 0
+?$F{reportAmount}.abs()
 :java.math.BigDecimal.ZERO]]></variableExpression>
     </variable>
     <variable name="creditSum" class="java.math.BigDecimal" resetType="None" calculation="Sum">
-        <variableExpression><![CDATA[$F{amount}.compareTo(java.math.BigDecimal.ZERO) < 0
+        <variableExpression><![CDATA[$F{reportAmount}.compareTo(java.math.BigDecimal.ZERO) < 0
 ?java.math.BigDecimal.ZERO
-:$F{amount}]]></variableExpression>
+:$F{reportAmount}]]></variableExpression>
     </variable>
     <detail>
         <band height="12">

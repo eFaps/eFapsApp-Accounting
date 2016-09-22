@@ -40,7 +40,7 @@
             <validate program="org.efaps.esjp.accounting.report.Report" method="validateDates" />
         </target>
         <property name="Target">modal</property>
-        <property name="TargetMode">create</property>
+        <property name="TargetMode">edit</property>
         <property name="TargetShowFile">true</property>
         <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
