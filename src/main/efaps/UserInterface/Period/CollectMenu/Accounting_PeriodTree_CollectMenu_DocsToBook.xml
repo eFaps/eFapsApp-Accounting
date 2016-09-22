@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,19 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c284182a-9bf0-4729-8f36-fa9da048280f</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_CollectMenu_DocsToBook</name>
@@ -39,7 +32,7 @@
         <target>
             <menu>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu</menu>
             <table>Accounting_PeriodDocumentSumTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Period" method="getDocumentsToBook" >
+            <evaluate program="org.efaps.esjp.accounting.Period" method="getDocumentsToBook">
                 <property name="Type">Sales_DocumentSumAbstract</property>
                 <property name="StatusGroup01">Sales_InvoiceStatus</property>
                 <property name="Status01">Open</property>

@@ -17,14 +17,13 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fd06d7db-6c3d-4238-bb8e-4ff0578c38bd</uuid>
+    <uuid>023eda81-1554-4117-97f7-03ce86eeb20d</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_CollectMenu_Securities_Menu_Action</name>
+        <name>Accounting_ERP_DocumentTree_PeriodInfo_Menu</name>
         <childs>
-            <child>Accounting_PeriodTree_CollectMenu_Securities_Menu_Action_Register</child>
-            <child>Accounting_Period_Action_Assign</child>
+            <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

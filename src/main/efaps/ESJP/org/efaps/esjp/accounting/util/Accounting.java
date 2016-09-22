@@ -172,7 +172,7 @@ public final class Accounting
         SUBJOURNAL,
 
         /** The setstatus. */
-        SETSTATUS,
+        MARKBOOKED,
 
         /** The evalonpayment. */
         EVALONPAYMENT;

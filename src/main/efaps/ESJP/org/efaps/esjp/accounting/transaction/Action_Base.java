@@ -501,7 +501,7 @@ public abstract class Action_Base
                     }
                 }
             }
-            if (ret.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
+            if (ret.getConfigs().contains(ActDef2Case4DocConfig.MARKBOOKED)) {
                 ParameterUtil.setParameterValues(ret.getParameter(), "docStatus", "true");
             }
         }
@@ -524,8 +524,8 @@ public abstract class Action_Base
             final Create create = new Create();
             if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
                 create.create4OthersPayMassiv(def.getParameter());
-            } else if (def.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
-                create.setStatus4Docs(_parameter, def.getDocInst());
+            } else if (def.getConfigs().contains(ActDef2Case4DocConfig.MARKBOOKED)) {
+                create.markDocAsAssigned(_parameter, def.getDocInst());
             }
         }
     }
@@ -546,8 +546,8 @@ public abstract class Action_Base
             final Create create = new Create();
             if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
                 create.create4OthersCollectMassive(def.getParameter());
-            } else if (def.getConfigs().contains(ActDef2Case4DocConfig.SETSTATUS)) {
-                create.setStatus4Docs(_parameter, def.getDocInst());
+            } else if (def.getConfigs().contains(ActDef2Case4DocConfig.MARKBOOKED)) {
+                create.markDocAsAssigned(_parameter, def.getDocInst());
             }
         }
     }

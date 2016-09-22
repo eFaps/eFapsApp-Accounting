@@ -24,6 +24,7 @@
         <name>Accounting_PeriodTree_TransferDocument_Menu_Action</name>
         <childs>
             <child>Accounting_PeriodTree_TransferDocument_Menu_Action_Register</child>
+            <child>Accounting_Period_Action_Assign  </child>
         </childs>
     </definition>
 </ui-menu>

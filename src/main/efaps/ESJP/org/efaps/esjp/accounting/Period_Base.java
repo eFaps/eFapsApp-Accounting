@@ -40,6 +40,7 @@ import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -584,19 +585,10 @@ public abstract class Period_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CIAccounting.Period.FromDate);
-                print.addAttribute(CIAccounting.Period.ToDate);
-                print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
-
+                add2DocQueryBldr(_parameter, _queryBldr);
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
-                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
             }
         };
@@ -621,19 +613,10 @@ public abstract class Period_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CIAccounting.Period.FromDate);
-                print.addAttribute(CIAccounting.Period.ToDate);
-                print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
-
+                add2DocQueryBldr(_parameter, _queryBldr);
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
-                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
             }
         };
@@ -828,19 +811,10 @@ public abstract class Period_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.Period.FromDate);
-                print.addAttribute(CIAccounting.Period.ToDate);
-                print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
-
+                add2DocQueryBldr(_parameter, _queryBldr);
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
-                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
             }
         };
@@ -865,19 +839,10 @@ public abstract class Period_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance instance = _parameter.getInstance();
-                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
-                print.addAttribute(CIAccounting.Period.FromDate);
-                print.addAttribute(CIAccounting.Period.ToDate);
-                print.execute();
-                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
-                final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
-
+                add2DocQueryBldr(_parameter, _queryBldr);
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
-                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
             }
         };
@@ -898,7 +863,6 @@ public abstract class Period_Base
     {
         return new MultiPrint().execute(_parameter);
     }
-
 
     /**
      * Called from a tree menu command to present the Account2Account relations
@@ -940,7 +904,18 @@ public abstract class Period_Base
     public Return getOthersPay(final Parameter _parameter)
         throws EFapsException
     {
-        return new MultiPrint().execute(_parameter);
+        return new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                add2DocQueryBldr(_parameter, _queryBldr);
+            };
+
+        }.execute(_parameter);
     }
 
     /**
@@ -953,7 +928,16 @@ public abstract class Period_Base
     public Return getOthersCollect(final Parameter _parameter)
         throws EFapsException
     {
-        return new MultiPrint().execute(_parameter);
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                add2DocQueryBldr(_parameter, _queryBldr);
+            };
+        }.execute(_parameter);
     }
 
     /**
@@ -967,7 +951,86 @@ public abstract class Period_Base
     public Return getPayrollPay(final Parameter _parameter)
         throws EFapsException
     {
-        return new MultiPrint().execute(_parameter);
+        return new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                add2DocQueryBldr(_parameter, _queryBldr);
+            };
+
+        }.execute(_parameter);
+    }
+
+    /**
+     * Adds to the queryBuilder for Documents.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _queryBldr the query bldr
+     * @throws EFapsException on error
+     */
+    protected void add2DocQueryBldr(final Parameter _parameter,
+                                    final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final Instance periodInst = evaluateCurrentPeriod(_parameter);
+
+        final PrintQuery print = new PrintQuery(periodInst);
+        print.addAttribute(CIAccounting.Period.FromDate);
+        print.addAttribute(CIAccounting.Period.ToDate);
+        print.execute();
+        final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+        final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
+        _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, from.minusMinutes(1));
+        _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, to.plusDays(1));
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+        attrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+        final AttributeQuery attrQuery = attrQueryBldr
+                        .getAttributeQuery(CIAccounting.Period2ERPDocument.ToLink);
+        _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+    }
+
+    /**
+     * Release doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return releaseDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInst = _parameter.getCallInstance();
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.ToLink, docInst);
+        for (final Instance inst : queryBldr.getQuery().execute()) {
+            new Delete(inst).execute();
+        }
+        return new Return();
+    }
+
+    /**
+     * Release doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return assignDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        for (final Instance docInst : getSelectedInstances(_parameter)) {
+            final Instance periodInst = evaluateCurrentPeriod(_parameter, null);
+            final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
+            insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+            insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+            insert.execute();
+        }
+        return new Return();
     }
 
     /**

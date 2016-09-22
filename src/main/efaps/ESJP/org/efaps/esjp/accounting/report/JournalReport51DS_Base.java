@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.report;
@@ -50,8 +47,6 @@ import net.sf.jasperreports.engine.JasperReport;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: JournalReport51DS_Base.java 13383 2014-07-22 02:47:47Z
- *          jan@moxter.net $
  */
 @EFapsUUID("9994200b-40b2-466a-b1fe-bfd6e927e92e")
 @EFapsApplication("eFapsApp-Accounting")
@@ -94,7 +89,7 @@ public abstract class JournalReport51DS_Base
         final SelectBuilder selTransDescr = new SelectBuilder(selTrans)
                         .attribute(CIAccounting.TransactionAbstract.Description);
         final SelectBuilder selTransIdentifier = new SelectBuilder(selTrans)
-        .attribute(CIAccounting.TransactionAbstract.Identifier);
+                        .attribute(CIAccounting.TransactionAbstract.Identifier);
         final SelectBuilder selTransName = new SelectBuilder(selTrans)
                         .attribute(CIAccounting.TransactionAbstract.Name);
         final SelectBuilder selTransDate = new SelectBuilder(selTrans).attribute(CIAccounting.TransactionAbstract.Date);
@@ -206,21 +201,44 @@ public abstract class JournalReport51DS_Base
         setData(values);
     }
 
+    /**
+     * The Class DataBean.
+     */
     public static class DataBean
     {
 
+        /** The trans OID. */
         private String transOID;
+
+        /** The trans name. */
         private String transName;
+
+        /** The trans date. */
         private DateTime transDate;
+
+        /** The trans descr. */
         private String transDescr;
+
+        /** The trans identifier. */
         private String transIdentifier;
 
+        /** The doc reg. */
         private String docReg;
+
+        /** The doc num. */
         private String docNum;
+
+        /** The doc name. */
         private String docName;
 
+        /** The details. */
         private List<DetailBean> details = new ArrayList<>();
 
+        /**
+         * Gets the debit.
+         *
+         * @return the debit
+         */
         public BigDecimal getDebit()
         {
             BigDecimal ret = BigDecimal.ZERO;
@@ -230,11 +248,28 @@ public abstract class JournalReport51DS_Base
                 }
             }
             return ret;
-
         }
 
         /**
-         * @param _select
+         * Gets the credit.
+         *
+         * @return the credit
+         */
+        public BigDecimal getCredit()
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            for (final DetailBean bean : this.details) {
+                if (bean.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+                    ret = ret.add(bean.getAmount());
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Adds the doc.
+         *
+         * @param _docName the doc name
          */
         public void addDoc(final String _docName)
         {
@@ -246,7 +281,9 @@ public abstract class JournalReport51DS_Base
         }
 
         /**
-         * @param _select
+         * Adds the doc reg.
+         *
+         * @param _docReg the doc reg
          */
         public void addDocReg(final String _docReg)
         {
@@ -258,7 +295,9 @@ public abstract class JournalReport51DS_Base
         }
 
         /**
-         * @param _select
+         * Adds the doc num.
+         *
+         * @param _docNum the doc num
          */
         public void addDocNum(final String _docNum)
         {
@@ -267,17 +306,6 @@ public abstract class JournalReport51DS_Base
             } else {
                 setDocNum(getDocNum() + ", " + _docNum);
             }
-        }
-
-        public BigDecimal getCredit()
-        {
-            BigDecimal ret = BigDecimal.ZERO;
-            for (final DetailBean bean : this.details) {
-                if (bean.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                    ret = ret.add(bean.getAmount());
-                }
-            }
-            return ret;
         }
 
         /**
@@ -291,7 +319,9 @@ public abstract class JournalReport51DS_Base
         }
 
         /**
-         * @param _detailBean
+         * Adds the detail.
+         *
+         * @param _detailBean the detail bean
          */
         public void addDetail(final DetailBean _detailBean)
         {
@@ -480,12 +510,23 @@ public abstract class JournalReport51DS_Base
         }
     }
 
+    /**
+     * The Class DetailBean.
+     *
+     */
     public static class DetailBean
     {
 
+        /** The acc name. */
         private String accName;
+
+        /** The acc descr. */
         private String accDescr;
+
+        /** The position. */
         private Integer position;
+
+        /** The amount. */
         private BigDecimal amount;
 
         /**

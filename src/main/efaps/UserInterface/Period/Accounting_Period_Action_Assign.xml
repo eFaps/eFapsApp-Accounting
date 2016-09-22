@@ -15,16 +15,20 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fd06d7db-6c3d-4238-bb8e-4ff0578c38bd</uuid>
+    <uuid>add20821-4e7f-458b-95e6-7f90d44911e7</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_CollectMenu_Securities_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodTree_CollectMenu_Securities_Menu_Action_Register</child>
-            <child>Accounting_Period_Action_Assign</child>
-        </childs>
+        <name>Accounting_Period_Action_Assign</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+        <target>
+            <execute program="org.efaps.esjp.accounting.Period" method="assignDoc"/>
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>

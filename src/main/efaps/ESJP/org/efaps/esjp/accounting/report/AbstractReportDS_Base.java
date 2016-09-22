@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -49,7 +46,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * TODO comment!
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("778ba07a-7111-45cd-9a76-fe12f9f67054")
 @EFapsApplication("eFapsApp-Accounting")
@@ -77,10 +74,32 @@ public abstract class AbstractReportDS_Base
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
             final String companyName = ERP.COMPANYNAME.get();
-            final String companyTaxNumb = ERP.COMPANYTAX.get();
-            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+            if (companyName != null && !companyName.isEmpty()) {
                 _jrParameters.put("CompanyName", companyName);
-                _jrParameters.put("CompanyTaxNum", companyTaxNumb);
+            }
+            final String companyTaxNum = ERP.COMPANYTAX.get();
+            if (companyTaxNum != null && !companyTaxNum.isEmpty()) {
+                _jrParameters.put("CompanyTaxNum", companyTaxNum);
+            }
+            final String companyActivity = ERP.COMPANYACTIVITY.get();
+            if (companyActivity != null && !companyActivity.isEmpty()) {
+                _jrParameters.put("CompanyActivity", companyActivity);
+            }
+            final String companyStreet = ERP.COMPANYSTREET.get();
+            if (companyStreet != null && !companyStreet.isEmpty()) {
+                _jrParameters.put("CompanyStreet", companyStreet);
+            }
+            final String companyRegion = ERP.COMPANYREGION.get();
+            if (companyRegion != null && !companyRegion.isEmpty()) {
+                _jrParameters.put("CompanyRegion", companyRegion);
+            }
+            final String companyCity = ERP.COMPANYCITY.get();
+            if (companyCity != null && !companyCity.isEmpty()) {
+                _jrParameters.put("CompanyCity", companyCity);
+            }
+            final String companyDistrict = ERP.COMPANYDISTRICT.get();
+            if (companyDistrict != null && !companyDistrict.isEmpty()) {
+                _jrParameters.put("CompanyDistrict", companyDistrict);
             }
         }
         final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
@@ -91,6 +110,14 @@ public abstract class AbstractReportDS_Base
     }
 
 
+    /**
+     * Gets the list of account instances.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key the key
+     * @return the account inst
+     * @throws EFapsException on error
+     */
     protected List<Instance> getAccountInst(final Parameter _parameter,
                                             final String _key)
         throws EFapsException
@@ -116,13 +143,22 @@ public abstract class AbstractReportDS_Base
         return ret;
     }
 
+    /**
+     * Gets the account inst.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _parentInst the parent inst
+     * @param _includeSummary the include summary
+     * @return the account inst
+     * @throws EFapsException on error
+     */
     protected List<Instance> getAccountInst(final Parameter _parameter,
                                             final Instance _parentInst,
                                             final boolean _includeSummary)
         throws EFapsException
     {
         final List<Instance> ret = new ArrayList<>();
-        boolean descend;
+        final boolean descend;
         if (_includeSummary) {
             descend = true;
         } else {

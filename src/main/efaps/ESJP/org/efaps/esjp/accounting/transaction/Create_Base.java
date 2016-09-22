@@ -50,7 +50,6 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.PurchaseRecord;
 import org.efaps.esjp.accounting.SubPeriod_Base;
@@ -243,7 +242,7 @@ public abstract class Create_Base
         connect2SubJournal(_parameter, transInst, null);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
-        setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         add2Create4Doc(_parameter);
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
         final File file = getTransactionReport(parameter, true);
@@ -283,7 +282,7 @@ public abstract class Create_Base
                 final List<Instance> docInsts = getDocInstsFromDocInfoList(_parameter, docInfos);
                 connectDocs2Transaction(_parameter, transinfo.getInstance(),
                                 docInsts.toArray(new Instance[docInsts.size()]));
-                setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
                 connect2SubJournal(_parameter, transinfo.getInstance(), null);
             }
         } else {
@@ -295,7 +294,7 @@ public abstract class Create_Base
                     }
                     transinfo.create(_parameter);
                     connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
-                    setStatus4Docs(_parameter, docInfo.getInstance());
+                    markDocAsAssigned(_parameter, docInfo.getInstance());
                     connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
                 }
             }
@@ -320,7 +319,7 @@ public abstract class Create_Base
         connect2SubJournal(_parameter, transInst, null);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-        setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
 
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
         final File file = getTransactionReport(parameter, true);
@@ -360,7 +359,7 @@ public abstract class Create_Base
                 connectDocs2Transaction(_parameter, transinfo.getInstance(),
                                 docInsts.toArray(new Instance[docInsts.size()]));
                 connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-                setStatus4Docs(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
                 connect2SubJournal(_parameter, transinfo.getInstance(), null);
             }
         } else {
@@ -373,7 +372,7 @@ public abstract class Create_Base
                     transinfo.create(_parameter);
                     connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
                     connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
-                    setStatus4Docs(_parameter, docInfo.getInstance());
+                    markDocAsAssigned(_parameter, docInfo.getInstance());
                     connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
                 }
             }
@@ -494,7 +493,7 @@ public abstract class Create_Base
         final Return ret = new Return();
         final Instance transInst = createFromUI(_parameter);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
-        setStatus4Payments(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         for (final Instance docInst  : docInsts) {
             connect2SubJournal(_parameter, transInst, docInst);
         }
@@ -536,7 +535,7 @@ public abstract class Create_Base
                 }
                 transinfo.create(_parameter);
                 connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getDocInsts(true));
-                setStatus4Payments(_parameter, docInfo.getInstance());
+                markDocAsAssigned(_parameter, docInfo.getInstance());
                 connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
             }
         }
@@ -688,27 +687,6 @@ public abstract class Create_Base
     }
 
     /**
-     * Set the Status to booked for a PaymentDocument.
-     * @param _parameter    Parameter as passe by the eFaps API
-     * @param _payDocInst   Instance of the PaymentDocument the Status willl be set
-     * @throws EFapsException on error
-     */
-    protected void setStatus4Payments(final Parameter _parameter,
-                                      final Instance... _payDocInst)
-        throws EFapsException
-    {
-        for (final Instance instance : _payDocInst) {
-            // update the status
-            final Status status = Status.find(instance.getType().getStatusAttribute().getLink().getUUID(), "Booked");
-            if (status != null) {
-                final Update update = new Update(instance);
-                update.add(CIERP.PaymentDocumentAbstract.StatusAbstract, status.getId());
-                update.execute();
-            }
-        }
-    }
-
-    /**
      * Create the base transaction.
      *
      * @param _parameter Parameter as passed from the eFaps API
@@ -754,33 +732,21 @@ public abstract class Create_Base
     /**
      * Set the status to booked if  marked in the Form. Set Status to Open if in status Digitized.
      * @param _parameter    Parameter as passed by the eFasp API
-     * @param _instance     instance of the document
+     * @param _instances     instance of the document
      * @throws EFapsException on error
      */
-    protected void setStatus4Docs(final Parameter _parameter,
-                                  final Instance... _instance)
+    protected void markDocAsAssigned(final Parameter _parameter,
+                                     final Instance... _instances)
         throws EFapsException
     {
         final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
-        for (final Instance instance : _instance) {
-            if (setStatus) {
-                final Update update = new Update(instance);
-                update.add(CIERP.DocumentAbstract.StatusAbstract,
-                                Status.find(instance.getType().getStatusAttribute().getLink().getUUID(), "Booked"));
-                update.execute();
-            } else {
-                final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
-                print.executeWithoutAccessCheck();
-                final Status status = Status.get(print.<Long>getAttribute(CIERP.DocumentAbstract.StatusAbstract));
-                if ("Digitized".equals(status.getKey())) {
-                    final Status newStatus = Status.find(status.getStatusGroup().getUUID(), "Open");
-                    if (newStatus != null) {
-                        final Update update = new Update(instance);
-                        update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
-                        update.execute();
-                    }
-                }
+        if (setStatus) {
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, null);
+            for (final Instance docInst : _instances) {
+                final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
+                insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+                insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+                insert.execute();
             }
         }
     }

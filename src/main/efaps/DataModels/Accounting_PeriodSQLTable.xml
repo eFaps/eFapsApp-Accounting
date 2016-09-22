@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,27 +16,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
-                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e9c66a83-a9c9-4686-bfb5-4dc218427caf</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <specification>DM00012</specification>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodSQLTable</name>
         <database>
             <table-name>T_ACCPERIOD</table-name>
-            <!-- columns -->
             <column name="COMPANYID"    type="INTEGER"      not-null="true" />
             <column name="NAME"         type="STRING_SHORT" not-null="true" length="128" />
             <column name="FROMDATE"     type="DATETIME"     not-null="true" />
