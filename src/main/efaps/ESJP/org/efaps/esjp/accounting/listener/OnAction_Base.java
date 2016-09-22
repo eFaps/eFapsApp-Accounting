@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -38,20 +35,21 @@ import org.efaps.util.EFapsException;
 /**
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("901fb0a0-a359-4ef0-8c11-3aa31022c459")
 @EFapsApplication("eFapsApp-Accounting")
 public abstract class OnAction_Base
     implements IOnAction
 {
+
     /**
      * Called after the creation/insert of a new Document with the values
      * already set and the instance valid.
      *
      * @param _typeClass    typed class instance
      * @param _parameter    Parameter as passed by the eFaps API
-     * @param _actionInst   instance created
+     * @param _actionRelInst the action rel inst
      * @throws EFapsException on error
      */
     @Override
@@ -118,6 +116,9 @@ public abstract class OnAction_Base
         } else if (CISales.IncomingExchange.isType(_type)) {
             final Action action = new Action();
             action.create4IncomingExchange(_parameter, _actionRelInst);
+        } else if (CISales.IncomingCheck.isType(_type)) {
+            final Action action = new Action();
+            action.create4Doc(_parameter, _actionRelInst);
         }
     }
 
