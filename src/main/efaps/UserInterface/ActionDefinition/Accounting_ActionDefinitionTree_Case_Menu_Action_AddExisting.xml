@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,17 +16,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>76893fdc-70df-47e5-b909-841a4df75753</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ActionDefinitionTree_Case_Menu_Action_AddExisting</name>
@@ -64,6 +58,14 @@
                 <property name="ConnectParentType07">Sales_ActionDefinitionIncomingExchange</property>
                 <property name="ConnectChildAttribute07">ToLinkAbstract</property>
                 <property name="ConnectParentAttribute07">FromLinkAbstract</property>
+                <property name="ConnectType08">Accounting_ActionDefinition2Case4IncomingCheck</property>
+                <property name="ConnectParentType08">Sales_ActionDefinitionIncomingCheck</property>
+                <property name="ConnectChildAttribute08">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute08">FromLinkAbstract</property>
+                <property name="ConnectType09">Accounting_ActionDefinition2Case4Exchange</property>
+                <property name="ConnectParentType09">Sales_ActionDefinitionExchange</property>
+                <property name="ConnectChildAttribute09">ToLinkAbstract</property>
+                <property name="ConnectParentAttribute09">FromLinkAbstract</property>
             </execute>
         </target>
         <property name="Target">modal</property>
