@@ -24,9 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -60,9 +62,11 @@ import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.report.DocumentDetailsReport;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.admin.datamodel.RangesValue_Base.RangeValueOption;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
@@ -508,12 +512,15 @@ public abstract class FieldValue_Base
         final StringBuilder ret = new StringBuilder();
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
         final Table table = new Table().setStyle("width:350px;");
         for (final Instance docInst : getSelectedDocInst(_parameter)) {
             final DocumentInfo doc = new DocumentInfo(docInst);
             addDocumentInfo(_parameter, table, doc);
             final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
-            if (taxInfo.isPerception()) {
+            final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+            if (BooleanUtils.toBoolean(props.getProperty(AccountingSettings.PERIOD_INCOMINGPERWITHDOC,
+                            SummarizeDefinition.NEVER.name())) && taxInfo.isPerception()) {
                 final DocumentInfo percDoc = new DocumentInfo(taxInfo.getTaxDocInstance(
                                 CISales.IncomingPerceptionCertificate));
                 addDocumentInfo(_parameter, table, percDoc);
@@ -528,8 +535,8 @@ public abstract class FieldValue_Base
             current = span;
             i++;
         }
-        ret.append(table.toHtml()).append(InterfaceUtils.wrappInScriptTag(_parameter, getScript(_parameter, docs), true,
-                        0));
+        ret.append(table.toHtml()).append(InterfaceUtils.wrappInScriptTag(_parameter,
+                        getScript(_parameter, docs), true, 0));
         return ret;
     }
 

@@ -115,6 +115,11 @@ public interface AccountingSettings
     /**
      * Activate the mechanism for Retention and Perception.
      */
+    String PERIOD_INCOMINGPERWITHDOC = "IncomingPerceptionWithDocument";
+
+    /**
+     * Activate the mechanism for Retention and Perception.
+     */
     String PERIOD_SHOWREPORT = "ShowReportOnCreate";
 
     /**

@@ -141,6 +141,7 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATEFAMILY, "true");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATEKEY, "true");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_CASEACTIVATETREEVIEW, "true");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_INCOMINGPERWITHDOC, "true");
     }
 
     /**
