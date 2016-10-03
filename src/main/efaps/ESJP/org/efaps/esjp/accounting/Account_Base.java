@@ -121,42 +121,6 @@ public abstract class Account_Base
     }
 
     /**
-     * Method is used to render a dropdown field containing the account types.
-     *
-     * @param _parameter Parameter as passed from the eFAPS API
-     * @return Return containing the dropdown
-     * @throws EFapsException on error
-     */
-    public Return getTypeFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Return ret = new Return();
-        final Type rootType = CIAccounting.AccountAbstract.getType();
-        final List<Type> types = getChildren(rootType);
-        final Map<String, Long> values = new TreeMap<>();
-        for (final Type type : types) {
-            String name = DBProperties.getProperty(type.getName() + ".Label");
-            Type curType = type;
-            while (curType.getParentType() != null && !curType.getParentType().getUUID().equals(rootType.getUUID())) {
-                curType = curType.getParentType();
-                name = DBProperties.getProperty(curType.getName() + ".Label") + " - " + name;
-            }
-            values.put(name, type.getId());
-        }
-        final StringBuilder html = new StringBuilder();
-        html.append("<select name=\"").append(fieldvalue.getField().getName()).append("\" ")
-                        .append(IUserInterface.EFAPSTMPTAG).append(" >");
-        for (final Entry<String, Long> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue());
-            html.append("\">").append(entry.getKey()).append("</option>");
-        }
-        html.append("</select>");
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
-
-    /**
      * Recursive Method to get all child types of a type.
      *
      * @param _parent tyep the current children will be retrieved for
