@@ -17,8 +17,12 @@
 
 package org.efaps.esjp.accounting;
 
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -42,4 +46,29 @@ public class Period
      */
     public static final String REQKEY4CUR = Period_Base.REQKEY4CUR;
 
+    /**
+     * Eval current.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the instance
+     * @throws EFapsException on error
+     */
+    public static Instance evalCurrent(final Parameter _parameter)
+        throws EFapsException
+    {
+        return Period_Base.evalCurrent(_parameter);
+    }
+
+    /**
+     * Eval current currency.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    public static CurrencyInst evalCurrentCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        return Period_Base.evalCurrentCurrency(_parameter);
+    }
 }

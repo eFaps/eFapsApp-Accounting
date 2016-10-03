@@ -437,7 +437,7 @@ public abstract class Period_Base
                 if (instance.getType().isKindOf(CIAccounting.Period)) {
                     ret = instance;
                 } else if (instance.getType().isKindOf(CIAccounting.Account2ObjectAbstract)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.Account2ObjectAbstract.FromAccountAbstractLink)
                                     .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
@@ -445,14 +445,14 @@ public abstract class Period_Base
                     print.execute();
                     ret = print.<Instance>getSelect(sel);
                 } else if (instance.getType().isKindOf(CIAccounting.AccountAbstract)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.AccountAbstract.PeriodAbstractLink).instance();
                     print.addSelect(sel);
                     print.execute();
                     ret = print.<Instance>getSelect(sel);
                 } else if (instance.getType().isKindOf(CIAccounting.Transaction)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.Transaction.PeriodLink)
                                     .instance();
                     print.addSelect(selPeriodInst);
@@ -466,7 +466,7 @@ public abstract class Period_Base
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
                 } else if (instance.getType().isKindOf(CIAccounting.TransactionPositionAbstract)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder selPeriodInst = SelectBuilder.get()
                                     .linkto(CIAccounting.TransactionPositionAbstract.TransactionLink)
                                     .linkto(CIAccounting.Transaction.PeriodLink)
@@ -475,33 +475,33 @@ public abstract class Period_Base
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
                 } else if (instance.getType().isKindOf(CIAccounting.CaseAbstract)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder selPeriodInst = SelectBuilder.get()
                                     .linkto(CIAccounting.CaseAbstract.PeriodAbstractLink).instance();
                     print.addSelect(selPeriodInst);
                     print.execute();
                     ret = print.<Instance>getSelect(selPeriodInst);
                 } else if (instance.getType().isKindOf(CISales.PaymentDocumentIOAbstract)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     print.addAttribute(CISales.PaymentDocumentIOAbstract.Date);
                     print.executeWithoutAccessCheck();
                     ret = getCurrentPeriodByDate(_parameter,
                                     print.<DateTime>getAttribute(CISales.PaymentDocumentIOAbstract.Date));
                 } else if (instance.getType().isKindOf(CISales.RetentionCertificate)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     print.addAttribute(CISales.RetentionCertificate.Date);
                     print.executeWithoutAccessCheck();
                     ret = getCurrentPeriodByDate(_parameter,
                                     print.<DateTime>getAttribute(CISales.RetentionCertificate.Date));
                 } else if (instance.getType().isKindOf(CIAccounting.ReportAbstract)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.ReportAbstract.PeriodLink).instance();
                     print.addSelect(sel);
                     print.execute();
                     ret = print.<Instance>getSelect(sel);
                 } else if (instance.getType().isKindOf(CIAccounting.ActionDefinition2Case)) {
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
                     final SelectBuilder sel = SelectBuilder.get()
                                     .linkto(CIAccounting.ActionDefinition2Case.ToLinkAbstract)
                                     .linkto(CIAccounting.CaseAbstract.PeriodAbstractLink).instance();
@@ -1067,6 +1067,32 @@ public abstract class Period_Base
             ret.addAll(getTypeList(_parameter, child));
         }
         return ret;
+    }
+
+    /**
+     * Eval current.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the instance
+     * @throws EFapsException on error
+     */
+    protected static Instance evalCurrent(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Period().evaluateCurrentPeriod(_parameter);
+    }
+
+    /**
+     * Eval current currency.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    protected static CurrencyInst evalCurrentCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Period().evaluteCurrentCurrency(_parameter);
     }
 
     /**

@@ -111,7 +111,7 @@ public abstract class DocumentInfo_Base
     private DateTime date;
 
     /**
-     * Date used for rateevaluation
+     * Date used for rateevaluation.
      */
     private DateTime rateDate;
 
@@ -1218,23 +1218,25 @@ public abstract class DocumentInfo_Base
             transdate = new DateTime(transdateStr);
         }
 
-        ret.put("transactionDate", transdate.toString(DateTimeFormat.mediumDate().withLocale(
-                        Context.getThreadContext().getLocale())));
+        ret.put(Accounting.SubstitutorKeys.TRANSACTION_DATE.name(), transdate.toString(DateTimeFormat.mediumDate()
+                        .withLocale(Context.getThreadContext().getLocale())));
 
-        ret.put("documentDate", getDate() == null ? "" : getDate().toString(DateTimeFormat.mediumDate().withLocale(
-                            Context.getThreadContext().getLocale())));
+        ret.put(Accounting.SubstitutorKeys.DOCUMENT_DATE.name(), getDate() == null
+                        ? "" : getDate().toString(DateTimeFormat.mediumDate().withLocale(
+                                        Context.getThreadContext().getLocale())));
 
         if (getInstance() != null && getInstance().isValid()) {
-            ret.put("documentType", getInstance().getType().getLabel());
+            ret.put(Accounting.SubstitutorKeys.DOCUMENT_TYPE.name(), getInstance().getType().getLabel());
             if (getInstance().getType().isKindOf(CIERP.DocumentAbstract)) {
                 final PrintQuery print = new PrintQuery(getInstance());
                 print.addAttribute(CIERP.DocumentAbstract.Name);
                 print.executeWithoutAccessCheck();
-                ret.put("documentName", print.<String>getAttribute(CIERP.DocumentAbstract.Name));
+                ret.put(Accounting.SubstitutorKeys.DOCUMENT_NAME.name(),
+                                print.<String>getAttribute(CIERP.DocumentAbstract.Name));
             }
         } else {
-            ret.put("documentType", "");
-            ret.put("documentName", "");
+            ret.put(Accounting.SubstitutorKeys.DOCUMENT_TYPE.name(), "");
+            ret.put(Accounting.SubstitutorKeys.DOCUMENT_NAME.name(), "");
         }
         return ret;
     }

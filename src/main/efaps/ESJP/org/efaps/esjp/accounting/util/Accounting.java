@@ -81,6 +81,33 @@ public final class Accounting
     }
 
     /**
+     * The Enum SubstitutorKeys.
+     *
+     * @author The eFaps Team
+     */
+    public enum SubstitutorKeys
+    {
+
+        /** The transaction date. */
+        TRANSACTION_DATE,
+
+        /** The document date. */
+        DOCUMENT_DATE,
+
+        /** The document type. */
+        DOCUMENT_TYPE,
+
+        /** The document name. */
+        DOCUMENT_NAME,
+
+        /** The product name. */
+        PRODUCT_NAME,
+
+        /** The product descr. */
+        PRODUCT_DESCR;
+    }
+
+    /**
      * The Enum Taxed4PurchaseRecord.
      *
      */
@@ -241,7 +268,9 @@ public final class Accounting
         /** Official Report. */
         APPLYLABEL,
         /** Official Report. */
-        EVALRELATION;
+        EVALRELATION,
+        /** Do not join the information. Applies only for product evaluations */
+        SEPARATELY;
 
         /**
          * {@inheritDoc}

@@ -19,21 +19,30 @@ package org.efaps.esjp.accounting;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.text.StrSubstitutor;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
+import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.products.TreeView;
 import org.efaps.util.EFapsException;
@@ -562,6 +571,25 @@ public abstract class Account2CaseInfo_Base
                         classTmp = classTmp.getParentClassification();
                     }
                 }
+            }
+        }
+
+        if (ret != null && !ret.getRemark().isEmpty()) {
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, _caseInst);
+            final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+
+            if (BooleanUtils.toBoolean(props.getProperty(AccountingSettings.PERIOD_ACTIVATEREMARK4TRANSPOS))) {
+                final PrintQuery print = CachedPrintQuery.get4Request(_productInstance);
+                print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
+                print.execute();
+
+                final Map<String, String> map = new HashMap<>();
+                map.put(Accounting.SubstitutorKeys.PRODUCT_NAME.name(),
+                                print.getAttribute(CIProducts.ProductAbstract.Name));
+                map.put(Accounting.SubstitutorKeys.PRODUCT_DESCR.name(),
+                                print.getAttribute(CIProducts.ProductAbstract.Description));
+                final StrSubstitutor sub = new StrSubstitutor(map);
+                ret.setRemark(sub.replace(ret.getRemark()));
             }
         }
         return ret;

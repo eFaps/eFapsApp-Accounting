@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -708,22 +709,26 @@ public abstract class Transaction_Base
         if (caseInst.isValid()) {
             _doc.setCaseInst(caseInst);
 
-            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-            final Instance periodCurrenycInstance = new Period().getCurrency(periodInst).getInstance();
+            final Instance periodInst = Period.evalCurrent(_parameter);
+            final Instance periodCurrenycInstance = Period.evalCurrentCurrency(_parameter).getInstance();
 
             final List<Instance> labelInsts = new Label().getLabelInst4Documents(_parameter, _doc.getInstance(),
                             periodInst);
 
-            final Map<Instance, Account2CaseInfo> inst2caseInfo = new HashMap<>();
+            final Map<String, Account2CaseInfo> inst2caseInfo = new HashMap<>();
             for (final Entry<Instance, BigDecimal> entry : _doc.getProduct2Amount().entrySet()) {
                 final Account2CaseInfo acc2case = Account2CaseInfo.get4Product(_parameter, caseInst, entry.getKey());
                 if (acc2case != null) {
-                    if (inst2caseInfo.containsKey(acc2case.getInstance())) {
-                        inst2caseInfo.get(acc2case.getInstance()).setAmount(
-                                        inst2caseInfo.get(acc2case.getInstance()).getAmount().add(entry.getValue()));
+                    if (inst2caseInfo.containsKey(acc2case.getInstance().getOid())) {
+                        inst2caseInfo.get(acc2case.getInstance().getOid())
+                            .setAmount(inst2caseInfo.get(acc2case.getInstance()).getAmount().add(entry.getValue()));
                     } else {
                         acc2case.setAmount(entry.getValue());
-                        inst2caseInfo.put(acc2case.getInstance(), acc2case);
+                        if (acc2case.getConfigs().contains(Accounting.Account2CaseConfig.SEPARATELY)) {
+                            inst2caseInfo.put(RandomStringUtils.random(4), acc2case);
+                        } else {
+                            inst2caseInfo.put(acc2case.getInstance().getOid(), acc2case);
+                        }
                     }
                 }
             }
@@ -768,7 +773,7 @@ public abstract class Transaction_Base
                                     new BigDecimal(acc2case.getDenominator()),
                                     RoundingMode.HALF_UP);
                     final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
-                                    || acc2case.isCheckKey()
+                                    || acc2case.isCheckKey() || acc2case.isTreeView()
                                     ? acc2case.getAmount() : _doc.getAmount();
                     final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, RoundingMode.HALF_UP);
                     final BigDecimal accAmountRate = Currency.convertToCurrency(_parameter, accAmount,
@@ -1162,7 +1167,7 @@ public abstract class Transaction_Base
             map.put("amountRate_" + _postFix, account.getAmountRateFormated(_parameter));
             map.put("accountLink_" + _postFix, new String[] { account.getInstance().getOid(), account.getName() });
             map.put("description_" + _postFix, account.getDescription());
-            map.put("remark_" + _postFix, account.getRemark());
+            map.put("remark_" + _postFix, account.getRemark() == null ? "" : account.getRemark());
 
             final StringBuilder linkHtml = "debit".equalsIgnoreCase(_postFix)
                             ? account.getLinkDebitHtml() : account.getLinkCreditHtml();
