@@ -193,9 +193,9 @@ public abstract class FieldValue_Base
                 values.add(new DropDownPosition(inst.getOid(), i + "."));
                 i++;
             }
-            if (values.size() > 1) {
-                values.add(0, new DropDownPosition("", "-"));
-            }
+        }
+        if (!values.isEmpty()) {
+            values.add(0, new DropDownPosition("", "-"));
         }
         ret.put(ReturnValues.VALUES, values);
         return ret;
