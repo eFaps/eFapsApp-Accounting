@@ -25,13 +25,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -40,7 +37,6 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.jasper.JasperUtil;
-import org.efaps.api.ui.IUserInterface;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Delete;
@@ -62,6 +58,7 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.ui.print.UserInterface;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -72,8 +69,8 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.style.Styles;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.constant.VerticalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -108,30 +105,12 @@ public abstract class Report_Base
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @return html snipplet
+     * @throws EFapsException on error
      */
     public Return getMimeTypeFieldValueUI(final Parameter _parameter)
+        throws EFapsException
     {
-        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Return ret = new Return();
-        final StringBuilder html = new StringBuilder();
-        html.append("<select name=\"").append(uiValue.getField().getName()).append("\" ").append(
-                        IUserInterface.EFAPSTMPTAG).append(" size=\"1\">");
-
-        final Map<String, String> values = new TreeMap<>();
-        values.put(DBProperties.getProperty("org.efaps.esjp.accounting.report.Report.pdf"), "pdf");
-        values.put(DBProperties.getProperty("org.efaps.esjp.accounting.report.Report.xls"), "xls");
-
-        for (final Entry<String, String> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue());
-            if ("pdf".equals(entry.getValue())) {
-                html.append("\" selected=\"selected");
-            }
-            html.append("\">").append(entry.getKey()).append("</option>");
-        }
-        html.append("</select>");
-
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
+        return new UserInterface().getMimeFieldValueUI(_parameter);
     }
 
     /**
@@ -495,7 +474,7 @@ public abstract class Report_Base
 
         return DynamicReports.stl.style()
                         .setFont(Styles.font().setFontSize(9))
-                        .setAlignment(HorizontalAlignment.RIGHT, VerticalAlignment.MIDDLE)
+                        .setTextAlignment(HorizontalTextAlignment.RIGHT, VerticalTextAlignment.MIDDLE)
                         .setPadding(DynamicReports.stl.padding().setRight(5)).addConditionalStyle(condition1);
     }
 
@@ -514,7 +493,7 @@ public abstract class Report_Base
 
         return DynamicReports.stl.style()
                         .setFont(Styles.font().setFontSize(9))
-                        .setAlignment(HorizontalAlignment.LEFT, VerticalAlignment.MIDDLE)
+                        .setTextAlignment(HorizontalTextAlignment.LEFT, VerticalTextAlignment.MIDDLE)
                         .addConditionalStyle(condition1);
     }
 
@@ -587,11 +566,11 @@ public abstract class Report_Base
         @SuppressWarnings("unchecked")
         final List<DropDownPosition> values = (List<DropDownPosition>) ret.get(ReturnValues.VALUES);
         final CurrencyInst curInstObj = new Period().evaluteCurrentCurrency(_parameter);
-        for (final ListIterator<DropDownPosition> iter = values.listIterator(); iter.hasNext(); ) {
-             final DropDownPosition element = iter.next();
-             if (element.getValue().equals(curInstObj.getInstance().getOid())) {
-                 iter.remove();
-             }
+        for (final ListIterator<DropDownPosition> iter = values.listIterator(); iter.hasNext();) {
+            final DropDownPosition element = iter.next();
+            if (element.getValue().equals(curInstObj.getInstance().getOid())) {
+                iter.remove();
+            }
         }
         return ret;
     }
@@ -599,7 +578,7 @@ public abstract class Report_Base
     /**
      * The Class BoldCondition.
      */
-    private class BoldCondition
+    public class BoldCondition
         extends AbstractSimpleExpression<Boolean>
     {
 
@@ -815,7 +794,7 @@ public abstract class Report_Base
     /**
      * Base class for all types of nodes.
      */
-    public abstract class AbstractNode
+    public abstract static class AbstractNode
     {
         /**
          * List of children for this node.
@@ -1352,15 +1331,23 @@ public abstract class Report_Base
         }
     }
 
-    public class TotalNode
+    /**
+     * The Class TotalNode.
+     *
+     */
+    public static class TotalNode
         extends AbstractNode
     {
 
+        /** The sum. */
         private final BigDecimal sum;
 
         /**
+         * Instantiates a new total node.
+         *
          * @param _label    the label
          * @param _sum      the sum
+         * @param _level the level
          */
         public TotalNode(final String _label,
                          final BigDecimal _sum,
