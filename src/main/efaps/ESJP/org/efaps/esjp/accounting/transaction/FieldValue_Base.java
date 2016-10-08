@@ -495,7 +495,41 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, getDocumentFieldSnipplet(_parameter));
+        final StringBuilder html = getDocumentFieldSnipplet(_parameter);
+
+        final StringBuilder inner = new StringBuilder()
+                .append("var docs = query('input[name=document]');\n")
+                .append("query('select[name^=docLink]').forEach(function (node) {\n")
+                .append("for (i = node.options.length; i > docs.length; i--) {\n")
+                .append("node.remove(i);\n")
+                .append("}\n")
+                .append("for (i = node.options.length; i < docs.length + 1; i++) {\n")
+                .append("var option = document.createElement('option');\n")
+                .append("node.add(option);\n")
+                .append("}\n")
+                .append("for (i = 1; i < node.options.length; i++) {\n")
+                .append("node.options[i].text =  i + '.';\n")
+                .append("node.options[i].value =  docs[i-1].value;\n")
+                .append("}\n")
+                .append("});\n");
+
+        final StringBuilder topic = new StringBuilder()
+                .append("topic.subscribe(\"eFaps/addRowBeforeScript/transactionPositionDebitTable\", function(){\n")
+                .append("ud();\n")
+                .append("});\n")
+                .append("topic.subscribe(\"eFaps/addRowBeforeScript/transactionPositionCreditTable\", function(){\n")
+                .append("ud();\n")
+                .append("});\n");
+
+        final StringBuilder js = new StringBuilder();
+        js.append("var ud = function () {\n")
+                .append(InterfaceUtils.wrapInDojoRequire(_parameter, inner, DojoLibs.QUERY))
+                .append("}\n")
+                .append(InterfaceUtils.wrapInDojoRequire(_parameter, topic, DojoLibs.TOPIC));
+
+        html.append(InterfaceUtils.wrappInScriptTag(_parameter, js, true, 0));
+
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 
@@ -512,8 +546,8 @@ public abstract class FieldValue_Base
         final StringBuilder ret = new StringBuilder();
         final List<DocumentInfo> docs = new ArrayList<>();
         final List<Integer> rowspan = new ArrayList<>();
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-        final Table table = new Table().setStyle("width:350px;");
+        final Instance periodInst = Period.evalCurrent(_parameter);
+        final Table table = new Table().setStyle("width:350px;").addAttribute("id", "documentTable");
         for (final Instance docInst : getSelectedDocInst(_parameter)) {
             final DocumentInfo doc = new DocumentInfo(docInst);
             addDocumentInfo(_parameter, table, doc);
@@ -1057,8 +1091,7 @@ public abstract class FieldValue_Base
                                       final List<DocumentInfo> _docs)
         throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
-        return ret;
+        return new StringBuilder();
     }
 
     /**

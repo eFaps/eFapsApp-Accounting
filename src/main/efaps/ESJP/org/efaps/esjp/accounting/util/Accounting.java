@@ -29,6 +29,7 @@ import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
+import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -72,6 +73,69 @@ public final class Accounting
                     .key(BASE + "CostTextPosition4TaxFree")
                     .description(" Link to a Products_ProductCostTextPosition used for creating Positions"
                                     + "in an External Voucher without Tax.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4EXTERNAL_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4External.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4External.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4DOC_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4Doc.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4Doc.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4DOCBOOK_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4DocToBook.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4External.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4EXCHANGE_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4Exchange.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4External.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4EXTERNALBOOK_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4ExternalToBook.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4External.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4PAYIN_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4PaymentIn.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4External.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CREATE4PAYOUT_AUTOCOMPLETE4ADDDOC
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Create4PaymentOut.AutoComplete4AdditionalDocuments")
+                    .description("Possibility to overwrite the default Autocomplete "
+                                    + "for additional Document in Create4External.");
 
     /**
      * Singelton.

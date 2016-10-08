@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -44,6 +46,7 @@ import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.db.InstanceUtils;
@@ -483,6 +486,44 @@ public abstract class FieldUpdate_Base
             default:
                 break;
         }
+        return ret;
+    }
+
+    /**
+     * Method is executed on update trigger for the account field in the debit
+     * and credit table inside the transaction form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return list for update trigger
+     * @throws EFapsException on error
+     */
+    public Return update4AdditionalDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+        list.add(map);
+        ret.put(ReturnValues.VALUES, list);
+
+        final Parameter parameter = ParameterUtil.clone(_parameter);
+
+        final String[] docs = _parameter.getParameterValues("document");
+        final String[] addDocs = _parameter.getParameterValues("additionalDocument");
+        final String[] selectedRow = ArrayUtils.addAll(ArrayUtils.removeElements(docs, addDocs), addDocs);
+
+        ParameterUtil.setParameterValues(parameter, "selectedRow", selectedRow);
+
+        final StringBuilder tableHtml = new FieldValue().getDocumentFieldSnipplet(parameter);
+
+        final StringBuilder js = new StringBuilder()
+                    .append("var s = \"").append(StringEscapeUtils.escapeEcmaScript(tableHtml.toString()))
+                            .append("\";")
+                    .append("domConstruct.place(s, \"documentTable\", \"replace\");")
+                    .append("topic.publish(\"eFaps/addRow/transactionPositionDebitTable\");\n");
+
+        InterfaceUtils.appendScript4FieldUpdate(map,
+                        InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT, DojoLibs.TOPIC));
         return ret;
     }
 }

@@ -35,8 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
@@ -74,11 +76,13 @@ import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
@@ -90,8 +94,10 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -721,7 +727,8 @@ public abstract class Transaction_Base
                 if (acc2case != null) {
                     if (inst2caseInfo.containsKey(acc2case.getInstance().getOid())) {
                         inst2caseInfo.get(acc2case.getInstance().getOid())
-                            .setAmount(inst2caseInfo.get(acc2case.getInstance()).getAmount().add(entry.getValue()));
+                            .setAmount(inst2caseInfo.get(acc2case.getInstance().getOid()).getAmount()
+                                            .add(entry.getValue()));
                     } else {
                         acc2case.setAmount(entry.getValue());
                         if (acc2case.getConfigs().contains(Accounting.Account2CaseConfig.SEPARATELY)) {
@@ -1187,7 +1194,7 @@ public abstract class Transaction_Base
             i++;
         }
         ret.append(getTableAddNewRowsScript(_parameter, tableName, values, onJs, false, false, null,
-                        new Period().evaluateCurrentPeriod(_parameter).getOid()));
+                             Period.evalCurrent(_parameter).getOid()));
         return ret;
     }
 
@@ -1406,6 +1413,60 @@ public abstract class Transaction_Base
         ret.put(ReturnValues.TRUE, true);
         return ret;
     }
+
+    /**
+     * Auto complete for additional document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return autoComplete4AdditionalDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+
+        final String req = (String) _parameter.get(ParameterValues.OTHERS);
+
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
+
+        if (BooleanUtils.toBoolean(getProperty(_parameter, "AllowAssigned"))) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.FromLink, Period.evalCurrent(_parameter));
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIAccounting.Period2ERPDocument.ToLink);
+            queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+        }
+
+        InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
+
+        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact)
+                        .attribute(CIContacts.Contact.Name);
+        multi.addSelect(selContactName);
+        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+            final String choice = name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                            Context.getThreadContext().getLocale()))  + " - " + multi.getSelect(selContactName);
+
+            final Map<String, String> map = new HashMap<>();
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            tmpMap.put(name, map);
+        }
+        list.addAll(tmpMap.values());
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
 
     /**
      * @param _parameter Parameter as passed from the eFaps API

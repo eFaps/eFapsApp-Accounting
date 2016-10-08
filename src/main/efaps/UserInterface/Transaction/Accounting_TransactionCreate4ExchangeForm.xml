@@ -187,7 +187,7 @@
         </field>
         <field name="calculateGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
         </field>
         <field name="calculateConfig" >
             <property name="HideLabel">true</property>
@@ -210,6 +210,27 @@
                 method="calculateButton"
                 name="Accounting_TransactionCreate4ExternalForm.calculateButton.UI_FIELD_CMD"
                 event="UI_FIELD_CMD">
+            </trigger>
+        </field>
+        <field name="additionalDocument">
+            <property name="Label">Accounting_TransactionCreate4ExchangeForm.additionalDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
+                method="autoComplete4AdditionalDocument"
+                name="Accounting_TransactionCreate4ExchangeForm.additionalDocument.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type">Sales_Exchange</property>
+                <property name="StatusGroup">Sales_ExchangeStatus</property>
+                <property name="Status">Open</property>
+                <!--  Accounting-Configuration -->
+                <property name="PropertiesConfig">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
+                <property name="PropertiesConfigAttribute">org.efaps.accounting.Create4Exchange.AutoComplete4AdditionalDocuments</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4AdditionalDocument"
+                name="Accounting_TransactionCreate4ExchangeForm.additionalDocument.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
             </trigger>
         </field>
         <field character="Heading" name="transactionPositionDebit">
