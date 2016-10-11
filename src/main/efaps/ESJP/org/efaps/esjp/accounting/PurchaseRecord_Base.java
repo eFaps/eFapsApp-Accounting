@@ -1,3 +1,19 @@
+/*
+ * Copyright 2003 - 2016 The eFaps Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
 package org.efaps.esjp.accounting;
 
 import java.math.BigDecimal;
@@ -37,6 +53,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
@@ -122,6 +139,13 @@ public abstract class PurchaseRecord_Base
         return multi.execute(_parameter);
     }
 
+    /**
+     * Insert post trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return insertPostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -129,6 +153,13 @@ public abstract class PurchaseRecord_Base
         return new Return();
     }
 
+    /**
+     * Update purchase record.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return updatePurchaseRecord(final Parameter _parameter)
         throws EFapsException
     {
@@ -145,6 +176,13 @@ public abstract class PurchaseRecord_Base
         return new Return();
     }
 
+    /**
+     * Update purchase record two document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @throws EFapsException on error
+     */
     protected void updatePurchaseRecord2Document(final Parameter _parameter,
                                                  final Instance _instance)
         throws EFapsException
@@ -212,6 +250,13 @@ public abstract class PurchaseRecord_Base
         }
     }
 
+    /**
+     * Prints the report.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return printReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -231,6 +276,13 @@ public abstract class PurchaseRecord_Base
         return report.execute(_parameter);
     }
 
+    /**
+     * Connect documents.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInsts the doc insts
+     * @throws EFapsException on error
+     */
     public void connectDocuments(final Parameter _parameter,
                                  final Instance... _docInsts)
         throws EFapsException
@@ -241,6 +293,14 @@ public abstract class PurchaseRecord_Base
         }
     }
 
+    /**
+     * Connect documents.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _purchaseRecInst the purchase rec inst
+     * @param _docInsts the doc insts
+     * @throws EFapsException on error
+     */
     public void connectDocuments(final Parameter _parameter,
                                  final Instance _purchaseRecInst,
                                  final Instance... _docInsts)
@@ -248,26 +308,27 @@ public abstract class PurchaseRecord_Base
     {
         if (_purchaseRecInst != null && _docInsts != null && _purchaseRecInst.isValid()) {
             for (final Instance docInst : _docInsts) {
-                final Taxed4PurchaseRecord taxed = evalTaxed(_parameter, docInst);
+                if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
+                    final Taxed4PurchaseRecord taxed = evalTaxed(_parameter, docInst);
 
-                final PrintQuery print = new PrintQuery(docInst);
-                final SelectBuilder sel = SelectBuilder.get()
-                                .linkfrom(CISales.Document2DocumentType.DocumentLink)
-                                .linkto(CISales.Document2DocumentType.DocumentTypeLink)
-                                .attribute(CIERP.DocumentType.Configuration);
-                print.addSelect(sel);
-                print.executeWithoutAccessCheck();
-                final List<ERP.DocTypeConfiguration> configs = print.getSelect(sel);
-                if (configs != null && configs.contains(ERP.DocTypeConfiguration.PURCHASERECORD)) {
-                    final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
-                    queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
-                    final InstanceQuery query = queryBldr.getQuery();
-                    if (query.executeWithoutAccessCheck().isEmpty()) {
-                        final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
-                        purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, _purchaseRecInst);
-                        purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
-                        purInsert.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
-                        purInsert.execute();
+                    final PrintQuery print = new PrintQuery(docInst);
+                    final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.Document2DocumentType.DocumentLink)
+                                    .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(
+                                                    CIERP.DocumentType.Configuration);
+                    print.addSelect(sel);
+                    print.executeWithoutAccessCheck();
+                    final List<ERP.DocTypeConfiguration> configs = print.getSelect(sel);
+                    if (configs != null && configs.contains(ERP.DocTypeConfiguration.PURCHASERECORD)) {
+                        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
+                        queryBldr.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                        final InstanceQuery query = queryBldr.getQuery();
+                        if (query.executeWithoutAccessCheck().isEmpty()) {
+                            final Insert purInsert = new Insert(CIAccounting.PurchaseRecord2Document);
+                            purInsert.add(CIAccounting.PurchaseRecord2Document.FromLink, _purchaseRecInst);
+                            purInsert.add(CIAccounting.PurchaseRecord2Document.ToLink, docInst);
+                            purInsert.add(CIAccounting.PurchaseRecord2Document.Taxed, taxed);
+                            purInsert.execute();
+                        }
                     }
                 }
             }
@@ -275,9 +336,12 @@ public abstract class PurchaseRecord_Base
     }
 
     /**
+     * Eval taxed.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _docInstance Instance of the document to be evaluated
-     * @return
+     * @return the taxed for purchase record
+     * @throws EFapsException on error
      */
     protected Taxed4PurchaseRecord evalTaxed(final Parameter _parameter,
                                              final Instance _docInstance)
@@ -295,8 +359,11 @@ public abstract class PurchaseRecord_Base
     }
 
     /**
+     * Sets the taxed value.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return empty Return
+     * @throws EFapsException on error
      */
     public Return setTaxedValue(final Parameter _parameter)
         throws EFapsException
@@ -315,8 +382,11 @@ public abstract class PurchaseRecord_Base
     }
 
     /**
+     * Configure.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return empty Return
+     * @throws EFapsException on error
      */
     public Return configure(final Parameter _parameter)
         throws EFapsException
@@ -330,7 +400,7 @@ public abstract class PurchaseRecord_Base
             for (int i = 0; i < projects.length; i++) {
                 final Instance inst = Instance.get(oidMap.get(rowKeys[i]));
                 final Instance projInst = Instance.get(projects[i]);
-                Update update;
+                final Update update;
                 if (inst.isValid()) {
                     update = new Update(inst);
                 } else {
@@ -368,7 +438,7 @@ public abstract class PurchaseRecord_Base
         final SelectBuilder sel = SelectBuilder.get().linkto(CIAccounting.PurchaseRecord2Document.ToLink).instance();
         multi.addSelect(sel);
         multi.execute();
-        final Map<Instance,Instance> rel2doc = new HashMap<>();
+        final Map<Instance, Instance> rel2doc = new HashMap<>();
         while (multi.next()) {
             rel2doc.put(multi.getCurrentInstance(), multi.<Instance>getSelect(sel));
         }

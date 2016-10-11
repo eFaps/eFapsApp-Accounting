@@ -28,6 +28,8 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -476,7 +478,7 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, getDocumentFieldSnipplet(_parameter)
+        ret.put(ReturnValues.SNIPLETT, getDocumentFieldSnipplet(_parameter, null)
                         .append("<input type=\"hidden\" name=\"swapInstance\" value=\"")
                         .append(getSelectedInstances(_parameter).get(0).getOid()).append("\"/>"));
         return ret;
@@ -495,7 +497,12 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final StringBuilder html = getDocumentFieldSnipplet(_parameter);
+        final StringBuilder html = getDocumentFieldSnipplet(_parameter, null);
+
+        for (final Instance docInst : getSelectedDocInst(_parameter)) {
+            html.append("<input type=\"hidden\" name=\"originalSelected\" value=\"")
+                .append(docInst.getOid()).append("\"/>");
+        }
 
         final StringBuilder inner = new StringBuilder()
                 .append("var docs = query('input[name=document]');\n")
@@ -537,10 +544,12 @@ public abstract class FieldValue_Base
      * Gets the document field snipplet.
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _js the js
      * @return the document field snipplet
      * @throws EFapsException on error
      */
-    protected StringBuilder getDocumentFieldSnipplet(final Parameter _parameter)
+    protected StringBuilder getDocumentFieldSnipplet(final Parameter _parameter,
+                                                     final StringBuilder _js)
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
@@ -549,17 +558,32 @@ public abstract class FieldValue_Base
         final Instance periodInst = Period.evalCurrent(_parameter);
         final Table table = new Table().setStyle("width:350px;").addAttribute("id", "documentTable");
         for (final Instance docInst : getSelectedDocInst(_parameter)) {
-            final DocumentInfo doc = new DocumentInfo(docInst);
-            addDocumentInfo(_parameter, table, doc);
-            final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
-            final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-            if (BooleanUtils.toBoolean(props.getProperty(AccountingSettings.PERIOD_INCOMINGPERWITHDOC,
-                            SummarizeDefinition.NEVER.name())) && taxInfo.isPerception()) {
-                final DocumentInfo percDoc = new DocumentInfo(taxInfo.getTaxDocInstance(
-                                CISales.IncomingPerceptionCertificate));
-                addDocumentInfo(_parameter, table, percDoc);
+            // if it is a contact instance the document will be created afterwards
+            if (docInst.getType().isKindOf(CIContacts.ContactAbstract)) {
+                final PrintQuery print = new PrintQuery(docInst);
+                print.addAttribute(CIContacts.ContactAbstract.Name);
+                print.execute();
+                final StringBuilder label = new StringBuilder().append(docInst.getType().getLabel())
+                            .append("<input type=\"hidden\" name=\"document\" value=\"").append(docInst.getOid())
+                                .append("\"/>").append(getRemoveBtn(_parameter, _js));
+                table.addRow()
+                    .addColumn(label).getCurrentColumn().setStyle("font-weight: bold").getCurrentTable()
+                    .addRow()
+                        .addColumn(print.<String>getAttribute(CIContacts.ContactAbstract.Name));
+                rowspan.add(table.getRows().size());
+            } else {
+                final DocumentInfo doc = new DocumentInfo(docInst);
+                addDocumentInfo(_parameter, table, doc, _js);
+                final DocTaxInfo taxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, doc.getInstance());
+                final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+                if (BooleanUtils.toBoolean(props.getProperty(AccountingSettings.PERIOD_INCOMINGPERWITHDOC,
+                                SummarizeDefinition.NEVER.name())) && taxInfo.isPerception()) {
+                    final DocumentInfo percDoc = new DocumentInfo(taxInfo.getTaxDocInstance(
+                                    CISales.IncomingPerceptionCertificate));
+                    addDocumentInfo(_parameter, table, percDoc, _js);
+                }
+                rowspan.add(table.getRows().size());
             }
-            rowspan.add(table.getRows().size());
         }
         int current = 0;
         int i = 1;
@@ -569,8 +593,60 @@ public abstract class FieldValue_Base
             current = span;
             i++;
         }
-        ret.append(table.toHtml()).append(InterfaceUtils.wrappInScriptTag(_parameter,
-                        getScript(_parameter, docs), true, 0));
+        ret.append(table.toHtml()).append(add2DocumentField(_parameter, docs, _js));
+        return ret;
+    }
+
+    /**
+     * Adds the two document field.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docs the docs
+     * @param _js the js
+     * @return the string builder
+     */
+    protected StringBuilder add2DocumentField(final Parameter _parameter,
+                                              final List<DocumentInfo> _docs,
+                                              final StringBuilder _js)
+    {
+        return new StringBuilder();
+    }
+
+    /**
+     * Gets the removes the btn.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the removes the btn
+     */
+    protected StringBuilder getRemoveBtn(final Parameter _parameter,
+                                         final StringBuilder _js)
+    {
+        final String id = RandomStringUtils.randomAlphanumeric(8);
+        final StringBuilder ret = new StringBuilder()
+            .append("<span id=\"").append(id).append("\" ")
+            .append("style=\"float: right; background-image:")
+            .append(" url(&quot;../../eFaps/servlet/image/org.efaps.ui.wicket.components.menutree.Remove.gif?&quot;); ")
+            .append("background-repeat: no-repeat; height: 12px; width: 14px; cursor: pointer;\"></span>");
+
+       _js.append("on.once(dom.byId('").append(id).append("'), 'click', function (e) {\n")
+            .append("var sb = dojo.query(e.target.parentNode.parentNode).nextAll().some(function (node) {\n")
+            .append("var c = query('td[rowspan]', node);\n")
+            .append("if (c.length < 1) {\n")
+            .append("domConstruct.destroy(node);\n")
+            .append("return false;\n")
+            .append("} else {\n")
+            .append("return true;\n")
+            .append("}\n")
+            .append("});\n")
+            .append("domConstruct.destroy(e.target.parentNode.parentNode);\n")
+            .append("var i = 1;\n")
+            .append("query('td[rowspan]', 'documentTable').forEach(function (node) {\n")
+            .append("node.textContent = i + '.';\n")
+            .append("i++;\n")
+            .append("});\n")
+            .append("topic.publish(\"eFaps/addRowBeforeScript/transactionPositionDebitTable\");\n")
+            .append("});\n");
+
         return ret;
     }
 
@@ -668,12 +744,14 @@ public abstract class FieldValue_Base
      * @param _parameter    Parameter as passed from eFaps to an esjp
      * @param _table the table
      * @param _doc          Document
+     * @param _js the javascript
      * @throws EFapsException on error
      */
     @SuppressWarnings("checkstyle:methodlength")
     protected void addDocumentInfo(final Parameter _parameter,
                                    final Table _table,
-                                   final DocumentInfo _doc)
+                                   final DocumentInfo _doc,
+                                   final StringBuilder _js)
         throws EFapsException
     {
         final boolean showNetTotal = !"true".equalsIgnoreCase(getProperty(_parameter, "NoNetTotal"));
@@ -682,6 +760,8 @@ public abstract class FieldValue_Base
         final boolean showNote = "true".equalsIgnoreCase(getProperty(_parameter, "ShowNote"));
         final boolean showSwap = !"true".equalsIgnoreCase(getProperty(_parameter, "NoSwap"));
         final boolean showContact = !"true".equalsIgnoreCase(getProperty(_parameter, "NoContact"));
+
+        final String[] origSel = _parameter.getParameterValues("originalSelected");
 
         _doc.setFormater(NumberFormatter.get().getTwoDigitsFormatter());
 
@@ -752,6 +832,11 @@ public abstract class FieldValue_Base
             .append(docType == null ? "" : " - " + CIERP.DocumentType.getType().getLabel() + ": " + docType)
             .append("<input type=\"hidden\" name=\"document\" value=\"").append(_doc.getInstance().getOid())
             .append("\"/>");
+
+        if (!ArrayUtils.isEmpty(origSel) && !ArrayUtils.contains(origSel, _doc.getInstance().getOid())) {
+            label.append(getRemoveBtn(_parameter, _js));
+        }
+
         _table.addRow()
                 .addColumn(label).getCurrentColumn().setStyle("font-weight: bold").getCurrentTable()
             .addRow()
@@ -1076,22 +1161,6 @@ public abstract class FieldValue_Base
                            CIAccounting.AccountIncomeStatementRevenue2ProductClass,
                            CIAccounting.AccountIncomeStatementRevenue);
         }
-    }
-
-    /**
-     * Get the script to set the values for debit and credit on opening of the
-     * form.
-     *
-     * @param _parameter        Parameter as passed from the eFaps API
-     * @param _docs the docs
-     * @return StringBuilder
-     * @throws EFapsException on error
-     */
-    protected StringBuilder getScript(final Parameter _parameter,
-                                      final List<DocumentInfo> _docs)
-        throws EFapsException
-    {
-        return new StringBuilder();
     }
 
     /**

@@ -17,6 +17,7 @@
 
 package org.efaps.esjp.accounting;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -29,6 +30,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.document.AbstractDocument;
+import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -80,6 +82,31 @@ public abstract class TransactionDocument_Base
         connect2Object(_parameter, ret);
 
         return ret;
+    }
+
+
+    /**
+     * Creates the doc for contact.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _contactInst the contact inst
+     * @return newly created doc
+     * @throws EFapsException on error
+     */
+    public Instance createDoc4Contact(final Parameter _parameter,
+                                      final Instance _contactInst)
+        throws EFapsException
+    {
+        final Insert insert = new Insert(CIAccounting.TransactionDocument);
+        insert.add(CIAccounting.TransactionDocument.Date, DateTimeUtil.translateFromUI(_parameter.getParameterValue(
+                        "date")));
+        insert.add(CIAccounting.TransactionDocument.Contact, _contactInst);
+
+        final String name = getDocName4Create(_parameter);
+        insert.add(CISales.TransactionDocument.Name, name);
+        insert.add(CISales.TransactionDocument.Status, Status.find(CIAccounting.TransactionDocumentStatus.Open));
+        insert.execute();
+        return insert.getInstance();
     }
 
     @Override

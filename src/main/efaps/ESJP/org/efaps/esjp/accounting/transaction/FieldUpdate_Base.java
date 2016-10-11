@@ -513,17 +513,58 @@ public abstract class FieldUpdate_Base
         final String[] selectedRow = ArrayUtils.addAll(ArrayUtils.removeElements(docs, addDocs), addDocs);
 
         ParameterUtil.setParameterValues(parameter, "selectedRow", selectedRow);
+        final StringBuilder ajs = new StringBuilder();
 
-        final StringBuilder tableHtml = new FieldValue().getDocumentFieldSnipplet(parameter);
-
+        final StringBuilder tableHtml = new FieldValue().getDocumentFieldSnipplet(parameter, ajs);
         final StringBuilder js = new StringBuilder()
-                    .append("var s = \"").append(StringEscapeUtils.escapeEcmaScript(tableHtml.toString()))
-                            .append("\";")
+                    .append("var s = \"").append(StringEscapeUtils.escapeEcmaScript(tableHtml.toString())).append("\";")
                     .append("domConstruct.place(s, \"documentTable\", \"replace\");")
-                    .append("topic.publish(\"eFaps/addRow/transactionPositionDebitTable\");\n");
+                    .append("topic.publish(\"eFaps/addRowBeforeScript/transactionPositionDebitTable\");\n")
+                    .append(ajs);
 
         InterfaceUtils.appendScript4FieldUpdate(map,
-                        InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT, DojoLibs.TOPIC));
+                        InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT, DojoLibs.TOPIC,
+                                        DojoLibs.ON, DojoLibs.QUERY, DojoLibs.DOM, DojoLibs.NLTRAVERSE));
+
+        return ret;
+    }
+
+    /**
+     * Method is executed on update trigger for the account field in the debit
+     * and credit table inside the transaction form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return list for update trigger
+     * @throws EFapsException on error
+     */
+    public Return update4AdditionalContact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Map<String, Object>> list = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<>();
+        list.add(map);
+        ret.put(ReturnValues.VALUES, list);
+
+        final Parameter parameter = ParameterUtil.clone(_parameter);
+
+        final String[] docs = _parameter.getParameterValues("document");
+        final String[] addDocs = _parameter.getParameterValues("additionalContact");
+        final String[] selectedRow = ArrayUtils.addAll(ArrayUtils.removeElements(docs, addDocs), addDocs);
+
+        ParameterUtil.setParameterValues(parameter, "selectedRow", selectedRow);
+        final StringBuilder ajs = new StringBuilder();
+        final StringBuilder tableHtml = new FieldValue().getDocumentFieldSnipplet(parameter, ajs);
+
+        final StringBuilder js = new StringBuilder()
+                    .append("var s = \"").append(StringEscapeUtils.escapeEcmaScript(tableHtml.toString())).append("\";")
+                    .append("domConstruct.place(s, \"documentTable\", \"replace\");")
+                    .append("topic.publish(\"eFaps/addRowBeforeScript/transactionPositionDebitTable\");\n")
+                    .append(ajs);
+
+        InterfaceUtils.appendScript4FieldUpdate(map,
+                        InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.DOMCONSTRUCT, DojoLibs.TOPIC,
+                                        DojoLibs.ON, DojoLibs.QUERY, DojoLibs.DOM, DojoLibs.NLTRAVERSE));
         return ret;
     }
 }

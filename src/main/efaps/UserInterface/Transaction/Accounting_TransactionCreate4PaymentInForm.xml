@@ -158,7 +158,7 @@
         </field>
         <field name="calculateGroup" character="Group">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">4</property>
         </field>
         <field name="calculateConfig" >
             <property name="HideLabel">true</property>
@@ -201,6 +201,21 @@
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4AdditionalDocument"
                 name="Accounting_TransactionCreate4PaymentInForm.additionalDocument.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+            </trigger>
+        </field>
+        <field name="additionalContact">
+            <property name="Label">Accounting_TransactionCreate4PaymentInForm.additionalContact.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+             <trigger program="org.efaps.esjp.contacts.Contacts"
+                method="autoComplete4Contact"
+                name="Accounting_TransactionCreate4PaymentInForm.additionalContact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+            </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4AdditionalContact"
+                name="Accounting_TransactionCreate4PaymentInForm.additionalContact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
             </trigger>
         </field>

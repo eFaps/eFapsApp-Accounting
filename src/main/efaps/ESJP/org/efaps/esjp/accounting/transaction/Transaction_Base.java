@@ -612,8 +612,9 @@ public abstract class Transaction_Base
             LOG.debug("Evaluating Document {}", docOid);
             final Instance docInst = Instance.get(docOid);
             final DocumentInfo docInfo = new DocumentInfo();
-            if (caseInst.isValid() || docInst.isValid()
-                            && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
+            if (caseInst.isValid() && docInst.isValid() && docInst.getType().isKindOf(CIERP.DocumentAbstract.getType())
+                            || docInst.isValid()
+                                && docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
                 try {
                     ret.add(docInfo);
                     final String curr = _parameter.getParameterValue("currencyExternal");

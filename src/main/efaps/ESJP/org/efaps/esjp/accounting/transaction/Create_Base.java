@@ -25,11 +25,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
@@ -59,11 +61,13 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.TransPosType;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -314,8 +318,8 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         final Instance transInst = createFromUI(_parameter);
+        final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         connect2SubJournal(_parameter, transInst, null);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
@@ -626,7 +630,7 @@ public abstract class Create_Base
     {
         int i = 1;
         for (final Instance docInst : _docInstances) {
-            if (docInst.isValid()) {
+            if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
                 final Insert insert;
                 if (docInst.getType().isKindOf(CIERP.PaymentDocumentAbstract.getType())) {
                     insert = new Insert(CIAccounting.Transaction2PaymentDocument);
@@ -696,7 +700,7 @@ public abstract class Create_Base
     protected Instance createFromUI(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = Period.evalCurrent(_parameter);
 
         final TransInfo transInfo = new TransInfo();
         transInfo.setType(CIAccounting.Transaction.getType())
@@ -707,12 +711,66 @@ public abstract class Create_Base
             .setIdentifier(Transaction.IDENTTEMP)
             .setPeriodInst(periodInst);
 
+        createTransactionDoc4Contact(_parameter);
+
         analysePositionsFromUI(_parameter, transInfo, "Debit", null, true);
         analysePositionsFromUI(_parameter, transInfo, "Credit", null, true);
 
         transInfo.create(_parameter);
 
         return transInfo.getInstance();
+    }
+
+    /**
+     * Creates the transaction doc for contact.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
+    protected void createTransactionDoc4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<String, String> map = new HashMap<>();
+        createTransactionDoc4Contact(_parameter, map, "Debit");
+        createTransactionDoc4Contact(_parameter, map, "Credit");
+
+        final String[] docOids = _parameter.getParameterValues("document");
+        if (ArrayUtils.isNotEmpty(docOids)) {
+            for (int i = 0; i < docOids.length; i++) {
+                final Instance inst = Instance.get(docOids[i]);
+                if (InstanceUtils.isKindOf(inst, CIContacts.ContactAbstract) && map.containsKey(docOids[i])) {
+                    docOids[i] = map.get(docOids[i]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates the transaction doc for contact.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _map the map
+     * @param _suffix the suffix
+     * @throws EFapsException on error
+     */
+    protected void createTransactionDoc4Contact(final Parameter _parameter,
+                                                final Map<String, String> _map,
+                                                final String _suffix)
+        throws EFapsException
+    {
+        final String[] docLinkOids = _parameter.getParameterValues("docLink_" + _suffix);
+        if (ArrayUtils.isNotEmpty(docLinkOids)) {
+            for (int i = 0; i < docLinkOids.length; i++) {
+                final Instance inst = Instance.get(docLinkOids[i]);
+                if (InstanceUtils.isKindOf(inst, CIContacts.ContactAbstract)) {
+                    if (!_map.containsKey(inst.getOid())) {
+                        final Instance docinst = new TransactionDocument().createDoc4Contact(_parameter, inst);
+                        _map.put(inst.getOid(), docinst.getOid());
+                    }
+                    docLinkOids[i] = _map.get(inst.getOid());
+                }
+            }
+        }
     }
 
     /**
@@ -743,10 +801,12 @@ public abstract class Create_Base
         if (setStatus) {
             final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, null);
             for (final Instance docInst : _instances) {
-                final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
-                insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
-                insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
-                insert.execute();
+                if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
+                    final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
+                    insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+                    insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+                    insert.execute();
+                }
             }
         }
     }
