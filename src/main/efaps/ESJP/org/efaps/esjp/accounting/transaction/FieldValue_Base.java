@@ -616,6 +616,7 @@ public abstract class FieldValue_Base
      * Gets the removes the btn.
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _js the js
      * @return the removes the btn
      */
     protected StringBuilder getRemoveBtn(final Parameter _parameter,
@@ -625,10 +626,10 @@ public abstract class FieldValue_Base
         final StringBuilder ret = new StringBuilder()
             .append("<span id=\"").append(id).append("\" ")
             .append("style=\"float: right; background-image:")
-            .append(" url(&quot;../../eFaps/servlet/image/org.efaps.ui.wicket.components.menutree.Remove.gif?&quot;); ")
+            .append(" url(&quot;../servlet/image/org.efaps.ui.wicket.components.menutree.Remove.gif?&quot;); ")
             .append("background-repeat: no-repeat; height: 12px; width: 14px; cursor: pointer;\"></span>");
 
-       _js.append("on.once(dom.byId('").append(id).append("'), 'click', function (e) {\n")
+        _js.append("on.once(dom.byId('").append(id).append("'), 'click', function (e) {\n")
             .append("var sb = dojo.query(e.target.parentNode.parentNode).nextAll().some(function (node) {\n")
             .append("var c = query('td[rowspan]', node);\n")
             .append("if (c.length < 1) {\n")
