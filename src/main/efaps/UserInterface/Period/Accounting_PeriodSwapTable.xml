@@ -23,12 +23,21 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodSwapTable</name>
-        <field name="fromLink">
+        <field name="created">
+            <property name="Label">Sales_Document2Document4Swap/Created.Label</property>
+            <property name="Attribute">Created</property>
+        </field>
+        <field name="fromLinkType">
+            <property name="Select">linkto[FromAbstractLink].type.label</property>
+            <property name="Label">Accounting_PeriodSwapTable.fromLinkType.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="fromLinkName">
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
-            <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
-            <property name="Label">Sales_Document2Document4Swap/FromLink.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Select">linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_PeriodSwapTable.fromLinkName.Label</property>
         </field>
         <field name="fromLinkStatus">
             <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
@@ -42,12 +51,17 @@
             <property name="SortSelect">attribute[Amount]</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="toLink">
+        <field name="toLinkType">
+            <property name="Select">linkto[ToAbstractLink].type.label</property>
+            <property name="Label">Accounting_PeriodSwapTable.toLinkType.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="toLinkName">
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
-            <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
-            <property name="Label">Sales_Document2Document4Swap/ToLink.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Select">linkto[ToAbstractLink].attribute[Name]</property>
+            <property name="Label">Accounting_PeriodSwapTable.toLinkName.Label</property>
         </field>
         <field name="toLinkStatus">
             <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>

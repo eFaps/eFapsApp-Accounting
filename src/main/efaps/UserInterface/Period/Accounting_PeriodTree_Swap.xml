@@ -30,7 +30,7 @@
         <target>
             <menu>Accounting_PeriodTree_Swap_Menu</menu>
             <table>Accounting_PeriodSwapTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+            <evaluate program="org.efaps.esjp.accounting.Period" method="getDocument2Document4Swap">
                 <property name="Type">Sales_Document2Document4Swap</property>
             </evaluate>
             <trigger event="UI_ACCESSCHECK" method="configObjectCheck"

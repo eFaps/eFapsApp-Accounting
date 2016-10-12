@@ -981,6 +981,46 @@ public abstract class Period_Base
     }
 
     /**
+     * Called from a tree menu command to present the documents that are not
+     * included in accounting yet.
+     *
+     * @param _parameter Paremeter
+     * @return List if Instances
+     * @throws EFapsException on error
+     */
+    public Return getDocument2Document4Swap(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint()
+        {
+
+            @Override
+            public List<Instance> getInstances(final Parameter _parameter)
+                throws EFapsException
+            {
+                final Set<Instance> ret = new HashSet<>();
+                final Instance periodInst = evaluateCurrentPeriod(_parameter);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+                attrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                                CIAccounting.Period2ERPDocument.ToLink);
+
+                final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+                queryBldr.addWhereAttrNotInQuery(CISales.Document2Document4Swap.FromLink, attrQuery);
+                final InstanceQuery query = queryBldr.getQuery();
+                ret.addAll(query.execute());
+
+                final QueryBuilder queryBldr2 = getQueryBldrFromProperties(_parameter);
+                queryBldr2.addWhereAttrNotInQuery(CISales.Document2Document4Swap.ToLink, attrQuery);
+                final InstanceQuery query2 = queryBldr2.getQuery();
+                ret.addAll(query2.execute());
+
+                return new ArrayList<>(ret);
+            };
+        }.execute(_parameter);
+    }
+
+    /**
      * Adds to the queryBuilder for Documents.
      *
      * @param _parameter Parameter as passed by the eFaps API

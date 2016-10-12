@@ -15,17 +15,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2d7e98b6-755e-4c0a-9ee9-1415ff4548c4</uuid>
+    <uuid>3b559a15-76bc-49c2-869c-abda46f8e284</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action</name>
-        <childs>
-            <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Assign</child>
-            <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Release</child>
-        </childs>
+        <name>Accounting_PeriodSearch</name>
+        <target>
+            <form>Accounting_PeriodForm</form>
+            <table>Accounting_PeriodTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Accounting_Period</property>
+            </evaluate>
+        </target>
+        <property name="TargetMode">search</property>
     </definition>
-</ui-menu>
+</ui-command>

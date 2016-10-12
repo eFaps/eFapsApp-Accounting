@@ -15,17 +15,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2d7e98b6-755e-4c0a-9ee9-1415ff4548c4</uuid>
+    <uuid>0e9a2803-1d2f-476c-94c6-ab8e96c6d68f</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action</name>
+        <name>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Assign_Search</name>
+        <default>
+            <command>Accounting_PeriodSearch</command>
+        </default>
         <childs>
-            <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Assign</child>
-            <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Release</child>
+            <child>Accounting_PeriodSearch</child>
         </childs>
     </definition>
-</ui-menu>
+</ui-search>
