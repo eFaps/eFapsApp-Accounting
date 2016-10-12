@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,7 @@ import org.efaps.esjp.data.columns.export.FrmtNumberColumn;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -471,6 +473,7 @@ public abstract class JournalSC1617_Base
          * Getter method for the instance variable {@link #documentType}.
          *
          * @return value of instance variable {@link #documentType}
+         * @throws EFapsException on error
          */
         public String getDocumentType()
             throws EFapsException
@@ -509,7 +512,7 @@ public abstract class JournalSC1617_Base
          */
         public String getTransDoc()
         {
-            return this.transDoc == null ? null : StringUtils.substring(this.transDoc, -5, this.transDoc.length())  ;
+            return this.transDoc == null ? null : StringUtils.substring(this.transDoc, -5, this.transDoc.length());
         }
 
         /**
@@ -550,10 +553,18 @@ public abstract class JournalSC1617_Base
          * Getter method for the instance variable {@link #rate}.
          *
          * @return value of instance variable {@link #rate}
+         * @throws EFapsException
          */
         public BigDecimal getRate()
+            throws EFapsException
         {
-            return this.rate;
+            BigDecimal ret = this.rate;
+            if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), getTransDate(), CurrencyInst
+                                .get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126")).getInstance());
+                ret = rateInfo.getSaleRateUI();
+            }
+            return ret;
         }
 
         /**
