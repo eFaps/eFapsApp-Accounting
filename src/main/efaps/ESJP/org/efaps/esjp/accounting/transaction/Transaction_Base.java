@@ -938,64 +938,82 @@ public abstract class Transaction_Base
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 Instance docInst4Trans = docInst;
                 if (docInst.isValid()) {
-                    if (docInst.getType().isCIType(CISales.IncomingDetraction)) {
-                        final QueryBuilder altQueryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
-                        altQueryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.FromAbstractLink,
-                                        docInst);
-                        final MultiPrintQuery altMulti = altQueryBldr.getPrint();
-                        final SelectBuilder selDoc = SelectBuilder.get().linkto(
-                                        CISales.IncomingDocumentTax2Document.ToAbstractLink).instance();
-                        altMulti.addSelect(selDoc);
-                        altMulti.execute();
-                        if (altMulti.next()) {
-                            final Instance altDocInst = altMulti.getSelect(selDoc);
-                            if (altDocInst.isValid()) {
-                                docInst4Trans = altDocInst;
-                            }
-                        }
-                    }
-
-                    _doc.addDocInst(docInst);
-                    // evaluate the transactions
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst4Trans);
-                    final AttributeQuery attrQuery = attrQueryBldr
-                                    .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
                     final boolean outDoc = _doc.getInstance().getType().isKindOf(
                                     CISales.PaymentDocumentOutAbstract.getType());
-                    final QueryBuilder posQueryBldr = new QueryBuilder(outDoc
-                                    ? CIAccounting.TransactionPositionCredit
-                                    : CIAccounting.TransactionPositionDebit);
-                    posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
-                                    attrQuery);
-                    posQueryBldr.addOrderByAttributeAsc(CIAccounting.TransactionPositionAbstract.Position);
-                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                    posMulti.setEnforceSorted(true);
-                    final SelectBuilder selAccInst = new SelectBuilder().linkto(
-                                    CIAccounting.TransactionPositionAbstract.AccountLink).instance();
-                    final SelectBuilder dateSel = new SelectBuilder().linkto(
-                                    CIAccounting.TransactionPositionAbstract.TransactionLink)
-                                    .attribute(CIAccounting.Transaction.Date);
-                    posMulti.addSelect(selAccInst, dateSel);
-                    posMulti.execute();
-                    DateTime dateTmp = new DateTime().plusYears(100);
-                    while (posMulti.next()) {
-                        final DateTime date = posMulti.<DateTime>getSelect(dateSel);
-                        if (date != null && date.isBefore(dateTmp)) {
-                            dateTmp = date;
-                            final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
-                            final AccountInfo acc = new AccountInfo().setInstance(accInst)
+                    // for an incoming retention check if it is managed by configuration
+                    if (docInst.getType().isCIType(CISales.IncomingPerceptionCertificate)
+                                    && AccountInfo.get4Config(_parameter,
+                                                    AccountingSettings.PERIOD_INCOMINGPERACC) != null) {
+                        final AccountInfo accInfo = AccountInfo.get4Config(_parameter,
+                                        AccountingSettings.PERIOD_INCOMINGPERACC);
+                        accInfo.addAmount(_doc.getAmount4Doc(docInst))
+                                    .setDocLink(_doc.getInstance())
+                                    .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                        if (outDoc) {
+                            _doc.addDebit(accInfo);
+                        } else {
+                            _doc.addCredit(accInfo);
+                        }
+                    } else {
+                        // for an incoming detraction the transaction of the orginal document must be evaluated
+                        if (docInst.getType().isCIType(CISales.IncomingDetraction)) {
+                            final QueryBuilder altQueryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+                            altQueryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.FromAbstractLink,
+                                            docInst);
+                            final MultiPrintQuery altMulti = altQueryBldr.getPrint();
+                            final SelectBuilder selDoc = SelectBuilder.get().linkto(
+                                            CISales.IncomingDocumentTax2Document.ToAbstractLink).instance();
+                            altMulti.addSelect(selDoc);
+                            altMulti.execute();
+                            if (altMulti.next()) {
+                                final Instance altDocInst = altMulti.getSelect(selDoc);
+                                if (altDocInst.isValid()) {
+                                    docInst4Trans = altDocInst;
+                                }
+                            }
+                        }
+
+                        _doc.addDocInst(docInst);
+                        // evaluate the transactions
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                        attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst4Trans);
+                        final AttributeQuery attrQuery = attrQueryBldr
+                                        .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
+
+                        final QueryBuilder posQueryBldr = new QueryBuilder(outDoc
+                                        ? CIAccounting.TransactionPositionCredit
+                                        : CIAccounting.TransactionPositionDebit);
+                        posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                                        attrQuery);
+                        posQueryBldr.addOrderByAttributeAsc(CIAccounting.TransactionPositionAbstract.Position);
+                        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                        posMulti.setEnforceSorted(true);
+                        final SelectBuilder selAccInst = new SelectBuilder().linkto(
+                                        CIAccounting.TransactionPositionAbstract.AccountLink).instance();
+                        final SelectBuilder dateSel = new SelectBuilder().linkto(
+                                        CIAccounting.TransactionPositionAbstract.TransactionLink)
+                                        .attribute(CIAccounting.Transaction.Date);
+                        posMulti.addSelect(selAccInst, dateSel);
+                        posMulti.execute();
+                        DateTime dateTmp = new DateTime().plusYears(100);
+                        while (posMulti.next()) {
+                            final DateTime date = posMulti.<DateTime>getSelect(dateSel);
+                            if (date != null && date.isBefore(dateTmp)) {
+                                dateTmp = date;
+                                final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
+                                final AccountInfo acc = new AccountInfo().setInstance(accInst)
                                             .addAmount(_doc.getAmount4Doc(docInst))
                                             .setDocLink(_doc.getInstance())
                                             .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
-                            if (outDoc) {
-                                _doc.addDebit(acc);
-                            } else {
-                                _doc.addCredit(acc);
+                                if (outDoc) {
+                                    _doc.addDebit(acc);
+                                } else {
+                                    _doc.addCredit(acc);
+                                }
                             }
                         }
+                        add2Doc4Actions(_parameter, _doc, docInst);
                     }
-                    add2Doc4Actions(_parameter, _doc, docInst);
                 }
             }
             _doc.applyExchangeGainLoss(_parameter);

@@ -71,7 +71,7 @@ public abstract class Account_Base
     /**
      * Key used for Caching.
      */
-    public static final String CACHEKEY = Account.class.getName() + ".CacheKey";
+    protected static final String CACHEKEY = Account.class.getName() + ".CacheKey";
 
     /**
      * Method to show the tree transaction in period.

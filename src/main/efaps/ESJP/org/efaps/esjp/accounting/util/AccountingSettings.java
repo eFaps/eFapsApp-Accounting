@@ -120,6 +120,11 @@ public interface AccountingSettings
     /**
      * Activate the mechanism for Retention and Perception.
      */
+    String PERIOD_INCOMINGPERACC = "IncomingPerceptionAccount";
+
+    /**
+     * Activate the mechanism for Retention and Perception.
+     */
     String PERIOD_SHOWREPORT = "ShowReportOnCreate";
 
     /**

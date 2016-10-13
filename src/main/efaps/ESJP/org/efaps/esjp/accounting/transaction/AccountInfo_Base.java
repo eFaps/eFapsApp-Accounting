@@ -32,7 +32,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.accounting.Account_Base;
+import org.efaps.esjp.accounting.Account;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
@@ -502,7 +502,7 @@ public abstract class AccountInfo_Base
         throws EFapsException
     {
         if ((this.name == null || this.description == null) && getInstance().isValid()) {
-            final PrintQuery print = new CachedPrintQuery(getInstance(), Account_Base.CACHEKEY);
+            final PrintQuery print = new CachedPrintQuery(getInstance(), Account.CACHEKEY);
             print.addAttribute(CIAccounting.AccountAbstract.Name, CIAccounting.AccountAbstract.Description);
             print.execute();
             this.description = print.getAttribute(CIAccounting.AccountAbstract.Description);
@@ -584,14 +584,14 @@ public abstract class AccountInfo_Base
                                             final String _key)
         throws EFapsException
     {
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+        final Instance periodInst = Period.evalCurrent(_parameter);
         AccountInfo ret = null;
         final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
         final String name = props.getProperty(_key);
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.Name, name);
         queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, periodInst);
-        final MultiPrintQuery multi = queryBldr.getPrint();
+        final MultiPrintQuery multi = queryBldr.getCachedPrint(Account.CACHEKEY);
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
             ret = new AccountInfo(multi.getCurrentInstance());

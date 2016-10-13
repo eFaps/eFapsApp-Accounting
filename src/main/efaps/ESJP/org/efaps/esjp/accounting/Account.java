@@ -34,4 +34,6 @@ public class Account
     extends Account_Base
 {
 
+    /** The Constant CACHEKEY. */
+    public static final String CACHEKEY =  Account_Base.CACHEKEY;
 }
