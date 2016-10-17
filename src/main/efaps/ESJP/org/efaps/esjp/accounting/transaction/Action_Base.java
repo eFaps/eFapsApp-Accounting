@@ -207,7 +207,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final IncomingActionDef def = evalActionDef4Incoming(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             create.create4ExternalMassive(def.getParameter());
             create.connectDocs2PurchaseRecord(def.getParameter(),
@@ -239,7 +239,13 @@ public abstract class Action_Base
                         .linkfrom(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract)
                         .linkto(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract).instance();
         print.addSelect(selActionInst, selDocInst, selDocTypeInst);
+        print.addAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
         print.execute();
+
+        final DateTime acdDate = print.getAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
+        if (acdDate != null) {
+            ParameterUtil.setParameterValues(ret.getParameter(), "date", acdDate.toString());
+        }
         ret.setActionInst(print.<Instance>getSelect(selActionInst));
         ret.setDocInst(print.<Instance>getSelect(selDocInst));
         ret.setDocTypeInst(print.<Instance>getSelect(selDocTypeInst));
@@ -310,8 +316,7 @@ public abstract class Action_Base
         }
 
         if (ret.getCaseInst() != null && ret.getCaseInst().isValid()) {
-            ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
-
+            ret.setExecute(true);
             if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.PURCHASERECORD)) {
                 final DateTime date = new DateTime();
                 final QueryBuilder prQueryBldr = new QueryBuilder(CIAccounting.PurchaseRecord);
@@ -363,7 +368,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final IncomingActionDef def = evalActionDef4Incoming(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             create.create4PettyCashMassive(def.getParameter());
             create.connectDocs2PurchaseRecord(def.getParameter(),
@@ -383,7 +388,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final IncomingActionDef def = evalActionDef4Incoming(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             create.create4FundsToBeSettledMassive(def.getParameter());
             create.connectDocs2PurchaseRecord(def.getParameter(),
@@ -403,7 +408,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             create.create4ExternalMassive(def.getParameter());
         }
@@ -421,7 +426,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             create.create4DocMassive(def.getParameter());
         }
@@ -445,8 +450,15 @@ public abstract class Action_Base
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract).instance();
         final SelectBuilder selDocInst = SelectBuilder.get()
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract).instance();
+        print.addAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
         print.addSelect(selActionInst, selDocInst);
         print.execute();
+
+        final DateTime acdDate = print.getAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
+        if (acdDate != null) {
+            ParameterUtil.setParameterValues(ret.getParameter(), "date", acdDate.toString());
+        }
+
         ret.setActionInst(print.<Instance>getSelect(selActionInst));
         ret.setDocInst(print.<Instance>getSelect(selDocInst));
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.ActionDefinition2Case4DocAbstract);
@@ -468,8 +480,7 @@ public abstract class Action_Base
                 final Instance caseInst = multi.getSelect(selCaseInst);
                 // force the correct period by evaluating it now
                 new Period().evaluateCurrentPeriod(_parameter, caseInst);
-                ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
-
+                ret.setExecute(true);
                 final Instance labelInst = multi.getSelect(selLabelInst);
                 if (labelInst != null && labelInst.isValid()) {
                     final List<Instance> labels = new Label().getLabelInst4Documents(_parameter, ret.getDocInst());
@@ -520,7 +531,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
                 create.create4OthersPayMassiv(def.getParameter());
@@ -542,7 +553,7 @@ public abstract class Action_Base
         throws EFapsException
     {
         final DocActionDef def = evalActionDef4Doc(_parameter, _actionRelInst);
-        if (def.getParameter() != null) {
+        if (def.isExecute()) {
             final Create create = new Create();
             if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
                 create.create4OthersCollectMassive(def.getParameter());
@@ -560,7 +571,9 @@ public abstract class Action_Base
      */
     protected DocActionDef getDocActionDef(final Parameter _parameter)
     {
-        return new DocActionDef();
+        final DocActionDef ret = new DocActionDef();
+        ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
+        return ret;
     }
 
     /**
@@ -571,7 +584,9 @@ public abstract class Action_Base
      */
     protected IncomingActionDef getIncomingActionDef(final Parameter _parameter)
     {
-        return new IncomingActionDef();
+        final IncomingActionDef ret = new IncomingActionDef();
+        ret.setParameter(ParameterUtil.clone(_parameter, (Object) null));
+        return ret;
     }
 
     /**
@@ -629,6 +644,9 @@ public abstract class Action_Base
          */
         private Instance caseInst;
 
+        /** The execute. */
+        private boolean execute;
+
         /**
          * Getter method for the instance variable {@link #_parameter}.
          *
@@ -650,7 +668,7 @@ public abstract class Action_Base
             if (_parameter.getParameterValue("oneTransPerDoc") == null) {
                 ParameterUtil.setParameterValues(_parameter, "oneTransPerDoc", "true");
             }
-            //an action is inserted in the moment of the execution. therfor use the transaction date
+            //an action is inserted in the moment of the execution. therefor use the transaction date
             if (_parameter.getParameterValue("useDate") == null) {
                 ParameterUtil.setParameterValues(_parameter, "useDate", "true");
             }
@@ -735,6 +753,26 @@ public abstract class Action_Base
         public void setCaseInst(final Instance _caseInst)
         {
             this.caseInst = _caseInst;
+        }
+
+        /**
+         * Checks if is execute.
+         *
+         * @return the execute
+         */
+        public boolean isExecute()
+        {
+            return this.execute;
+        }
+
+        /**
+         * Sets the execute.
+         *
+         * @param _execute the new execute
+         */
+        public void setExecute(final boolean _execute)
+        {
+            this.execute = _execute;
         }
     }
 
