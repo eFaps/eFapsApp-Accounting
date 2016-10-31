@@ -296,7 +296,8 @@ public abstract class Account2CaseInfo_Base
         return getType().isCIType(CIAccounting.Account2CaseCredit)
                         || getType().isCIType(CIAccounting.Account2CaseCredit4Key)
                         || getType().isCIType(CIAccounting.Account2CaseCredit4Classification)
-                        || getType().isCIType(CIAccounting.Account2CaseCredit4CategoryProduct);
+                        || getType().isCIType(CIAccounting.Account2CaseCredit4CategoryProduct)
+                        || getType().isCIType(CIAccounting.Account2CaseCredit4ProductTreeView);
     }
 
     /**
