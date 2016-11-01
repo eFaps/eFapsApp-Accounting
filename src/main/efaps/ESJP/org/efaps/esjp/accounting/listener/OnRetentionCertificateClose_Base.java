@@ -37,7 +37,6 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 /**
  * This class must be replaced for customization, therefore it is left empty.
  * Functional description can be found in the related "<code>_base</code>"
@@ -55,10 +54,10 @@ public abstract class OnRetentionCertificateClose_Base
     /**
      * Instantiates a new on retention certificate close base.
      *
-     * @throws CacheReloadException the cache reload exception
+     * @throws EFapsException on error
      */
     public OnRetentionCertificateClose_Base()
-        throws CacheReloadException
+        throws EFapsException
     {
         super();
         getStatus().add(Status.find(CISales.RetentionCertificateStatus.Closed));

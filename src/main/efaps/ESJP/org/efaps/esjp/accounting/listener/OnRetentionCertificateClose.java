@@ -24,7 +24,7 @@ package org.efaps.esjp.accounting.listener;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsListener;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.util.cache.CacheReloadException;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -32,7 +32,7 @@ import org.efaps.util.cache.CacheReloadException;
  * class.
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("74e00d00-66b7-4608-8410-634fa162f3d0")
 @EFapsApplication("eFapsApp-Accounting")
@@ -42,10 +42,12 @@ public class OnRetentionCertificateClose
 {
 
     /**
-     * @throws CacheReloadException
+     * Instantiates a new on retention certificate close.
+     *
+     * @throws EFapsException on error
      */
     public OnRetentionCertificateClose()
-        throws CacheReloadException
+        throws EFapsException
     {
         super();
     }
