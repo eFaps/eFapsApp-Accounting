@@ -36,10 +36,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -76,9 +78,9 @@ import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
+import org.efaps.esjp.ci.CIMsgERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
@@ -97,7 +99,6 @@ import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1463,16 +1464,23 @@ public abstract class Transaction_Base
         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
 
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact)
-                        .attribute(CIContacts.Contact.Name);
-        multi.addSelect(selContactName);
-        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
+        MsgPhrase msgPhrase;
+        if (containsProperty(_parameter, "MsgPhrase")) {
+            final String msgPhraseStr = getProperty(_parameter, "MsgPhrase");
+            if (isUUID(msgPhraseStr)) {
+                msgPhrase = MsgPhrase.get(UUID.fromString(msgPhraseStr));
+            } else {
+                msgPhrase = MsgPhrase.get(msgPhraseStr);
+            }
+        } else {
+            msgPhrase = CIMsgERP.DocumentAutoCompleteMsgPhrase.getMsgPhrase();
+        }
+        multi.addMsgPhrase(msgPhrase);
+        multi.addAttribute(CISales.DocumentAbstract.Name);
         multi.execute();
         while (multi.next()) {
             final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-            final String choice = name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                            Context.getThreadContext().getLocale()))  + " - " + multi.getSelect(selContactName);
+            final String choice = multi.getMsgPhrase(msgPhrase);
 
             final Map<String, String> map = new HashMap<>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
