@@ -74,7 +74,7 @@ public abstract class SalesRecord_Base
     public String getFileName(final Parameter _parameter)
         throws EFapsException
     {
-        final String taxnumber = ERP.COMPANYTAX.get();
+        final String taxnumber = ERP.COMPANY_TAX.get();
         final DateTime date = new DateTime(_parameter.getParameterValue("dateFrom"));
         final String dateStr = date.toString("yyyyMM00");
 

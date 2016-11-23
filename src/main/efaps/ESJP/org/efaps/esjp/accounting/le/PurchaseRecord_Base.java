@@ -70,7 +70,7 @@ public abstract class PurchaseRecord_Base
     public String getFileName(final Parameter _parameter)
         throws EFapsException
     {
-        final String taxnumber = ERP.COMPANYTAX.get();
+        final String taxnumber = ERP.COMPANY_TAX.get();
         final DateTime date4Purchase = new PurchaseRecordReport().getDate4Purchase(_parameter);
         final String dateStr = date4Purchase.toString("yyyyMM00");
 

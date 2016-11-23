@@ -173,7 +173,7 @@ public abstract class AbstractExport_Base
                                  final String _suffix)
         throws EFapsException
     {
-        final String taxnumber = ERP.COMPANYTAX.get();
+        final String taxnumber = ERP.COMPANY_TAX.get();
         return _prefix + taxnumber + "." + _suffix;
     }
 

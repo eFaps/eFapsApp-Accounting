@@ -335,8 +335,8 @@ public abstract class ReportBalanceReport_Base
             super.add2ReportParameter(_parameter);
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {
-                final String companyName = ERP.COMPANYNAME.get();
-                final String companyTaxNum = ERP.COMPANYTAX.get();
+                final String companyName = ERP.COMPANY_NAME.get();
+                final String companyTaxNum = ERP.COMPANY_TAX.get();
                 if (companyName != null && !companyName.isEmpty()) {
                     getParameters().put("CompanyName", companyName);
                 }

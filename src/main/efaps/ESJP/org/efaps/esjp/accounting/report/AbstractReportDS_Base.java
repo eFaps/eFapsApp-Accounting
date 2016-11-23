@@ -73,31 +73,31 @@ public abstract class AbstractReportDS_Base
     {
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = ERP.COMPANYNAME.get();
+            final String companyName = ERP.COMPANY_NAME.get();
             if (companyName != null && !companyName.isEmpty()) {
                 _jrParameters.put("CompanyName", companyName);
             }
-            final String companyTaxNum = ERP.COMPANYTAX.get();
+            final String companyTaxNum = ERP.COMPANY_TAX.get();
             if (companyTaxNum != null && !companyTaxNum.isEmpty()) {
                 _jrParameters.put("CompanyTaxNum", companyTaxNum);
             }
-            final String companyActivity = ERP.COMPANYACTIVITY.get();
+            final String companyActivity = ERP.COMPANY_ACTIVITY.get();
             if (companyActivity != null && !companyActivity.isEmpty()) {
                 _jrParameters.put("CompanyActivity", companyActivity);
             }
-            final String companyStreet = ERP.COMPANYSTREET.get();
+            final String companyStreet = ERP.COMPANY_STREET.get();
             if (companyStreet != null && !companyStreet.isEmpty()) {
                 _jrParameters.put("CompanyStreet", companyStreet);
             }
-            final String companyRegion = ERP.COMPANYREGION.get();
+            final String companyRegion = ERP.COMPANY_REGION.get();
             if (companyRegion != null && !companyRegion.isEmpty()) {
                 _jrParameters.put("CompanyRegion", companyRegion);
             }
-            final String companyCity = ERP.COMPANYCITY.get();
+            final String companyCity = ERP.COMPANY_CITY.get();
             if (companyCity != null && !companyCity.isEmpty()) {
                 _jrParameters.put("CompanyCity", companyCity);
             }
-            final String companyDistrict = ERP.COMPANYDISTRICT.get();
+            final String companyDistrict = ERP.COMPANY_DISTRICT.get();
             if (companyDistrict != null && !companyDistrict.isEmpty()) {
                 _jrParameters.put("CompanyDistrict", companyDistrict);
             }
