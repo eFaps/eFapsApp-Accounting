@@ -84,8 +84,8 @@
             <property name="ModePrint">NONE</property>
             <table>Accounting_TransactionOpeningBalancePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_TransactionPositionCredit</property>
-                <property name="LinkFroms">TransactionLink</property>
+                <property name="Type">Accounting_TransactionPositionCredit</property>
+                <property name="LinkFrom">TransactionLink</property>
             </evaluate>
         </field>
     </definition>

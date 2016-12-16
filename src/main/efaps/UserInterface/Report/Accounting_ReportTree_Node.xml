@@ -41,8 +41,8 @@
             <menu>Accounting_ReportTree_Node_Menu</menu>
             <table>Accounting_ReportNodeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_ReportNodeRoot</property>
-                <property name="LinkFroms">ReportLink</property>
+                <property name="Type">Accounting_ReportNodeRoot</property>
+                <property name="LinkFrom">ReportLink</property>
             </evaluate>
         </target>
         <!-- properties -->

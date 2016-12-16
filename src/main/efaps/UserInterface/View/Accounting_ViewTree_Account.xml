@@ -31,8 +31,8 @@
             <menu>Accounting_ViewTree_Account_Menu</menu>
             <table>Accounting_View2AccountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_View2AccountAbstract</property>
-                <property name="LinkFroms">FromLinkAbstract</property>
+                <property name="Type">Accounting_View2AccountAbstract</property>
+                <property name="LinkFrom">FromLinkAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

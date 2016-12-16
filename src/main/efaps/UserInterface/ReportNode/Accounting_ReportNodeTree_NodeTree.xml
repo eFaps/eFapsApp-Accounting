@@ -37,8 +37,8 @@
             <menu>Accounting_ReportNodeTree_NodeTree_Menu</menu>
             <table>Accounting_ReportNodeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_ReportNodeTree</property>
-                <property name="LinkFroms">ParentLink</property>
+                <property name="Type">Accounting_ReportNodeTree</property>
+                <property name="LinkFrom">ParentLink</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -37,8 +37,8 @@
             <menu>Accounting_AccountTree_TransactionPosition_Menu</menu>
             <table>Accounting_TransactionPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Accounting_TransactionPositionAbstract</property>
-                <property name="LinkFroms">AccountLink</property>
+                <property name="Type">Accounting_TransactionPositionAbstract</property>
+                <property name="LinkFrom">AccountLink</property>
             </evaluate>
             <trigger program="org.efaps.esjp.accounting.Account"
                 name="Accounting_AccountTree_TransactionPosition.UI_ACCESSCHECK"
