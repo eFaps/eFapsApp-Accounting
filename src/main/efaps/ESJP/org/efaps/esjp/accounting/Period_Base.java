@@ -36,6 +36,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.api.ui.IFilterList;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
@@ -533,7 +534,7 @@ public abstract class Period_Base
     {
         final DateTime date;
         if (_date == null) {
-            LOG.warn("Evaluation Period by current Date only!!!!!");
+            Period_Base.LOG.warn("Evaluation Period by current Date only!!!!!");
             date = new DateTime();
         } else {
             date = _date;
@@ -672,9 +673,9 @@ public abstract class Period_Base
         queryBldr.addWhereAttrLessValue(CISales.DocumentStockAbstract.Date, to.plusDays(1));
         queryBldr.addWhereAttrNotInQuery(CISales.DocumentStockAbstract.ID, attrQuery);
 
-        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final IFilterList filterlist = (IFilterList) _parameter.get(ParameterValues.OTHERS);
         final DocMulti multi = new DocMulti();
-        multi.analyzeTable(_parameter, filter, queryBldr, CISales.DocumentStockAbstract.getType());
+        multi.analyzeTable(_parameter, filterlist, queryBldr, CISales.DocumentStockAbstract.getType());
 
         final InstanceQuery query = queryBldr.getQuery();
         final List<Instance> instances = query.execute();
@@ -1142,20 +1143,14 @@ public abstract class Period_Base
     public class DocMulti
         extends MultiPrint
     {
-
-        /**
-         * {@inheritDoc}
-         */
         @Override
         protected boolean analyzeTable(final Parameter _parameter,
-                                       final Map<?, ?> _filter,
+                                       final IFilterList _filterlist,
                                        final QueryBuilder _queryBldr,
                                        final Type _type)
             throws EFapsException
         {
-            return super.analyzeTable(_parameter, _filter, _queryBldr, _type);
+            return super.analyzeTable(_parameter, _filterlist, _queryBldr, _type);
         }
-
     }
-
 }
