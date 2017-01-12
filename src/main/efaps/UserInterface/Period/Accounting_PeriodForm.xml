@@ -83,21 +83,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_PeriodForm.accountTable.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.file.FileField"
-                method="getFieldValueUI"
-                name="Accounting_PeriodForm.accountTable.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
-        </field>
-        <field name="reports">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="Label">Accounting_PeriodForm.reports.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger name="Accounting_PeriodForm.reports.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" program="org.efaps.esjp.common.file.FileField"
-                method="getFieldValueUI" />
+            <property name="UIType">UPLOAD</property>
         </field>
         <field name="systemConfigurationObject">
             <property name="Label">Accounting_PeriodForm.systemConfiguration.Label</property>

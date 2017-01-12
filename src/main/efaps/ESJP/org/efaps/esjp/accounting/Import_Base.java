@@ -111,6 +111,12 @@ public abstract class Import_Base
         Import_Base.ACC2CASE.put("Debit", CIAccounting.Account2CaseDebit.uuid);
         Import_Base.ACC2CASE.put("CreditClassification", CIAccounting.Account2CaseCredit4Classification.uuid);
         Import_Base.ACC2CASE.put("DebitClassification", CIAccounting.Account2CaseDebit4Classification.uuid);
+        Import_Base.ACC2CASE.put("CreditTreeView", CIAccounting.Account2CaseCredit4ProductTreeView.uuid);
+        Import_Base.ACC2CASE.put("DebitTreeView", CIAccounting.Account2CaseDebit4ProductTreeView.uuid);
+        Import_Base.ACC2CASE.put("CreditProdFamily", CIAccounting.Account2CaseCredit4ProductFamily.uuid);
+        Import_Base.ACC2CASE.put("DebitProdFamily", CIAccounting.Account2CaseDebit4ProductFamily.uuid);
+        Import_Base.ACC2CASE.put("CreditCatProduct", CIAccounting.Account2CaseCredit4CategoryProduct.uuid);
+        Import_Base.ACC2CASE.put("DebitCatProduct", CIAccounting.Account2CaseDebit4CategoryProduct.uuid);
     }
 
     /**

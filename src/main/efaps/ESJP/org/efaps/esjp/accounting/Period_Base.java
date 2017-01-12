@@ -49,7 +49,6 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.accounting.Import_Base.ImportAccount;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
@@ -245,14 +244,9 @@ public abstract class Period_Base
 
         final FileParameter accountTable = Context.getThreadContext().getFileParameters().get(
                         CIFormAccounting.Accounting_PeriodForm.accountTable.name);
-        final FileParameter reports = Context.getThreadContext().getFileParameters().get(
-                        CIFormAccounting.Accounting_PeriodForm.reports.name);
         if (accountTable != null && accountTable.getSize() > 0) {
             final Import imp = new Import();
-            final HashMap<String, ImportAccount> accounts = imp.createAccountTable(periodInst, accountTable);
-            if (reports != null && reports.getSize() > 0) {
-                imp.createReports(periodInst, reports, accounts);
-            }
+            imp.createAccountTable(periodInst, accountTable);
         }
         return new Return();
     }

@@ -57,7 +57,7 @@ public abstract class AbstractExport_Base
     /**
      * Mapping of types as written in the csv and the name in eFaps.
      */
-    public static final Map<UUID, String> TYPE2TYPE = new HashMap<UUID, String>();
+    public static final Map<UUID, String> TYPE2TYPE = new HashMap<>();
     static {
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.AccountBalanceSheetAsset.uuid, "Asset");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.AccountBalanceSheetLiability.uuid, "Liability");
@@ -95,6 +95,12 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit.uuid, "Debit");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4Classification.uuid, "CreditClassification");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4Classification.uuid, "DebitClassification");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4ProductTreeView.uuid, "CreditTreeView");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4ProductTreeView.uuid, "DebitTreeView");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4ProductFamily.uuid, "CreditProdFamily");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4ProductFamily.uuid, "DebitProdFamily");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4CategoryProduct.uuid, "CreditCatProduct");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4CategoryProduct.uuid, "DebitCatProduct");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportAccount.uuid, "ReportAccount");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportBalance.uuid, "Balance");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportProfitLoss.uuid, "ProfitLoss");
