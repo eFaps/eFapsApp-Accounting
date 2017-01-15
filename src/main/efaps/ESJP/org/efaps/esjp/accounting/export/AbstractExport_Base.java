@@ -101,6 +101,8 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4ProductFamily.uuid, "DebitProdFamily");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4CategoryProduct.uuid, "CreditCatProduct");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4CategoryProduct.uuid, "DebitCatProduct");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit4Key.uuid, "Debit4Key");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit4Key.uuid, "Credit4Key");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportAccount.uuid, "ReportAccount");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportBalance.uuid, "Balance");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportProfitLoss.uuid, "ProfitLoss");

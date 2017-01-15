@@ -46,6 +46,6 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">1</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

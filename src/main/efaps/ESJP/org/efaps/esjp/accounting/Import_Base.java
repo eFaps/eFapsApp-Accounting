@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 10283 $
- * Last Changed:    $Date: 2013-09-24 14:46:54 -0500 (mar, 24 sep 2013) $
- * Last Changed By: $Author: jorge.cueva@moxter.net $
  */
 
 package org.efaps.esjp.accounting;
@@ -70,7 +67,6 @@ import au.com.bytecode.opencsv.CSVReader;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Period_Base.java 7855 2012-08-03 01:35:53Z jan@moxter.net $
  */
 @EFapsUUID("4f7c8d48-01d0-4862-82e7-2efcf6761e5a")
 @EFapsApplication("eFapsApp-Accounting")
@@ -117,6 +113,8 @@ public abstract class Import_Base
         Import_Base.ACC2CASE.put("DebitProdFamily", CIAccounting.Account2CaseDebit4ProductFamily.uuid);
         Import_Base.ACC2CASE.put("CreditCatProduct", CIAccounting.Account2CaseCredit4CategoryProduct.uuid);
         Import_Base.ACC2CASE.put("DebitCatProduct", CIAccounting.Account2CaseDebit4CategoryProduct.uuid);
+        Import_Base.ACC2CASE.put("Credit4Key", CIAccounting.Account2CaseCredit4Key.uuid);
+        Import_Base.ACC2CASE.put("Debit4Key", CIAccounting.Account2CaseDebit4Key.uuid);
     }
 
     /**
@@ -362,13 +360,15 @@ public abstract class Import_Base
     }
 
     /**
-     * @param _periodInst
-     * @param _accountTable
-     * @return
-     * @throws EFapsException
+     * Creates the view account table.
+     *
+     * @param _periodInst the period inst
+     * @param _accountTable the account table
+     * @return the hash map< string, import account>
+     * @throws EFapsException on error
      */
     protected HashMap<String, ImportAccount> createViewAccountTable(final Instance _periodInst,
-                                                                final FileParameter _accountTable)
+                                                                    final FileParameter _accountTable)
         throws EFapsException
     {
         final HashMap<String, ImportAccount> accounts = new HashMap<>();
@@ -443,9 +443,11 @@ public abstract class Import_Base
 
 
     /**
-     * @param _periodInst
-     * @param _accountTable
-     * @throws EFapsException
+     * Creates the case table.
+     *
+     * @param _periodInst the period inst
+     * @param _accountTable the account table
+     * @throws EFapsException on error
      */
     protected void createCaseTable(final Instance _periodInst,
                                    final FileParameter _accountTable)
@@ -467,7 +469,7 @@ public abstract class Import_Base
                 final ImportCase impCase = new ImportCase(_periodInst, colName2Index, row);
                 if (!impCase.validate()) {
                     valid = false;
-                    Import_Base.LOG.error("Line {} is invalid; {}", i , impCase);
+                    Import_Base.LOG.error("Line {} is invalid; {}", i, impCase);
                 }
                 cases.add(impCase);
                 i++;
@@ -560,30 +562,69 @@ public abstract class Import_Base
         return ret;
     }
 
+    /**
+     * The Class ImportCase.
+     */
     public class ImportCase
     {
 
+        /** The case name. */
         private String caseName;
+
+        /** The case label. */
         private String caseLabel;
+
+        /** The case description. */
         private String caseDescription;
+
+        /** The casetype. */
         private Type casetype;
+
+        /** The case is cross. */
         private boolean caseIsCross;
+
+        /** The a 2 c type. */
         private Type a2cType;
+
+        /** The a 2 c class. */
         private String a2cClass;
+
+        /** The a 2 c num. */
         private String a2cNum;
+
+        /** The a 2 c denum. */
         private String a2cDenum;
+
+        /** The a 2 c default. */
         private boolean a2cDefault;
+
+        /** The a 2 c label. */
         private boolean a2cLabel;
+
+        /** The a 2 c eval rel. */
         private boolean a2cEvalRel;
+
+        /** The acc inst. */
         private Instance accInst;
+
+        /** The period inst. */
         private Instance periodInst;
+
+        /** The case inst. */
         private Instance caseInst;
+
+        /** The case summarize config. */
         private SummarizeConfig caseSummarizeConfig;
+
+        /** The currency ISO. */
         private String currencyISO;
+
         /**
-         * @param _periodInst
-         * @param _colName2Index
-         * @param _row
+         * Instantiates a new import case.
+         *
+         * @param _periodInst the period inst
+         * @param _colName2Index the col name 2 index
+         * @param _row the row
          */
         public ImportCase(final Instance _periodInst,
                           final Map<String, Integer> _colName2Index,
@@ -647,7 +688,9 @@ public abstract class Import_Base
         }
 
         /**
-         * @return
+         * Validate.
+         *
+         * @return true, if successful
          */
         public boolean validate()
         {
@@ -657,6 +700,9 @@ public abstract class Import_Base
         }
 
         /**
+         * Update.
+         *
+         * @param _caseInsts the case insts
          * @throws EFapsException on error
          */
         public void update(final Set<Instance> _caseInsts)
@@ -1060,13 +1106,15 @@ public abstract class Import_Base
         }
 
         /**
-         * @param _name
-         * @param _id
-         * @param _period
-         * @param _cont
-         * @param _parts
-         * @return
-         * @throws EFapsException
+         * Validate update.
+         *
+         * @param _name the name
+         * @param _id the id
+         * @param _period the period
+         * @param _cont the cont
+         * @param _parts the parts
+         * @return the instance
+         * @throws EFapsException on error
          */
         private Instance validateUpdate(final String _name,
                                        final Long _id,
@@ -1189,7 +1237,7 @@ public abstract class Import_Base
                 final List<ImportNode> lis = this.level2Nodes.get(level - 1);
                 parentInst = lis.get(lis.size() - 1).getInstance();
             }
-            List<ImportNode> nodes;
+            final List<ImportNode> nodes;
             if (this.level2Nodes.containsKey(level)) {
                 nodes = this.level2Nodes.get(level);
             } else {

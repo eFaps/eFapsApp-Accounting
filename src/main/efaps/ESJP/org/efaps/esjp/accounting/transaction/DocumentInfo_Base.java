@@ -54,6 +54,7 @@ import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -848,10 +849,10 @@ public abstract class DocumentInfo_Base
             print.execute();
             labelStr = print.<String>getAttribute(CIAccounting.CaseAbstract.Label);
         } else {
-            labelStr = DBProperties.getProperty(DocumentInfo.class.getName() + "." + getInstance().getType().getName()
+            labelStr = DBProperties.getProperty(DocumentInfo.class.getName() + "."
+                            + (InstanceUtils.isValid(getInstance()) ? getInstance().getType().getName() : "")
                             + ".description");
         }
-
         final StrSubstitutor sub = new StrSubstitutor(getMap4Substitutor(_parameter));
         return sub.replace(labelStr);
     }
