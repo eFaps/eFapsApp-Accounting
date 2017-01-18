@@ -23,10 +23,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodSwapTable</name>
-        <field name="created">
-            <property name="Label">Sales_Document2Document4Swap/Created.Label</property>
-            <property name="Attribute">Created</property>
-        </field>
         <field name="fromLinkType">
             <property name="Select">linkto[FromAbstractLink].type.label</property>
             <property name="Label">Accounting_PeriodSwapTable.fromLinkType.Label</property>
@@ -67,6 +63,22 @@
             <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
             <property name="Label">Sales_SwapTable.toLinkStatus.Label</property>
             <property name="FilterType">PICKLIST</property>
+        </field>
+         <field name="toLinkContact">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].linkto[Contact].oid</property>
+            <property name="Select">linkto[ToAbstractLink].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_SwapTable.toLinkContact.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_Document2Document4Swap/Date.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
         </field>
     </definition>
 </ui-table>

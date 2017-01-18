@@ -861,21 +861,6 @@ public abstract class Period_Base
     }
 
     /**
-     * Called from a tree menu command to present the documents related with
-     * stock movement that are not connected with the period and therefor
-     * must be worked on still.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getPaymentToBook(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new MultiPrint().execute(_parameter);
-    }
-
-    /**
      * Called from a tree menu command to present the Account2Account relations
      * for the current period.
      *
@@ -902,78 +887,6 @@ public abstract class Period_Base
             }
         };
         return multi.execute(_parameter);
-    }
-
-    /**
-     * Called from a tree menu command to present the documents that are not
-     * included in accounting yet.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getOthersPay(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new MultiPrint()
-        {
-
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-            };
-
-        }.execute(_parameter);
-    }
-
-    /**
-     * Gets the others collect.
-     *
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return the others collect
-     * @throws EFapsException on error
-     */
-    public Return getOthersCollect(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-            };
-        }.execute(_parameter);
-    }
-
-    /**
-     * Called from a tree menu command to present the documents that are not
-     * included in accounting yet.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getPayrollPay(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new MultiPrint()
-        {
-
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-            };
-
-        }.execute(_parameter);
     }
 
     /**
@@ -1016,6 +929,27 @@ public abstract class Period_Base
         }.execute(_parameter);
     }
 
+    /**
+     * Multi print.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return multiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                add2DocQueryBldr(_parameter, _queryBldr);
+            };
+        }.execute(_parameter);
+    }
     /**
      * Adds to the queryBuilder for Documents.
      *

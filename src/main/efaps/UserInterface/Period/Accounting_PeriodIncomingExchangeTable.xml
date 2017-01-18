@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -17,12 +16,12 @@
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4d146ab5-5924-4280-afd1-b9b714aef299</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>123b3e36-4535-4bc2-a64f-b87d2ecbe0dd</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodExchangeTable</name>
+        <name>Accounting_PeriodIncomingExchangeTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">TREE</property>
@@ -68,18 +67,24 @@
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-         <field name="action4View">
-            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
-            <property name="Select">linkfrom[Sales_ActionDefinitionExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
             <property name="HRef">TREE</property>
-            <property name="Label">Sales_Exchange_AssignActionForm.action.Label</property>
+            <property name="Label">Sales_IncomingExchange_AssignActionForm.action.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
-                name="Sales_InvoiceForm.action4View.UI_ACCESSCHECK"
-                program="org.efaps.esjp.sales.document.Exchange">
-                <property name="Key">Sales_Exchange</property>
+                name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
                 <property name="Access">!NONE</property>
             </trigger>
+        </field>
+         <field name="creator">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_IncomingExchange/Creator.Label</property>
         </field>
     </definition>
 </ui-table>
