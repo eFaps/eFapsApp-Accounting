@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,24 +32,12 @@
         <target>
             <menu>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu</menu>
             <table>Accounting_PeriodDocumentSumTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Period" method="getDocumentsToBook">
-                <property name="Type">Sales_DocumentSumAbstract</property>
-                <property name="StatusGroup01">Sales_InvoiceStatus</property>
-                <property name="Status01">Open</property>
-                <property name="StatusGroup02">Sales_InvoiceStatus</property>
-                <property name="Status02">Paid</property>
-                <property name="StatusGroup03">Sales_ReceiptStatus</property>
-                <property name="Status03">Open</property>
-                <property name="StatusGroup04">Sales_ReceiptStatus</property>
-                <property name="Status04">Paid</property>
-                <property name="StatusGroup05">Sales_CreditNoteStatus</property>
-                <property name="Status05">Open</property>
-                <property name="StatusGroup06">Sales_CreditNoteStatus</property>
-                <property name="Status06">Paid</property>
-                <property name="StatusGroup07">Sales_ReminderStatus</property>
-                <property name="Status07">Open</property>
-                <property name="StatusGroup08">Sales_ReminderStatus</property>
-                <property name="Status08">Paid</property>
+            <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
+                <property name="Type01">Sales_Invoice</property>
+                <property name="Type02">Sales_Receipt</property>
+                <property name="Type03">Sales_CreditNote</property>
+                <property name="Type04">Sales_Reminder</property>
+                <property name="Used">true</property>
             </evaluate>
         </target>
         <!-- properties -->

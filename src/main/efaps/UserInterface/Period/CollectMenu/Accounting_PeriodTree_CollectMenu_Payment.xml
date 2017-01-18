@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f08a9d1c-9ec3-4c7d-9e3d-cf5de4d940cf</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_CollectMenu_Payment</name>
@@ -35,22 +29,14 @@
         <target>
             <menu>Accounting_PeriodTree_CollectMenu_Payment_Menu</menu>
             <table>Sales_PaymentDocumentAbstractTable</table>
-            <evaluate method="getPaymentToBook" program="org.efaps.esjp.accounting.Period">
-                <property name="Type">Sales_PaymentDocumentAbstract</property>
-                <property name="StatusGroup01">Sales_PaymentCashStatus</property>
-                <property name="Status02">Closed</property>
-                <property name="StatusGroup02">Sales_PaymentCheckStatus</property>
-                <property name="Status02">Closed</property>
-                <property name="StatusGroup03">Sales_PaymentCreditCardAbstractStatus</property>
-                <property name="Status03">Closed</property>
-                <property name="StatusGroup04">Sales_PaymentDebitCardAbstractStatus</property>
-                <property name="Status04">Closed</property>
-                <property name="StatusGroup05">Sales_PaymentDetractionStatus</property>
-                <property name="Status05">Closed</property>
-                <property name="StatusGroup06">Sales_PaymentExchangeStatus</property>
-                <property name="Status06">Closed</property>
-                <property name="StatusGroup07">Sales_PaymentRetentionStatus</property>
-                <property name="Status07">Closed</property>
+            <evaluate method="multiPrint" program="org.efaps.esjp.accounting.Period">
+                <property name="Type01">Sales_PaymentCash</property>
+                <property name="Type02">Sales_PaymentCheck</property>
+                <property name="Type03">Sales_PaymentCreditCardAbstract</property>
+                <property name="Type04">Sales_PaymentDebitCardAbstract</property>
+                <property name="Type05">Sales_PaymentDetraction</property>
+                <property name="Type06">Sales_PaymentExchange</property>
+                <property name="Type07">Sales_PaymentRetention</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
