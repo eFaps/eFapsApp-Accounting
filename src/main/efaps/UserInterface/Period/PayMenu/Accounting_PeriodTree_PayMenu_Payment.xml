@@ -30,22 +30,14 @@
         <target>
             <menu>Accounting_PeriodTree_PayMenu_Payment_Menu</menu>
             <table>Sales_PaymentDocumentAbstractTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Period" method="getPaymentToBook">
-                <property name="Type">Sales_PaymentDocumentOutAbstract</property>
-                <property name="StatusGroup01">Sales_PaymentCashOutStatus</property>
-                <property name="Status01">Closed</property>
-                <property name="StatusGroup02">Sales_PaymentCheckOutStatus</property>
-                <property name="Status02">Closed</property>
-                <property name="StatusGroup03">Sales_PaymentDepositOutStatus</property>
-                <property name="Status03">Closed</property>
-                <property name="StatusGroup04">Sales_PaymentDetractionOutStatus</property>
-                <property name="Status04">Closed</property>
-                <property name="StatusGroup05">Sales_PaymentExchangeOutStatus</property>
-                <property name="Status05">Closed</property>
-                <property name="StatusGroup06">Sales_PaymentRetentionOutStatus</property>
-                <property name="Status06">Closed</property>
-                <property name="StatusGroup07">Sales_PaymentSupplierOutStatus</property>
-                <property name="Status07">Closed</property>
+            <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
+                <property name="Type01">Sales_PaymentCashOut</property>
+                <property name="Type02">Sales_PaymentCheckOut</property>
+                <property name="Type03">Sales_PaymentDepositOut</property>
+                <property name="Type04">Sales_PaymentDetractionOut</property>
+                <property name="Type05">Sales_PaymentExchangeOut</property>
+                <property name="Type06">Sales_PaymentRetentionOut</property>
+                <property name="Type07">Sales_PaymentSupplierOut</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

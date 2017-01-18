@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -579,62 +580,6 @@ public abstract class Period_Base
     }
 
     /**
-     * Called from a tree menu command to present the documents that are not
-     * included in accounting yet.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getDocuments(final Parameter _parameter)
-        throws EFapsException
-    {
-        final MultiPrint multi = new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-            }
-        };
-        return multi.execute(_parameter);
-    }
-
-    /**
-     * Called from a tree menu command to present the documents that are with status
-     * booked and therefor must be worked on still.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getDocumentsToBook(final Parameter _parameter)
-        throws EFapsException
-    {
-        final MultiPrint multi = new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-            }
-        };
-        return multi.execute(_parameter);
-    }
-
-    /**
      * Called from a tree menu command to present the documents related with
      * stock movement that are not connected with the period and therefor
      * must be worked on still.
@@ -806,61 +751,6 @@ public abstract class Period_Base
     }
 
     /**
-     * Called from a tree menu command to present the documents that are with status
-     * booked and therefore must be worked on still.
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return reeutun with map
-     * @throws EFapsException on error
-     */
-    public Return getExternals(final Parameter _parameter)
-        throws EFapsException
-    {
-        final MultiPrint multi = new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-            }
-        };
-        return multi.execute(_parameter);
-    }
-
-    /**
-     * Called from a tree menu command to present the documents that are with status
-     * booked and therefor must be worked on still.
-     *
-     * @param _parameter Paremeter
-     * @return List if Instances
-     * @throws EFapsException on error
-     */
-    public Return getExternalsToBook(final Parameter _parameter)
-        throws EFapsException
-    {
-        final MultiPrint multi = new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                add2DocQueryBldr(_parameter, _queryBldr);
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIAccounting.Transaction2SalesDocument.ToLink);
-                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-            }
-        };
-        return multi.execute(_parameter);
-    }
-
-    /**
      * Called from a tree menu command to present the Account2Account relations
      * for the current period.
      *
@@ -977,6 +867,22 @@ public abstract class Period_Base
         final AttributeQuery attrQuery = attrQueryBldr
                         .getAttributeQuery(CIAccounting.Period2ERPDocument.ToLink);
         _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+
+        if (containsProperty(_parameter, "Used")) {
+            final QueryBuilder tAttrQueryBldr = new QueryBuilder(CIAccounting.Transaction);
+            tAttrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction.PeriodLink, periodInst);
+            final QueryBuilder t2sAttrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+            t2sAttrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2SalesDocument.FromLink, tAttrQueryBldr
+                            .getAttributeQuery(CIAccounting.Transaction.ID));
+
+            if (BooleanUtils.toBoolean(getProperty(_parameter, "Used"))) {
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, t2sAttrQueryBldr.getAttributeQuery(
+                                CIAccounting.Transaction2SalesDocument.ToLink));
+            } else {
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, t2sAttrQueryBldr.getAttributeQuery(
+                                CIAccounting.Transaction2SalesDocument.ToLink));
+            }
+        }
     }
 
     /**

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,20 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>803d3acc-77e4-4c15-a498-f88177214212</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_PayMenu_External</name>
@@ -40,43 +30,14 @@
         <target>
             <menu>Accounting_PeriodTree_PayMenu_External_Menu</menu>
             <table>Accounting_IncomingDocumentTable</table>
-            <evaluate program="org.efaps.esjp.accounting.Period" method="getExternals" >
+            <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="Type02">Accounting_ExternalVoucher</property>
                 <property name="Type03">Sales_IncomingCreditNote</property>
                 <property name="Type04">Sales_IncomingReminder</property>
                 <property name="Type05">Sales_IncomingReceipt</property>
                 <property name="Type06">Sales_IncomingProfServReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
-                <property name="Status01">Open</property>
-                <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
-                <property name="Status02">Digitized</property>
-                <property name="StatusGroup03">Sales_IncomingInvoiceStatus</property>
-                <property name="Status03">Paid</property>
-                <property name="StatusGroup04">Accounting_ExternalVoucherStatus</property>
-                <property name="Status04">Open</property>
-                <property name="StatusGroup05">Accounting_ExternalVoucherStatus</property>
-                <property name="Status05">Paid</property>
-                <property name="StatusGroup06">Sales_IncomingCreditNoteStatus</property>
-                <property name="Status06">Open</property>
-                <property name="StatusGroup07">Sales_IncomingCreditNoteStatus</property>
-                <property name="Status07">Digitized</property>
-                <property name="StatusGroup08">Sales_IncomingReminderStatus</property>
-                <property name="Status08">Open</property>
-                <property name="StatusGroup09">Sales_IncomingReminderStatus</property>
-                <property name="Status09">Digitized</property>
-                <property name="StatusGroup10">Sales_IncomingReceiptStatus</property>
-                <property name="Status10">Paid</property>
-                <property name="StatusGroup11">Sales_IncomingReceiptStatus</property>
-                <property name="Status11">Open</property>
-                <property name="StatusGroup12">Sales_IncomingReceiptStatus</property>
-                <property name="Status12">Digitized</property>
-                <property name="StatusGroup13">Sales_IncomingProfServReceiptStatus</property>
-                <property name="Status13">Paid</property>
-                <property name="StatusGroup14">Sales_IncomingProfServReceiptStatus</property>
-                <property name="Status14">Open</property>
-                <property name="StatusGroup15">Sales_IncomingProfServReceiptStatus</property>
-                <property name="Status15">Digitized</property>
+                <property name="Used">false</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
