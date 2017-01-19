@@ -478,9 +478,12 @@ public abstract class FieldValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, getDocumentFieldSnipplet(_parameter, null)
-                        .append("<input type=\"hidden\" name=\"swapInstance\" value=\"")
-                        .append(getSelectedInstances(_parameter).get(0).getOid()).append("\"/>"));
+        final StringBuilder html = getDocumentFieldSnipplet(_parameter, null);
+        for (final Instance inst : getSelectedInstances(_parameter)) {
+            html.append("<input type=\"hidden\" name=\"swapInstance\" value=\"")
+                .append(inst.getOid()).append("\"/>");
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 

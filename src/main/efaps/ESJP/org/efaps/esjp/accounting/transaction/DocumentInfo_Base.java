@@ -259,19 +259,37 @@ public abstract class DocumentInfo_Base
                         }
                     }
                 }
-                final Instance swapInstance = Instance.get(_parameter.getParameterValue("swapInstance"));
-                if (swapInstance.isValid()) {
-                    final PrintQuery print = CachedPrintQuery.get4Request(swapInstance);
-                    final SelectBuilder selFromInst = SelectBuilder.get().linkto(
-                                    CISales.Document2Document4Swap.FromLink).instance();
-                    final SelectBuilder selToInst = SelectBuilder.get().linkto(
-                                    CISales.Document2Document4Swap.ToLink).instance();
-                    print.addSelect(selFromInst, selToInst);
-                    print.execute();
-                    if (getInstance().equals(print.getSelect(selFromInst))) {
-                        this.key2Amount.put("From", getAmount());
-                    } else if (getInstance().equals(print.getSelect(selToInst))) {
-                        this.key2Amount.put("To", getAmount());
+
+                final String[] swaps = _parameter.getParameterValues("swapInstance");
+                if (ArrayUtils.isNotEmpty(swaps)) {
+                    // find out in which of the documents are we right now
+                    String[] docOids = _parameter.getParameterValues("document");
+                    if (docOids == null) {
+                        docOids = (String[]) Context.getThreadContext().getSessionAttribute("docOids");
+                    }
+                    int idx = 0;
+                    for (int i = 0; i < docOids.length; i++) {
+                        if (i > 0 && (i % 2) == 0) {
+                            idx++;
+                        }
+                        if (getInstance().getOid().equals(docOids[i])) {
+                            break;
+                        }
+                    }
+                    final Instance swapInstance = Instance.get(swaps[idx]);
+                    if (swapInstance.isValid()) {
+                        final PrintQuery print = CachedPrintQuery.get4Request(swapInstance);
+                        final SelectBuilder selFromInst = SelectBuilder.get().linkto(
+                                        CISales.Document2Document4Swap.FromLink).instance();
+                        final SelectBuilder selToInst = SelectBuilder.get().linkto(
+                                        CISales.Document2Document4Swap.ToLink).instance();
+                        print.addSelect(selFromInst, selToInst);
+                        print.execute();
+                        if (getInstance().equals(print.getSelect(selFromInst))) {
+                            this.key2Amount.put("From", getAmount());
+                        } else if (getInstance().equals(print.getSelect(selToInst))) {
+                            this.key2Amount.put("To", getAmount());
+                        }
                     }
                 }
             }
