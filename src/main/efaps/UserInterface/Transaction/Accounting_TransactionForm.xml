@@ -57,11 +57,10 @@
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_TransactionForm.updateButton.Label</property>
             <property name="CmdIcon">ACCEPT</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
+            <trigger program="org.efaps.esjp.accounting.transaction.evaluation.GenericEvaluation"
                 method="executeButton"
                 name="Accounting_TransactionForm.case.UI_FIELD_CMD"
                 event="UI_FIELD_CMD">
-                <property name="WithoutDocument">true</property>
                 <property name="Type4RateInfo">Accounting_Transaction</property>
             </trigger>
         </field>

@@ -29,7 +29,7 @@
         <target>
             <menu>Accounting_PeriodTree_TransferDocument_Menu</menu>
             <table>Sales_PaymentDocumentAbstractTable</table>
-            <evaluate method="getPaymentToBook" program="org.efaps.esjp.accounting.Period">
+            <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
                 <property name="Type">Sales_TransferDocument</property>
                 <property name="StatusGroup01">Sales_TransferDocumentStatus</property>
                 <property name="Status01">Closed</property>

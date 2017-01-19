@@ -35,6 +35,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -71,12 +72,16 @@ public abstract class JournalReport51DS_Base
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_PReportJournal51Form.dateTo.name));
 
+        final Instance periodInstance = Period.evalCurrent(_parameter);
+
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
         transAttrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
                         dateTo.withTimeAtStartOfDay().plusDays(1));
         transAttrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date,
                         dateFrom.withTimeAtStartOfDay().minusSeconds(1));
+        transAttrQueryBldr.addWhereAttrEqValue(CIAccounting.TransactionAbstract.PeriodLink, periodInstance);
+
         final AttributeQuery transAttrQuery = transAttrQueryBldr.getAttributeQuery(CIAccounting.TransactionAbstract.ID);
 
         queryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink, transAttrQuery);
