@@ -37,5 +37,11 @@
             <sqltable>Accounting_Period2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>Archived</name>
+            <type>Boolean</type>
+            <sqltable>Accounting_Period2ObjectSQLTable</sqltable>
+            <sqlcolumn>ARCHIVED</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

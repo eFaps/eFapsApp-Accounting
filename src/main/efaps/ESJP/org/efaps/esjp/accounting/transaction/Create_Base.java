@@ -806,6 +806,7 @@ public abstract class Create_Base
                     final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
                     insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
                     insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+                    insert.add(CIAccounting.Period2ERPDocument.Archived, false);
                     insert.execute();
                 }
             }

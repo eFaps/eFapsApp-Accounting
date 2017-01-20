@@ -25,6 +25,7 @@
         <name>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action</name>
         <childs>
             <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Assign</child>
+            <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Archive</child>
             <child>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Release</child>
         </childs>
     </definition>

@@ -15,18 +15,26 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>cc9850a6-3870-42cd-ae16-c4a63bd0a44e</uuid>
+    <uuid>8c60fe9d-557f-4a09-9bbb-d6e40ab3d13e</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_CollectMenu_Others_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodTree_CollectMenu_Others_Menu_Action_Register</child>
-            <child>Accounting_PeriodTree_CollectMenu_Others_Menu_Action_MassiveRegister</child>
-            <child>Accounting_Period_Action_Assign</child>
-            <child>Accounting_Period_Action_Archive</child>
-        </childs>
+        <name>Accounting_PeriodTree_Period2ERPDocument</name>
+        <access>
+            <role>Accounting_Admin</role>
+            <role>Accounting_Manager</role>
+        </access>
+        <target>
+            <menu>Accounting_PeriodTree_Period2ERPDocument_Menu</menu>
+            <table>Accounting_Period2ERPDocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Accounting_Period2ERPDocument</property>
+                <property name="LinkFrom">FromLink</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodDocumentSumTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Sales_DocumentAbstract/Type.Label</property>
@@ -46,30 +45,30 @@
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">MONTH:1:2</property>
+            <property name="FilterDefault">MONTH</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
         <field name="rateCrosstotal">
-            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+             <property name="MsgPhrase">Accounting_RateCrossTotalMsgPhrase</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/RateCrossTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateNettotal">
-            <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+             <property name="MsgPhrase">Accounting_RateNetTotalMsgPhrase</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/RateNetTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="crosstotal">
-            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+             <property name="MsgPhrase">Accounting_CrossTotalMsgPhrase</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="nettotal">
-            <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+             <property name="MsgPhrase">Accounting_NetTotalMsgPhrase</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/NetTotal.Label</property>
             <property name="Align">right</property>

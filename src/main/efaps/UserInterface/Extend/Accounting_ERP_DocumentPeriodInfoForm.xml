@@ -27,11 +27,10 @@
             <property name="Label">Accounting_ERP_DocumentPeriodInfoForm.periodHeader.Heading</property>
         </field>
         <field name="period" character="Target">
-            <table>Accounting_PeriodTable</table>
+            <table>Accounting_ERP_DocumentPeriodTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Accounting_Period2ERPDocument</property>
                 <property name="LinkFrom">ToLink</property>
-                <property name="InstanceSelect">linkto[FromLink].instance</property>
             </evaluate>
         </field>
         <field name="transactionHeader" character="Heading">

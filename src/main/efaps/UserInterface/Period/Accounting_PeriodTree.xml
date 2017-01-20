@@ -41,6 +41,7 @@
             <child>Accounting_PeriodTree_GainLoss</child>
             <child>Accounting_PeriodTree_Swap</child>
             <child>Accounting_PeriodTree_Transaction</child>
+            <child>Accounting_PeriodTree_Period2ERPDocument</child>
             <child>Accounting_PeriodTree_ConfigMenu</child>
         </childs>
         <property name="Target">content</property>

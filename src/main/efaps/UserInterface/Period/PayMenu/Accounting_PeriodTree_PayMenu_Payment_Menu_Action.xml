@@ -26,6 +26,7 @@
             <child>Accounting_PeriodTree_PayMenu_Payment_Menu_Action_Register</child>
             <child>Accounting_PeriodTree_PayMenu_Payment_Menu_Action_MassiveRegister</child>
             <child>Accounting_Period_Action_Assign</child>
+            <child>Accounting_Period_Action_Archive</child>
         </childs>
     </definition>
 </ui-menu>

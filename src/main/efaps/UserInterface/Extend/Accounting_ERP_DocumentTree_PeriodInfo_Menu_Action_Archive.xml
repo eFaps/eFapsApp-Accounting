@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -15,19 +14,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>568e7bab-4625-401a-84b3-baf599cd806b</uuid>
+    <uuid>2c54e366-d347-4bec-9fd8-8667b82571e2</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_PayMenu_IncomingSecurities_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodTree_PayMenu_IncomingSecurities_Menu_Action_Register</child>
-            <child>Accounting_Period_Action_Assign</child>
-            <child>Accounting_Period_Action_Archive</child>
-        </childs>
+        <name>Accounting_ERP_DocumentTree_PeriodInfo_Menu_Action_Archive</name>
+        <target>
+            <execute method="archiveDoc" program="org.efaps.esjp.accounting.Period" />
+        </target>
+        <property name="AskUser">true</property>
     </definition>
-</ui-menu>
+</ui-command>

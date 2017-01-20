@@ -50,6 +50,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
@@ -800,19 +801,21 @@ public abstract class Period_Base
                 throws EFapsException
             {
                 final Set<Instance> ret = new HashSet<>();
-                final Instance periodInst = evaluateCurrentPeriod(_parameter);
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
-                attrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                add2DocQueryBldr(_parameter, attrQueryBldr);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                                 CIAccounting.Period2ERPDocument.ToLink);
 
                 final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
-                queryBldr.addWhereAttrNotInQuery(CISales.Document2Document4Swap.FromLink, attrQuery);
+                queryBldr.addWhereAttrInQuery(CISales.Document2Document4Swap.FromLink, attrQuery);
+                analyzeTable(_parameter, (IFilterList) _parameter.get(ParameterValues.OTHERS), queryBldr);
                 final InstanceQuery query = queryBldr.getQuery();
                 ret.addAll(query.execute());
 
                 final QueryBuilder queryBldr2 = getQueryBldrFromProperties(_parameter);
-                queryBldr2.addWhereAttrNotInQuery(CISales.Document2Document4Swap.ToLink, attrQuery);
+                queryBldr2.addWhereAttrInQuery(CISales.Document2Document4Swap.ToLink, attrQuery);
+                analyzeTable(_parameter, (IFilterList) _parameter.get(ParameterValues.OTHERS), queryBldr2);
                 final InstanceQuery query2 = queryBldr2.getQuery();
                 ret.addAll(query2.execute());
 
@@ -831,7 +834,7 @@ public abstract class Period_Base
     public Return multiPrint(final Parameter _parameter)
         throws EFapsException
     {
-        return new MultiPrint()
+        return new DocMulti()
         {
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
@@ -855,20 +858,15 @@ public abstract class Period_Base
     {
         final Instance periodInst = evaluateCurrentPeriod(_parameter);
 
-        final PrintQuery print = new PrintQuery(periodInst);
-        print.addAttribute(CIAccounting.Period.FromDate);
-        print.addAttribute(CIAccounting.Period.ToDate);
-        print.execute();
-        final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
-        final DateTime to = print.<DateTime>getAttribute(CIAccounting.Period.ToDate);
-        _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, from.minusMinutes(1));
-        _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, to.plusDays(1));
+        final QueryBuilder periodAttrQueryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+        periodAttrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+        _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, periodAttrQueryBldr.getAttributeQuery(
+                        CIAccounting.Period2ERPDocument.ToLink));
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
-        attrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.FromLink, periodInst);
-        final AttributeQuery attrQuery = attrQueryBldr
-                        .getAttributeQuery(CIAccounting.Period2ERPDocument.ToLink);
-        _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+        attrQueryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.Archived, true);
+        _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQueryBldr.getAttributeQuery(
+                        CIAccounting.Period2ERPDocument.ToLink));
 
         if (containsProperty(_parameter, "Used")) {
             final QueryBuilder tAttrQueryBldr = new QueryBuilder(CIAccounting.Transaction);
@@ -897,11 +895,19 @@ public abstract class Period_Base
     public Return releaseDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance docInst = _parameter.getCallInstance();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
-        queryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.ToLink, docInst);
-        for (final Instance inst : queryBldr.getQuery().execute()) {
-            new Delete(inst).execute();
+        final Instance callInst = _parameter.getCallInstance();
+        if (InstanceUtils.isKindOf(callInst, CIERP.DocumentAbstract)) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.ToLink, callInst);
+            for (final Instance inst : queryBldr.getQuery().execute()) {
+                new Delete(inst).execute();
+            }
+        } else if (InstanceUtils.isKindOf(callInst, CIAccounting.Period)) {
+            for (final Instance inst : getSelectedInstances(_parameter)) {
+                if (InstanceUtils.isKindOf(inst, CIAccounting.Period2ERPDocument)) {
+                    new Delete(inst).execute();
+                }
+            }
         }
         return new Return();
     }
@@ -921,7 +927,60 @@ public abstract class Period_Base
             final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
             insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
             insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+            insert.add(CIAccounting.Period2ERPDocument.Archived, false);
             insert.execute();
+        }
+        return new Return();
+    }
+
+    /**
+     * Release doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return archiveDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance callInst = _parameter.getCallInstance();
+        final List<Instance> docInsts = new ArrayList<>();
+        if (InstanceUtils.isKindOf(callInst, CIAccounting.Period)) {
+            // for every selected get the related document
+            for (final Instance inst : getSelectedInstances(_parameter)) {
+                if (InstanceUtils.isKindOf(inst, CIAccounting.Period2ERPDocument)) {
+                    final PrintQuery print = new PrintQuery(inst);
+                    final SelectBuilder selDocInst = SelectBuilder.get().linkto(CIAccounting.Period2ERPDocument.ToLink)
+                                    .instance();
+                    print.addSelect(selDocInst);
+                    print.execute();
+                    docInsts.add(print.getSelect(selDocInst));
+                } else if (InstanceUtils.isKindOf(inst, CIERP.DocumentAbstract)) {
+                    docInsts.add(inst);
+                }
+            }
+        } else if (InstanceUtils.isKindOf(callInst, CIERP.DocumentAbstract)) {
+            docInsts.add(callInst);
+        }
+
+        // for every document change to archived for all periods
+        for (final Instance docInst : docInsts) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Period2ERPDocument);
+            queryBldr.addWhereAttrEqValue(CIAccounting.Period2ERPDocument.ToLink, docInst);
+            final List<Instance> relInsts = queryBldr.getQuery().execute();
+            if (relInsts.isEmpty() && InstanceUtils.isKindOf(callInst, CIAccounting.Period)) {
+                final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
+                insert.add(CIAccounting.Period2ERPDocument.FromLink, callInst);
+                insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+                insert.add(CIAccounting.Period2ERPDocument.Archived, true);
+                insert.execute();
+            } else {
+                for (final Instance inst : relInsts) {
+                    final Update update = new Update(inst);
+                    update.add(CIAccounting.Period2ERPDocument.Archived, true);
+                    update.execute();
+                }
+            }
         }
         return new Return();
     }

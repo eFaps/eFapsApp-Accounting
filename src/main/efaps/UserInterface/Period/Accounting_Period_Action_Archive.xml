@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,19 +14,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>568e7bab-4625-401a-84b3-baf599cd806b</uuid>
+    <uuid>b504e7be-76b1-49f1-92a5-e2b2e7228726</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_PayMenu_IncomingSecurities_Menu_Action</name>
-        <childs>
-            <child>Accounting_PeriodTree_PayMenu_IncomingSecurities_Menu_Action_Register</child>
-            <child>Accounting_Period_Action_Assign</child>
-            <child>Accounting_Period_Action_Archive</child>
-        </childs>
+        <name>Accounting_Period_Action_Archive</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+        <target>
+            <execute method="archiveDoc" program="org.efaps.esjp.accounting.Period" />
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>
