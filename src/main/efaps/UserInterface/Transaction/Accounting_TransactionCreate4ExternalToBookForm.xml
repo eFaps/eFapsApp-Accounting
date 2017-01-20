@@ -61,7 +61,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Accounting_TransactionForm.updateButton.Label</property>
             <property name="CmdIcon">ACCEPT</property>
-            <trigger program="org.efaps.esjp.accounting.transaction.Transaction"
+            <trigger program="org.efaps.esjp.accounting.transaction.evaluation.DocumentEvaluation"
                 method="executeButton"
                 name="Accounting_TransactionCreate4ExternalToBookForm.case.UI_FIELD_CMD"
                 event="UI_FIELD_CMD">

@@ -57,6 +57,7 @@ import org.efaps.esjp.accounting.PurchaseRecord;
 import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.TransactionDocument;
 import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
+import org.efaps.esjp.accounting.transaction.evaluation.DocumentEvaluation;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.TransPosType;
 import org.efaps.esjp.accounting.util.AccountingSettings;
@@ -265,7 +266,7 @@ public abstract class Create_Base
     public Return create4DocMassive(final Parameter _parameter)
         throws EFapsException
     {
-        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+        final List<DocumentInfo> docInfos = new DocumentEvaluation().evalDocuments(_parameter);
 
         final DateTime date = new DateTime(_parameter
                         .getParameterValue(CIFormAccounting.Accounting_MassiveRegister4DocumentForm.date.name));
@@ -344,7 +345,7 @@ public abstract class Create_Base
     public Return create4ExternalMassive(final Parameter _parameter)
         throws EFapsException
     {
-        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+        final List<DocumentInfo> docInfos =  new DocumentEvaluation().evalDocuments(_parameter);
         final DateTime date = new DateTime(_parameter.getParameterValue("date"));
         final boolean useDate = Boolean.parseBoolean(_parameter.getParameterValue("useDate"));
         final boolean oneTransPerDoc = Boolean.parseBoolean(_parameter.getParameterValue("oneTransPerDoc"));
@@ -502,7 +503,7 @@ public abstract class Create_Base
             connect2SubJournal(_parameter, transInst, docInst);
         }
         // evaluate for the documents the payment belongs to
-        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+        final List<DocumentInfo> docInfos =  new DocumentEvaluation().evalDocuments(_parameter);
         for (final DocumentInfo docInfo : docInfos) {
             CollectionUtils.addAll(docInsts, docInfo.getDocInsts(false));
         }
@@ -530,7 +531,7 @@ public abstract class Create_Base
                         CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.date.name));
         final boolean usedate = Boolean.parseBoolean(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_TransactionCreate4PaymentMassiveForm.useDate.name));
-        final List<DocumentInfo> docInfos = evalDocuments(_parameter);
+        final List<DocumentInfo> docInfos =  new DocumentEvaluation().evalDocuments(_parameter);
         for (final DocumentInfo docInfo : docInfos) {
             if (docInfo.isValid(_parameter)) {
                 final TransInfo transinfo = TransInfo.get4DocInfo(_parameter, docInfo, true);

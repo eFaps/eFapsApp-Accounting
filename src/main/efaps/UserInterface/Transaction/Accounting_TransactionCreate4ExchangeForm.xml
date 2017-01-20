@@ -59,7 +59,7 @@
             <property name="CmdIcon">ACCEPT</property>
             <trigger event="UI_FIELD_CMD" method="executeButton"
                 name="Accounting_TransactionCreate4ExchangeForm.case.UI_FIELD_CMD"
-                program="org.efaps.esjp.accounting.transaction.Transaction">
+                program="org.efaps.esjp.accounting.transaction.evaluation.DocumentEvaluation">
             </trigger>
         </field>
         <field name="docDetailHeader" character="Heading">

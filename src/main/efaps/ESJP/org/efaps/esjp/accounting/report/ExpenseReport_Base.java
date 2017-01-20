@@ -64,6 +64,15 @@ public abstract class ExpenseReport_Base
     }
 
 
+    /**
+     * Gets the instances.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _from the from
+     * @param _to the to
+     * @return the instances
+     * @throws EFapsException on error
+     */
     protected List<Instance> getInstances(final Parameter _parameter,
                                           final DateTime _from,
                                           final DateTime _to)

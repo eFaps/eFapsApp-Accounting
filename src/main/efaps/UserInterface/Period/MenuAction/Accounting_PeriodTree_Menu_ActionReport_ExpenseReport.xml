@@ -16,25 +16,15 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>06a7ee2c-e3a9-4ce8-9196-db13eb300739</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_Menu_ActionReport_ExpenseReport</name>
-
         <access>
             <role>Accounting_Admin</role>
             <role>Accounting_Manager</role>
@@ -42,11 +32,12 @@
         </access>
         <target>
             <form>Sales_Document_ReportForm</form>
-            <execute program="org.efaps.esjp.accounting.report.ExpenseReport" method="createDocReport">
+            <execute program="org.efaps.esjp.accounting.report.ExpenseReport"
+                method="generateReport">
                 <property name="JasperReport">Accounting_ExpenseReport</property>
                 <property name="DataSourceClass">org.efaps.esjp.accounting.report.ExpenseReport</property>
             </execute>
-            <validate program="org.efaps.esjp.accounting.report.Report" method="validateDates"/>
+            <validate program="org.efaps.esjp.accounting.report.Report" method="validateDates" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetShowFile">true</property>
