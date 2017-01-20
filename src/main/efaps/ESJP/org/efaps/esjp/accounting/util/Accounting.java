@@ -53,24 +53,24 @@ public final class Accounting
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute CURRATEEQ = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "CurrencyRate4AccountingEqualsSales")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "CurrencyRate4AccountingEqualsSales")
                     .description("The CurrencyRate for Accounting is the same as the one for sales.\n"
                                     + "Means only one CurrencyRate for the system is used.");
 
     /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink CTP4VAT = new SysConfLink()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "CostTextPosition4VAT")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "CostTextPosition4VAT")
                     .description("Link to a Products_ProductCostTextPosition used for creating Positions."
                                     + "in an External Voucher applying VAT.");
 
     /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink CTP4FREE = new SysConfLink()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "CostTextPosition4TaxFree")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "CostTextPosition4TaxFree")
                     .description(" Link to a Products_ProductCostTextPosition used for creating Positions"
                                     + "in an External Voucher without Tax.");
 
@@ -78,8 +78,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4EXTERNAL_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4External.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4External.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
 
@@ -87,8 +87,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4DOC_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4Doc.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4Doc.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4Doc.");
 
@@ -96,8 +96,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4DOCBOOK_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4DocToBook.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4DocToBook.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
 
@@ -105,8 +105,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4EXCHANGE_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4Exchange.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4Exchange.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
 
@@ -114,8 +114,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4EXTERNALBOOK_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4ExternalToBook.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4ExternalToBook.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
 
@@ -123,8 +123,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4PAYIN_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4PaymentIn.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4PaymentIn.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
 
@@ -132,8 +132,8 @@ public final class Accounting
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute CREATE4PAYOUT_AUTOCOMPLETE4ADDDOC
         = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Create4PaymentOut.AutoComplete4AdditionalDocuments")
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Create4PaymentOut.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
 
@@ -224,12 +224,14 @@ public final class Accounting
         TRANSACTION,
         /** Official Report. */
         SUBJOURNAL,
-
         /** The setstatus. */
         SETSTATUS,
-
         /** The withoutdoc. */
-        WITHOUTDOC;
+        WITHOUTDOC,
+        /** The evalonpayment. */
+        PERIOD4ACTIONDATE,
+        /** The evalonpayment. */
+        PERIOD4DOCDATE;
 
         /**
          * {@inheritDoc}
@@ -261,12 +263,14 @@ public final class Accounting
         TRANSACTION,
         /** Official Report. */
         SUBJOURNAL,
-
         /** The setstatus. */
         MARKBOOKED,
-
         /** The evalonpayment. */
-        EVALONPAYMENT;
+        EVALONPAYMENT,
+        /** The evalonpayment. */
+        PERIOD4ACTIONDATE,
+        /** The evalonpayment. */
+        PERIOD4DOCDATE;
 
         /**
          * {@inheritDoc}
@@ -562,6 +566,6 @@ public final class Accounting
         throws CacheReloadException
     {
         // Accounting-Configuration
-        return SystemConfiguration.get(SYSCONFUUID);
+        return SystemConfiguration.get(Accounting.SYSCONFUUID);
     }
 }

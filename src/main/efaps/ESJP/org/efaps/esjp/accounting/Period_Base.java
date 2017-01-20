@@ -63,6 +63,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -418,7 +419,8 @@ public abstract class Period_Base
         Instance ret = null;
         if (Context.getThreadContext().containsRequestAttribute(Period.REQKEY4CUR)) {
             ret = (Instance) Context.getThreadContext().getRequestAttribute(Period.REQKEY4CUR);
-        } else {
+        }
+        if (!InstanceUtils.isValid(ret)) {
             Instance instance = _instance;
             // this happens only on create mode
             if (instance != null && !instance.isValid()

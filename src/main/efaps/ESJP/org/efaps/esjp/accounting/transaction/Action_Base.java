@@ -29,6 +29,8 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -47,6 +49,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
@@ -238,7 +241,10 @@ public abstract class Action_Base
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract)
                         .linkfrom(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract)
                         .linkto(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract).instance();
-        print.addSelect(selActionInst, selDocInst, selDocTypeInst);
+        final SelectBuilder selDocDate = SelectBuilder.get()
+                        .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract)
+                        .attribute(CIERP.DocumentAbstract.Date);
+        print.addSelect(selActionInst, selDocInst, selDocTypeInst, selDocDate);
         print.addAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
         print.execute();
 
@@ -256,6 +262,7 @@ public abstract class Action_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selCaseInst = SelectBuilder.get()
                         .linkto(CIAccounting.ActionDefinition2Case4IncomingAbstract.ToLinkAbstract).instance();
+
         final SelectBuilder selLabelInst = SelectBuilder.get()
                         .linkto(CIAccounting.ActionDefinition2Case4IncomingAbstract.LabelLink).instance();
         multi.addSelect(selCaseInst, selLabelInst);
@@ -267,49 +274,62 @@ public abstract class Action_Base
             if (configs != null) {
 
                 final Instance caseInst = multi.getSelect(selCaseInst);
-                // force the correct period by evaluating it now
-                final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, caseInst);
-                boolean execute = true;
-                // for pettyCash receipt evaluation if legal document or not
-                if (ret.getDocInst().getType().isKindOf(CISales.PettyCashReceipt)) {
-                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-                    final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                    .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
-                    if (!withoutDoc && ret.getDocTypeInst() == null) {
-                        execute = false;
-                    } else {
-                        if (ret.getDocTypeInst() == null) {
-                            execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                        } else {
-                            execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                        }
-                    }
-                } else if (ret.getDocInst().getType().isKindOf(CISales.FundsToBeSettledReceipt)) {
-                    final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
-                    final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                    .getProperty(AccountingSettings.PERIOD_ACTIVATEFTBSWD));
-                    if (!withoutDoc && ret.getDocTypeInst() == null) {
-                        execute = false;
-                    } else {
-                        if (ret.getDocTypeInst() == null) {
-                            execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                        } else {
-                            execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                        }
+                DateTime periodDate = null;
+                if (multi.getInstanceList().size() > 1) {
+                    if (configs.contains(ActDef2Case4DocConfig.PERIOD4ACTIONDATE)) {
+                        periodDate = acdDate == null ? new DateTime() : acdDate;
+                    } else if (configs.contains(ActDef2Case4DocConfig.PERIOD4DOCDATE)) {
+                        periodDate = print.getSelect(selDocDate);
                     }
                 }
-                if (execute) {
-                    final Instance labelInst = multi.getSelect(selLabelInst);
-                    if (labelInst != null && labelInst.isValid()) {
-                        final List<Instance> labels = new Label().getLabelInst4Documents(_parameter, ret.getDocInst());
-                        if (labels.contains(labelInst)) {
+                final Instance periodInst = evalSelectedPeriod(_parameter, caseInst, periodDate);
+                if (InstanceUtils.isValid(periodInst)) {
+                    boolean execute = true;
+                    // for pettyCash receipt evaluation if legal document or not
+                    if (ret.getDocInst().getType().isKindOf(CISales.PettyCashReceipt)) {
+                        final Properties props = Accounting.getSysConfig()
+                                        .getObjectAttributeValueAsProperties(periodInst);
+                        final boolean withoutDoc = "true".equalsIgnoreCase(props
+                                        .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
+                        if (!withoutDoc && ret.getDocTypeInst() == null) {
+                            execute = false;
+                        } else {
+                            if (ret.getDocTypeInst() == null) {
+                                execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
+                            } else {
+                                execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
+                            }
+                        }
+                    } else if (ret.getDocInst().getType().isKindOf(CISales.FundsToBeSettledReceipt)) {
+                        final Properties props = Accounting.getSysConfig()
+                                        .getObjectAttributeValueAsProperties(periodInst);
+                        final boolean withoutDoc = "true".equalsIgnoreCase(props
+                                        .getProperty(AccountingSettings.PERIOD_ACTIVATEFTBSWD));
+                        if (!withoutDoc && ret.getDocTypeInst() == null) {
+                            execute = false;
+                        } else {
+                            if (ret.getDocTypeInst() == null) {
+                                execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
+                            } else {
+                                execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
+                            }
+                        }
+                    }
+                    if (execute) {
+                        final Instance labelInst = multi.getSelect(selLabelInst);
+                        if (labelInst != null && labelInst.isValid()) {
+                            final List<Instance> labels = new Label().getLabelInst4Documents(_parameter,
+                                            ret.getDocInst());
+                            if (labels.contains(labelInst)) {
+                                ret.setConfigs(configs);
+                                ret.setCaseInst(caseInst);
+                                break;
+                            }
+                        } else {
                             ret.setConfigs(configs);
                             ret.setCaseInst(caseInst);
-                            break;
                         }
-                    } else {
-                        ret.setConfigs(configs);
-                        ret.setCaseInst(caseInst);
+                        break;
                     }
                 }
             }
@@ -450,8 +470,11 @@ public abstract class Action_Base
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract).instance();
         final SelectBuilder selDocInst = SelectBuilder.get()
                         .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract).instance();
+        final SelectBuilder selDocDate = SelectBuilder.get()
+                        .linkto(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract)
+                        .attribute(CIERP.DocumentAbstract.Date);
         print.addAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
-        print.addSelect(selActionInst, selDocInst);
+        print.addSelect(selActionInst, selDocInst, selDocDate);
         print.execute();
 
         final DateTime acdDate = print.getAttribute(CIERP.ActionDefinition2DocumentAbstract.Date);
@@ -476,22 +499,32 @@ public abstract class Action_Base
             final List<ActDef2Case4DocConfig> configs = multi
                             .getAttribute(CIAccounting.ActionDefinition2Case4DocAbstract.Config);
             if (configs != null) {
-                ret.getConfigs().addAll(configs);
+                DateTime periodDate = null;
+                if (multi.getInstanceList().size() > 1) {
+                    if (configs.contains(ActDef2Case4DocConfig.PERIOD4ACTIONDATE)) {
+                        periodDate = acdDate == null ? new DateTime() : acdDate;
+                    } else if (configs.contains(ActDef2Case4DocConfig.PERIOD4DOCDATE)) {
+                        periodDate = print.getSelect(selDocDate);
+                    }
+                }
                 final Instance caseInst = multi.getSelect(selCaseInst);
-                // force the correct period by evaluating it now
-                new Period().evaluateCurrentPeriod(_parameter, caseInst);
-                ret.setExecute(true);
-                final Instance labelInst = multi.getSelect(selLabelInst);
-                if (labelInst != null && labelInst.isValid()) {
-                    final List<Instance> labels = new Label().getLabelInst4Documents(_parameter, ret.getDocInst());
-                    if (labels.contains(labelInst)) {
+                if (InstanceUtils.isValid(evalSelectedPeriod(_parameter, caseInst, periodDate))) {
+                    ret.getConfigs().addAll(configs);
+                    // force the correct period by evaluating it now
+                    ret.setExecute(true);
+                    final Instance labelInst = multi.getSelect(selLabelInst);
+                    if (labelInst != null && labelInst.isValid()) {
+                        final List<Instance> labels = new Label().getLabelInst4Documents(_parameter, ret.getDocInst());
+                        if (labels.contains(labelInst)) {
+                            ret.setConfigs(configs);
+                            ret.setCaseInst(caseInst);
+                            break;
+                        }
+                    } else {
                         ret.setConfigs(configs);
                         ret.setCaseInst(caseInst);
-                        break;
                     }
-                } else {
-                    ret.setConfigs(configs);
-                    ret.setCaseInst(caseInst);
+                    break;
                 }
             }
         }
@@ -517,6 +550,36 @@ public abstract class Action_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * Eval selected period.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _caseInst the case inst
+     * @param _periodDate the period date
+     * @return the instance
+     * @throws EFapsException on error
+     */
+    protected Instance evalSelectedPeriod(final Parameter _parameter,
+                                          final Instance _caseInst,
+                                          final DateTime _periodDate)
+        throws EFapsException
+    {
+        Context.getThreadContext().setRequestAttribute(Period.REQKEY4CUR, null);
+        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, _caseInst);
+        boolean eval;
+        if (_periodDate != null) {
+            final PrintQuery periodPrint = CachedPrintQuery.get4Request(periodInst);
+            periodPrint.addAttribute(CIAccounting.Period.FromDate, CIAccounting.Period.ToDate);
+            periodPrint.execute();
+            final DateTime fromDate = periodPrint.getAttribute(CIAccounting.Period.FromDate);
+            final DateTime toDate = periodPrint.getAttribute(CIAccounting.Period.ToDate);
+            eval = fromDate.minusMinutes(1).isBefore(_periodDate) && toDate.plusMinutes(1).isAfter(_periodDate);
+        } else {
+            eval = true;
+        }
+        return eval ? periodInst : null;
     }
 
     /**
