@@ -58,6 +58,7 @@ import org.efaps.esjp.accounting.SubPeriod_Base;
 import org.efaps.esjp.accounting.TransactionDocument;
 import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
 import org.efaps.esjp.accounting.transaction.evaluation.DocumentEvaluation;
+import org.efaps.esjp.accounting.transaction.evaluation.DocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.TransPosType;
 import org.efaps.esjp.accounting.util.AccountingSettings;

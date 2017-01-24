@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.SubPeriod_Base;
+import org.efaps.esjp.accounting.transaction.evaluation.DocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;

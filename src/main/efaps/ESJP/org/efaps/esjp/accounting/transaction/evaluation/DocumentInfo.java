@@ -16,7 +16,7 @@
  */
 
 
-package org.efaps.esjp.accounting.transaction;
+package org.efaps.esjp.accounting.transaction.evaluation;
 
 import java.util.Collection;
 

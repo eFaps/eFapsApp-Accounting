@@ -228,10 +228,16 @@ public abstract class JournalSC1617_Base
                         CIAccounting.TransactionPositionAbstract.Position,
                         CIAccounting.TransactionPositionAbstract.PositionType,
                         CIAccounting.TransactionPositionAbstract.RateCurrencyLink,
-                        CIAccounting.TransactionPositionAbstract.Rate);
+                        CIAccounting.TransactionPositionAbstract.Rate,
+                        CIAccounting.TransactionPositionAbstract.Remark);
         multi.execute();
         final List<DataBean> beans = new ArrayList<>();
         while (multi.next()) {
+            String descr = multi.<String>getSelect(selTransDescr);
+            final String remark = multi.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+            if (StringUtils.isNotEmpty(remark)) {
+                descr = descr + " - " + remark;
+            }
             final DataBean bean = new DataBean()
                             .setOrigin(origin)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
@@ -240,7 +246,7 @@ public abstract class JournalSC1617_Base
                             .setAccName(multi.<String>getSelect(selAccName))
                             .setAmount(multi.<BigDecimal>getAttribute(
                                             CIAccounting.TransactionPositionAbstract.RateAmount))
-                            .setTransDescr(multi.<String>getSelect(selTransDescr))
+                            .setTransDescr(descr)
                             .setCurrencyId(multi.<Long>getAttribute(
                                             CIAccounting.TransactionPositionAbstract.RateCurrencyLink))
                             .setDocInst(multi.<Instance>getSelect(selDocInst))

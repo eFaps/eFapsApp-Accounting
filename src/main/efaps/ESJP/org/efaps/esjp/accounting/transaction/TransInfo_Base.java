@@ -42,6 +42,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.transaction.evaluation.DocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.TransPosOrder;
 import org.efaps.esjp.accounting.util.Accounting.TransPosType;
@@ -177,7 +178,7 @@ public abstract class TransInfo_Base
             update.add(CIAccounting.Transaction.Date, getDate());
             update.execute();
 
-            final List<Instance> posInsts = new ArrayList<Instance>();
+            final List<Instance> posInsts = new ArrayList<>();
             int i = 1;
             for (final PositionInfo pos : this.positions) {
                 final Update posUpdate;
@@ -291,7 +292,7 @@ public abstract class TransInfo_Base
                         new Period().evaluateCurrentPeriod(_parameter));
         final TransPosOrder posOrder = TransPosOrder.valueOf(props.getProperty(AccountingSettings.PERIOD_TRANSPOSORDER,
                         TransPosOrder.DEBITCREDITGROUP.name()));
-        final ComparatorChain<PositionInfo> chain = new ComparatorChain<PositionInfo>();
+        final ComparatorChain<PositionInfo> chain = new ComparatorChain<>();
 
         // if grouping is wanted
         if (posOrder.equals(TransPosOrder.DEBITCREDITGROUP) || posOrder.equals(TransPosOrder.CREDITDEBITGROUP)
@@ -773,9 +774,9 @@ public abstract class TransInfo_Base
      * @return the 4 account info
      * @throws EFapsException on error
      */
-    public static PositionInfo get4AccountInfo(final Parameter _parameter,
-                                               final Type _type,
-                                               final AccountInfo _accInfo)
+    protected static PositionInfo get4AccountInfo(final Parameter _parameter,
+                                                  final Type _type,
+                                                  final AccountInfo _accInfo)
         throws EFapsException
     {
         final PositionInfo ret = new PositionInfo()

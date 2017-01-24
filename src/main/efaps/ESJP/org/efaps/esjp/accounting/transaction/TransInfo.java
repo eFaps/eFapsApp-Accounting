@@ -17,9 +17,13 @@
 
 package org.efaps.esjp.accounting.transaction;
 
+import java.util.List;
+
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.accounting.transaction.evaluation.DocumentInfo;
 import org.efaps.util.EFapsException;
 
 /**
@@ -50,5 +54,39 @@ public class TransInfo
         throws EFapsException
     {
         return TransInfo_Base.get4DocInfo(_parameter, _docInfo, _setDocInst);
+    }
+
+    /**
+     * Gets the rel pos infos.
+     *
+     * @param _parameter the parameter
+     * @param _accInfo the acc info
+     * @param _type the type
+     * @return the rel pos infos
+     * @throws EFapsException the e faps exception
+     */
+    public static List<PositionInfo> getRelPosInfos(final Parameter _parameter,
+                                                       final AccountInfo _accInfo,
+                                                       final Type _type)
+        throws EFapsException
+    {
+        return TransInfo_Base.getRelPosInfos(_parameter, _accInfo, _type);
+    }
+
+    /**
+     * Gets the 4 account info.
+     *
+     * @param _parameter the parameter
+     * @param _type the type
+     * @param _accInfo the acc info
+     * @return the 4 account info
+     * @throws EFapsException the e faps exception
+     */
+    public static PositionInfo get4AccountInfo(final Parameter _parameter,
+                                               final Type _type,
+                                               final AccountInfo _accInfo)
+        throws EFapsException
+    {
+        return TransInfo_Base.get4AccountInfo(_parameter, _type, _accInfo);
     }
 }

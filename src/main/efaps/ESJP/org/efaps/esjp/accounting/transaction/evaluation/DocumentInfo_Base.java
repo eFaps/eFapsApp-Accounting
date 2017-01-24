@@ -15,7 +15,7 @@
  *
  */
 
-package org.efaps.esjp.accounting.transaction;
+package org.efaps.esjp.accounting.transaction.evaluation;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -46,6 +46,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.listener.IOnDocumentInfo;
+import org.efaps.esjp.accounting.transaction.AccountInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
@@ -269,7 +270,7 @@ public abstract class DocumentInfo_Base
                     }
                     int idx = 0;
                     for (int i = 0; i < docOids.length; i++) {
-                        if (i > 0 && (i % 2) == 0) {
+                        if (i > 0 && i % 2 == 0) {
                             idx++;
                         }
                         if (getInstance().getOid().equals(docOids[i])) {
@@ -1190,6 +1191,12 @@ public abstract class DocumentInfo_Base
         final DocumentInfo ret;
         if (_docInfos.size() == 1) {
             ret = _docInfos.iterator().next();
+            for (final AccountInfo accInfo : ret.getCreditAccounts()) {
+                accInfo.setDocLink(ret.getInstance());
+            }
+            for (final AccountInfo accInfo : ret.getDebitAccounts()) {
+                accInfo.setDocLink(ret.getInstance());
+            }
         } else {
             ret = new DocumentInfo();
             ret.setRateInfo(_docInfos.iterator().next().getRateInfo());

@@ -50,7 +50,6 @@ import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.transaction.AccountInfo;
-import org.efaps.esjp.accounting.transaction.DocumentInfo;
 import org.efaps.esjp.accounting.transaction.Transaction;
 import org.efaps.esjp.accounting.transaction.Transaction_Base;
 import org.efaps.esjp.accounting.util.Accounting;
