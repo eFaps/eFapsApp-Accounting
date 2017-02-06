@@ -84,10 +84,24 @@
                 <property name="Access">!NONE</property>
             </trigger>
         </field>
-         <field name="creator">
+        <field name="creator">
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">Creator</property>
             <property name="Label">Sales_IncomingExchange/Creator.Label</property>
+        </field>
+        <field name="bin">
+            <property name="Label">Sales_BinIncomingExchange.Label</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_BinIncomingExchange2IncomingExchange#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_BinIncomingExchange2IncomingExchange#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Accounting_PeriodIncomingExchangeTable.bin.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Config -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.BinIncomingExchange.Activate</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>
