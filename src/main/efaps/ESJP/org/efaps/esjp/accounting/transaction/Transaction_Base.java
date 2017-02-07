@@ -943,7 +943,7 @@ public abstract class Transaction_Base
                 Statement stmt = null;
 
                 try {
-                    stmt = con.getConnection().createStatement();
+                    stmt = con.createStatement();
                     final ResultSet rs = stmt.executeQuery(complStmt);
                     while (rs.next()) {
                         final Map<String, Object> map = new HashMap<>();
@@ -962,13 +962,8 @@ public abstract class Transaction_Base
                         stmt.close();
                     }
                 }
-                con.commit();
             } catch (final SQLException e) {
                 throw new EFapsException(Transaction_Base.class, "executeQuery4InvalidTransactions", e);
-            } finally {
-                if (con != null && con.isOpened()) {
-                    con.abort();
-                }
             }
 
             Collections.sort(lst, new Comparator<Map<String, Object>>()
