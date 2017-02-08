@@ -27,6 +27,7 @@
             <child>Accounting_PeriodTree_Menu_ActionExport_ExportAccountTable</child>
             <child>Accounting_PeriodTree_Menu_ActionExport_ExportCaseTable</child>
             <child>Accounting_PeriodTree_Menu_ActionExport_ExportSC1617</child>
+            <child>Accounting_PeriodTree_Menu_ActionExport_ExportSC1617RC</child>
         </childs>
     </definition>
 </ui-menu>

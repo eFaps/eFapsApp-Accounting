@@ -168,6 +168,8 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.dateFrom.name));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.dateTo.name));
+        final Instance purchaseRecordInst = Instance.get(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617RCForm.purchaseRecord.name));
         final Instance subJournalInst = Instance.get(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.subJournal.name));
         final String origin = _parameter.getParameterValue(
@@ -175,11 +177,26 @@ public abstract class JournalSC1617_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
-        transAttrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
-                        dateTo.withTimeAtStartOfDay().plusDays(1));
-        transAttrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date,
-                        dateFrom.withTimeAtStartOfDay().minusSeconds(1));
 
+        boolean purchaseRec = false;
+        // if a purchase record was selected use it as filter
+        if (InstanceUtils.isValid(purchaseRecordInst)) {
+            purchaseRec = true;
+            final QueryBuilder attrQueryBuilder = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
+            attrQueryBuilder.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecordInst);
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+            attrQueryBldr.addWhereAttrInQuery(CIAccounting.Transaction2ERPDocument.ToLinkAbstract,
+                            attrQueryBuilder.getAttributeQuery(CIAccounting.PurchaseRecord2Document.ToLink));
+            transAttrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CIAccounting.Transaction2ERPDocument.FromLink));
+
+        } else {
+            transAttrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
+                        dateTo.withTimeAtStartOfDay().plusDays(1));
+            transAttrQueryBldr.addWhereAttrGreaterValue(CIAccounting.TransactionAbstract.Date,
+                        dateFrom.withTimeAtStartOfDay().minusSeconds(1));
+        }
         if (InstanceUtils.isValid(subJournalInst)) {
             final QueryBuilder attrQueryBuilder = new QueryBuilder(CIAccounting.ReportSubJournal2Transaction);
             attrQueryBuilder.addWhereAttrEqValue(CIAccounting.ReportSubJournal2Transaction.FromLink, subJournalInst);
@@ -210,6 +227,7 @@ public abstract class JournalSC1617_Base
                         .linkto(CIAccounting.TransactionPosition2ERPDocument.ToLinkAbstract);
         final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
         final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CISales.DocumentSumAbstract.Name);
+        final SelectBuilder selDocRev = new SelectBuilder(selDoc).attribute(CISales.DocumentSumAbstract.Revision);
         final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentSumAbstract.Date);
         final SelectBuilder selDocDueDate = new SelectBuilder(selDoc).attribute(CISales.DocumentSumAbstract.DueDate);
         final SelectBuilder selNetTotal = new SelectBuilder(selDoc).attribute(CISales.DocumentSumAbstract.RateNetTotal);
@@ -223,7 +241,7 @@ public abstract class JournalSC1617_Base
 
         multi.addSelect(selAccName, selTransIdentifier, selTransOID, selTransName, selTransDescr, selTransDate,
                         selDocInst, selDocName, selDocDate, selDocDueDate, selContactName, selTaxNumber, selNetTotal,
-                        selCrossTotal);
+                        selCrossTotal, selDocRev);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.RateAmount,
                         CIAccounting.TransactionPositionAbstract.Position,
                         CIAccounting.TransactionPositionAbstract.PositionType,
@@ -251,6 +269,7 @@ public abstract class JournalSC1617_Base
                                             CIAccounting.TransactionPositionAbstract.RateCurrencyLink))
                             .setDocInst(multi.<Instance>getSelect(selDocInst))
                             .setDocName(multi.<String>getSelect(selDocName))
+                            .setDocRevision(multi.<String>getSelect(selDocRev))
                             .setDocDate(multi.<DateTime>getSelect(selDocDate))
                             .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
                             .setContactName(multi.<String>getSelect(selContactName))
@@ -289,8 +308,13 @@ public abstract class JournalSC1617_Base
             }
         });
         Collections.sort(beans, chain);
-
+        final int i = 1;
         for (final DataBean bean : beans) {
+            if (purchaseRec) {
+                bean.setTransDoc(bean.getDocRevision());
+            } else {
+                bean.setTransDoc("" + i);
+            }
             _exporter.addBeanRows(bean);
         }
     }
@@ -339,6 +363,9 @@ public abstract class JournalSC1617_Base
 
         /** The doc name. (Numero del Documento) */
         private String docName;
+
+        /** The doc name. (Numero del Documento) */
+        private String docRevision;
 
         /** The doc date. */
         private DateTime docDate;
@@ -559,7 +586,7 @@ public abstract class JournalSC1617_Base
          * Getter method for the instance variable {@link #rate}.
          *
          * @return value of instance variable {@link #rate}
-         * @throws EFapsException
+         * @throws EFapsException on error
          */
         public BigDecimal getRate()
             throws EFapsException
@@ -958,6 +985,28 @@ public abstract class JournalSC1617_Base
         public DataBean setPosition(final int _position)
         {
             this.position = _position;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docRevision}.
+         *
+         * @return value of instance variable {@link #docRevision}
+         */
+        public String getDocRevision()
+        {
+            return this.docRevision;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docRevision}.
+         *
+         * @param _docRevision value for instance variable {@link #docRevision}
+         * @return the data bean
+         */
+        public DataBean setDocRevision(final String _docRevision)
+        {
+            this.docRevision = _docRevision;
             return this;
         }
     }

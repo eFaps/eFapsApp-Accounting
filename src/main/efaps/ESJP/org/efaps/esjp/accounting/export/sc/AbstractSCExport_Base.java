@@ -83,7 +83,7 @@ public abstract class AbstractSCExport_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         } catch (final IOException e) {
-            LOG.error("Catched", e);
+            AbstractSCExport_Base.LOG.error("Catched", e);
         }
         return ret;
     }
@@ -106,8 +106,8 @@ public abstract class AbstractSCExport_Base
      * @param _exporter the _exporter
      * @throws EFapsException the e faps exception
      */
-    public abstract void addColumnDefinition(final Parameter _parameter,
-                                             final Exporter _exporter)
+    public abstract void addColumnDefinition(Parameter _parameter,
+                                             Exporter _exporter)
         throws EFapsException;
 
     /**
@@ -117,8 +117,8 @@ public abstract class AbstractSCExport_Base
      * @param _exporter the _exporter
      * @throws EFapsException the e faps exception
      */
-    public abstract void buildDataSource(final Parameter _parameter,
-                                         final Exporter _exporter)
+    public abstract void buildDataSource(Parameter _parameter,
+                                         Exporter _exporter)
         throws EFapsException;
 
     /**
@@ -128,7 +128,7 @@ public abstract class AbstractSCExport_Base
      * @return the file name
      * @throws EFapsException the e faps exception
      */
-    public abstract String getFileName(final Parameter _parameter)
+    public abstract String getFileName(Parameter _parameter)
         throws EFapsException;
 
     /**
