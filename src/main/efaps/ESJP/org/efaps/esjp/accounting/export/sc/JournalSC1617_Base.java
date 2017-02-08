@@ -308,13 +308,21 @@ public abstract class JournalSC1617_Base
             }
         });
         Collections.sort(beans, chain);
-        final int i = 1;
+        int i = 1;
+        String currentID = "";
+        String currentVal = "";
+        // it must be esured that one transaction hs all the time the same number, therfor the first value wins
         for (final DataBean bean : beans) {
-            if (purchaseRec) {
-                bean.setTransDoc(bean.getDocRevision());
-            } else {
-                bean.setTransDoc("" + i);
+            if (!currentID.equals(bean.getTransDoc())) {
+                currentID = bean.getTransDoc();
+                if (purchaseRec) {
+                    currentVal = bean.getDocRevision();
+                } else {
+                    currentVal = String.format("%05d", i);
+                    i++;
+                }
             }
+            bean.setTransDoc(currentVal);
             _exporter.addBeanRows(bean);
         }
     }
