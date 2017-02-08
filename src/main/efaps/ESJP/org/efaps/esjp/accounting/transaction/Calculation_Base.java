@@ -20,6 +20,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -34,6 +36,8 @@ import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
+import org.efaps.esjp.accounting.transaction.evaluation.AbstractEvaluation;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.CalculateConfig;
 import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
@@ -100,6 +104,9 @@ public abstract class Calculation_Base
                 break;
             case FITEXRATE:
                 js.append(getJS4FitExRate(_parameter, parameter));
+                break;
+            case SUMMARIZE:
+                js.append(getJS4Summarize(_parameter, parameter));
                 break;
             default:
                 break;
@@ -369,5 +376,92 @@ public abstract class Calculation_Base
             throw new EFapsException(Transaction_Base.class, "update4Currency.ParseException", e);
         }
         return ret;
+    }
+
+    /**
+     * Gets the JS 4 fit exchange rate.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _parameterClone the parameter clone
+     * @return the JS 4 fit ex rate
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getJS4Summarize(final Parameter _parameter,
+                                            final Parameter _parameterClone)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        String postfix = null;
+        boolean eval = true;
+        while (eval) {
+            eval = postfix == null;
+            postfix = postfix == null ? "Debit" : "Credit";
+            final String[] selected = _parameter.getParameterValues("posSelect_" + postfix);
+            final String[] accountOids = _parameter.getParameterValues("accountLink_" + postfix);
+            _parameter.getParameterValues("amount_" + postfix);
+
+            // 1. find the selected account
+            if (ArrayUtils.isNotEmpty(selected)) {
+                String accountOid = null;
+                for (int i = 0; i < selected.length; i++) {
+                    if (BooleanUtils.toBoolean(selected[i])) {
+                        accountOid = accountOids[i];
+                        break;
+                    }
+                }
+                final Collection<AccountInfo> accounts = new ArrayList<>();
+                if (StringUtils.isNoneEmpty(accountOid)) {
+                    final TransInfo transInfo = new TransInfo();
+                    new Create().analysePositionsFromUI(_parameter, transInfo, postfix, null, false);
+
+                    AccountInfo sumAcc = null;
+                    for (final PositionInfo pos : transInfo.getPositions()) {
+                        final Object[] rateObj = (Object[]) pos.getRate();
+                        final RateInfo rateInfo = RateInfo.getDummyRateInfo();
+                        rateInfo.setCurrencyInstance(pos.getCurrInst());
+                        rateInfo.setTargetCurrencyInstance(pos.getRateCurrInst());
+                        rateInfo.setRate((BigDecimal) rateObj[0]);
+                        rateInfo.setRateUI((BigDecimal) rateObj[1]);
+                        rateInfo.setSaleRate((BigDecimal) rateObj[0]);
+                        rateInfo.setSaleRateUI((BigDecimal) rateObj[1]);
+
+                        final AccountInfo info = new AccountInfo()
+                                        .setInstance(pos.getAccInst())
+                                        .setDescription("description")
+                                        .setRemark(pos.getRemark())
+                                        .addAmount(pos.getRateAmount().abs())
+                                        .addAmountRate(pos.getAmount().abs())
+                                        .setCurrInstance(pos.getCurrInst())
+                                        .setDocLink(pos.getDocInst())
+                                        .setLabelInst(pos.getLabelInst())
+                                        .setRateInfo(rateInfo, "");
+
+                        if (!pos.getAccInst().getOid().equals(accountOid)) {
+                            accounts.add(info);
+                        } else if (sumAcc == null) {
+                            sumAcc = info;
+                            accounts.add(info);
+                        } else {
+                            sumAcc.addAmount(pos.getRateAmount().abs()).addAmountRate(pos.getAmount().abs());
+                        }
+                    }
+                    ret.append(new Evaluation().getTableJS(_parameterClone, postfix, accounts));
+                }
+            }
+        }
+        return ret;
+    }
+
+    static class Evaluation
+        extends AbstractEvaluation
+    {
+        @Override
+        public StringBuilder getTableJS(final Parameter _parameter,
+                                        final String _postFix,
+                                        final Collection<AccountInfo> _accounts)
+            throws EFapsException
+        {
+            return super.getTableJS(_parameter, _postFix, _accounts);
+        }
     }
 }

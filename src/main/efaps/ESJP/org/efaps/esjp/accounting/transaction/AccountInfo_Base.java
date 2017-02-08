@@ -154,6 +154,21 @@ public abstract class AccountInfo_Base
     }
 
     /**
+     * add amount for constructor TargetAccount.
+     *
+     * @param _amount amount.
+     * @return this.
+     */
+    public AccountInfo addAmountRate(final BigDecimal _amount)
+    {
+        if (this.amountRate == null) {
+            this.amountRate = BigDecimal.ZERO;
+        }
+        this.amountRate = this.amountRate.add(_amount);
+        return (AccountInfo) this;
+    }
+
+    /**
      * Getter method for instance variable {@link #oid}.
      *
      * @return value of instance variable {@link #oid}
@@ -546,11 +561,11 @@ public abstract class AccountInfo_Base
      *
      * @param _labelInst value for instance variable {@link #labelInst}
      */
-    public void setLabelInst(final Instance _labelInst)
+    public AccountInfo setLabelInst(final Instance _labelInst)
     {
         this.labelInst = _labelInst;
+        return (AccountInfo) this;
     }
-
 
     /**
      * Getter method for the instance variable {@link #remark}.
@@ -567,9 +582,10 @@ public abstract class AccountInfo_Base
      *
      * @param _remark value for instance variable {@link #remark}
      */
-    public void setRemark(final String _remark)
+    public AccountInfo setRemark(final String _remark)
     {
         this.remark = _remark;
+        return (AccountInfo) this;
     }
 
     /**

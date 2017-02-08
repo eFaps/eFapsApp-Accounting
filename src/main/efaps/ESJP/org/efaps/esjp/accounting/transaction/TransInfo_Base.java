@@ -402,6 +402,16 @@ public abstract class TransInfo_Base
     }
 
     /**
+     * Getter method for the instance variable {@link #positions}.
+     *
+     * @return value of instance variable {@link #positions}
+     */
+    public List<PositionInfo> getPositions()
+    {
+        return this.positions;
+    }
+
+    /**
      * Getter method for the instance variable {@link #periodInst}.
      *
      * @return value of instance variable {@link #periodInst}

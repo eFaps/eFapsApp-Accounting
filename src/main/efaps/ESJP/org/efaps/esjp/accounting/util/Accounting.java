@@ -549,7 +549,10 @@ public final class Accounting
         FILLUPAMOUNT,
 
         /** Calculate the selected row to fit the exchange rate. */
-        FITEXRATE;
+        FITEXRATE,
+
+        /** Summarize by the first selected row. */
+        SUMMARIZE;
 
         @Override
         public int getInt()
