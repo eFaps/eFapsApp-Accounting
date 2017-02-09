@@ -41,6 +41,8 @@
             <parent>Sales_IncomingInvoiceTree</parent>
             <parent>Sales_ExchangeTree</parent>
             <parent>Sales_IncomingExchangeTree</parent>
+            <parent>Sales_IncomingCreditNoteTree</parent>
+            <parent>Sales_IncomingReminderTree</parent>
             <parent>Sales_PettyCashReceiptTree</parent>
             <parent>Sales_FundsToBeSettledReceiptTree</parent>
             <parent>Sales_ReturnSlipTree</parent>

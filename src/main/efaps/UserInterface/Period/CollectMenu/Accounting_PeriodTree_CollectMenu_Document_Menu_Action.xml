@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,16 +16,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3253a0b8-e02a-4fdb-975b-4fa4100612d0</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
@@ -34,6 +28,8 @@
         <childs>
             <child>Accounting_PeriodTree_CollectMenu_Document_Menu_Action_Book</child>
             <child>Accounting_PeriodTree_CollectMenu_Document_Menu_Action_MassiveRegister</child>
+            <child>Accounting_Period_Action_Assign</child>
+            <child>Accounting_Period_Action_Archive</child>
         </childs>
     </definition>
 </ui-menu>
