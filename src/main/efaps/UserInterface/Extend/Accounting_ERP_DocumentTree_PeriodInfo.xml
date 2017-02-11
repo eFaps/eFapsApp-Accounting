@@ -34,11 +34,13 @@
         </target>
         <parents>
             <parent>Sales_InvoiceTree</parent>
+            <parent>Sales_InstallmentTree</parent>
             <parent>Sales_CollectionOrderTree</parent>
             <parent>Sales_CreditNoteTree</parent>
             <parent>Sales_ReminderTree</parent>
             <parent>Sales_ReceiptTree</parent>
             <parent>Sales_IncomingInvoiceTree</parent>
+            <parent>Sales_IncomingInstallmentTree</parent>
             <parent>Sales_ExchangeTree</parent>
             <parent>Sales_IncomingExchangeTree</parent>
             <parent>Sales_IncomingCreditNoteTree</parent>
