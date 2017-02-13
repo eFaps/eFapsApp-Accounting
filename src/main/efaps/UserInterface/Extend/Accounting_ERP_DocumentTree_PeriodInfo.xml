@@ -41,6 +41,7 @@
             <parent>Sales_ReceiptTree</parent>
             <parent>Sales_IncomingInvoiceTree</parent>
             <parent>Sales_IncomingInstallmentTree</parent>
+            <parent>Sales_IncomingProfServReceiptTree</parent>
             <parent>Sales_ExchangeTree</parent>
             <parent>Sales_IncomingExchangeTree</parent>
             <parent>Sales_IncomingCreditNoteTree</parent>

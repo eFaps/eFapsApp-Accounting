@@ -418,8 +418,8 @@ public abstract class Calculation_Base
                     for (final PositionInfo pos : transInfo.getPositions()) {
                         final Object[] rateObj = (Object[]) pos.getRate();
                         final RateInfo rateInfo = RateInfo.getDummyRateInfo();
-                        rateInfo.setCurrencyInstance(pos.getCurrInst());
-                        rateInfo.setTargetCurrencyInstance(pos.getRateCurrInst());
+                        rateInfo.setCurrencyInstance(pos.getRateCurrInst());
+                        rateInfo.setTargetCurrencyInstance(pos.getCurrInst());
                         rateInfo.setRate((BigDecimal) rateObj[0]);
                         rateInfo.setRateUI((BigDecimal) rateObj[1]);
                         rateInfo.setSaleRate((BigDecimal) rateObj[0]);
