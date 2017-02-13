@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -69,11 +69,14 @@
             <sqlcolumn>DESCR</sqlcolumn>
         </attribute>
         <attribute>
-            <name>Active</name>
-            <type>Boolean</type>
+            <name>StatusAbstract</name>
+            <type>Status</type>
+            <typelink>Accounting_CaseStatus</typelink>
             <sqltable>Accounting_CaseSQLTable</sqltable>
-            <sqlcolumn>ACTIVE</sqlcolumn>
-            <defaultvalue>true</defaultvalue>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Accounting_CaseAbstract.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
         </attribute>
         <attribute>
             <name>IsCross</name>

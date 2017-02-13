@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@
             <column name="PERIODID"  type="INTEGER"      not-null="true"/>
             <column name="NAME"      type="STRING_SHORT" not-null="true" length="128" />
             <column name="DESCR"     type="STRING_SHORT" not-null="true" length="256" />
-            <column name="ACTIVE"    type="BOOLEAN" />
+            <column name="STATUS"    type="INTEGER"      not-null="true"/>
             <column name="ISCROSS"   type="BOOLEAN" />
             <column name="SUMMARIZE" type="INTEGER" />
             <column name="EXCHANGE"  type="INTEGER" />

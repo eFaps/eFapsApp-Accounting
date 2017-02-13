@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 5867 $
- Last Changed:    $Date: 2010-11-26 14:08:18 -0500 (vie, 26 nov 2010) $
- Last Changed By: $Author: jan@moxter.net $
 
 -->
 
@@ -27,11 +23,20 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7868062f-dfb8-46d0-8bc3-90bfef8411f9</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev: 5867 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseIncomingExchange</name>
         <parent>Accounting_CaseAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Accounting_CaseStatus</typelink>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Accounting_CaseIncomingExchange.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
+        </attribute>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Accounting_CaseIncomingExchange.INSERT_POST"
             event="INSERT_POST">

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,40 +16,36 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
-
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e065b1c3-1026-418d-94b0-371424f5a095</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_CaseStockBooking</name>
         <parent>Accounting_CaseAbstract</parent>
-        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
-            method="cleanQueryCacheTrigger"
-            name="Accounting_CaseStockBooking.INSERT_POST"
-            event="INSERT_POST">
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Accounting_CaseStatus</typelink>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Accounting_CaseStockBooking.Status.RANGE_VALUE"
+                event="RANGE_VALUE" />
+        </attribute>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils" method="cleanQueryCacheTrigger"
+            name="Accounting_CaseStockBooking.INSERT_POST" event="INSERT_POST">
             <property name="CacheName">org.efaps.esjp.accounting.Case.CacheKey</property>
         </trigger>
-        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
-            method="cleanQueryCacheTrigger"
-            name="Accounting_CaseStockBooking.UPDATE_POST"
-            event="UPDATE_POST">
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils" method="cleanQueryCacheTrigger"
+            name="Accounting_CaseStockBooking.UPDATE_POST" event="UPDATE_POST">
             <property name="CacheName">org.efaps.esjp.accounting.Case.CacheKey</property>
         </trigger>
-        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
-            method="cleanQueryCacheTrigger"
-            name="Accounting_AccountBalanceSheet.DELETE_POST"
-            event="DELETE_POST">
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils" method="cleanQueryCacheTrigger"
+            name="Accounting_AccountBalanceSheet.DELETE_POST" event="DELETE_POST">
             <property name="CacheName">org.efaps.esjp.accounting.Case.CacheKey</property>
         </trigger>
     </definition>

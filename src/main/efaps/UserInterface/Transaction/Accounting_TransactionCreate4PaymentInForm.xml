@@ -46,7 +46,8 @@
                 program="org.efaps.esjp.accounting.transaction.FieldValue">
                 <property name="Type">Accounting_CasePaymentInDoc</property>
                 <property name="LinkFrom">PeriodAbstractLink</property>
-                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="StatusGroup">Accounting_CaseStatus</property>
+                <property name="Status">Active</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>

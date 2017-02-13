@@ -42,10 +42,10 @@
             <property name="ModeSearch">READONLY</property>
             <property name="Label">Accounting_CaseAbstract/Description.Label</property>
         </field>
-        <field name="active">
-            <property name="Attribute">Active</property>
+        <field name="status">
+            <property name="Attribute">StatusAbstract</property>
             <property name="ModeSearch">READONLY</property>
-            <property name="Label">Accounting_CaseAbstract/Active.Label</property>
+            <property name="Label">Accounting_CaseAbstract/StatusAbstract.Label</property>
         </field>
         <field name="isCross">
             <property name="Attribute">IsCross</property>
