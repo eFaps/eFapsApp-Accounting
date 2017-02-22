@@ -54,6 +54,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -594,27 +595,27 @@ public abstract class Account_Base
     {
         final Search search = new Search()
         {
+
             @Override
             protected void add2QueryBuilder(final Parameter _parameter,
                                             final QueryBuilder _queryBldr)
                 throws EFapsException
             {
                 super.add2QueryBuilder(_parameter, _queryBldr);
-                final Instance accInst = _parameter.getInstance();
-                if (accInst != null && accInst.isValid()) {
-                    if (accInst.getType().isKindOf(CIAccounting.AccountAbstract.getType())) {
-                        final PrintQuery print = new PrintQuery(accInst);
-                        print.addAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink);
-                        print.executeWithoutAccessCheck();
-                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
-                                    print.<Long>getAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink));
-                    } else if (accInst.getType().isKindOf(CIAccounting.CaseAbstract.getType())) {
-                        final PrintQuery print = new PrintQuery(accInst);
-                        print.addAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink);
-                        print.executeWithoutAccessCheck();
-                        _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink,
-                                        print.<Long>getAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink));
-                    }
+                final Instance inst = _parameter.getInstance() == null ? _parameter.getCallInstance()
+                                : _parameter.getInstance();
+                if (InstanceUtils.isKindOf(inst, CIAccounting.AccountAbstract)) {
+                    final PrintQuery print = new PrintQuery(inst);
+                    print.addAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink);
+                    print.executeWithoutAccessCheck();
+                    _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, print
+                                        .<Long>getAttribute(CIAccounting.AccountAbstract.PeriodAbstractLink));
+                } else if (InstanceUtils.isKindOf(inst, CIAccounting.CaseAbstract)) {
+                    final PrintQuery print = new PrintQuery(inst);
+                    print.addAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink);
+                    print.executeWithoutAccessCheck();
+                    _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, print
+                                        .<Long>getAttribute(CIAccounting.CaseAbstract.PeriodAbstractLink));
                 }
             }
         };
