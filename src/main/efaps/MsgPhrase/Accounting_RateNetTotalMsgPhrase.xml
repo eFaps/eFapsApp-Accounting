@@ -18,7 +18,7 @@
 <common-msgphrase xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4f87d30b-d2c9-4a93-9d52-a9c0a839fb95</uuid>
-    <file-application>eFapsApp-Sales</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_RateNetTotalMsgPhrase</name>
