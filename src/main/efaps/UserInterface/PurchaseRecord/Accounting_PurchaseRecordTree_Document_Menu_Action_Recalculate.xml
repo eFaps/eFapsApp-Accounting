@@ -14,17 +14,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>e063e742-5e70-48da-a0c2-2b1f69e967e4</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
+    <uuid>3beb9c57-5167-4a41-aa2e-e01e7cde141a</uuid>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PurchaseRecord2DocumentTree_Menu_Action</name>
-        <childs>
-            <child>Accounting_PurchaseRecord2DocumentTree_Menu_Action_Edit</child>
-        </childs>
+        <name>Accounting_PurchaseRecordTree_Document_Menu_Action_Recalculate</name>
+        <target>
+            <execute method="recalculateRate" program="org.efaps.esjp.sales.document.GenericDocumentSum" >
+                <property name="Select4Instance">linkto[ToLink].instance</property>
+            </execute>
+        </target>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">0</property>
+        <property name="AskUser">true</property>
     </definition>
-</ui-menu>
+</ui-command>
