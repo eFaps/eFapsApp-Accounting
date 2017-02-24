@@ -143,12 +143,19 @@
                 <property name="DefaultValue">true</property>
             </trigger>
         </field>
-         <field name="docStatus">
+        <field name="archiveConfig">
             <property name="HideLabel">true</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Accounting_TransactionCreate4ExternalForm.docStatus.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-            <property name="UIType">CHECKBOX</property>
+            <property name="UIType">RADIO</property>
+            <property name="RadioRowLength">3</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalForm.archiveConfig.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$ArchiveConfig</property>
+                <property name="DefaultValue">NONE</property>
+                <property name="OrderByOrdinal">true</property>
+            </trigger>
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>

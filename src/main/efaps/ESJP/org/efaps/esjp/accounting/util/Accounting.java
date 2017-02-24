@@ -562,6 +562,26 @@ public final class Accounting
     }
 
     /**
+     * The Enum CalculateConfig.
+     */
+    public enum ArchiveConfig
+        implements IEnum
+    {
+        /** Do nothng. */
+        NONE,
+        /** Document is archived. (for all time). */
+        ARCHIVED,
+        /** Document was entered for this Period (will show in other Periods). */
+        ENTERED;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
+
+    /**
      * @return the SystemConfigruation for Accounting
      * @throws CacheReloadException on error
      */

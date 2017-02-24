@@ -32,6 +32,7 @@ import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
@@ -60,6 +61,7 @@ import org.efaps.esjp.accounting.transaction.TransInfo_Base.PositionInfo;
 import org.efaps.esjp.accounting.transaction.evaluation.DocumentEvaluation;
 import org.efaps.esjp.accounting.transaction.evaluation.DocumentInfo;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.ArchiveConfig;
 import org.efaps.esjp.accounting.util.Accounting.TransPosType;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -248,7 +250,7 @@ public abstract class Create_Base
         connect2SubJournal(_parameter, transInst, null);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
-        markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        markDocs4ArchiveConfig(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         add2Create4Doc(_parameter);
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
         final File file = getTransactionReport(parameter, true);
@@ -288,7 +290,7 @@ public abstract class Create_Base
                 final List<Instance> docInsts = getDocInstsFromDocInfoList(_parameter, docInfos);
                 connectDocs2Transaction(_parameter, transinfo.getInstance(),
                                 docInsts.toArray(new Instance[docInsts.size()]));
-                markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                markDocs4ArchiveConfig(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
                 connect2SubJournal(_parameter, transinfo.getInstance(), null);
             }
         } else {
@@ -300,7 +302,7 @@ public abstract class Create_Base
                     }
                     transinfo.create(_parameter);
                     connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
-                    markDocAsAssigned(_parameter, docInfo.getInstance());
+                    markDocs4ArchiveConfig(_parameter, docInfo.getInstance());
                     connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
                 }
             }
@@ -325,7 +327,7 @@ public abstract class Create_Base
         connect2SubJournal(_parameter, transInst, null);
         connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
         connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-        markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        markDocs4ArchiveConfig(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
 
         final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
         final File file = getTransactionReport(parameter, true);
@@ -365,7 +367,7 @@ public abstract class Create_Base
                 connectDocs2Transaction(_parameter, transinfo.getInstance(),
                                 docInsts.toArray(new Instance[docInsts.size()]));
                 connectDocs2PurchaseRecord(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
-                markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+                markDocs4ArchiveConfig(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
                 connect2SubJournal(_parameter, transinfo.getInstance(), null);
             }
         } else {
@@ -378,7 +380,7 @@ public abstract class Create_Base
                     transinfo.create(_parameter);
                     connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getInstance());
                     connectDocs2PurchaseRecord(_parameter, docInfo.getInstance());
-                    markDocAsAssigned(_parameter, docInfo.getInstance());
+                    markDocs4ArchiveConfig(_parameter, docInfo.getInstance());
                     connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
                 }
             }
@@ -499,7 +501,7 @@ public abstract class Create_Base
         final Return ret = new Return();
         final Instance transInst = createFromUI(_parameter);
         final List<Instance> docInsts = getDocInstsFromUI(_parameter);
-        markDocAsAssigned(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        markDocs4ArchiveConfig(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
         for (final Instance docInst  : docInsts) {
             connect2SubJournal(_parameter, transInst, docInst);
         }
@@ -541,7 +543,7 @@ public abstract class Create_Base
                 }
                 transinfo.create(_parameter);
                 connectDocs2Transaction(_parameter, transinfo.getInstance(), docInfo.getDocInsts(true));
-                markDocAsAssigned(_parameter, docInfo.getInstance());
+                markDocs4ArchiveConfig(_parameter, docInfo.getInstance());
                 connect2SubJournal(_parameter, transinfo.getInstance(), docInfo.getInstance());
             }
         }
@@ -795,22 +797,28 @@ public abstract class Create_Base
      * @param _instances     instance of the document
      * @throws EFapsException on error
      */
-    protected void markDocAsAssigned(final Parameter _parameter,
-                                     final Instance... _instances)
+    protected void markDocs4ArchiveConfig(final Parameter _parameter,
+                                          final Instance... _instances)
         throws EFapsException
     {
-        final boolean setStatus = "true".equals(_parameter.getParameterValue("docStatus"));
-        if (setStatus) {
-            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, null);
-            for (final Instance docInst : _instances) {
-                if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
-                    final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
-                    insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
-                    insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
-                    insert.add(CIAccounting.Period2ERPDocument.Archived, false);
-                    insert.execute();
+        final ArchiveConfig config = EnumUtils.getEnum(Accounting.ArchiveConfig.class,
+                        _parameter.getParameterValue("archiveConfig"));
+        switch (config) {
+            case ENTERED:
+            case ARCHIVED:
+                final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, null);
+                for (final Instance docInst : _instances) {
+                    if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
+                        final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
+                        insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+                        insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+                        insert.add(CIAccounting.Period2ERPDocument.Archived, ArchiveConfig.ARCHIVED.equals(config));
+                        insert.execute();
+                    }
                 }
-            }
+                break;
+            default:
+                break;
         }
     }
 

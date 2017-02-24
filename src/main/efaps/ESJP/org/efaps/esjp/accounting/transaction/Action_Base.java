@@ -43,6 +43,7 @@ import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4IncomingConfig;
+import org.efaps.esjp.accounting.util.Accounting.ArchiveConfig;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
@@ -369,7 +370,8 @@ public abstract class Action_Base
                     }
                 }
                 if (ret.getConfigs().contains(ActDef2Case4IncomingConfig.SETSTATUS)) {
-                    ParameterUtil.setParameterValues(ret.getParameter(), "docStatus", "true");
+                    ParameterUtil.setParameterValues(ret.getParameter(), "archiveConfig",
+                                    Integer.toString(ArchiveConfig.ARCHIVED.getInt()));
                 }
             }
         }
@@ -546,7 +548,8 @@ public abstract class Action_Base
                 }
             }
             if (ret.getConfigs().contains(ActDef2Case4DocConfig.MARKBOOKED)) {
-                ParameterUtil.setParameterValues(ret.getParameter(), "docStatus", "true");
+                ParameterUtil.setParameterValues(ret.getParameter(), "archiveConfig",
+                                Integer.toString(ArchiveConfig.ARCHIVED.getInt()));
             }
         }
         return ret;
@@ -599,7 +602,7 @@ public abstract class Action_Base
             if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
                 create.create4OthersPayMassiv(def.getParameter());
             } else if (def.getConfigs().contains(ActDef2Case4DocConfig.MARKBOOKED)) {
-                create.markDocAsAssigned(_parameter, def.getDocInst());
+                create.markDocs4ArchiveConfig(_parameter, def.getDocInst());
             }
         }
     }
@@ -621,7 +624,7 @@ public abstract class Action_Base
             if (def.getConfigs().contains(ActDef2Case4DocConfig.TRANSACTION)) {
                 create.create4OthersCollectMassive(def.getParameter());
             } else if (def.getConfigs().contains(ActDef2Case4DocConfig.MARKBOOKED)) {
-                create.markDocAsAssigned(_parameter, def.getDocInst());
+                create.markDocs4ArchiveConfig(_parameter, def.getDocInst());
             }
         }
     }

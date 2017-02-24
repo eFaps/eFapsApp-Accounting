@@ -37,14 +37,18 @@
                 <property name="checked">false</property>
             </trigger>
         </field>
-        <field name="docStatus">
-            <property name="ModeCreate">READONLY</property>
-            <property name="Label">Accounting_TransactionCreate4ExternalForm.docStatus.Label</property>
-            <property name="UIType">SNIPPLET</property>
-            <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue"
-                name="Accounting_TransactionCreate4DocToBookForm.docStatus.UI_FIELD_VALUE"
-                program="org.efaps.esjp.common.uiform.Field">
-                <property name="checked">true</property>
+         <field name="archiveConfig">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">RADIO</property>
+            <property name="RadioRowLength">3</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Enum"
+                name="Accounting_TransactionCreate4ExternalForm.archiveConfig.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Enum">org.efaps.esjp.accounting.util.Accounting$ArchiveConfig</property>
+                <property name="DefaultValue">NONE</property>
+                <property name="OrderByOrdinal">true</property>
             </trigger>
         </field>
         <field name="case">

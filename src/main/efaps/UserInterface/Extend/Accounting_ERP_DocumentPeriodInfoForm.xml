@@ -40,8 +40,8 @@
         <field name="transaction" character="Target">
             <table>Accounting_Transaction2DocTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_Transaction2SalesDocument</property>
-                <property name="LinkFrom">ToLink</property>
+                <property name="Type">Accounting_Transaction2ERPDocument</property>
+                <property name="LinkFrom">ToLinkAbstract</property>
             </evaluate>
         </field>
     </definition>
