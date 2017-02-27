@@ -94,6 +94,7 @@
             <property name="SelectAlternateOID">linkfrom[Sales_BinIncomingExchange2IncomingExchange#ToLink].linkto[FromLink].oid</property>
             <property name="Select">linkfrom[Sales_BinIncomingExchange2IncomingExchange#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">TREE</property>
+            <property name="FilterType">PICKLIST</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Accounting_PeriodIncomingExchangeTable.bin.UI_ACCESSCHECK"
