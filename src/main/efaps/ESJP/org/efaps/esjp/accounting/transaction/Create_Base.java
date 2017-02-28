@@ -801,24 +801,27 @@ public abstract class Create_Base
                                           final Instance... _instances)
         throws EFapsException
     {
+
         final ArchiveConfig config = EnumUtils.getEnum(Accounting.ArchiveConfig.class,
                         _parameter.getParameterValue("archiveConfig"));
-        switch (config) {
-            case ENTERED:
-            case ARCHIVED:
-                final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, null);
-                for (final Instance docInst : _instances) {
-                    if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
-                        final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
-                        insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
-                        insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
-                        insert.add(CIAccounting.Period2ERPDocument.Archived, ArchiveConfig.ARCHIVED.equals(config));
-                        insert.execute();
+        if (config != null) {
+            switch (config) {
+                case ENTERED:
+                case ARCHIVED:
+                    final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter, null);
+                    for (final Instance docInst : _instances) {
+                        if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
+                            final Insert insert = new Insert(CIAccounting.Period2ERPDocument);
+                            insert.add(CIAccounting.Period2ERPDocument.FromLink, periodInst);
+                            insert.add(CIAccounting.Period2ERPDocument.ToLink, docInst);
+                            insert.add(CIAccounting.Period2ERPDocument.Archived, ArchiveConfig.ARCHIVED.equals(config));
+                            insert.execute();
+                        }
                     }
-                }
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
