@@ -54,6 +54,10 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
                 <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
             </trigger>
+            <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
+                method="update4Case"
+                name="Accounting_TransactionCreate4PaymentInForm.case.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field character="Command" name="updateButton">
             <property name="ModeCreate">READONLY</property>
