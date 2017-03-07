@@ -32,7 +32,7 @@ import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
@@ -801,10 +801,9 @@ public abstract class Create_Base
                                           final Instance... _instances)
         throws EFapsException
     {
-
-        final ArchiveConfig config = EnumUtils.getEnum(Accounting.ArchiveConfig.class,
-                        _parameter.getParameterValue("archiveConfig"));
-        if (config != null) {
+        final String archiveConfigStr = _parameter.getParameterValue("archiveConfig");
+        if (StringUtils.isNotEmpty(archiveConfigStr)) {
+            final ArchiveConfig config = ArchiveConfig.values()[Integer.valueOf(archiveConfigStr)];
             switch (config) {
                 case ENTERED:
                 case ARCHIVED:
