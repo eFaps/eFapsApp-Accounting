@@ -31,6 +31,7 @@ import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
@@ -136,6 +137,24 @@ public final class Accounting
                     .key(Accounting.BASE + "Create4PaymentOut.AutoComplete4AdditionalDocuments")
                     .description("Possibility to overwrite the default Autocomplete "
                                     + "for additional Document in Create4External.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute EXPORT_SC1617
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "export.Siscont1617")
+                    .description("Possibility to configure the export for Siscont 16/17.\n"
+                                    + "TYPE.Number=TransName|DocName|DocRevision\n"
+                                    + "JournalSC1617.TYPE.Number=TransName|DocName|DocRevision\n"
+                                    + "JournalSC1617RC.TYPE.Number=TransName|DocName|DocRevision\n")
+                    .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Number", "DocName")
+                    .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Number", "DocName")
+                    .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Number", "DocName")
+                    .addDefaultValue("JournalSC1617." + CISales.IncomingReceipt.getType().getName() + ".Number",
+                                    "TransName")
+                    .addDefaultValue("JournalSC1617RC." + CISales.IncomingCreditNote.getType().getName() + ".Number",
+                                    "DocRevision");
 
     /**
      * Singelton.

@@ -28,7 +28,9 @@
         </access>
         <target>
             <form>Accounting_ExportJournalSC1617Form</form>
-            <execute program="org.efaps.esjp.accounting.export.sc.JournalSC1617"/>
+            <execute program="org.efaps.esjp.accounting.export.sc.JournalSC1617">
+                <property name="Key">JournalSC1617</property>
+            </execute>
             <validate program="org.efaps.esjp.accounting.report.Report" method="validateDates" />
             <trigger program="org.efaps.esjp.accounting.Period"
                 method="accessCheckByConfig"

@@ -28,7 +28,9 @@
         </access>
         <target>
             <form>Accounting_ExportJournalSC1617RCForm</form>
-            <execute program="org.efaps.esjp.accounting.export.sc.JournalSC1617" />
+            <execute program="org.efaps.esjp.accounting.export.sc.JournalSC1617" >
+                <property name="Key">JournalSC1617RC</property>
+            </execute>
             <validate method="validateDates" program="org.efaps.esjp.accounting.report.Report" />
             <trigger event="UI_ACCESSCHECK" method="accessCheckByConfig"
                 name="Accounting_PeriodTree_Menu_ActionExport_ExportSC1617.UI_ACCESSCHECK"

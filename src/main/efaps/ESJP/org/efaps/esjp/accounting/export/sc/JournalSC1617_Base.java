@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
@@ -35,11 +36,13 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.esjp.data.columns.export.FrmtDateTimeColumn;
 import org.efaps.esjp.data.columns.export.FrmtNumberColumn;
@@ -68,7 +71,7 @@ public abstract class JournalSC1617_Base
         // T
         _exporter.addColumns(new FrmtColumn("origin", 2));
         // VOU Número de voucher (correlativo de cada operación)
-        _exporter.addColumns(new FrmtColumn("transDoc", 5));
+        _exporter.addColumns(new FrmtColumn("number", 5));
         // FECHA
         _exporter.addColumns(new FrmtDateTimeColumn("transDate", 8, "dd/MM/yy"));
         // CUENTA
@@ -164,6 +167,8 @@ public abstract class JournalSC1617_Base
                                 final Exporter _exporter)
         throws EFapsException
     {
+        final String key = PropertiesUtil.getProperty(_parameter, "Key", "");
+
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.dateFrom.name));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
@@ -178,10 +183,8 @@ public abstract class JournalSC1617_Base
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
 
-        boolean purchaseRec = false;
         // if a purchase record was selected use it as filter
         if (InstanceUtils.isValid(purchaseRecordInst)) {
-            purchaseRec = true;
             final QueryBuilder attrQueryBuilder = new QueryBuilder(CIAccounting.PurchaseRecord2Document);
             attrQueryBuilder.addWhereAttrEqValue(CIAccounting.PurchaseRecord2Document.FromLink, purchaseRecordInst);
 
@@ -190,7 +193,6 @@ public abstract class JournalSC1617_Base
                             attrQueryBuilder.getAttributeQuery(CIAccounting.PurchaseRecord2Document.ToLink));
             transAttrQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionAbstract.ID,
                             attrQueryBldr.getAttributeQuery(CIAccounting.Transaction2ERPDocument.FromLink));
-
         } else {
             transAttrQueryBldr.addWhereAttrLessValue(CIAccounting.TransactionAbstract.Date,
                         dateTo.withTimeAtStartOfDay().plusDays(1));
@@ -259,7 +261,7 @@ public abstract class JournalSC1617_Base
             final DataBean bean = new DataBean()
                             .setOrigin(origin)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
-                            .setTransDoc(multi.getSelect(selTransIdentifier))
+                            .setNumber(multi.getSelect(selTransIdentifier))
                             .setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position))
                             .setAccName(multi.<String>getSelect(selAccName))
                             .setAmount(multi.<BigDecimal>getAttribute(
@@ -295,7 +297,7 @@ public abstract class JournalSC1617_Base
             public int compare(final DataBean _o1,
                                final DataBean _o2)
             {
-                return _o1.getTransDoc().compareTo(_o2.getTransDoc());
+                return _o1.getNumber().compareTo(_o2.getNumber());
             }
         });
         chain.addComparator(new Comparator<DataBean>() {
@@ -308,21 +310,39 @@ public abstract class JournalSC1617_Base
             }
         });
         Collections.sort(beans, chain);
+        final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(), key);
         int i = 1;
         String currentID = "";
         String currentVal = "";
-        // it must be esured that one transaction hs all the time the same number, therfor the first value wins
+        // it must be ensured that one transaction has all the time the same number, therefore the first value wins
         for (final DataBean bean : beans) {
-            if (!currentID.equals(bean.getTransDoc())) {
-                currentID = bean.getTransDoc();
-                if (purchaseRec) {
-                    currentVal = bean.getDocRevision();
+            if (!currentID.equals(bean.getNumber())) {
+                currentID = bean.getNumber();
+                // first priority are the related documents
+                final String def;
+                if (InstanceUtils.isValid(bean.getDocInst())
+                                && props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
+                    def = props.getProperty(bean.getDocInst().getType().getName() + ".Number");
                 } else {
-                    currentVal = String.format("%05d", i);
-                    i++;
+                    def = "";
+                }
+                switch (def) {
+                    case "TransName":
+                        currentVal = bean.getNumber();
+                        break;
+                    case "DocName":
+                        currentVal = bean.getDocName();
+                        break;
+                    case "DocRevision":
+                        currentVal = bean.getDocRevision();
+                        break;
+                    default:
+                        currentVal = String.format("%05d", i);
+                        i++;
+                        break;
                 }
             }
-            bean.setTransDoc(currentVal);
+            bean.setNumber(currentVal);
             _exporter.addBeanRows(bean);
         }
     }
@@ -349,7 +369,7 @@ public abstract class JournalSC1617_Base
         private String origin;
 
         /** Name of the transaction Document. (Numero de Comprobante ) */
-        private String transDoc;
+        private String number;
 
         /** The transaction date. (Fecha del Comprobante ) */
         private DateTime transDate;
@@ -547,24 +567,24 @@ public abstract class JournalSC1617_Base
         }
 
         /**
-         * Getter method for the instance variable {@link #transDoc}.
+         * Getter method for the instance variable {@link #number}.
          *
-         * @return value of instance variable {@link #transDoc}
+         * @return value of instance variable {@link #number}
          */
-        public String getTransDoc()
+        public String getNumber()
         {
-            return this.transDoc == null ? null : StringUtils.substring(this.transDoc, -5, this.transDoc.length());
+            return this.number == null ? null : StringUtils.substring(this.number, -5, this.number.length());
         }
 
         /**
-         * Setter method for instance variable {@link #transDoc}.
+         * Setter method for instance variable {@link #number}.
          *
-         * @param _transDoc value for instance variable {@link #transDoc}
+         * @param _number value for instance variable {@link #number}
          * @return the data bean
          */
-        public DataBean setTransDoc(final String _transDoc)
+        public DataBean setNumber(final String _number)
         {
-            this.transDoc = _transDoc;
+            this.number = _number;
             return this;
         }
 
