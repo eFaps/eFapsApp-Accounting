@@ -34,9 +34,10 @@
                 <property name="Type02">Sales_PaymentCheck</property>
                 <property name="Type03">Sales_PaymentCreditCardAbstract</property>
                 <property name="Type04">Sales_PaymentDebitCardAbstract</property>
-                <property name="Type05">Sales_PaymentDetraction</property>
-                <property name="Type06">Sales_PaymentExchange</property>
-                <property name="Type07">Sales_PaymentRetention</property>
+                <property name="Type05">Sales_PaymentDeposit</property>
+                <property name="Type06">Sales_PaymentDetraction</property>
+                <property name="Type07">Sales_PaymentInternal</property>
+                <property name="Type08">Sales_PaymentRetention</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
