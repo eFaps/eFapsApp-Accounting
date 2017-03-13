@@ -38,9 +38,12 @@ public interface IOnDocumentInfo
 {
 
     /**
-     * @param _instance
-     * @return
+     * Gets the key two amount.
+     *
+     * @param _docInst the doc inst
+     * @return the key two amount
+     * @throws EFapsException on error
      */
-    Map<String, BigDecimal> getKey2Amount(final Instance _docInst)
+    Map<String, Map<String, BigDecimal>> getKey2Amount(Instance _docInst)
         throws EFapsException;
 }

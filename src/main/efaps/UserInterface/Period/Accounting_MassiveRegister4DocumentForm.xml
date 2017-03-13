@@ -101,7 +101,7 @@
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
+                <property name="Select">attribute[Name]</property>
             </trigger>
             <trigger program="org.efaps.esjp.accounting.transaction.FieldUpdate"
                 method="update4Case"

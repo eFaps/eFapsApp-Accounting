@@ -379,6 +379,29 @@ public final class Accounting
     }
 
     /**
+     * The Enum Account2CaseConfig.
+     */
+    public enum Account2Case4AmountConfig
+        implements IEnum
+    {
+        /** Net Value. */
+        NET,
+        /** Cross Value. */
+        CROSS,
+        /** Tax Value. */
+        TAX;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
+
+    /**
      * The Enum SummarizeDefinition.
      *
      */

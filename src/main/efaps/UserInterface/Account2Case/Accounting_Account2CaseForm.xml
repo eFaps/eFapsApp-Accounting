@@ -65,6 +65,12 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Config</property>
         </field>
+        <field name="amountConfig">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">AmountConfig</property>
+        </field>
         <field name="currencyLink">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

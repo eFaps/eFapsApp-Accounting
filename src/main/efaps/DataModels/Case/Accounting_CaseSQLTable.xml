@@ -15,7 +15,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -35,7 +34,6 @@
             <column name="NAME"      type="STRING_SHORT" not-null="true" length="128" />
             <column name="DESCR"     type="STRING_SHORT" not-null="true" length="256" />
             <column name="STATUS"    type="INTEGER"      not-null="true"/>
-            <column name="ISCROSS"   type="BOOLEAN" />
             <column name="SUMMARIZE" type="INTEGER" />
             <column name="EXCHANGE"  type="INTEGER" />
             <column name="LABEL"     type="STRING_SHORT"                  length="512" />

@@ -79,13 +79,6 @@
                 event="RANGE_VALUE" />
         </attribute>
         <attribute>
-            <name>IsCross</name>
-            <type>Boolean</type>
-            <sqltable>Accounting_CaseSQLTable</sqltable>
-            <sqlcolumn>ISCROSS</sqlcolumn>
-            <defaultvalue>false</defaultvalue>
-        </attribute>
-        <attribute>
             <name>SummarizeConfig</name>
             <type>Enum</type>
             <className>org.efaps.esjp.accounting.util.Accounting$SummarizeConfig</className>

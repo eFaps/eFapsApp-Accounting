@@ -47,11 +47,6 @@
             <property name="ModeSearch">READONLY</property>
             <property name="Label">Accounting_CaseAbstract/StatusAbstract.Label</property>
         </field>
-        <field name="isCross">
-            <property name="Attribute">IsCross</property>
-            <property name="ModeSearch">READONLY</property>
-            <property name="Label">Accounting_CaseAbstract/IsCross.Label</property>
-        </field>
         <field name="summarizeConfig">
             <property name="Attribute">SummarizeConfig</property>
             <property name="FilterType">PICKLIST</property>

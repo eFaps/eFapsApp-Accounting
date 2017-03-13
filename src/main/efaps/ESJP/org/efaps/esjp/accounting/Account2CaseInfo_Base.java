@@ -39,6 +39,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.Account2Case4AmountConfig;
 import org.efaps.esjp.accounting.util.Accounting.Account2CaseConfig;
 import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
@@ -68,6 +69,9 @@ public abstract class Account2CaseInfo_Base
 
     /** The configs. */
     private List<Account2CaseConfig> configs;
+
+    /** The amount config. */
+    private Account2Case4AmountConfig amountConfig;
 
     /** The denominator. */
     private Integer denominator;
@@ -441,6 +445,27 @@ public abstract class Account2CaseInfo_Base
     }
 
     /**
+     * Getter method for the instance variable {@link #amountConfig}.
+     *
+     * @return value of instance variable {@link #amountConfig}
+     */
+    public Account2Case4AmountConfig getAmountConfig()
+    {
+        return this.amountConfig;
+    }
+
+    /**
+     * Setter method for instance variable {@link #amountConfig}.
+     *
+     * @param _amountConfig value for instance variable {@link #amountConfig}
+     */
+    public Account2CaseInfo setAmountConfig(final Account2Case4AmountConfig _amountConfig)
+    {
+        this.amountConfig = _amountConfig;
+        return (Account2CaseInfo) this;
+    }
+
+    /**
      * Gets the standards.
      *
      * @param _parameter Parameter as passed by the eFaps API
@@ -466,6 +491,7 @@ public abstract class Account2CaseInfo_Base
                         CIAccounting.Account2CaseAbstract.Denominator,
                         CIAccounting.Account2CaseAbstract.LinkValue,
                         CIAccounting.Account2CaseAbstract.Config,
+                        CIAccounting.Account2CaseAbstract.AmountConfig,
                         CIAccounting.Account2CaseAbstract.Order,
                         CIAccounting.Account2CaseAbstract.Key,
                         CIAccounting.Account2CaseAbstract.Remark);
@@ -476,6 +502,7 @@ public abstract class Account2CaseInfo_Base
                     .setInstance(multi.getCurrentInstance())
                     .setConfigs(multi
                                     .<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
+                    .setAmountConfig(multi.getAttribute(CIAccounting.Account2CaseAbstract.AmountConfig))
                     .setAccountInstance(multi.<Instance>getSelect(selAccInst))
                     .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst))
                     .setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))
@@ -519,7 +546,7 @@ public abstract class Account2CaseInfo_Base
         queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, _caseInst);
         queryBldr.addWhereAttrInQuery(CIAccounting.Account2CaseAbstract.LinkValue,
                         attrQueryBldr.getAttributeQuery(CIAccounting.CategoryProduct.ID));
-        ret = getAccount2CaseInfo(queryBldr);
+        ret = Account2CaseInfo_Base.getAccount2CaseInfo(queryBldr);
 
         if (ret == null) {
             final QueryBuilder tvQueryBldr = new QueryBuilder(CIAccounting.Account2Case4ProductTreeViewAbstract);
@@ -547,7 +574,7 @@ public abstract class Account2CaseInfo_Base
                                 _caseInst);
                 ciQueryBldr.addWhereAttrEqValue(CIAccounting.Account2Case4ProductTreeViewAbstract.ProductTreeViewLink,
                                 treeViewInst);
-                ret = getAccount2CaseInfo(ciQueryBldr);
+                ret = Account2CaseInfo_Base.getAccount2CaseInfo(ciQueryBldr);
             }
         }
 
@@ -568,7 +595,7 @@ public abstract class Account2CaseInfo_Base
                                         _caseInst);
                         clazzQueryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseCredit4Classification.LinkValue,
                                         classTmp.getId());
-                        ret = getAccount2CaseInfo(clazzQueryBldr);
+                        ret = Account2CaseInfo_Base.getAccount2CaseInfo(clazzQueryBldr);
                         classTmp = classTmp.getParentClassification();
                     }
                 }

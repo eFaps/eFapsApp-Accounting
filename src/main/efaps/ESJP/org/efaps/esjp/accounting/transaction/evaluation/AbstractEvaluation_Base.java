@@ -38,7 +38,6 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
-import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -46,7 +45,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Account2CaseInfo;
-import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.transaction.AccountInfo;
@@ -82,11 +80,10 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractEvaluation_Base
     extends Transaction
 {
-   /**
-    *  Logger for this class.
-    */
-   private static final Logger LOG = LoggerFactory.getLogger(AbstractEvaluation.class);
-
+    /**
+     *  Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractEvaluation.class);
 
     /**
      * Executed the command on the button.
@@ -109,7 +106,6 @@ public abstract class AbstractEvaluation_Base
         }
         return ret;
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -146,32 +142,19 @@ public abstract class AbstractEvaluation_Base
                     final Instance currInst;
                     if (curr == null && amountStr == null) {
                         docInfo.setInstance(docInst);
-                        boolean isCross = false;
-                        if (caseInst.isValid()) {
-                            final PrintQuery printCase = new CachedPrintQuery(caseInst, Case.CACHEKEY);
-                            printCase.addAttribute(CIAccounting.CaseAbstract.IsCross);
-                            printCase.execute();
-                            isCross = printCase.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-                        }
                         final PrintQuery print = new PrintQuery(docInst);
                         final SelectBuilder sel;
-                        final String attrName;
                         if (docInfo.isPaymentDoc()) {
                             sel = SelectBuilder.get().linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink)
                                             .instance();
-                            attrName = CISales.PaymentDocumentAbstract.Amount.name;
                         } else {
                             sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                                             .instance();
-                            attrName = isCross ? CISales.DocumentSumAbstract.RateCrossTotal.name
-                                            : CISales.DocumentSumAbstract.RateNetTotal.name;
                         }
                         print.addSelect(sel);
-                        print.addAttribute(attrName);
                         print.addAttribute(CIERP.DocumentAbstract.Date);
                         print.execute();
                         currInst = print.<Instance>getSelect(sel);
-                        docInfo.setAmount(print.<BigDecimal>getAttribute(attrName));
                         docInfo.setDate(print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date));
                     } else {
                         docInfo.setAmount((BigDecimal) docInfo.getFormater().parse(
@@ -246,15 +229,15 @@ public abstract class AbstractEvaluation_Base
                             periodInst);
 
             final Map<String, Account2CaseInfo> inst2caseInfo = new HashMap<>();
-            for (final Entry<Instance, BigDecimal> entry : _doc.getProduct2Amount().entrySet()) {
+            for (final Entry<Instance, Map<String, BigDecimal>> entry : _doc.getProduct2Amount().entrySet()) {
                 final Account2CaseInfo acc2case = Account2CaseInfo.get4Product(_parameter, caseInst, entry.getKey());
                 if (acc2case != null) {
                     if (inst2caseInfo.containsKey(acc2case.getInstance().getOid())) {
-                        inst2caseInfo.get(acc2case.getInstance().getOid())
-                            .setAmount(inst2caseInfo.get(acc2case.getInstance().getOid()).getAmount()
-                                            .add(entry.getValue()));
+                        final Account2CaseInfo existing = inst2caseInfo.get(acc2case.getInstance().getOid());
+                        existing.setAmount(existing.getAmount().add(DocumentInfo_Base.getAmount4Map(entry.getValue(),
+                                        existing.getAmountConfig(), existing.getAccountInstance())));
                     } else {
-                        acc2case.setAmount(entry.getValue());
+                        // acc2case.setAmount(entry.getValue());
                         if (acc2case.getConfigs().contains(Accounting.Account2CaseConfig.SEPARATELY)) {
                             inst2caseInfo.put(RandomStringUtils.random(4), acc2case);
                         } else {
@@ -293,7 +276,8 @@ public abstract class AbstractEvaluation_Base
                 if (acc2case.isCheckKey()) {
                     if (_doc.getKey2Amount(_parameter).containsKey(acc2case.getKey())) {
                         isDefault = true;
-                        acc2case.setAmount(_doc.getKey2Amount(_parameter).get(acc2case.getKey()));
+                        acc2case.setAmount(DocumentInfo_Base.getAmount4Map(_doc.getKey2Amount(_parameter).get(acc2case
+                                        .getKey()), acc2case.getAmountConfig(), acc2case.getAccountInstance()));
                     }
                 }
 
@@ -305,7 +289,7 @@ public abstract class AbstractEvaluation_Base
                                     RoundingMode.HALF_UP);
                     final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
                                     || acc2case.isCheckKey() || acc2case.isTreeView()
-                                    ? acc2case.getAmount() : _doc.getAmount();
+                                    ? acc2case.getAmount() : _doc.getAmount(acc2case);
                     final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, RoundingMode.HALF_UP);
                     final BigDecimal accAmountRate = Currency.convertToCurrency(_parameter, accAmount,
                                     _doc.getRateInfo(), _doc.getRatePropKey(), periodCurrenycInstance);
@@ -617,7 +601,7 @@ public abstract class AbstractEvaluation_Base
         if (addAccount != null && addAccount.length() > 0) {
             //final UIFormCell uiform = (UIFormCell) _parameter.get(ParameterValues.CLASS);
             final Instance instance = null; //Instance.get(uiform.getParent().getInstanceKey());
-            final BigDecimal amount = _doc.getAmount();
+            final BigDecimal amount = _doc.getAmount(null);
 
             final AccountInfo account = new AccountInfo(instance);
             account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());

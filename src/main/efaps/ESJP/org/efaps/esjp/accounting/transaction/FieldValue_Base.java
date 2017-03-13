@@ -31,7 +31,6 @@ import java.util.UUID;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -291,36 +290,7 @@ public abstract class FieldValue_Base
         if (type != null) {
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
             _parameter.put(ParameterValues.INSTANCE, periodInstance);
-            final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
-            {
-
-                @Override
-                protected void updatePositionList(final Parameter _parameter,
-                                                  final List<DropDownPosition> _values)
-                    throws EFapsException
-                {
-                    final String trueStr = DBProperties.getProperty("Accounting_CaseAbstract/IsCross.true");
-                    final String falseStr = DBProperties.getProperty("Accounting_CaseAbstract/IsCross.false");
-
-                    final String cross = DBProperties
-                                    .getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Cross");
-                    final String net = DBProperties.getProperty("org.efaps.esjp.accounting.transaction.FieldValue.Net");
-                    boolean first = true;
-                    for (final DropDownPosition pos : _values) {
-                        if (first) {
-                            // store the selected
-                            Context.getThreadContext().setRequestAttribute(FieldValue_Base.CASE_REQKEY, pos.getValue());
-                            first = false;
-                        }
-                        final String strTmp = pos.getOption().toString();
-                        if (StringUtils.endsWith(strTmp, trueStr)) {
-                            pos.setOption(StringUtils.substringBeforeLast(strTmp, trueStr) + cross);
-                        } else if (StringUtils.endsWith(strTmp, falseStr)) {
-                            pos.setOption(StringUtils.substringBeforeLast(strTmp, falseStr) + net);
-                        }
-                    }
-                };
-            };
+            final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
             ret = field.getOptionListFieldValue(_parameter);
         }
         return ret;

@@ -36,6 +36,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
+import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -43,11 +44,13 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.accounting.Account2CaseInfo;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
 import org.efaps.esjp.accounting.listener.IOnDocumentInfo;
 import org.efaps.esjp.accounting.transaction.AccountInfo;
 import org.efaps.esjp.accounting.util.Accounting;
+import org.efaps.esjp.accounting.util.Accounting.Account2Case4AmountConfig;
 import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeCriteria;
@@ -60,6 +63,8 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.tax.xml.TaxEntry;
+import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -169,10 +174,13 @@ public abstract class DocumentInfo_Base
     private final Set<Instance> docInsts = new HashSet<>();
 
     /** The product2 amount. */
-    private  Map<Instance, BigDecimal> product2Amount;
+    private  Map<Instance, Map<String, BigDecimal>> product2Amount;
 
     /** The key2 amount. */
-    private  Map<String, BigDecimal> key2Amount;
+    private  Map<String, Map<String, BigDecimal>> key2Amount;
+
+    /** The amounts. */
+    private Map<String, BigDecimal> amounts;
 
     /**
      * Constructor.
@@ -193,34 +201,43 @@ public abstract class DocumentInfo_Base
     /**
      * Gets the product2 amount.
      *
+     * DOES NOT EVALUATE TAXES!!!
+     *
      * @return the product2 amount
      * @throws EFapsException on error
      */
-    public Map<Instance, BigDecimal> getProduct2Amount()
+    public Map<Instance, Map<String, BigDecimal>> getProduct2Amount()
         throws EFapsException
     {
-        final Map<Instance, BigDecimal> ret;
+        final Map<Instance, Map<String, BigDecimal>> ret;
         if (isSumsDoc()) {
             if (this.product2Amount == null) {
                 this.product2Amount = new HashMap<>();
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
                 queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, this.instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selInst = new SelectBuilder()
-                                .linkto(CISales.PositionAbstract.Product).instance();
+                final SelectBuilder selInst = new SelectBuilder().linkto(CISales.PositionAbstract.Product).instance();
                 multi.addSelect(selInst);
-                multi.addAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                multi.addAttribute(CISales.PositionSumAbstract.RateNetPrice, CISales.PositionSumAbstract.RateCrossPrice,
+                                CISales.PositionSumAbstract.Tax);
                 multi.execute();
                 while (multi.next()) {
-                    final BigDecimal posamount = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                    final BigDecimal netAmount = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                    final BigDecimal crossAmount = multi.getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
                     final Instance prodInst = multi.getSelect(selInst);
-                    final BigDecimal amountTmp;
+                    final Map<String, BigDecimal> tmpMap;
                     if (this.product2Amount.containsKey(prodInst)) {
-                        amountTmp = this.product2Amount.get(prodInst);
+                        tmpMap = this.product2Amount.get(prodInst);
+                        tmpMap.put(Account2Case4AmountConfig.NET.name(), tmpMap.get(Account2Case4AmountConfig.NET
+                                        .name()).add(netAmount));
+                        tmpMap.put(Account2Case4AmountConfig.CROSS.name(), tmpMap.get(Account2Case4AmountConfig.CROSS
+                                        .name()).add(crossAmount));
                     } else {
-                        amountTmp = BigDecimal.ZERO;
+                        tmpMap = new HashMap<>();
+                        tmpMap.put(Account2Case4AmountConfig.NET.name(), netAmount);
+                        tmpMap.put(Account2Case4AmountConfig.CROSS.name(), crossAmount);
                     }
-                    this.product2Amount.put(prodInst, amountTmp.add(posamount));
+                    this.product2Amount.put(prodInst, tmpMap);
                 }
             }
             ret = this.product2Amount;
@@ -230,7 +247,6 @@ public abstract class DocumentInfo_Base
         return ret;
     }
 
-
     /**
      * Gets the key2 amount.
      *
@@ -238,22 +254,22 @@ public abstract class DocumentInfo_Base
      * @return the key2 amount
      * @throws EFapsException on error
      */
-    public Map<String, BigDecimal> getKey2Amount(final Parameter _parameter)
+    public Map<String, Map<String, BigDecimal>> getKey2Amount(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<String, BigDecimal> ret;
+        final Map<String, Map<String, BigDecimal>> ret;
         if (isSumsDoc()) {
             if (this.key2Amount == null) {
                 this.key2Amount = new HashMap<>();
                 // let others participate
                 for (final IOnDocumentInfo listener : Listener.get().<IOnDocumentInfo>invoke(IOnDocumentInfo.class)) {
-                    for (final Entry<String, BigDecimal> entry : listener.getKey2Amount(this.instance).entrySet()) {
+                    for (final Entry<String, Map<String, BigDecimal>> entry : listener.getKey2Amount(this.instance)
+                                    .entrySet()) {
                         if (this.key2Amount.containsKey(entry.getKey())) {
                             if (entry.getValue() == null) {
                                 this.key2Amount.remove(entry.getKey());
                             } else {
-                                this.key2Amount.put(entry.getKey(),
-                                                this.key2Amount.get(entry.getKey()).add(entry.getValue()));
+                                this.key2Amount.put(entry.getKey(), this.key2Amount.get(entry.getKey()));
                             }
                         } else {
                             this.key2Amount.put(entry.getKey(), entry.getValue());
@@ -287,9 +303,9 @@ public abstract class DocumentInfo_Base
                         print.addSelect(selFromInst, selToInst);
                         print.execute();
                         if (getInstance().equals(print.getSelect(selFromInst))) {
-                            this.key2Amount.put("From", getAmount());
+                            this.key2Amount.put("From", getAmounts());
                         } else if (getInstance().equals(print.getSelect(selToInst))) {
-                            this.key2Amount.put("To", getAmount());
+                            this.key2Amount.put("To", getAmounts());
                         }
                     }
                 }
@@ -300,7 +316,6 @@ public abstract class DocumentInfo_Base
         }
         return ret;
     }
-
 
     /**
      * Getter method for the instance variable {@link #invert}.
@@ -364,31 +379,86 @@ public abstract class DocumentInfo_Base
      *
      * @param _formater value for instance variable {@link #formater}
      */
-
     public void setFormater(final DecimalFormat _formater)
     {
         this.formater = _formater;
     }
 
     /**
+     * Gets the amounts.
+     *
+     * @return the amounts
+     * @throws EFapsException on error
+     */
+    public Map<String, BigDecimal> getAmounts()
+        throws EFapsException
+    {
+        if (this.amounts == null) {
+            this.amounts = new HashMap<>();
+            if (isSumsDoc()) {
+                final PrintQuery print = CachedPrintQuery.get4Request(this.instance);
+                print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.RateCrossTotal,
+                                CISales.DocumentSumAbstract.RateTaxes);
+                print.execute();
+                this.amounts.put(Account2Case4AmountConfig.NET.name(), print.getAttribute(
+                                CISales.DocumentSumAbstract.RateNetTotal));
+                this.amounts.put(Account2Case4AmountConfig.CROSS.name(), print.getAttribute(
+                                CISales.DocumentSumAbstract.RateCrossTotal));
+                final Taxes taxes = print.getAttribute(CISales.DocumentSumAbstract.RateTaxes);
+                if (taxes != null) {
+                    for (final TaxEntry entry : taxes.getEntries()) {
+                        this.amounts.put(entry.getUUID().toString(), entry.getAmount());
+                    }
+                }
+            }
+        }
+        return this.amounts;
+    }
+
+    /**
+     * Gets the amount.
+     *
+     * @param _acc2case the acc 2 case
+     * @return the amount
+     * @throws EFapsException on error
+     */
+    public BigDecimal getAmount(final Account2CaseInfo _acc2case)
+        throws EFapsException
+    {
+        return getAmount(_acc2case.getAmountConfig(), _acc2case.getAccountInstance());
+    }
+
+    /**
      * Getter method for the instance variable {@link #amount}.
      *
+     * @param _amountConfig the amount config
+     * @param _accInst the acc inst
      * @return value of instance variable {@link #amount}
+     * @throws EFapsException on error
      */
-    public BigDecimal getAmount()
+    public BigDecimal getAmount(final Account2Case4AmountConfig _amountConfig,
+                                final Instance _accInst)
+        throws EFapsException
     {
-        return this.amount;
+        final BigDecimal ret;
+        if (this.amount != null) {
+            ret = this.amount;
+        } else {
+            ret = DocumentInfo_Base.getAmount4Map(getAmounts(), _amountConfig, _accInst);
+        }
+        return ret;
     }
 
     /**
      * Setter method for instance variable {@link #amount}.
      *
      * @param _amount value for instance variable {@link #amount}
+     * @return the document info
      */
-
-    public void setAmount(final BigDecimal _amount)
+    public DocumentInfo setAmount(final BigDecimal _amount)
     {
         this.amount = _amount;
+        return (DocumentInfo) this;
     }
 
     /**
@@ -409,7 +479,9 @@ public abstract class DocumentInfo_Base
     public DocumentInfo addDebit(final AccountInfo _accInfo)
         throws EFapsException
     {
-        add(this.debitAccounts, _accInfo, true);
+        if (InstanceUtils.isValid(_accInfo.getInstance())) {
+            add(this.debitAccounts, _accInfo, true);
+        }
         return (DocumentInfo) this;
     }
 
@@ -431,7 +503,9 @@ public abstract class DocumentInfo_Base
     public DocumentInfo addCredit(final AccountInfo _accInfo)
         throws EFapsException
     {
-        add(this.creditAccounts, _accInfo, false);
+        if (InstanceUtils.isValid(_accInfo.getInstance())) {
+            add(this.creditAccounts, _accInfo, false);
+        }
         return (DocumentInfo) this;
     }
 
@@ -1263,6 +1337,48 @@ public abstract class DocumentInfo_Base
         } else {
             ret.put(Accounting.SubstitutorKeys.DOCUMENT_TYPE.name(), "");
             ret.put(Accounting.SubstitutorKeys.DOCUMENT_NAME.name(), "");
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the amount for map.
+     *
+     * @param _map the map
+     * @param _amountConfig the amount config
+     * @param _accInst the acc inst
+     * @return the amount for map
+     * @throws EFapsException on error
+     */
+    public static BigDecimal getAmount4Map(final Map<String, BigDecimal> _map,
+                                           final Account2Case4AmountConfig _amountConfig,
+                                           final Instance _accInst)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        if (_amountConfig != null) {
+            switch (_amountConfig) {
+                case TAX:
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountBalanceSheetLiability2Tax);
+                    attrQueryBldr.addWhereAttrEqValue(CIAccounting.AccountBalanceSheetLiability2Tax.FromAccountLink,
+                                    _accInst);
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
+                    queryBldr.addWhereAttrInQuery(CISales.Tax.ID, attrQueryBldr.getAttributeQuery(
+                                    CIAccounting.AccountBalanceSheetLiability2Tax.ToTaxLink));
+                    final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+                    multi.addAttribute(CISales.Tax.UUID);
+                    multi.execute();
+                    while (multi.next()) {
+                        final String uuid = multi.getAttribute(CISales.Tax.UUID);
+                        if (_map.containsKey(uuid)) {
+                            ret = ret.add(_map.get(uuid));
+                        }
+                    }
+                    break;
+                default:
+                    ret = _map.get(_amountConfig.name());
+                    break;
+            }
         }
         return ret;
     }

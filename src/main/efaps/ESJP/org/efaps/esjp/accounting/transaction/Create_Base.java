@@ -597,8 +597,8 @@ public abstract class Create_Base
                 doc.setInvert(doc.getInstance().getType().isKindOf(CISales.ReturnSlip.getType()));
             }
             if (doc.isCostValidated() && doc.getDifference(_parameter).compareTo(BigDecimal.ZERO) == 0
-                            && doc.getAmount().compareTo(BigDecimal.ZERO) != 0
-                            && doc.getCreditSum(_parameter).compareTo(doc.getAmount()) == 0
+                            && doc.getAmount(null).compareTo(BigDecimal.ZERO) != 0
+                            && doc.getCreditSum(_parameter).compareTo(doc.getAmount(null)) == 0
                             && validateDoc(_parameter, doc, oids)) {
                 final Insert insert = new Insert(CIAccounting.Transaction);
                 insert.add(CIAccounting.Transaction.Name, name);

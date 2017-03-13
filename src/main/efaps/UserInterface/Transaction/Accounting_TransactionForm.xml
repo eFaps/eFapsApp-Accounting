@@ -48,7 +48,7 @@
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
+                <property name="Select">attribute[Name]</property>
             </trigger>
         </field>
         <field name="updateButton" character="Command">
@@ -406,7 +406,7 @@
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[IsCross]&gt;</property>
+                <property name="Select">attribute[Name]</property>
             </trigger>
         </field>
         <field name="updateButton" character="Command">

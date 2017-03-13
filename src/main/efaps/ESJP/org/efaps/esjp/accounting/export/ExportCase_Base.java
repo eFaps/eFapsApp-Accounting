@@ -118,9 +118,6 @@ public abstract class ExportCase_Base
         final SelectBuilder selCaseLabel = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                         .attribute(CIAccounting.CaseAbstract.Label);
-        final SelectBuilder selCaseIsCross = new SelectBuilder()
-                        .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
-                        .attribute(CIAccounting.CaseAbstract.IsCross);
         final SelectBuilder selCaseConfig = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink)
                          .attribute(CIAccounting.CaseAbstract.SummarizeConfig);
@@ -129,18 +126,16 @@ public abstract class ExportCase_Base
         final SelectBuilder selAccountName = new SelectBuilder()
                         .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink)
                         .attribute(CIAccounting.AccountAbstract.Name);
-        multi.addSelect(selAccountName, selCaseDesc, selCaseLabel, selCaseName, selCaseType, selCaseConfig,
-                        selCaseIsCross);
+        multi.addSelect(selAccountName, selCaseDesc, selCaseLabel, selCaseName, selCaseType, selCaseConfig);
         multi.execute();
-        final List<Map<String, Object>> lstCols = new ArrayList<Map<String, Object>>();
+        final List<Map<String, Object>> lstCols = new ArrayList<>();
         while (multi.next()) {
-            final Map<String, Object> row = new HashMap<String, Object>();
+            final Map<String, Object> row = new HashMap<>();
             final Type caseType = multi.<Type>getSelect(selCaseType);
             final String caseName = multi.<String>getSelect(selCaseName);
             final String caseDesc = multi.<String>getSelect(selCaseDesc);
             final String caseLabel = multi.<String>getSelect(selCaseLabel);
 
-            final Boolean caseIsCross = multi.<Boolean>getSelect(selCaseIsCross);
             final Type acc2CaseType = multi.getCurrentInstance().getType();
             final String acc2CaseAcc = multi.<String>getSelect(selAccountName);
             final Long currencyId = multi.getAttribute(CIAccounting.Account2CaseAbstract.CurrencyLink);
@@ -177,7 +172,6 @@ public abstract class ExportCase_Base
             row.put(ColumnCase.CASENAME.getKey(), caseName);
             row.put(ColumnCase.CASEDESC.getKey(), caseDesc);
             row.put(ColumnCase.CASELABEL.getKey(), caseLabel);
-            row.put(ColumnCase.CASEISCROSS.getKey(), caseIsCross);
             row.put(ColumnCase.CASECONFIG.getKey(), config);
             row.put(ColumnCase.A2CTYPE.getKey(), acc2CaseType.getUUID());
             row.put(ColumnCase.A2CACC.getKey(), acc2CaseAcc);
