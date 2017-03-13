@@ -374,10 +374,8 @@ public abstract class ExternalVoucher_Base
         final Instance caseInst = Instance.get(_parameter.getParameterValue(CIFormAccounting
                         .Accounting_TransactionCreate4ExternalVoucherForm.case_field.name));
         final PrintQuery print = new PrintQuery(caseInst);
-        print.addAttribute(CIAccounting.CaseAbstract.IsCross);
         print.execute();
-        final boolean isCross = print.<Boolean>getAttribute(CIAccounting.CaseAbstract.IsCross);
-        return evalAmountsFromUI(_parameter, isCross);
+        return evalAmountsFromUI(_parameter, false);
     }
 
     /**

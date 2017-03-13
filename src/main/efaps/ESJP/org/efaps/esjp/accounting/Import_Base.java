@@ -720,7 +720,6 @@ public abstract class Import_Base
                     final Update update = new Update(this.caseInst);
                     update.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
                     update.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
-                    update.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
                     update.add(CIAccounting.CaseAbstract.SummarizeConfig,
                                     this.caseSummarizeConfig == null ? SummarizeConfig.NONE : this.caseSummarizeConfig);
                     update.execute();
@@ -737,7 +736,6 @@ public abstract class Import_Base
                 insert.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
                 insert.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
                 insert.add(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
-                insert.add(CIAccounting.CaseAbstract.IsCross, this.caseIsCross);
                 insert.add(CIAccounting.CaseAbstract.SummarizeConfig,
                                 this.caseSummarizeConfig == null ? SummarizeConfig.NONE : this.caseSummarizeConfig);
                 insert.execute();

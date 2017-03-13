@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,10 +15,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
-
 -->
-
 <datamodel-type  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7efe5f1a-4fdc-41d7-8f55-77777212f02b</uuid>
@@ -64,6 +60,14 @@
             <className>org.efaps.esjp.accounting.util.Accounting$Account2CaseConfig</className>
             <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
             <sqlcolumn>CONFIG</sqlcolumn>
+            <defaultvalue>0</defaultvalue>
+        </attribute>
+         <attribute>
+            <name>AmountConfig</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$Account2Case4AmountConfig</className>
+            <sqltable>Accounting_Account2ObjectSQLTable</sqltable>
+            <sqlcolumn>AMOUNTCONFIG</sqlcolumn>
             <defaultvalue>0</defaultvalue>
         </attribute>
         <attribute>

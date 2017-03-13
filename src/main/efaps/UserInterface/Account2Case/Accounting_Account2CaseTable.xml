@@ -53,6 +53,10 @@
             <property name="Attribute">Config</property>
             <property name="Label">Accounting_Account2CaseAbstract/Config.Label</property>
         </field>
+        <field name="amountConfig">
+            <property name="Label">Accounting_Account2CaseAbstract/AmountConfig.Label</property>
+            <property name="Attribute">AmountConfig</property>
+        </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Accounting_Account2CaseAbstract/CurrencyLink.Label</property>
