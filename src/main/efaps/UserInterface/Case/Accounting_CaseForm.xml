@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -54,22 +54,10 @@
             <property name="Attribute">Description</property>
             <property name="Width">80</property>
         </field>
-         <field name="booleanGroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
         <field name="status">
-            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Status</property>
-            <property name="Required">true</property>
-        </field>
-        <field name="isCross">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">NONE</property>
-            <property name="Attribute">IsCross</property>
             <property name="Required">true</property>
         </field>
         <field name="configGroup" character="Group">
