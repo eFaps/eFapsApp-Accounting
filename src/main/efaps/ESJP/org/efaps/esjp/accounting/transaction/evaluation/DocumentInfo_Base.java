@@ -410,6 +410,15 @@ public abstract class DocumentInfo_Base
                         this.amounts.put(entry.getUUID().toString(), entry.getAmount());
                     }
                 }
+            } else if (isPaymentDoc()) {
+                final PrintQuery print = CachedPrintQuery.get4Request(this.instance);
+                print.addAttribute(CISales.PaymentDocumentAbstract.Amount);
+                print.execute();
+                this.amounts.put(Account2Case4AmountConfig.NET.name(), print.getAttribute(
+                                CISales.PaymentDocumentAbstract.Amount));
+                this.amounts.put(Account2Case4AmountConfig.CROSS.name(), print.getAttribute(
+                                CISales.PaymentDocumentAbstract.Amount));
+
             }
         }
         return this.amounts;
