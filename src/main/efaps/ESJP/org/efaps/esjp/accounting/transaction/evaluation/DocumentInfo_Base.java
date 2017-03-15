@@ -943,7 +943,7 @@ public abstract class DocumentInfo_Base
             labelStr = print.<String>getAttribute(CIAccounting.CaseAbstract.Label);
         } else {
             labelStr = DBProperties.getProperty(DocumentInfo.class.getName() + "."
-                            + (InstanceUtils.isValid(getInstance()) ? getInstance().getType().getName() : "")
+                            + (InstanceUtils.isValid(getInstance()) ? getInstance().getType().getName() : "Default")
                             + ".description");
         }
         final StrSubstitutor sub = new StrSubstitutor(getMap4Substitutor(_parameter));
