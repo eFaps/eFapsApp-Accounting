@@ -256,7 +256,7 @@ public abstract class JournalSC1617_Base
             String descr = multi.<String>getSelect(selTransDescr);
             final String remark = multi.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
             if (StringUtils.isNotEmpty(remark)) {
-                descr = descr + " - " + remark;
+                descr = remark;
             }
             final DataBean bean = new DataBean()
                             .setOrigin(origin)
