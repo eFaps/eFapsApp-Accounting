@@ -115,7 +115,7 @@ public abstract class JournalSC1617_Base
         // SFECHA Fecha de la DETRACCION
         _exporter.addColumns(new FrmtColumn("empty", 8));
         // TL C:Compra, V:Venta, R:Retenciones
-        _exporter.addColumns(new FrmtColumn("empty", 1));
+        _exporter.addColumns(new FrmtColumn("marker", 1));
         // NETO Monto sub Total, va a la Cta. 40
         _exporter.addColumns(new FrmtNumberColumn("netTotal", 12, 2, 9));
         // NETO2 Monto Adq. no gravadas o Exonerados/Inafectos, va a la Cta. 40
@@ -179,6 +179,8 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.subJournal.name));
         final String origin = _parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
+        final String marker = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.marker.name);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
@@ -260,6 +262,7 @@ public abstract class JournalSC1617_Base
             }
             final DataBean bean = new DataBean()
                             .setOrigin(origin)
+                            .setMarker(marker)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
                             .setNumber(multi.getSelect(selTransIdentifier))
                             .setPosition(multi.<Integer>getAttribute(CIAccounting.TransactionPositionAbstract.Position))
@@ -403,6 +406,9 @@ public abstract class JournalSC1617_Base
 
         /** The trans descr. */
         private String transDescr;
+
+        /** The marker. TL C:Compra, V:Venta, R:Retenciones */
+        private String marker;
 
         /** The net total. */
         private BigDecimal netTotal;
@@ -1035,6 +1041,27 @@ public abstract class JournalSC1617_Base
         public DataBean setDocRevision(final String _docRevision)
         {
             this.docRevision = _docRevision;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #marker}.
+         *
+         * @return value of instance variable {@link #marker}
+         */
+        public String getMarker()
+        {
+            return this.marker;
+        }
+
+        /**
+         * Setter method for instance variable {@link #marker}.
+         *
+         * @param _marker value for instance variable {@link #marker}
+         */
+        public DataBean setMarker(final String _marker)
+        {
+            this.marker = _marker;
             return this;
         }
     }

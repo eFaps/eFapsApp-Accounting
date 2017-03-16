@@ -30,6 +30,26 @@
             <property name="Columns">2</property>
             <property name="Width">4</property>
         </field>
+        <field name="marker">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Accounting_ExportJournalSC1617Form.marker.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Properties"
+                name="Accounting_ExportJournalSC1617Form.marker.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DBProperty01">org.efaps.esjp.accounting.export.sc.JournalSC1617.C</property>
+                <property name="Value01">C</property>
+                <property name="DBProperty02">org.efaps.esjp.accounting.export.sc.JournalSC1617.V</property>
+                <property name="Value02">V</property>
+                <property name="DBProperty03">org.efaps.esjp.accounting.export.sc.JournalSC1617.R</property>
+                <property name="Value03">C</property>
+                <property name="DBProperty04">org.efaps.esjp.accounting.export.sc.JournalSC1617.NONE</property>
+                <property name="Value04"></property>
+            </trigger>
+        </field>
         <field name="subJournal">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
