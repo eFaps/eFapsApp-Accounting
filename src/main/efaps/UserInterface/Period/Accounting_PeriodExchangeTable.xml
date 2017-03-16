@@ -71,7 +71,7 @@
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-         <field name="action4View">
+        <field name="action4View">
             <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
             <property name="Select">linkfrom[Sales_ActionDefinitionExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
             <property name="HRef">TREE</property>

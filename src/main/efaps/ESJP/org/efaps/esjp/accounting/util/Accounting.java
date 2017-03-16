@@ -156,6 +156,14 @@ public final class Accounting
                     .addDefaultValue("JournalSC1617RC." + CISales.IncomingCreditNote.getType().getName() + ".Number",
                                     "DocRevision");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PERIOD_PERMITCREATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Period.PermitCreationOfIncomingDocs")
+                    .defaultValue(true)
+                    .description("Permit to create incoming documents inside Period.");
+
     /**
      * Singelton.
      */

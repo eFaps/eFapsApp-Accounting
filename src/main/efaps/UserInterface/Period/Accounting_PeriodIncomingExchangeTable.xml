@@ -84,6 +84,16 @@
                 <property name="Access">!NONE</property>
             </trigger>
         </field>
+        <field name="actionDate4View">
+            <property name="Select">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].attribute[Date]</property>
+            <property name="Label">Sales_IncomingExchange_AssignActionForm.date.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_InvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
+                <property name="Access">!NONE</property>
+            </trigger>
+        </field>
         <field name="creator">
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">Creator</property>
