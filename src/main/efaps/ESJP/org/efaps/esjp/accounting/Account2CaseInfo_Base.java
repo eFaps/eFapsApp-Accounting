@@ -458,6 +458,7 @@ public abstract class Account2CaseInfo_Base
      * Setter method for instance variable {@link #amountConfig}.
      *
      * @param _amountConfig value for instance variable {@link #amountConfig}
+     * @return the account two case info
      */
     public Account2CaseInfo setAmountConfig(final Account2Case4AmountConfig _amountConfig)
     {

@@ -164,7 +164,7 @@ public abstract class Calculation_Base
 
                             if (BigDecimal.ZERO.compareTo(targetRate) < 0
                                             && BigDecimal.ZERO.compareTo(currAmount) < 0) {
-                                BigDecimal rate;
+                                final BigDecimal rate;
                                 if (rateInfo.isInvert()) {
                                     rate = targetRate.setScale(8, RoundingMode.HALF_UP)
                                                     .divide(currAmount, RoundingMode.HALF_UP);
@@ -452,6 +452,9 @@ public abstract class Calculation_Base
         return ret;
     }
 
+    /**
+     * The Class Evaluation.
+     */
     static class Evaluation
         extends AbstractEvaluation
     {

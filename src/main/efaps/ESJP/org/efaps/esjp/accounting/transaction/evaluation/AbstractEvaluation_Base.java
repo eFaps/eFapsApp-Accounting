@@ -384,7 +384,10 @@ public abstract class AbstractEvaluation_Base
             final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Payment)
                             .linkto(CISales.Payment.CreateDocument)
                             .instance();
-            multi.addSelect(selCurInst, selSalesAccInst, selDocInst);
+            final SelectBuilder selDocName = SelectBuilder.get().linkto(CISales.TransactionAbstract.Payment)
+                            .linkto(CISales.Payment.CreateDocument)
+                            .attribute(CIERP.DocumentAbstract.Name);
+            multi.addSelect(selCurInst, selSalesAccInst, selDocInst, selDocName);
             multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.CurrencyId);
             multi.execute();
             while (multi.next()) {
@@ -393,7 +396,8 @@ public abstract class AbstractEvaluation_Base
                 final AccountInfo account = getTargetAccount4SalesAccount(_parameter, salesAccInst)
                                 .addAmount(amount);
                 final Instance docInst = multi.getSelect(selDocInst);
-                account.setDocLink(docInst);
+                final String docName = multi.getSelect(selDocName);
+                account.setDocLink(docInst).setRemark(docName);
                 // special handling for transferdocument
                 if (InstanceUtils.isKindOf(_doc.getInstance(), CISales.TransferDocument)) {
                     final CurrencyInst currInst = CurrencyInst.get(multi.<Long>getAttribute(
@@ -434,14 +438,18 @@ public abstract class AbstractEvaluation_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selDocInst = new SelectBuilder().linkto(
                             CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).instance();
+            final SelectBuilder selDocName = new SelectBuilder().linkto(
+                            CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
+                            .attribute(CIERP.DocumentAbstract.Name);
             final SelectBuilder selCurInst = new SelectBuilder().linkto(
                             CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
-            multi.addSelect(selDocInst, selCurInst);
+            multi.addSelect(selDocInst, selCurInst, selDocName);
             multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Amount,
                             CIERP.Document2PaymentDocumentAbstract.Date);
             multi.execute();
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                final String docName = multi.<String>getSelect(selDocName);
                 Instance docInst4Trans = docInst;
                 if (docInst.isValid()) {
                     final boolean outDoc = _doc.getInstance().getType().isKindOf(
@@ -454,6 +462,7 @@ public abstract class AbstractEvaluation_Base
                                         AccountingSettings.PERIOD_INCOMINGPERACC);
                         accInfo.addAmount(_doc.getAmount4Doc(docInst))
                                     .setDocLink(_doc.getInstance())
+                                    .setRemark(docName)
                                     .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                         if (outDoc) {
                             _doc.addDebit(accInfo);
@@ -510,6 +519,7 @@ public abstract class AbstractEvaluation_Base
                                 final AccountInfo acc = new AccountInfo().setInstance(accInst)
                                             .addAmount(_doc.getAmount4Doc(docInst))
                                             .setDocLink(_doc.getInstance())
+                                            .setRemark(docName)
                                             .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                                 if (outDoc) {
                                     _doc.addDebit(acc);

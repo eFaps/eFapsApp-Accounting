@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -560,6 +560,7 @@ public abstract class AccountInfo_Base
      * Setter method for instance variable {@link #labelInst}.
      *
      * @param _labelInst value for instance variable {@link #labelInst}
+     * @return the account info
      */
     public AccountInfo setLabelInst(final Instance _labelInst)
     {
@@ -581,6 +582,7 @@ public abstract class AccountInfo_Base
      * Setter method for instance variable {@link #remark}.
      *
      * @param _remark value for instance variable {@link #remark}
+     * @return the account info
      */
     public AccountInfo setRemark(final String _remark)
     {
