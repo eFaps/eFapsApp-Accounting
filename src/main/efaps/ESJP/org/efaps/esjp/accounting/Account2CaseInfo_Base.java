@@ -644,6 +644,7 @@ public abstract class Account2CaseInfo_Base
                         CIAccounting.Account2CaseAbstract.Denominator,
                         CIAccounting.Account2CaseAbstract.LinkValue,
                         CIAccounting.Account2CaseAbstract.Config,
+                        CIAccounting.Account2CaseAbstract.AmountConfig,
                         CIAccounting.Account2CaseAbstract.Order,
                         CIAccounting.Account2CaseAbstract.Key,
                         CIAccounting.Account2CaseAbstract.Remark);
@@ -654,6 +655,7 @@ public abstract class Account2CaseInfo_Base
                     .setInstance(multi.getCurrentInstance())
                     .setConfigs(multi
                                     .<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
+                    .setAmountConfig(multi.getAttribute(CIAccounting.Account2CaseAbstract.AmountConfig))
                     .setAccountInstance(multi.<Instance>getSelect(selAccInst))
                     .setCurrencyInstance(multi.<Instance>getSelect(selCurrInst))
                     .setDenominator(multi.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))

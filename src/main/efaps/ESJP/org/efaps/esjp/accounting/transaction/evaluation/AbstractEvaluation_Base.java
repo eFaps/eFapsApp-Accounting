@@ -237,7 +237,8 @@ public abstract class AbstractEvaluation_Base
                         existing.setAmount(existing.getAmount().add(DocumentInfo_Base.getAmount4Map(entry.getValue(),
                                         existing.getAmountConfig(), existing.getAccountInstance())));
                     } else {
-                        // acc2case.setAmount(entry.getValue());
+                        acc2case.setAmount(DocumentInfo_Base.getAmount4Map(entry.getValue(),
+                                        acc2case.getAmountConfig(), acc2case.getAccountInstance()));
                         if (acc2case.getConfigs().contains(Accounting.Account2CaseConfig.SEPARATELY)) {
                             inst2caseInfo.put(RandomStringUtils.random(4), acc2case);
                         } else {

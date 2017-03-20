@@ -18,7 +18,7 @@
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ef6f82b2-f5a7-427a-b738-9a35004f644f</uuid>
-    <file-application>eFapsApp-Sales</file-application>
+    <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodTree_PayMenu_External_Menu_DocAction_SetOpen</name>
