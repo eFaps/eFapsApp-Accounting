@@ -29,7 +29,7 @@
         </access>
         <target>
             <menu>Accounting_PeriodTree_PayMenu_Payment_Menu</menu>
-            <table>Sales_PaymentDocumentAbstractTable</table>
+            <table>Accounting_PaymentDocumentOutTable</table>
             <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
                 <property name="Type01">Sales_PaymentCashOut</property>
                 <property name="Type02">Sales_PaymentCheckOut</property>
