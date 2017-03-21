@@ -569,6 +569,9 @@ public abstract class JournalSC1617_Base
                     }
                 }
             }
+            if (StringUtils.isEmpty(ret)) {
+                ret = "00";
+            }
             return ret;
         }
 
