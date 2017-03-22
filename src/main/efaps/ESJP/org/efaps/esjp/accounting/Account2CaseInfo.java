@@ -69,4 +69,17 @@ public class Account2CaseInfo
     {
         return Account2CaseInfo_Base.get4Product(_parameter, _caseInst, _productInstance);
     }
+
+    /**
+     * Gets the account two case info.
+     *
+     * @param _acc2CaseInfoInstance the acc 2 case info instance
+     * @return the account two case info
+     * @throws EFapsException on error
+     */
+    public static Account2CaseInfo getAccount2CaseInfo(final Instance _acc2CaseInfoInstance)
+        throws EFapsException
+    {
+        return Account2CaseInfo_Base.getAccount2CaseInfo(_acc2CaseInfoInstance);
+    }
 }

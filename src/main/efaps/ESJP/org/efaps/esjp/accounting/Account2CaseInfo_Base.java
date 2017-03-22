@@ -291,6 +291,16 @@ public abstract class Account2CaseInfo_Base
     }
 
     /**
+     * Checks if is apply label.
+     *
+     * @return true, if is apply label
+     */
+    public boolean isEvalRelation()
+    {
+        return getConfigs() != null && getConfigs().contains(Account2CaseConfig.EVALRELATION);
+    }
+
+    /**
      * Checks if is credit.
      *
      * @return true, if is credit
@@ -665,6 +675,47 @@ public abstract class Account2CaseInfo_Base
                     .setKey(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key))
                     .setRemark(multi.<String>getAttribute(CIAccounting.Account2CaseAbstract.Remark));
         }
+        return ret;
+    }
+
+    /**
+     * Gets the account2 case info.
+     *
+     * @param _acc2CaseInfoInstance the account two case info instance
+     * @return the account2 case info
+     * @throws EFapsException on error
+     */
+    protected static Account2CaseInfo getAccount2CaseInfo(final Instance _acc2CaseInfoInstance)
+        throws EFapsException
+    {
+        Account2CaseInfo ret = null;
+        final PrintQuery print = CachedPrintQuery.get4Request(_acc2CaseInfoInstance);
+        final SelectBuilder selAccInst = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink).instance();
+        final SelectBuilder selCurrInst = new SelectBuilder()
+                        .linkto(CIAccounting.Account2CaseAbstract.CurrencyLink).instance();
+        print.addAttribute(CIAccounting.Account2CaseAbstract.Numerator,
+                        CIAccounting.Account2CaseAbstract.Denominator,
+                        CIAccounting.Account2CaseAbstract.LinkValue,
+                        CIAccounting.Account2CaseAbstract.Config,
+                        CIAccounting.Account2CaseAbstract.AmountConfig,
+                        CIAccounting.Account2CaseAbstract.Order,
+                        CIAccounting.Account2CaseAbstract.Key,
+                        CIAccounting.Account2CaseAbstract.Remark);
+        print.addSelect(selAccInst, selCurrInst);
+        print.execute();
+        ret = new Account2CaseInfo()
+                .setInstance(print.getCurrentInstance())
+                .setConfigs(print.<List<Account2CaseConfig>>getAttribute(CIAccounting.Account2CaseAbstract.Config))
+                .setAmountConfig(print.getAttribute(CIAccounting.Account2CaseAbstract.AmountConfig))
+                .setAccountInstance(print.<Instance>getSelect(selAccInst))
+                .setCurrencyInstance(print.<Instance>getSelect(selCurrInst))
+                .setDenominator(print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Denominator))
+                .setNumerator(print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Numerator))
+                .setLinkId(print.<Long>getAttribute(CIAccounting.Account2CaseAbstract.LinkValue))
+                .setOrder(print.<Integer>getAttribute(CIAccounting.Account2CaseAbstract.Order))
+                .setKey(print.<String>getAttribute(CIAccounting.Account2CaseAbstract.Key))
+                .setRemark(print.<String>getAttribute(CIAccounting.Account2CaseAbstract.Remark));
         return ret;
     }
 }
