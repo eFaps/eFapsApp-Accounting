@@ -26,14 +26,17 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedMultiPrintQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.util.Accounting;
@@ -181,6 +184,8 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
         final String marker = _parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.marker.name);
+        final boolean analyzeRemark = BooleanUtils.toBoolean(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.analyzeRemark.name));
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
@@ -217,7 +222,7 @@ public abstract class JournalSC1617_Base
 
         final SelectBuilder selTrans = SelectBuilder.get().linkto(
                         CIAccounting.TransactionPositionAbstract.TransactionLink);
-        final SelectBuilder selTransOID = new SelectBuilder(selTrans).oid();
+        final SelectBuilder selTransInst = new SelectBuilder(selTrans).instance();
         final SelectBuilder selTransDescr = new SelectBuilder(selTrans)
                         .attribute(CIAccounting.TransactionAbstract.Description);
         final SelectBuilder selTransIdentifier = new SelectBuilder(selTrans)
@@ -243,7 +248,7 @@ public abstract class JournalSC1617_Base
         final SelectBuilder selTaxNumber = new SelectBuilder(selContact).clazz(CIContacts.ClassOrganisation)
                         .attribute(CIContacts.ClassOrganisation.TaxNumber);
 
-        multi.addSelect(selAccName, selTransIdentifier, selTransOID, selTransName, selTransDescr, selTransDate,
+        multi.addSelect(selAccName, selTransIdentifier, selTransInst, selTransName, selTransDescr, selTransDate,
                         selDocInst, selDocName, selDocDate, selDocDueDate, selContactName, selTaxNumber, selNetTotal,
                         selCrossTotal, selDocRev);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.RateAmount,
@@ -257,8 +262,32 @@ public abstract class JournalSC1617_Base
         while (multi.next()) {
             String descr = multi.<String>getSelect(selTransDescr);
             final String remark = multi.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+            String contactName = multi.<String>getSelect(selContactName);
+            String taxNumber = multi.<String>getSelect(selTaxNumber);
             if (StringUtils.isNotEmpty(remark)) {
                 descr = remark;
+                if (analyzeRemark) {
+                    final Instance transInst = multi.getSelect(selTransInst);
+                    final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+                    tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
+                    tr2docQueryBldr.getAttributeQuery(CIAccounting.Transaction2ERPDocument.ID);
+
+                    final QueryBuilder docQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                    docQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, remark);
+                    final MultiPrintQuery docMulti = docQueryBldr.getCachedPrint4Request();
+                    final SelectBuilder docSelContact = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact);
+                    final SelectBuilder docSelContactName = new SelectBuilder(docSelContact).attribute(
+                                    CIContacts.Contact.Name);
+                    final SelectBuilder docSelTaxNumber = new SelectBuilder(docSelContact).clazz(
+                                    CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
+                    docMulti.addSelect(docSelContactName, docSelTaxNumber);
+                    docMulti.execute();
+                    if (docMulti.getInstanceList().size() == 1) {
+                        docMulti.next();
+                        contactName = docMulti.getSelect(docSelContactName);
+                        taxNumber = docMulti.getSelect(docSelTaxNumber);
+                    }
+                }
             }
             final DataBean bean = new DataBean()
                             .setOrigin(origin)
@@ -277,8 +306,8 @@ public abstract class JournalSC1617_Base
                             .setDocRevision(multi.<String>getSelect(selDocRev))
                             .setDocDate(multi.<DateTime>getSelect(selDocDate))
                             .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
-                            .setContactName(multi.<String>getSelect(selContactName))
-                            .setTaxNumber(multi.<String>getSelect(selTaxNumber))
+                            .setContactName(contactName)
+                            .setTaxNumber(taxNumber)
                             .setRate(multi.<Object[]>getAttribute(CIAccounting.TransactionPositionAbstract.Rate))
                             .setNetTotal(multi.<BigDecimal>getSelect(selNetTotal))
                             .setCrossTotal(multi.<BigDecimal>getSelect(selCrossTotal));
@@ -338,6 +367,9 @@ public abstract class JournalSC1617_Base
                         break;
                     case "DocRevision":
                         currentVal = bean.getDocRevision();
+                        break;
+                    case "DocCode":
+                        currentVal = bean.getDocCode();
                         break;
                     default:
                         currentVal = String.format("%05d", i);
@@ -1061,11 +1093,31 @@ public abstract class JournalSC1617_Base
          * Setter method for instance variable {@link #marker}.
          *
          * @param _marker value for instance variable {@link #marker}
+         * @return the data bean
          */
         public DataBean setMarker(final String _marker)
         {
             this.marker = _marker;
             return this;
+        }
+
+        /**
+         * Gets the doc code.
+         *
+         * @return the doc code
+         * @throws EFapsException on error
+         */
+        public String getDocCode()
+            throws EFapsException
+        {
+            String ret = getDocName();
+            if (InstanceUtils.isKindOf(getDocInst(), CIERP.PaymentDocumentAbstract)) {
+                final PrintQuery print = CachedPrintQuery.get4Request(getDocInst());
+                print.addAttribute(CIERP.PaymentDocumentAbstract.Code);
+                print.execute();
+                ret = print.getAttribute(CIERP.PaymentDocumentAbstract.Code);
+            }
+            return ret;
         }
     }
 }

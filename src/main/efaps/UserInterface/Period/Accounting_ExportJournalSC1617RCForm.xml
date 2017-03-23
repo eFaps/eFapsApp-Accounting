@@ -23,6 +23,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ExportJournalSC1617RCForm</name>
+        <field name="originGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
         <field name="origin">
             <property name="Label">Accounting_ExportJournalSC1617Form.origin.Label</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -30,10 +34,15 @@
             <property name="Columns">2</property>
             <property name="Width">4</property>
         </field>
+         <field name="analyzeRemark">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">Accounting_ExportJournalSC1617Form.analyzeRemark.Label</property>
+            <property name="UIType">CHECKBOX</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+        </field>
         <field name="marker">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_ExportJournalSC1617Form.marker.Label</property>
             <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"

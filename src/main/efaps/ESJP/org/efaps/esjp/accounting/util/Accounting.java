@@ -144,13 +144,15 @@ public final class Accounting
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(Accounting.SYSCONFUUID)
                     .key(Accounting.BASE + "export.Siscont1617")
-                    .description("Possibility to configure the export for Siscont 16/17.\n"
-                                    + "TYPE.Number=TransName|DocName|DocRevision\n"
-                                    + "JournalSC1617.TYPE.Number=TransName|DocName|DocRevision\n"
-                                    + "JournalSC1617RC.TYPE.Number=TransName|DocName|DocRevision\n")
+                    .description("Possibility to configure the export for Siscont 16/17. \n"
+                                    + "(DocCode applies only to PaymentDocuments)\n"
+                                    + "TYPE.Number=TransName|DocName|DocRevision|DocCode\n"
+                                    + "JournalSC1617.TYPE.Number=TransName|DocName|DocRevision|DocCode\n"
+                                    + "JournalSC1617RC.TYPE.Number=TransName|DocName|DocRevision|DocCode\n")
                     .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Number", "DocName")
+                    .addDefaultValue(CISales.PaymentDepositOut.getType().getName() + ".Number", "DocCode")
                     .addDefaultValue("JournalSC1617." + CISales.IncomingReceipt.getType().getName() + ".Number",
                                     "TransName")
                     .addDefaultValue("JournalSC1617RC." + CISales.IncomingCreditNote.getType().getName() + ".Number",
