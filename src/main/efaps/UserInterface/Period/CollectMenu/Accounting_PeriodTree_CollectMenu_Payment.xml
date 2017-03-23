@@ -30,6 +30,9 @@
             <menu>Accounting_PeriodTree_CollectMenu_Payment_Menu</menu>
             <table>Accounting_PaymentDocumentTable</table>
             <evaluate method="multiPrint" program="org.efaps.esjp.accounting.Period">
+                <!-- Accounting-Configuration -->
+                <property name="PropertiesConfig">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
+                <property name="PropertiesConfigAttribute">org.efaps.accounting.Period.Collect.Payment</property>
                 <property name="Type01">Sales_PaymentCash</property>
                 <property name="Type02">Sales_PaymentCheck</property>
                 <property name="Type03">Sales_PaymentCreditCardAbstract</property>

@@ -30,7 +30,10 @@
             <menu>Accounting_PeriodTree_CollectMenu_IncomingExchange_Menu</menu>
             <table>Accounting_PeriodIncomingExchangeTable</table>
             <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
-                <property name="Type01">Sales_IncomingExchange</property>
+                <!-- Accounting-Configuration -->
+                <property name="PropertiesConfig">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
+                <property name="PropertiesConfigAttribute">org.efaps.accounting.Period.Collect.IncomingExchange</property>
+                <property name="Type">Sales_IncomingExchange</property>
             </evaluate>
             <trigger event="UI_ACCESSCHECK" method="configObjectCheck"
                 name="Accounting_PeriodTree_Exchange.UI_ACCESSCHECK"

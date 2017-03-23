@@ -33,6 +33,9 @@
             <menu>Accounting_PeriodTree_CollectMenu_DocsToBook_Menu</menu>
             <table>Accounting_PeriodDocumentSumTable</table>
             <evaluate program="org.efaps.esjp.accounting.Period" method="multiPrint" >
+                <!-- Accounting-Configuration -->
+                <property name="PropertiesConfig">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
+                <property name="PropertiesConfigAttribute">org.efaps.accounting.Period.Collect.DocsToBook</property>
                 <property name="Type01">Sales_Invoice</property>
                 <property name="Type02">Sales_Receipt</property>
                 <property name="Type03">Sales_CreditNote</property>

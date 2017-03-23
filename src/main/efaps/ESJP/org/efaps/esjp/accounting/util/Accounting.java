@@ -166,6 +166,51 @@ public final class Accounting
                     .defaultValue(true)
                     .description("Permit to create incoming documents inside Period.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PERIOD_COLLECT_INCEXCH = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Period.Collect.IncomingExchange")
+                    .addDefaultValue("Type", "Sales_IncomingExchange")
+                    .description("Permit to overwrite the MultiPrint for IncomingExchange.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PERIOD_COLLECT_DOC2BOOK = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Period.Collect.DocsToBook")
+                    .addDefaultValue("Type01", "Sales_Invoice")
+                    .addDefaultValue("Type02", "Sales_Receipt")
+                    .addDefaultValue("Type03", "Sales_CreditNote")
+                    .addDefaultValue("Type04", "Sales_Reminder")
+                    .description("Permit to overwrite the MultiPrint for DocsToBook.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PERIOD_COLLECT_DOC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Period.Collect.Document")
+                    .addDefaultValue("Type01", "Sales_Invoice")
+                    .addDefaultValue("Type02", "Sales_Receipt")
+                    .addDefaultValue("Type03", "Sales_CreditNote")
+                    .addDefaultValue("Type04", "Sales_Reminder")
+                    .description("Permit to overwrite the MultiPrint for IncomingExchange.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PERIOD_COLLECT_PAYMENT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Period.Collect.Payment")
+                    .addDefaultValue("Type01", "Sales_PaymentCash")
+                    .addDefaultValue("Type02", "Sales_PaymentCheck")
+                    .addDefaultValue("Type03", "Sales_PaymentCreditCardAbstract")
+                    .addDefaultValue("Type04", "Sales_PaymentDebitCardAbstract")
+                    .addDefaultValue("Type05", "Sales_PaymentDeposit")
+                    .addDefaultValue("Type06", "Sales_PaymentDetraction")
+                    .addDefaultValue("Type07", "Sales_PaymentInternal")
+                    .addDefaultValue("Type08", "Sales_PaymentRetention")
+                    .description("Permit to overwrite the MultiPrint for IncomingExchange.");
+
     /**
      * Singelton.
      */
