@@ -129,7 +129,7 @@ public abstract class IncomingExchangeEvaluation_Base
                         }
                         account.setAmountRate(accAmountRate);
                         if (_doc.getInstance() != null) {
-                            account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                            account.setRateInfo(_doc.getRateInfo(), _doc.getRatePropKey());
                         } else {
                             account.setRateInfo(_doc.getRateInfo(), getProperty(_parameter, "Type4RateInfo"));
                         }

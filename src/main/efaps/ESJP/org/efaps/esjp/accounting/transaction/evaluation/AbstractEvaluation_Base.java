@@ -302,7 +302,7 @@ public abstract class AbstractEvaluation_Base
                     }
                     account.setAmountRate(accAmountRate);
                     if (_doc.getInstance() != null) {
-                        account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                        account.setRateInfo(_doc.getRateInfo(), _doc.getRatePropKey());
                     } else {
                         account.setRateInfo(_doc.getRateInfo(), getProperty(_parameter, "Type4RateInfo"));
                     }
@@ -406,7 +406,7 @@ public abstract class AbstractEvaluation_Base
                     final Period period = new Period();
                     if (currInst.getInstance().equals(period.getCurrency(
                                     period.evaluateCurrentPeriod(_parameter)).getInstance())) {
-                        account.setRateInfo(RateInfo.getDummyRateInfo(), _doc.getInstance().getType().getName());
+                        account.setRateInfo(RateInfo.getDummyRateInfo(), _doc.getRatePropKey());
                     } else {
                         account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                     }
@@ -464,7 +464,7 @@ public abstract class AbstractEvaluation_Base
                         accInfo.addAmount(_doc.getAmount4Doc(docInst))
                                     .setDocLink(_doc.getInstance())
                                     .setRemark(docName)
-                                    .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                                    .setRateInfo(_doc.getRateInfo(), _doc.getRatePropKey());
                         if (outDoc) {
                             _doc.addDebit(accInfo);
                         } else {
@@ -585,7 +585,7 @@ public abstract class AbstractEvaluation_Base
                     final Instance accInst = caseMulti.<Instance>getSelect(selAccInst);
                     final AccountInfo acc = new AccountInfo().setInstance(accInst)
                                     .addAmount(_doc.getAmount4Doc(_docInst))
-                                    .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                                    .setRateInfo(_doc.getRateInfo(), _doc.getRatePropKey());
                     if (outDoc) {
                         _doc.addDebit(acc);
                     } else {
@@ -615,7 +615,7 @@ public abstract class AbstractEvaluation_Base
             final BigDecimal amount = _doc.getAmount(null);
 
             final AccountInfo account = new AccountInfo(instance);
-            account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+            account.setRateInfo(_doc.getRateInfo(), _doc.getRatePropKey());
 
             if ("Credit".equals(addAccount)) {
                 account.setAmount(amount.subtract(_doc.getCreditSum(_parameter)));
