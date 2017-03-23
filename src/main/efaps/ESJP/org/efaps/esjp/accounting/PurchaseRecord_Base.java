@@ -213,40 +213,23 @@ public abstract class PurchaseRecord_Base
                 update.executeWithoutTrigger();
             }
 
-            final QueryBuilder docAttrBldr = new QueryBuilder(CISales.Payment);
-            docAttrBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInst);
-            final AttributeQuery attrQuery = docAttrBldr.getAttributeQuery(CISales.Payment.TargetDocument);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
-            queryBldr.addWhereAttrInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.PaymentDetractionOut.Date,
-                            CISales.PaymentDetractionOut.Name,
-                            CISales.PaymentDetractionOut.Amount);
-            multi.executeWithoutAccessCheck();
-
-            Update update = new Update(_instance);
-            if (multi.next()) {
-                final DateTime date = multi.<DateTime>getAttribute(CISales.PaymentDetractionOut.Date);
-                final String name = multi.<String>getAttribute(CISales.PaymentDetractionOut.Name);
-                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.PaymentDetractionOut.Amount);
-                update.add(CIAccounting.PurchaseRecord2Document.DetractionName, name);
-                update.add(CIAccounting.PurchaseRecord2Document.DetractionDate, date);
-                update.add(CIAccounting.PurchaseRecord2Document.DetractionAmount, amount);
-                update.executeWithoutTrigger();
-            } else {
-                final DocTaxInfo docTaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, docInst);
-                if (docTaxInfo.isDetraction()) {
-                    update.add(CIAccounting.PurchaseRecord2Document.DetractionName,
-                                    DBProperties.getFormatedDBProperty(PurchaseRecord.class.getName()
-                                                    + ".detractionPlanned", (Object) docTaxInfo.getTaxAmount()));
-                } else {
-                    update = null;
-                }
+            final DocTaxInfo docTaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, docInst);
+            final Update update = new Update(_instance);
+            String detrName = null;
+            DateTime detrDate = null;
+            BigDecimal detrAmount = null;
+            if (docTaxInfo.isDetractionPaid()) {
+                detrName = docTaxInfo.getPaymentName();
+                detrDate = docTaxInfo.getPaymentDate();
+                detrAmount = docTaxInfo.getPaymentAmount();
+            } else if (docTaxInfo.isDetraction()) {
+                detrName = DBProperties.getFormatedDBProperty(PurchaseRecord.class.getName()
+                                                + ".detractionPlanned", (Object) docTaxInfo.getTaxAmount());
             }
-            if (update != null) {
-                update.executeWithoutTrigger();
-            }
+            update.add(CIAccounting.PurchaseRecord2Document.DetractionName, detrName);
+            update.add(CIAccounting.PurchaseRecord2Document.DetractionDate, detrDate);
+            update.add(CIAccounting.PurchaseRecord2Document.DetractionAmount, detrAmount);
+            update.executeWithoutTrigger();
         }
     }
 

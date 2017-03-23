@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2012 The eFaps Team
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>49ce04bd-dad1-40ed-9b3a-a6f477dc7ccc</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PurchaseRecord2DocumentForm</name>
@@ -58,12 +53,12 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="Attribute">TypeLink</property>
             <property name="Label">Accounting_PurchaseRecord2DocumentForm/TypeLink.Label</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
-                    method="dropDown4DocumentType"
-                    name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE"
-                    event="UI_FIELD_VALUE">
+                method="dropDown4DocumentType" name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
