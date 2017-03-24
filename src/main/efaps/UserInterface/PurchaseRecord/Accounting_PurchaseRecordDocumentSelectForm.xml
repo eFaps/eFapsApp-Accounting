@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+  Copyright 2003 - 2017 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -11,11 +14,6 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -38,6 +36,7 @@
                 <property name="Type04">Sales_IncomingReminder</property>
                 <property name="Type05">Accounting_ExternalVoucher</property>
                 <property name="Type06">Sales_PettyCashReceipt</property>
+                <property name="Type07">Sales_IncomingProfServReceipt</property>
                 <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">!Replaced</property>
                 <property name="StatusGroup02">Sales_IncomingReceiptStatus</property>
@@ -50,6 +49,8 @@
                 <property name="Status05">!Replaced</property>
                 <property name="StatusGroup06">Sales_PettyCashReceiptStatus</property>
                 <property name="Status06">!Open</property>
+                <property name="StatusGroup07">Sales_IncomingProfServReceiptStatus</property>
+                <property name="Status07">!Canceled</property>
             </evaluate>
         </field>
     </definition>
