@@ -264,6 +264,7 @@ public abstract class JournalSC1617_Base
             final String remark = multi.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
             String contactName = multi.<String>getSelect(selContactName);
             String taxNumber = multi.<String>getSelect(selTaxNumber);
+            String docName = multi.<String>getSelect(selDocName);
             if (StringUtils.isNotEmpty(remark)) {
                 descr = remark;
                 if (analyzeRemark) {
@@ -286,6 +287,8 @@ public abstract class JournalSC1617_Base
                         docMulti.next();
                         contactName = docMulti.getSelect(docSelContactName);
                         taxNumber = docMulti.getSelect(docSelTaxNumber);
+                        descr = docName;
+                        docName = remark;
                     }
                 }
             }
@@ -302,7 +305,7 @@ public abstract class JournalSC1617_Base
                             .setCurrencyId(multi.<Long>getAttribute(
                                             CIAccounting.TransactionPositionAbstract.RateCurrencyLink))
                             .setDocInst(multi.<Instance>getSelect(selDocInst))
-                            .setDocName(multi.<String>getSelect(selDocName))
+                            .setDocName(docName)
                             .setDocRevision(multi.<String>getSelect(selDocRev))
                             .setDocDate(multi.<DateTime>getSelect(selDocDate))
                             .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
@@ -578,18 +581,18 @@ public abstract class JournalSC1617_Base
             throws EFapsException
         {
             String ret = null;
-            if (InstanceUtils.isValid(getDocInst())) {
-                if (getDocInst().getType().isCIType(CISales.Invoice)) {
+            if (InstanceUtils.isValid(this.getDocInst())) {
+                if (this.getDocInst().getType().isCIType(CISales.Invoice)) {
                     ret = "01";
-                } else if (getDocInst().getType().isCIType(CISales.Receipt)) {
+                } else if (this.getDocInst().getType().isCIType(CISales.Receipt)) {
                     ret = "03";
-                } else if (getDocInst().getType().isCIType(CISales.CreditNote)) {
+                } else if (this.getDocInst().getType().isCIType(CISales.CreditNote)) {
                     ret = "07";
-                } else if (getDocInst().getType().isCIType(CISales.Reminder)) {
+                } else if (this.getDocInst().getType().isCIType(CISales.Reminder)) {
                     ret = "08";
                 } else {
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-                    queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, getDocInst());
+                    queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, this.getDocInst());
                     final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
                     final SelectBuilder selDocType = SelectBuilder.get()
                                     .linkto(CISales.Document2DocumentType.DocumentTypeLink)
@@ -662,7 +665,7 @@ public abstract class JournalSC1617_Base
         {
             BigDecimal ret = this.rate;
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
-                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), getTransDate(), CurrencyInst
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), this.getTransDate(), CurrencyInst
                                 .get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126")).getInstance());
                 ret = rateInfo.getSaleRateUI();
             }
@@ -822,7 +825,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getVat()
         {
-            return getCrossTotal() == null ? BigDecimal.ZERO : getCrossTotal().subtract(getNetTotal());
+            return this.getCrossTotal() == null ? BigDecimal.ZERO : this.getCrossTotal().subtract(this.getNetTotal());
         }
 
         /**
@@ -1110,9 +1113,9 @@ public abstract class JournalSC1617_Base
         public String getDocCode()
             throws EFapsException
         {
-            String ret = getDocName();
-            if (InstanceUtils.isKindOf(getDocInst(), CIERP.PaymentDocumentAbstract)) {
-                final PrintQuery print = CachedPrintQuery.get4Request(getDocInst());
+            String ret = this.getDocName();
+            if (InstanceUtils.isKindOf(this.getDocInst(), CIERP.PaymentDocumentAbstract)) {
+                final PrintQuery print = CachedPrintQuery.get4Request(this.getDocInst());
                 print.addAttribute(CIERP.PaymentDocumentAbstract.Code);
                 print.execute();
                 ret = print.getAttribute(CIERP.PaymentDocumentAbstract.Code);
