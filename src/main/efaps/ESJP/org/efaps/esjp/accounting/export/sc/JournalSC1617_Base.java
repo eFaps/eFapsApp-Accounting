@@ -166,6 +166,7 @@ public abstract class JournalSC1617_Base
     }
 
     @Override
+    @SuppressWarnings("checkstyle:MethodLength")
     public void buildDataSource(final Parameter _parameter,
                                 final Exporter _exporter)
         throws EFapsException
@@ -186,6 +187,8 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.marker.name);
         final boolean analyzeRemark = BooleanUtils.toBoolean(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.analyzeRemark.name));
+        final boolean useDate4Number = BooleanUtils.toBoolean(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.useDate4Number.name));
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
@@ -354,30 +357,34 @@ public abstract class JournalSC1617_Base
             if (!currentID.equals(bean.getNumber())) {
                 currentID = bean.getNumber();
                 // first priority are the related documents
-                final String def;
-                if (InstanceUtils.isValid(bean.getDocInst())
-                                && props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
-                    def = props.getProperty(bean.getDocInst().getType().getName() + ".Number");
+                if (useDate4Number) {
+                    currentVal = String.valueOf(bean.getTransDate().getDayOfMonth());
                 } else {
-                    def = "";
-                }
-                switch (def) {
-                    case "TransName":
-                        currentVal = bean.getNumber();
-                        break;
-                    case "DocName":
-                        currentVal = bean.getDocName();
-                        break;
-                    case "DocRevision":
-                        currentVal = bean.getDocRevision();
-                        break;
-                    case "DocCode":
-                        currentVal = bean.getDocCode();
-                        break;
-                    default:
-                        currentVal = String.format("%05d", i);
-                        i++;
-                        break;
+                    final String def;
+                    if (InstanceUtils.isValid(bean.getDocInst())
+                                    && props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
+                        def = props.getProperty(bean.getDocInst().getType().getName() + ".Number");
+                    } else {
+                        def = "";
+                    }
+                    switch (def) {
+                        case "TransName":
+                            currentVal = bean.getNumber();
+                            break;
+                        case "DocName":
+                            currentVal = bean.getDocName();
+                            break;
+                        case "DocRevision":
+                            currentVal = bean.getDocRevision();
+                            break;
+                        case "DocCode":
+                            currentVal = bean.getDocCode();
+                            break;
+                        default:
+                            currentVal = String.format("%05d", i);
+                            i++;
+                            break;
+                    }
                 }
             }
             bean.setNumber(currentVal);
@@ -581,18 +588,18 @@ public abstract class JournalSC1617_Base
             throws EFapsException
         {
             String ret = null;
-            if (InstanceUtils.isValid(this.getDocInst())) {
-                if (this.getDocInst().getType().isCIType(CISales.Invoice)) {
+            if (InstanceUtils.isValid(getDocInst())) {
+                if (getDocInst().getType().isCIType(CISales.Invoice)) {
                     ret = "01";
-                } else if (this.getDocInst().getType().isCIType(CISales.Receipt)) {
+                } else if (getDocInst().getType().isCIType(CISales.Receipt)) {
                     ret = "03";
-                } else if (this.getDocInst().getType().isCIType(CISales.CreditNote)) {
+                } else if (getDocInst().getType().isCIType(CISales.CreditNote)) {
                     ret = "07";
-                } else if (this.getDocInst().getType().isCIType(CISales.Reminder)) {
+                } else if (getDocInst().getType().isCIType(CISales.Reminder)) {
                     ret = "08";
                 } else {
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-                    queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, this.getDocInst());
+                    queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, getDocInst());
                     final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
                     final SelectBuilder selDocType = SelectBuilder.get()
                                     .linkto(CISales.Document2DocumentType.DocumentTypeLink)
@@ -665,7 +672,7 @@ public abstract class JournalSC1617_Base
         {
             BigDecimal ret = this.rate;
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
-                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), this.getTransDate(), CurrencyInst
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), getTransDate(), CurrencyInst
                                 .get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126")).getInstance());
                 ret = rateInfo.getSaleRateUI();
             }
@@ -825,7 +832,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getVat()
         {
-            return this.getCrossTotal() == null ? BigDecimal.ZERO : this.getCrossTotal().subtract(this.getNetTotal());
+            return getCrossTotal() == null ? BigDecimal.ZERO : getCrossTotal().subtract(getNetTotal());
         }
 
         /**
@@ -1113,9 +1120,9 @@ public abstract class JournalSC1617_Base
         public String getDocCode()
             throws EFapsException
         {
-            String ret = this.getDocName();
-            if (InstanceUtils.isKindOf(this.getDocInst(), CIERP.PaymentDocumentAbstract)) {
-                final PrintQuery print = CachedPrintQuery.get4Request(this.getDocInst());
+            String ret = getDocName();
+            if (InstanceUtils.isKindOf(getDocInst(), CIERP.PaymentDocumentAbstract)) {
+                final PrintQuery print = CachedPrintQuery.get4Request(getDocInst());
                 print.addAttribute(CIERP.PaymentDocumentAbstract.Code);
                 print.execute();
                 ret = print.getAttribute(CIERP.PaymentDocumentAbstract.Code);
