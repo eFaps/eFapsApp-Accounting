@@ -358,7 +358,7 @@ public abstract class JournalSC1617_Base
                 currentID = bean.getNumber();
                 // first priority are the related documents
                 if (useDate4Number) {
-                    currentVal = String.valueOf(bean.getTransDate().getDayOfMonth());
+                    currentVal = String.format("%05d", bean.getTransDate().getDayOfMonth());
                 } else {
                     final String def;
                     if (InstanceUtils.isValid(bean.getDocInst())
