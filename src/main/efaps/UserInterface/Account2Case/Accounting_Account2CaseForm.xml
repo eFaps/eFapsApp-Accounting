@@ -175,6 +175,23 @@
                 <property name="Key">ActivateRemark4TransPos</property>
             </trigger>
         </field>
+         <field name="help4Remark">
+            <property name="HideLabel">true</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getDBPropertiesFieldValue"
+                name="Accounting_Account2Case4ProductFamilyForm.help4Remark.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DBProperty">Accounting_Account2CaseForm.help4Remark</property>
+            </trigger>
+            <trigger event="UI_ACCESSCHECK" method="accessCheckByConfig"
+                name="Accounting_Account2CaseForm.remarkExplain.UI_ACCESSCHECK"
+                program="org.efaps.esjp.accounting.Period">
+                <property name="Key">ActivateRemark4TransPos</property>
+            </trigger>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>

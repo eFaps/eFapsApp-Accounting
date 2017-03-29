@@ -260,6 +260,8 @@ public abstract class AbstractEvaluation_Base
                 }
             });
 
+            evalAccount2CaseInfo4Relation(_parameter, _doc, infos);
+
             for (final Account2CaseInfo acc2case : infos) {
                 boolean isDefault = acc2case.isDefault();
                 if (!isDefault && !acc2case.isClassRelation() && !acc2case.isCategoryProduct()
@@ -290,6 +292,7 @@ public abstract class AbstractEvaluation_Base
                                     RoundingMode.HALF_UP);
                     final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
                                     || acc2case.isCheckKey() || acc2case.isTreeView()
+                                    || acc2case.isEvalRelation() && acc2case.getAmount().compareTo(BigDecimal.ZERO) != 0
                                     ? acc2case.getAmount() : _doc.getAmount(acc2case);
                     final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, RoundingMode.HALF_UP);
                     final BigDecimal accAmountRate = Currency.convertToCurrency(_parameter, accAmount,
@@ -316,6 +319,22 @@ public abstract class AbstractEvaluation_Base
                 }
             }
         }
+    }
+
+    /**
+     * Eval account two case info for relation.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _doc the doc
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
+    protected void evalAccount2CaseInfo4Relation(final Parameter _parameter,
+                                                 final DocumentInfo _doc,
+                                                 final List<Account2CaseInfo> _infos)
+        throws EFapsException
+    {
+        // possibility to overwrite
     }
 
     /**

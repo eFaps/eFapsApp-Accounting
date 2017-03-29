@@ -101,6 +101,8 @@
         <field name="help4Remark">
             <property name="HideLabel">true</property>
             <property name="UIType">SNIPPLET</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getDBPropertiesFieldValue"
                 name="Accounting_Account2Case4ProductFamilyForm.help4Remark.UI_FIELD_VALUE"

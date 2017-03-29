@@ -246,6 +246,19 @@ public final class Accounting
     }
 
     /**
+     * The Enum SubstitutorKeys.
+     *
+     * @author The eFaps Team
+     */
+    public enum RemarkSubstitutorKeys
+    {
+        /** The related doc name. */
+        RELDOC_NAME,
+        /** The realted document type. */
+        RELDOC_TYPE;
+    }
+
+    /**
      * The Enum Taxed4PurchaseRecord.
      *
      */

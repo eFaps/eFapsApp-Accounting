@@ -63,7 +63,7 @@
             <property name="CmdIcon">ACCEPT</property>
             <trigger event="UI_FIELD_CMD" method="executeButton"
                 name="Accounting_TransactionCreate4PaymentForm.case.UI_FIELD_CMD"
-                program="org.efaps.esjp.accounting.transaction.evaluation.DocumentEvaluation">
+                program="org.efaps.esjp.accounting.transaction.evaluation.PaymentDocEvaluation">
             </trigger>
         </field>
         <field name="dateGroup" character="Group">

@@ -94,6 +94,9 @@ public abstract class Account2CaseInfo_Base
     /** The remark. */
     private String remark;
 
+    /** The deactivate currency check. */
+    private boolean deactCurrencyCheck;
+
     /**
      * Getter method for the instance variable {@link #type}.
      *
@@ -301,6 +304,16 @@ public abstract class Account2CaseInfo_Base
     }
 
     /**
+     * Checks if is apply label.
+     *
+     * @return true, if is apply label
+     */
+    public boolean isSeparately()
+    {
+        return getConfigs() != null && getConfigs().contains(Account2CaseConfig.SEPARATELY);
+    }
+
+    /**
      * Checks if is credit.
      *
      * @return true, if is credit
@@ -341,7 +354,19 @@ public abstract class Account2CaseInfo_Base
      */
     public boolean isCheckCurrency()
     {
-        return getCurrencyInstance() != null && getCurrencyInstance().isValid();
+        return this.deactCurrencyCheck ? false : (getCurrencyInstance() != null && getCurrencyInstance().isValid());
+    }
+
+    /**
+     * Setter method for instance variable {@link #deactivateCurrencyCheck}.
+     *
+     * @param _deactCurrencyCheck the deact currency check
+     * @return the account two case info
+     */
+    public Account2CaseInfo setDeactCurrencyCheck(final boolean _deactCurrencyCheck)
+    {
+        this.deactCurrencyCheck = _deactCurrencyCheck;
+        return (Account2CaseInfo) this;
     }
 
     /**
