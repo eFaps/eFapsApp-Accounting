@@ -274,9 +274,10 @@ public abstract class JournalSC1617_Base
                     final Instance transInst = multi.getSelect(selTransInst);
                     final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
                     tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
-                    tr2docQueryBldr.getAttributeQuery(CIAccounting.Transaction2ERPDocument.ID);
 
                     final QueryBuilder docQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                    docQueryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, tr2docQueryBldr.getAttributeQuery(
+                                    CIAccounting.Transaction2ERPDocument.ToLinkAbstract));
                     docQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, remark);
                     final MultiPrintQuery docMulti = docQueryBldr.getCachedPrint4Request();
                     final SelectBuilder docSelContact = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact);
