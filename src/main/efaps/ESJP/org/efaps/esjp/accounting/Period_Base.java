@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.datamodel.Status;
@@ -983,6 +985,80 @@ public abstract class Period_Base
             }
         }
         return new Return();
+    }
+
+    /**
+     * Gets the label definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the label definition
+     * @throws EFapsException on error
+     */
+    @SuppressWarnings("unchecked")
+    public Return getTargetDocInfo4PaymentFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String key = Period.class.getName() + ".RequestKey4TargetDocInfo4PaymentFieldValue";
+        Map<Instance, String> values;
+        if (Context.getThreadContext().containsRequestAttribute(key)) {
+            values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(key);
+        } else {
+            values = new HashMap<>();
+            Context.getThreadContext().setRequestAttribute(key, values);
+            final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+
+            final MultiPrintQuery print = new MultiPrintQuery(instances);
+            final SelectBuilder selTargetInsts = SelectBuilder.get().linkfrom(CISales.Payment.TargetDocument)
+                            .linkto(CISales.Payment.CreateDocument).instance();
+            print.addSelect(selTargetInsts);
+            print.execute();
+            while (print.next()) {
+                final List<String> labels = new ArrayList<>();
+                final Object obj = print.getSelect(selTargetInsts);
+                if (obj != null) {
+                    final List<Instance> targetInsts;
+                    if (obj instanceof Instance) {
+                        targetInsts = new ArrayList<>();
+                        targetInsts.add((Instance) obj);
+                    } else {
+                        targetInsts = (List<Instance>) obj;
+                    }
+                    for (final Instance targetInst : targetInsts) {
+                        if (InstanceUtils.isType(targetInst, CISales.IncomingExchange)) {
+                            final PrintQuery print2 = new PrintQuery(targetInst);
+                            final SelectBuilder selActName = SelectBuilder.get()
+                                            .linkfrom(CISales.ActionDefinitionIncomingExchange2Document.ToLinkAbstract)
+                                            .linkto(CISales.ActionDefinitionIncomingExchange2Document.FromLinkAbstract)
+                                            .attribute(CISales.ActionDefinitionIncomingExchange.Name);
+                            print2.addSelect(selActName);
+                            print2.execute();
+
+                            final String actname = print2.getSelect(selActName);
+                            if (actname == null) {
+                                labels.add(targetInst.getType().getLabel());
+                            } else {
+                                labels.add(targetInst.getType().getLabel() + " - " + actname);
+                            }
+                        } else {
+                            labels.add(targetInst.getType().getLabel());
+                        }
+                    }
+                    final Map<String, Long> map = labels.stream().collect(Collectors.groupingBy(Function.identity(),
+                                    Collectors.counting()));
+                    final StringBuilder bldr = new StringBuilder();
+                    for (final Entry<String, Long> entry : map.entrySet()) {
+                        if (bldr.length() > 0) {
+                            bldr.append(", ");
+                        }
+                        bldr.append(entry.getValue()).append(" x ").append(entry.getKey());
+                    }
+                    values.put(print.getCurrentInstance(), bldr.toString());
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+        return ret;
     }
 
     /**
