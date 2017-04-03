@@ -509,42 +509,46 @@ public abstract class AbstractEvaluation_Base
                         }
 
                         _doc.addDocInst(docInst);
-                        // evaluate the transactions
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
-                        attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink, docInst4Trans);
-                        final AttributeQuery attrQuery = attrQueryBldr
-                                        .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
+                        if (outDoc && _doc.getDebitAccounts().isEmpty()
+                                        || !outDoc && _doc.getCreditAccounts().isEmpty()) {
+                            // evaluate the transactions
+                            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
+                            attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink,
+                                            docInst4Trans);
+                            final AttributeQuery attrQuery = attrQueryBldr
+                                            .getAttributeQuery(CIAccounting.Transaction2SalesDocument.FromLink);
 
-                        final QueryBuilder posQueryBldr = new QueryBuilder(outDoc
-                                        ? CIAccounting.TransactionPositionCredit
-                                        : CIAccounting.TransactionPositionDebit);
-                        posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
-                                        attrQuery);
-                        posQueryBldr.addOrderByAttributeAsc(CIAccounting.TransactionPositionAbstract.Position);
-                        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                        posMulti.setEnforceSorted(true);
-                        final SelectBuilder selAccInst = new SelectBuilder().linkto(
-                                        CIAccounting.TransactionPositionAbstract.AccountLink).instance();
-                        final SelectBuilder dateSel = new SelectBuilder().linkto(
-                                        CIAccounting.TransactionPositionAbstract.TransactionLink)
-                                        .attribute(CIAccounting.Transaction.Date);
-                        posMulti.addSelect(selAccInst, dateSel);
-                        posMulti.execute();
-                        DateTime dateTmp = new DateTime().plusYears(100);
-                        while (posMulti.next()) {
-                            final DateTime date = posMulti.<DateTime>getSelect(dateSel);
-                            if (date != null && date.isBefore(dateTmp)) {
-                                dateTmp = date;
-                                final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
-                                final AccountInfo acc = new AccountInfo().setInstance(accInst)
+                            final QueryBuilder posQueryBldr = new QueryBuilder(outDoc
+                                            ? CIAccounting.TransactionPositionCredit
+                                            : CIAccounting.TransactionPositionDebit);
+                            posQueryBldr.addWhereAttrInQuery(CIAccounting.TransactionPositionAbstract.TransactionLink,
+                                            attrQuery);
+                            posQueryBldr.addOrderByAttributeAsc(CIAccounting.TransactionPositionAbstract.Position);
+                            final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                            posMulti.setEnforceSorted(true);
+                            final SelectBuilder selAccInst = new SelectBuilder().linkto(
+                                            CIAccounting.TransactionPositionAbstract.AccountLink).instance();
+                            final SelectBuilder dateSel = new SelectBuilder().linkto(
+                                            CIAccounting.TransactionPositionAbstract.TransactionLink)
+                                            .attribute(CIAccounting.Transaction.Date);
+                            posMulti.addSelect(selAccInst, dateSel);
+                            posMulti.execute();
+                            DateTime dateTmp = new DateTime().plusYears(100);
+                            while (posMulti.next()) {
+                                final DateTime date = posMulti.<DateTime>getSelect(dateSel);
+                                if (date != null && date.isBefore(dateTmp)) {
+                                    dateTmp = date;
+                                    final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
+                                    final AccountInfo acc = new AccountInfo().setInstance(accInst)
                                             .addAmount(_doc.getAmount4Doc(docInst))
                                             .setDocLink(_doc.getInstance())
                                             .setRemark(docName)
                                             .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
-                                if (outDoc) {
-                                    _doc.addDebit(acc);
-                                } else {
-                                    _doc.addCredit(acc);
+                                    if (outDoc) {
+                                        _doc.addDebit(acc);
+                                    } else {
+                                        _doc.addCredit(acc);
+                                    }
                                 }
                             }
                         }
