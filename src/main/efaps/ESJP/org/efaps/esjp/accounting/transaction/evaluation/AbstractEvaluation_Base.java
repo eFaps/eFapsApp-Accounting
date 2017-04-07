@@ -433,9 +433,13 @@ public abstract class AbstractEvaluation_Base
                     account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                 }
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
-                    _doc.addDebit(account);
+                    if (_doc.getDebitAccounts().isEmpty()) {
+                        _doc.addDebit(account);
+                    }
                 } else {
-                    _doc.addCredit(account);
+                    if (_doc.getCreditAccounts().isEmpty()) {
+                        _doc.addCredit(account);
+                    }
                 }
             }
         }
