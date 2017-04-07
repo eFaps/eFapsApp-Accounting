@@ -148,7 +148,10 @@ public final class Accounting
                                     + "(DocCode applies only to PaymentDocuments)\n"
                                     + "TYPE.Number=TransName|DocName|DocRevision|DocCode\n"
                                     + "JournalSC1617.TYPE.Number=TransName|DocName|DocRevision|DocCode\n"
-                                    + "JournalSC1617RC.TYPE.Number=TransName|DocName|DocRevision|DocCode\n")
+                                    + "JournalSC1617RC.TYPE.Number=TransName|DocName|DocRevision|DocCode\n"
+                                    + "TYPE.DocumentType=01\n"
+                                    + "JournalSC1617.TYPE.DocumentType=01\n"
+                                    + "JournalSC1617RC.TYPE.DocumentType=01\n")
                     .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Number", "DocName")
@@ -156,7 +159,11 @@ public final class Accounting
                     .addDefaultValue("JournalSC1617." + CISales.IncomingReceipt.getType().getName() + ".Number",
                                     "TransName")
                     .addDefaultValue("JournalSC1617RC." + CISales.IncomingCreditNote.getType().getName() + ".Number",
-                                    "DocRevision");
+                                    "DocRevision")
+                    .addDefaultValue(CISales.Invoice.getType().getName() + ".DocumentType", "01")
+                    .addDefaultValue(CISales.Receipt.getType().getName() + ".DocumentType", "03")
+                    .addDefaultValue(CISales.CreditNote.getType().getName() + ".DocumentType", "07")
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".DocumentType", "08");
 
     /** See description. */
     @EFapsSysConfAttribute

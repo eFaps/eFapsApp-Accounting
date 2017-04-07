@@ -189,6 +189,8 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.analyzeRemark.name));
         final boolean useDate4Number = BooleanUtils.toBoolean(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.useDate4Number.name));
+        final boolean concatenate = BooleanUtils.toBoolean(_parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.concatenate.name));
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
@@ -263,15 +265,21 @@ public abstract class JournalSC1617_Base
         multi.execute();
         final List<DataBean> beans = new ArrayList<>();
         while (multi.next()) {
-            String descr = multi.<String>getSelect(selTransDescr);
+            final Instance transInst = multi.getSelect(selTransInst);
             final String remark = multi.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+            String descr = multi.<String>getSelect(selTransDescr);
             String contactName = multi.<String>getSelect(selContactName);
             String taxNumber = multi.<String>getSelect(selTaxNumber);
+            Instance docInst = multi.<Instance>getSelect(selDocInst);
             String docName = multi.<String>getSelect(selDocName);
+            String docRev = multi.<String>getSelect(selDocRev);
             if (StringUtils.isNotEmpty(remark)) {
-                descr = remark;
+                if (concatenate) {
+                    descr = descr + " " + remark;
+                } else {
+                    descr = remark;
+                }
                 if (analyzeRemark) {
-                    final Instance transInst = multi.getSelect(selTransInst);
                     final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
                     tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
 
@@ -286,17 +294,27 @@ public abstract class JournalSC1617_Base
                     final SelectBuilder docSelTaxNumber = new SelectBuilder(docSelContact).clazz(
                                     CIContacts.ClassOrganisation).attribute(CIContacts.ClassOrganisation.TaxNumber);
                     docMulti.addSelect(docSelContactName, docSelTaxNumber);
+                    docMulti.addAttribute(CIERP.DocumentAbstract.Revision);
                     docMulti.execute();
                     if (docMulti.getInstanceList().size() == 1) {
                         docMulti.next();
+                        docInst = docMulti.getCurrentInstance();
                         contactName = docMulti.getSelect(docSelContactName);
                         taxNumber = docMulti.getSelect(docSelTaxNumber);
-                        descr = docName;
+                        docRev = docMulti.getAttribute(CIERP.DocumentAbstract.Revision);
+                        if (concatenate) {
+                            descr = multi.<String>getSelect(selTransDescr) + " " + docName;
+                        } else {
+                            descr = docName;
+                        }
                         docName = remark;
                     }
                 }
             }
             final DataBean bean = new DataBean()
+                            .setReportKey(key)
+                            .setTransInstance(transInst)
+                            .setPosInstance(multi.getCurrentInstance())
                             .setOrigin(origin)
                             .setMarker(marker)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
@@ -308,13 +326,13 @@ public abstract class JournalSC1617_Base
                             .setTransDescr(descr)
                             .setCurrencyId(multi.<Long>getAttribute(
                                             CIAccounting.TransactionPositionAbstract.RateCurrencyLink))
-                            .setDocInst(multi.<Instance>getSelect(selDocInst))
+                            .setDocInst(docInst)
                             .setDocName(docName)
-                            .setDocRevision(multi.<String>getSelect(selDocRev))
-                            .setDocDate(multi.<DateTime>getSelect(selDocDate))
-                            .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
+                            .setDocRevision(docRev)
                             .setContactName(contactName)
                             .setTaxNumber(taxNumber)
+                            .setDocDate(multi.<DateTime>getSelect(selDocDate))
+                            .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
                             .setRate(multi.<Object[]>getAttribute(CIAccounting.TransactionPositionAbstract.Rate))
                             .setNetTotal(multi.<BigDecimal>getSelect(selNetTotal))
                             .setCrossTotal(multi.<BigDecimal>getSelect(selCrossTotal));
@@ -409,6 +427,15 @@ public abstract class JournalSC1617_Base
      */
     public static class DataBean
     {
+        /** The report key. */
+        private String reportKey;
+
+        /** The pos instance. */
+        private Instance posInstance;
+
+        /** The pos instance. */
+        private Instance transInstance;
+
         /**
          * The origin. (Origen, definido en sc (01: compras, 02:ventas, etc.)
          */
@@ -590,26 +617,21 @@ public abstract class JournalSC1617_Base
         {
             String ret = null;
             if (InstanceUtils.isValid(getDocInst())) {
-                if (getDocInst().getType().isCIType(CISales.Invoice)) {
-                    ret = "01";
-                } else if (getDocInst().getType().isCIType(CISales.Receipt)) {
-                    ret = "03";
-                } else if (getDocInst().getType().isCIType(CISales.CreditNote)) {
-                    ret = "07";
-                } else if (getDocInst().getType().isCIType(CISales.Reminder)) {
-                    ret = "08";
-                } else {
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-                    queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, getDocInst());
-                    final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
-                    final SelectBuilder selDocType = SelectBuilder.get()
-                                    .linkto(CISales.Document2DocumentType.DocumentTypeLink)
-                                    .attribute(CIERP.DocumentType.Name);
-                    multi.addSelect(selDocType);
-                    multi.execute();
-                    if (multi.next()) {
-                        ret = multi.getSelect(selDocType);
-                    }
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
+                queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, getDocInst());
+                final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+                final SelectBuilder selDocType = SelectBuilder.get()
+                                .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                                .attribute(CIERP.DocumentType.Name);
+                multi.addSelect(selDocType);
+                multi.execute();
+                if (multi.next()) {
+                    ret = multi.getSelect(selDocType);
+                }
+                if (StringUtils.isEmpty(ret)) {
+                    final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(),
+                                getReportKey());
+                    ret = props.getProperty(getDocInst().getType().getName() + ".DocumentType");
                 }
             }
             if (StringUtils.isEmpty(ret)) {
@@ -672,9 +694,46 @@ public abstract class JournalSC1617_Base
             throws EFapsException
         {
             BigDecimal ret = this.rate;
+            if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)
+                            && InstanceUtils.isKindOf(getDocInst(), CIERP.PaymentDocumentAbstract)) {
+                    final PrintQuery print = new PrintQuery(getPosInstance());
+                    print.addAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+                    print.execute();
+                    final String remark = print.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+                    if (StringUtils.isNotEmpty(remark)) {
+                        final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+                        tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink,
+                                        getTransInstance());
+
+                        final QueryBuilder docQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                        docQueryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, tr2docQueryBldr.getAttributeQuery(
+                                        CIAccounting.Transaction2ERPDocument.ToLinkAbstract));
+                        docQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, remark);
+                        final MultiPrintQuery docMulti = docQueryBldr.getCachedPrint4Request();
+                        docMulti.execute();
+                        if (docMulti.getInstanceList().size() == 1) {
+                            docMulti.next();
+                            final Instance relDocInst = docMulti.getCurrentInstance();
+
+                            final QueryBuilder payQueryBldr = new QueryBuilder(CISales.Payment);
+                            payQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, getDocInst());
+                            payQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, relDocInst);
+                            final MultiPrintQuery payMulti = payQueryBldr.getPrint();
+                            payMulti.addAttribute(CISales.Payment.Rate);
+                            payMulti.execute();
+                            if (payMulti.next()) {
+                                final Object rateTmp = payMulti.getAttribute(CISales.Payment.Rate);
+                                final RateInfo rateInfo = RateInfo.getRateInfo((Object[]) rateTmp);
+                                ret = rateInfo.getRateUI();
+                            }
+                        }
+                    }
+            }
+            // check if still needs to be replaced
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
-                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), getTransDate(), CurrencyInst
-                                .get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126")).getInstance());
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), getTransDate(),
+                                    CurrencyInst.get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126"))
+                                                    .getInstance());
                 ret = rateInfo.getSaleRateUI();
             }
             return ret;
@@ -1129,6 +1188,72 @@ public abstract class JournalSC1617_Base
                 ret = print.getAttribute(CIERP.PaymentDocumentAbstract.Code);
             }
             return ret;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #reportKey}.
+         *
+         * @return value of instance variable {@link #reportKey}
+         */
+        public String getReportKey()
+        {
+            return this.reportKey;
+        }
+
+        /**
+         * Setter method for instance variable {@link #reportKey}.
+         *
+         * @param _reportKey value for instance variable {@link #reportKey}
+         * @return the data bean
+         */
+        public DataBean setReportKey(final String _reportKey)
+        {
+            this.reportKey = _reportKey;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #posInstance}.
+         *
+         * @return value of instance variable {@link #posInstance}
+         */
+        public Instance getPosInstance()
+        {
+            return this.posInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #posInstance}.
+         *
+         * @param _posInstance value for instance variable {@link #posInstance}
+         * @return the data bean
+         */
+        public DataBean setPosInstance(final Instance _posInstance)
+        {
+            this.posInstance = _posInstance;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #transInstance}.
+         *
+         * @return value of instance variable {@link #transInstance}
+         */
+        public Instance getTransInstance()
+        {
+            return this.transInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #transInstance}.
+         *
+         * @param _transInstance value for instance variable {@link #transInstance}
+         * @return the data bean
+         */
+        public DataBean setTransInstance(final Instance _transInstance)
+        {
+            this.transInstance = _transInstance;
+            return this;
         }
     }
 }
