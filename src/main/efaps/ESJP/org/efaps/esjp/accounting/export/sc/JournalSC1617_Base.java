@@ -804,7 +804,7 @@ public abstract class JournalSC1617_Base
          */
         public DateTime getDocDueDate()
         {
-            return this.docDueDate;
+            return this.docDueDate == null ? getDocDate() : this.docDate;
         }
 
         /**
