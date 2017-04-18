@@ -23,37 +23,15 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ExportJournalSC1617Form</name>
-        <field name="configGroup" character="Group">
-            <property name="GroupCount">3</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
-        <field name="analyzeRemark">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="HideLabel">true</property>
-            <property name="Label">Accounting_ExportJournalSC1617Form.analyzeRemark.Label</property>
-            <property name="UIType">CHECKBOX</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-        </field>
-        <field name="useDate4Number">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="HideLabel">true</property>
-            <property name="Label">Accounting_ExportJournalSC1617Form.useDate4Number.Label</property>
-            <property name="UIType">CHECKBOX</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-        </field>
-        <field name="concatenate">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="HideLabel">true</property>
-            <property name="Label">Accounting_ExportJournalSC1617Form.concatenate.Label</property>
-            <property name="UIType">CHECKBOX</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-        </field>
         <field name="origin">
             <property name="Label">Accounting_ExportJournalSC1617Form.origin.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Columns">2</property>
-            <property name="Width">4</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.accounting.export.sc.JournalSC1617"
+                method="getOptionList4Origin"
+                name="Accounting_ExportJournalSC1617Form.origin.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
         </field>
         <field name="marker">
             <property name="ModeCreate">EDITABLE</property>

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -29,6 +30,8 @@ import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
@@ -46,6 +49,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.esjp.data.columns.export.FrmtDateTimeColumn;
 import org.efaps.esjp.data.columns.export.FrmtNumberColumn;
@@ -181,16 +185,18 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617RCForm.purchaseRecord.name));
         final Instance subJournalInst = Instance.get(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.subJournal.name));
-        final String origin = _parameter.getParameterValue(
-                        CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
         final String marker = _parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.marker.name);
-        final boolean analyzeRemark = BooleanUtils.toBoolean(_parameter.getParameterValue(
-                        CIFormAccounting.Accounting_ExportJournalSC1617Form.analyzeRemark.name));
-        final boolean useDate4Number = BooleanUtils.toBoolean(_parameter.getParameterValue(
-                        CIFormAccounting.Accounting_ExportJournalSC1617Form.useDate4Number.name));
-        final boolean concatenate = BooleanUtils.toBoolean(_parameter.getParameterValue(
-                        CIFormAccounting.Accounting_ExportJournalSC1617Form.concatenate.name));
+
+        final String origin = _parameter.getParameterValue(
+                        CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
+
+        final Properties oProps = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(), origin, false);
+
+        final boolean analyzeRemark = BooleanUtils.toBoolean(oProps.getProperty("AnalyzeRemark", "false"));
+        final boolean useDate4Number = BooleanUtils.toBoolean(oProps.getProperty("UseDate4Number", "false"));
+        final boolean useOrigDoc4Number = BooleanUtils.toBoolean(oProps.getProperty("UseOrigDoc4Number", "false"));
+        final boolean concatenate = BooleanUtils.toBoolean(oProps.getProperty("Concatenate", "false"));
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.TransactionPositionAbstract);
         final QueryBuilder transAttrQueryBldr = new QueryBuilder(CIAccounting.TransactionAbstract);
@@ -315,7 +321,7 @@ public abstract class JournalSC1617_Base
                             .setReportKey(key)
                             .setTransInstance(transInst)
                             .setPosInstance(multi.getCurrentInstance())
-                            .setOrigin(origin)
+                            .setOrigin(oProps.getProperty("Value", "--"))
                             .setMarker(marker)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
                             .setNumber(multi.getSelect(selTransIdentifier))
@@ -326,6 +332,7 @@ public abstract class JournalSC1617_Base
                             .setTransDescr(descr)
                             .setCurrencyId(multi.<Long>getAttribute(
                                             CIAccounting.TransactionPositionAbstract.RateCurrencyLink))
+                            .setOrigDocName( multi.<String>getSelect(selDocName))
                             .setDocInst(docInst)
                             .setDocName(docName)
                             .setDocRevision(docRev)
@@ -378,6 +385,8 @@ public abstract class JournalSC1617_Base
                 // first priority are the related documents
                 if (useDate4Number) {
                     currentVal = String.format("%05d", bean.getTransDate().getDayOfMonth());
+                } else if (useOrigDoc4Number) {
+                    currentVal = bean.getOrigDocName();
                 } else {
                     final String def;
                     if (InstanceUtils.isValid(bean.getDocInst())
@@ -423,6 +432,29 @@ public abstract class JournalSC1617_Base
     }
 
     /**
+     * Gets the option list for origin.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the option list for origin
+     * @throws EFapsException on error
+     */
+    public Return getOptionList4Origin(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> positions = new ArrayList<>();
+
+        final Map<Integer, String> values = PropertiesUtil.analyseProperty(Accounting.EXPORT_SC1617.get(), "Origin", 0);
+        for (final String value : values.values()) {
+            final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(), value);
+            final String label = props.getProperty("Label");
+            positions.add(new DropDownPosition(value, label, label));
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, positions);
+        return ret;
+    }
+
+    /**
      * The Class DataBean.
      */
     public static class DataBean
@@ -461,6 +493,9 @@ public abstract class JournalSC1617_Base
 
         /** The doc inst. */
         private Instance docInst;
+
+        /** The doc name. (Numero del Documento) */
+        private String origDocName;
 
         /** The doc name. (Numero del Documento) */
         private String docName;
@@ -1253,6 +1288,28 @@ public abstract class JournalSC1617_Base
         public DataBean setTransInstance(final Instance _transInstance)
         {
             this.transInstance = _transInstance;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #origDocName}.
+         *
+         * @return value of instance variable {@link #origDocName}
+         */
+        public String getOrigDocName()
+        {
+            return this.origDocName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #origDocName}.
+         *
+         * @param _origDocName value for instance variable {@link #origDocName}
+         * @return the data bean
+         */
+        public DataBean setOrigDocName(final String _origDocName)
+        {
+            this.origDocName = _origDocName;
             return this;
         }
     }

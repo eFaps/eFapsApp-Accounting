@@ -163,7 +163,14 @@ public final class Accounting
                     .addDefaultValue(CISales.Invoice.getType().getName() + ".DocumentType", "01")
                     .addDefaultValue(CISales.Receipt.getType().getName() + ".DocumentType", "03")
                     .addDefaultValue(CISales.CreditNote.getType().getName() + ".DocumentType", "07")
-                    .addDefaultValue(CISales.Reminder.getType().getName() + ".DocumentType", "08");
+                    .addDefaultValue(CISales.Reminder.getType().getName() + ".DocumentType", "08")
+                    .addDefaultValue("Origin", "COMPRAS")
+                    .addDefaultValue("COMPRAS.Label", "01 - Compras")
+                    .addDefaultValue("COMPRAS.Value", "01")
+                    .addDefaultValue("COMPRAS.AnalyzeRemark", "false")
+                    .addDefaultValue("COMPRAS.UseDate4Number", "false")
+                    .addDefaultValue("COMPRAS.UseOrigDoc4Number", "false")
+                    .addDefaultValue("COMPRAS.Concatenate", "false");
 
     /** See description. */
     @EFapsSysConfAttribute
