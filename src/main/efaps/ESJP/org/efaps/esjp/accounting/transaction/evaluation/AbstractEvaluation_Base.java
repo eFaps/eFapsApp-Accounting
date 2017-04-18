@@ -389,6 +389,8 @@ public abstract class AbstractEvaluation_Base
         throws EFapsException
     {
         if (_doc.isPaymentDoc()) {
+            final boolean addDebit = _doc.getDebitAccounts().isEmpty();
+            final boolean addCredit = _doc.getCreditAccounts().isEmpty();
             _doc.setSummarizeConfig(SummarizeConfig.NONE);
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
             attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _doc.getInstance());
@@ -433,11 +435,11 @@ public abstract class AbstractEvaluation_Base
                     account.setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
                 }
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionInbound.getType())) {
-                    if (_doc.getDebitAccounts().isEmpty()) {
+                    if (addDebit) {
                         _doc.addDebit(account);
                     }
                 } else {
-                    if (_doc.getCreditAccounts().isEmpty()) {
+                    if (addCredit) {
                         _doc.addCredit(account);
                     }
                 }
@@ -457,6 +459,8 @@ public abstract class AbstractEvaluation_Base
         throws EFapsException
     {
         if (_doc.isPaymentDoc()) {
+            final boolean addDebit = _doc.getDebitAccounts().isEmpty();
+            final boolean addCredit = _doc.getCreditAccounts().isEmpty();
             final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
             queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.ToAbstractLink, _doc.getInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -513,8 +517,7 @@ public abstract class AbstractEvaluation_Base
                         }
 
                         _doc.addDocInst(docInst);
-                        if (outDoc && _doc.getDebitAccounts().isEmpty()
-                                        || !outDoc && _doc.getCreditAccounts().isEmpty()) {
+                        if (outDoc && addDebit || !outDoc && addCredit) {
                             // evaluate the transactions
                             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.Transaction2SalesDocument);
                             attrQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2SalesDocument.ToLink,
