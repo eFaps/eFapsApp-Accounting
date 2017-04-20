@@ -177,6 +177,8 @@ public abstract class JournalSC1617_Base
     {
         final String key = PropertiesUtil.getProperty(_parameter, "Key", "");
 
+        final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(), key);
+
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.dateFrom.name));
         final DateTime dateTo = new DateTime(_parameter.getParameterValue(
@@ -191,7 +193,7 @@ public abstract class JournalSC1617_Base
         final String origin = _parameter.getParameterValue(
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
 
-        final Properties oProps = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(), origin, false);
+        final Properties oProps = PropertiesUtil.getProperties4Prefix(props, origin, true);
 
         final boolean analyzeRemark = BooleanUtils.toBoolean(oProps.getProperty("AnalyzeRemark", "false"));
         final boolean useDate4Number = BooleanUtils.toBoolean(oProps.getProperty("UseDate4Number", "false"));
@@ -332,7 +334,9 @@ public abstract class JournalSC1617_Base
                             .setTransDescr(descr)
                             .setCurrencyId(multi.<Long>getAttribute(
                                             CIAccounting.TransactionPositionAbstract.RateCurrencyLink))
-                            .setOrigDocName( multi.<String>getSelect(selDocName))
+                            .setOrigDocInst(multi.<Instance>getSelect(selDocInst))
+                            .setOrigDocName(multi.<String>getSelect(selDocName))
+                            .setOrigDocRevision(multi.<String>getSelect(selDocRev))
                             .setDocInst(docInst)
                             .setDocName(docName)
                             .setDocRevision(docRev)
@@ -374,7 +378,7 @@ public abstract class JournalSC1617_Base
             }
         });
         Collections.sort(beans, chain);
-        final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(), key);
+
         int i = 1;
         String currentID = "";
         String currentVal = "";
@@ -387,11 +391,43 @@ public abstract class JournalSC1617_Base
                     currentVal = String.format("%05d", bean.getTransDate().getDayOfMonth());
                 } else if (useOrigDoc4Number) {
                     currentVal = bean.getOrigDocName();
+                    final String def;
+                    if (InstanceUtils.isValid(bean.getOrigDocInst())) {
+                        if (oProps.containsKey(bean.getOrigDocInst().getType().getName() + ".Number")) {
+                            def = oProps.getProperty(bean.getOrigDocInst().getType().getName() + ".Number");
+                        }else if (props.containsKey(bean.getOrigDocInst().getType().getName() + ".Number")) {
+                            def = props.getProperty(bean.getOrigDocInst().getType().getName() + ".Number");
+                        } else {
+                            def = "";
+                        }
+                    } else {
+                        def = "";
+                    }
+                    switch (def) {
+                        case "DocName":
+                            currentVal = bean.getOrigDocName();
+                            break;
+                        case "DocRevision":
+                            currentVal = bean.getOrigDocRevision();
+                            break;
+                        case "DocCode":
+                            currentVal = bean.getOrigDocCode();
+                            break;
+                        default:
+                            currentVal = String.format("%05d", i);
+                            i++;
+                            break;
+                    }
                 } else {
                     final String def;
-                    if (InstanceUtils.isValid(bean.getDocInst())
-                                    && props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
-                        def = props.getProperty(bean.getDocInst().getType().getName() + ".Number");
+                    if (InstanceUtils.isValid(bean.getDocInst())) {
+                        if (oProps.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
+                            def = oProps.getProperty(bean.getDocInst().getType().getName() + ".Number");
+                        }else if (props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
+                            def = props.getProperty(bean.getDocInst().getType().getName() + ".Number");
+                        } else {
+                            def = "";
+                        }
                     } else {
                         def = "";
                     }
@@ -494,8 +530,14 @@ public abstract class JournalSC1617_Base
         /** The doc inst. */
         private Instance docInst;
 
+        /** The doc inst. */
+        private Instance origDocInst;
+
         /** The doc name. (Numero del Documento) */
         private String origDocName;
+
+        /** The doc name. (Numero del Documento) */
+        private String origDocRevision;
 
         /** The doc name. (Numero del Documento) */
         private String docName;
@@ -1311,6 +1353,68 @@ public abstract class JournalSC1617_Base
         {
             this.origDocName = _origDocName;
             return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #origDocInst}.
+         *
+         * @return value of instance variable {@link #origDocInst}
+         */
+        public Instance getOrigDocInst()
+        {
+            return this.origDocInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #origDocInst}.
+         *
+         * @param _origDocInst value for instance variable {@link #origDocInst}
+         * @return the data bean
+         */
+        public DataBean setOrigDocInst(final Instance _origDocInst)
+        {
+            this.origDocInst = _origDocInst;
+            return this;
+        }
+
+        /**
+         * Gets the doc name.
+         *
+         * @return the doc name
+         */
+        public String getOrigDocRevision()
+        {
+            return this.origDocRevision;
+        }
+
+        /**
+         * Sets the doc name.
+         *
+         * @param _origDocRevision the new doc name
+         */
+        public DataBean setOrigDocRevision(final String _origDocRevision)
+        {
+            this.origDocRevision = _origDocRevision;
+            return this;
+        }
+
+        /**
+         * Gets the orig doc code.
+         *
+         * @return the orig doc code
+         * @throws EFapsException on error
+         */
+        public String getOrigDocCode()
+            throws EFapsException
+        {
+            String ret = getDocName();
+            if (InstanceUtils.isKindOf(getOrigDocInst(), CIERP.PaymentDocumentAbstract)) {
+                final PrintQuery print = CachedPrintQuery.get4Request(getOrigDocInst());
+                print.addAttribute(CIERP.PaymentDocumentAbstract.Code);
+                print.execute();
+                ret = print.getAttribute(CIERP.PaymentDocumentAbstract.Code);
+            }
+            return ret;
         }
     }
 }
