@@ -959,8 +959,13 @@ public abstract class FieldValue_Base
             final List<Instance> relInst = swapQuery.execute();
             if (!relInst.isEmpty()) {
                 for (final SwapInfo info : Swap.getSwapInfos(_parameter, _doc.getInstance(), relInst).values()) {
+                    final StringBuilder swapLabel = new StringBuilder().append(info.getDocument())
+                                    .append("<input type=\"hidden\" name=\"swapDocument\" value=\"")
+                                    .append(info.getDocInst().getOid())
+                                    .append("\"/>");
                     _table.addRow()
-                        .addColumn(info.getDirection()).addColumn(info.getDocument())
+                        .addColumn(info.getDirection())
+                        .addColumn(swapLabel)
                         .addColumn(info.getAmount() + " " + CurrencyInst.get(info.getCurrencyInstance()).getSymbol());
                 }
             }

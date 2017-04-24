@@ -33,6 +33,7 @@ import java.util.Properties;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.DecimalType;
@@ -396,7 +397,25 @@ public abstract class Create_Base
     public Return create4Exchange(final Parameter _parameter)
         throws EFapsException
     {
-        return create4Doc(_parameter);
+        final Return ret = new Return();
+        final Instance transInst = createFromUI(_parameter);
+        connect2SubJournal(_parameter, transInst, null);
+        final List<Instance> docInsts = getDocInstsFromUI(_parameter);
+        connectDocs2Transaction(_parameter, transInst, docInsts.toArray(new Instance[docInsts.size()]));
+        if (BooleanUtils.toBoolean(_parameter.getParameterValue("connectSwapInstance"))) {
+            final List<Instance> swapDocuments = getInstances(_parameter, "swapDocument");
+            connectDocs2Transaction(_parameter, transInst, swapDocuments.toArray(new Instance[swapDocuments.size()]));
+            docInsts.addAll(swapDocuments);
+        }
+        markDocs4ArchiveConfig(_parameter, docInsts.toArray(new Instance[docInsts.size()]));
+        add2Create4Doc(_parameter);
+        final Parameter parameter = ParameterUtil.clone(_parameter, Parameter.ParameterValues.INSTANCE, transInst);
+        final File file = getTransactionReport(parameter, true);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
@@ -407,7 +426,7 @@ public abstract class Create_Base
     public Return create4IncomingExchange(final Parameter _parameter)
         throws EFapsException
     {
-        return create4Doc(_parameter);
+        return create4Exchange(_parameter);
     }
 
     /**
@@ -632,7 +651,6 @@ public abstract class Create_Base
                                         final Instance... _docInstances)
         throws EFapsException
     {
-        int i = 1;
         for (final Instance docInst : _docInstances) {
             if (InstanceUtils.isKindOf(docInst, CIERP.DocumentAbstract)) {
                 final Insert insert;
@@ -641,11 +659,9 @@ public abstract class Create_Base
                 } else {
                     insert = new Insert(CIAccounting.Transaction2SalesDocument);
                 }
-                insert.add(CIAccounting.Transaction2ERPDocument.Position, i);
                 insert.add(CIAccounting.Transaction2ERPDocument.FromLink, _transInst);
                 insert.add(CIAccounting.Transaction2ERPDocument.ToLinkAbstract, docInst);
                 insert.execute();
-                i++;
             }
         }
     }

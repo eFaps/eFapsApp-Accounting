@@ -19,6 +19,7 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Properties;
 
 import org.efaps.admin.datamodel.Status;
@@ -269,5 +270,62 @@ public abstract class Trigger_Base
             final Delete del = new Delete(query.getCurrentValue());
             del.execute();
         }
+    }
+
+    /**
+     * Transaction two document insert post trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return transaction2DocumentInsertPostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CIAccounting.Transaction2ERPDocument.FromLinkAbstract);
+        print.executeWithoutAccessCheck();
+        final Long transId = print.getAttribute(CIAccounting.Transaction2ERPDocument.FromLinkAbstract);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLinkAbstract, transId);
+        queryBldr.addWhereAttrNotEqValue(CIAccounting.Transaction2ERPDocument.ID, _parameter.getInstance());
+        final List<Instance> insts = queryBldr.getQuery().execute();
+
+        final Update update = new Update(_parameter.getInstance());
+        update.add(CIAccounting.Transaction2ERPDocument.Position, insts.size() + 1);
+        update.executeWithoutTrigger();
+        return new Return();
+    }
+
+    /**
+     * Transaction two document delete pre trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException
+     */
+    public Return transaction2DocumentDeletePreTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CIAccounting.Transaction2ERPDocument.FromLinkAbstract);
+        print.executeWithoutAccessCheck();
+        final Long transId = print.getAttribute(CIAccounting.Transaction2ERPDocument.FromLinkAbstract);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+        queryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLinkAbstract, transId);
+        queryBldr.addWhereAttrNotEqValue(CIAccounting.Transaction2ERPDocument.ID, _parameter.getInstance());
+        queryBldr.addOrderByAttributeAsc(CIAccounting.Transaction2ERPDocument.Position);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        int i = 1;
+        while (query.next()) {
+            final Update update = new Update(query.getCurrentValue());
+            update.add(CIAccounting.Transaction2ERPDocument.Position, i);
+            update.executeWithoutTrigger();
+            i++;
+        }
+        return new Return();
     }
 }

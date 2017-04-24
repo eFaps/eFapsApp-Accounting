@@ -90,7 +90,7 @@
         </field>
         <field character="Group" name="dateGroup">
             <property name="ModeCreate">READONLY</property>
-            <property name="GroupCount">4</property>
+            <property name="GroupCount">2</property>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -120,6 +120,23 @@
                 <property name="ValueSelect">oid</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
+        </field>
+        <field character="Group" name="configGroup">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">3</property>
+        </field>
+        <field name="connectSwapInstance">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">Accounting_TransactionCreate4ExchangeForm.connectSwapInstance.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getDefault4BooleanValue"
+                name="Accounting_TransactionCreate4ExternalForm.connectSwapInstance.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="DefaultValue">true</property>
             </trigger>
         </field>
         <field name="checkbox4Account">

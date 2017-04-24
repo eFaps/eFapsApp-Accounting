@@ -16,28 +16,18 @@
  limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>72a4a215-f164-43d5-ae4b-84f3873653d6</uuid>
+    <uuid>3a887cd6-6a34-455f-812b-ce464f0d73f5</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_Transaction2ERPDocument</name>
-        <parent>Accounting_Transaction2Object</parent>
-        <purpose abstract="true" />
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Accounting_Transaction</typelink>
-            <sqltable>Accounting_Transaction2ObjectSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLinkAbstract</name>
-            <type>Link</type>
-            <typelink>ERP_DocumentAbstract</typelink>
-            <sqltable>Accounting_Transaction2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Accounting_TransactionTree_Documents_Menu_Action_AddExisting_Search</name>
+        <default>
+            <command>ERP_DocumentSearch</command>
+        </default>
+        <childs>
+            <child>ERP_DocumentSearch</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-search>
