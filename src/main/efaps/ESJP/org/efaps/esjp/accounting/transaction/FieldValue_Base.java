@@ -1405,34 +1405,74 @@ public abstract class FieldValue_Base
         final Return ret = new Return();
         final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (!Display.NONE.equals(fieldValue.getDisplay())) {
+            final Map<Instance, String[]> values = getValueMap(_parameter);
+            if (values.containsKey(_parameter.getInstance())) {
+                ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance())[0]);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the value map.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the value map
+     * @throws EFapsException on error
+     */
+    protected Map<Instance, String[]> getValueMap(final Parameter _parameter)
+        throws EFapsException
+    {
+        @SuppressWarnings("unchecked")
+        Map<Instance, String[]> ret = (Map<Instance, String[]>) Context.getThreadContext().getRequestAttribute(
+                        FieldValue_Base.SALESACC_REQKEY);
+        if (ret == null || ret != null && !ret.containsKey(_parameter.getInstance())) {
+            ret = new HashMap<>();
+            Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, ret);
             @SuppressWarnings("unchecked")
-            Map<Instance, String> values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
-                            FieldValue_Base.SALESACC_REQKEY);
-            if (values == null || values != null && !values.containsKey(_parameter.getInstance())) {
-                values = new HashMap<>();
-                Context.getThreadContext().setRequestAttribute(FieldValue_Base.SALESACC_REQKEY, values);
-                @SuppressWarnings("unchecked")
-                final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
-                if (instances != null) {
-                    final MultiPrintQuery multi = new MultiPrintQuery(instances);
-                    final SelectBuilder selPayment = new SelectBuilder().linkfrom(CISales.Payment,
-                                    CISales.Payment.CreateDocument).instance();
-                    multi.addSelect(selPayment);
-                    multi.executeWithoutAccessCheck();
-                    while (multi.next()) {
-                        final Instance payment = multi.<Instance>getSelect(selPayment);
-                        final PrintQuery print = new PrintQuery(payment);
-                        final SelectBuilder selAccount = new SelectBuilder().linkfrom(CISales.TransactionAbstract,
-                                        CISales.TransactionAbstract.Payment).linkto(CISales.TransactionAbstract.Account)
-                                        .attribute(CISales.AccountAbstract.Name);
-                        print.addSelect(selAccount);
-                        print.executeWithoutAccessCheck();
-                        final String accountName = print.<String>getSelect(selAccount);
-                        values.put(multi.getCurrentInstance(), accountName);
-                    }
+            final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            if (instances != null) {
+                final MultiPrintQuery multi = new MultiPrintQuery(instances);
+                final SelectBuilder selPayment = new SelectBuilder().linkfrom(CISales.Payment,
+                                CISales.Payment.CreateDocument).instance();
+                multi.addSelect(selPayment);
+                multi.executeWithoutAccessCheck();
+                while (multi.next()) {
+                    final Instance payment = multi.<Instance>getSelect(selPayment);
+                    final PrintQuery print = new PrintQuery(payment);
+                    final SelectBuilder selDocName = new SelectBuilder()
+                                    .linkto(CISales.Payment.TargetDocument)
+                                    .attribute(CIERP.DocumentAbstract.Name);
+                    final SelectBuilder selAccount = new SelectBuilder()
+                                    .linkfrom(CISales.TransactionAbstract.Payment)
+                                    .linkto(CISales.TransactionAbstract.Account)
+                                    .attribute(CISales.AccountAbstract.Name);
+                    print.addSelect(selAccount, selDocName);
+                    print.executeWithoutAccessCheck();
+                    final String accountName = print.<String>getSelect(selAccount);
+                    final String docName = print.<String>getSelect(selDocName);
+                    ret.put(multi.getCurrentInstance(), new String[] { accountName, docName });
                 }
             }
-            ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return value for date on opening the form
+     * @throws EFapsException on error
+     */
+    public Return getPeyyCashBalanceFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (!Display.NONE.equals(fieldValue.getDisplay())) {
+            final Map<Instance, String[]> values = getValueMap(_parameter);
+            if (values.containsKey(_parameter.getInstance())) {
+                ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance())[1]);
+            }
         }
         return ret;
     }
