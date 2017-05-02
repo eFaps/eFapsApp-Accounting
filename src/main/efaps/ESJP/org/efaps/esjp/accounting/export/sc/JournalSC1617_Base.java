@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -395,7 +395,7 @@ public abstract class JournalSC1617_Base
                     if (InstanceUtils.isValid(bean.getOrigDocInst())) {
                         if (oProps.containsKey(bean.getOrigDocInst().getType().getName() + ".Number")) {
                             def = oProps.getProperty(bean.getOrigDocInst().getType().getName() + ".Number");
-                        }else if (props.containsKey(bean.getOrigDocInst().getType().getName() + ".Number")) {
+                        } else if (props.containsKey(bean.getOrigDocInst().getType().getName() + ".Number")) {
                             def = props.getProperty(bean.getOrigDocInst().getType().getName() + ".Number");
                         } else {
                             def = "";
@@ -423,7 +423,7 @@ public abstract class JournalSC1617_Base
                     if (InstanceUtils.isValid(bean.getDocInst())) {
                         if (oProps.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
                             def = oProps.getProperty(bean.getDocInst().getType().getName() + ".Number");
-                        }else if (props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
+                        } else if (props.containsKey(bean.getDocInst().getType().getName() + ".Number")) {
                             def = props.getProperty(bean.getDocInst().getType().getName() + ".Number");
                         } else {
                             def = "";
@@ -772,39 +772,39 @@ public abstract class JournalSC1617_Base
         {
             BigDecimal ret = this.rate;
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)
-                            && InstanceUtils.isKindOf(getDocInst(), CIERP.PaymentDocumentAbstract)) {
-                    final PrintQuery print = new PrintQuery(getPosInstance());
-                    print.addAttribute(CIAccounting.TransactionPositionAbstract.Remark);
-                    print.execute();
-                    final String remark = print.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
-                    if (StringUtils.isNotEmpty(remark)) {
-                        final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
-                        tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink,
-                                        getTransInstance());
+                            && InstanceUtils.isKindOf(getOrigDocInst(), CIERP.PaymentDocumentAbstract)) {
+                final PrintQuery print = new PrintQuery(getPosInstance());
+                print.addAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+                print.execute();
+                final String remark = print.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
+                if (StringUtils.isNotEmpty(remark)) {
+                    final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
+                    tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink,
+                                    getTransInstance());
 
-                        final QueryBuilder docQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
-                        docQueryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, tr2docQueryBldr.getAttributeQuery(
-                                        CIAccounting.Transaction2ERPDocument.ToLinkAbstract));
-                        docQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, remark);
-                        final MultiPrintQuery docMulti = docQueryBldr.getCachedPrint4Request();
-                        docMulti.execute();
-                        if (docMulti.getInstanceList().size() == 1) {
-                            docMulti.next();
-                            final Instance relDocInst = docMulti.getCurrentInstance();
+                    final QueryBuilder docQueryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                    docQueryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, tr2docQueryBldr.getAttributeQuery(
+                                    CIAccounting.Transaction2ERPDocument.ToLinkAbstract));
+                    docQueryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, remark);
+                    final MultiPrintQuery docMulti = docQueryBldr.getCachedPrint4Request();
+                    docMulti.execute();
+                    if (docMulti.getInstanceList().size() == 1) {
+                        docMulti.next();
+                        final Instance relDocInst = docMulti.getCurrentInstance();
 
-                            final QueryBuilder payQueryBldr = new QueryBuilder(CISales.Payment);
-                            payQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, getDocInst());
-                            payQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, relDocInst);
-                            final MultiPrintQuery payMulti = payQueryBldr.getPrint();
-                            payMulti.addAttribute(CISales.Payment.Rate);
-                            payMulti.execute();
-                            if (payMulti.next()) {
-                                final Object rateTmp = payMulti.getAttribute(CISales.Payment.Rate);
-                                final RateInfo rateInfo = RateInfo.getRateInfo((Object[]) rateTmp);
-                                ret = rateInfo.getRateUI();
-                            }
+                        final QueryBuilder payQueryBldr = new QueryBuilder(CISales.Payment);
+                        payQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, getOrigDocInst());
+                        payQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, relDocInst);
+                        final MultiPrintQuery payMulti = payQueryBldr.getPrint();
+                        payMulti.addAttribute(CISales.Payment.Rate);
+                        payMulti.execute();
+                        if (payMulti.next()) {
+                            final Object rateTmp = payMulti.getAttribute(CISales.Payment.Rate);
+                            final RateInfo rateInfo = RateInfo.getRateInfo((Object[]) rateTmp);
+                            ret = rateInfo.getRateUI();
                         }
                     }
+                }
             }
             // check if still needs to be replaced
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
@@ -1391,6 +1391,7 @@ public abstract class JournalSC1617_Base
          * Sets the doc name.
          *
          * @param _origDocRevision the new doc name
+         * @return the data bean
          */
         public DataBean setOrigDocRevision(final String _origDocRevision)
         {
