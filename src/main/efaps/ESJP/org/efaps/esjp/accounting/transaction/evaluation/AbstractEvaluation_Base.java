@@ -544,13 +544,47 @@ public abstract class AbstractEvaluation_Base
                             while (posMulti.next()) {
                                 final DateTime date = posMulti.<DateTime>getSelect(dateSel);
                                 if (date != null && date.isBefore(dateTmp)) {
-                                    dateTmp = date;
                                     final Instance accInst = posMulti.<Instance>getSelect(selAccInst);
-                                    final AccountInfo acc = new AccountInfo().setInstance(accInst)
+                                    AccountInfo acc = null;
+                                    if (Accounting.PAYMENT_ANALYZE_DOCCURRENCY.get()) {
+                                        final QueryBuilder payQueryBldr = new QueryBuilder(CISales.Payment);
+                                        payQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInst);
+                                        payQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument,
+                                                        _doc.getInstance());
+                                        final MultiPrintQuery payMulti = payQueryBldr.getPrint();
+                                        final SelectBuilder selDocCurInst = SelectBuilder.get()
+                                                        .linkto(CISales.Payment.CreateDocument)
+                                                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                                        payMulti.addSelect(selDocCurInst);
+                                        payMulti.addAttribute(CIERP.Document2PaymentDocumentAbstract.Rate);
+                                        payMulti.executeWithoutAccessCheck();
+                                        while (payMulti.next()) {
+                                            final Instance docCurInst = payMulti.getSelect(selDocCurInst);
+                                            final Object[] rate = payMulti.getAttribute(
+                                                            CIERP.Document2PaymentDocumentAbstract.Rate);
+                                            final RateInfo rateInfo = RateInfo.getRateInfo(rate);
+                                            // if different than base and not one to one
+                                            if (!Currency.getBaseCurrency().equals(docCurInst)
+                                                            && rateInfo.getRate().compareTo(BigDecimal.ONE) != 0){
+                                                final BigDecimal amount = _doc.getAmount4Doc(docInst);
+                                                final BigDecimal rateAmount = amount.multiply(rateInfo.getRate());
+                                                acc = new AccountInfo().setInstance(accInst)
+                                                                .addAmount(rateAmount)
+                                                                .addAmountRate(_doc.getAmount4Doc(docInst))
+                                                                .setDocLink(_doc.getInstance())
+                                                                .setRemark(docName)
+                                                                .setRateInfo(rateInfo, "");
+                                            }
+                                        }
+                                    }
+                                    dateTmp = date;
+                                    if (acc == null) {
+                                        acc = new AccountInfo().setInstance(accInst)
                                             .addAmount(_doc.getAmount4Doc(docInst))
                                             .setDocLink(_doc.getInstance())
                                             .setRemark(docName)
                                             .setRateInfo(_doc.getRateInfo(), _doc.getInstance().getType().getName());
+                                    }
                                     if (outDoc) {
                                         _doc.addDebit(acc);
                                     } else {

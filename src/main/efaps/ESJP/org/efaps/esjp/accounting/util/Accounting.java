@@ -174,6 +174,13 @@ public final class Accounting
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENT_ANALYZE_DOCCURRENCY = new BooleanSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Payment.AnalyzeDocumentCurrency")
+                    .description("Analyze Document Currency for Payments.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PERIOD_PERMITCREATE = new BooleanSysConfAttribute()
                     .sysConfUUID(Accounting.SYSCONFUUID)
                     .key(Accounting.BASE + "Period.PermitCreationOfIncomingDocs")
