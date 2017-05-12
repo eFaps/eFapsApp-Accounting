@@ -151,7 +151,11 @@ public final class Accounting
                                     + "JournalSC1617RC.TYPE.Number=TransName|DocName|DocRevision|DocCode\n"
                                     + "TYPE.DocumentType=01\n"
                                     + "JournalSC1617.TYPE.DocumentType=01\n"
-                                    + "JournalSC1617RC.TYPE.DocumentType=01\n")
+                                    + "JournalSC1617RC.TYPE.DocumentType=01\n"
+                                    + "COMPRAS.AnalyzeRemark=false\n"
+                                    + "COMPRAS.TYPE.AnalyzeRemark=false\n"
+                                    + "COMPRAS.TYPE.Credit.AnalyzeRemark=false\n"
+                                    + "COMPRAS.TYPE.Debit.AnalyzeRemark=false\n")
                     .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Number", "DocName")

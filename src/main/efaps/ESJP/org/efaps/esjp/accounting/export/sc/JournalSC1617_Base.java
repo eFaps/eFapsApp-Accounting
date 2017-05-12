@@ -194,7 +194,7 @@ public abstract class JournalSC1617_Base
                         CIFormAccounting.Accounting_ExportJournalSC1617Form.origin.name);
 
         final Properties oProps = PropertiesUtil.getProperties4Prefix(props, origin, true);
-
+        //default as defined by an given orgin
         final boolean analyzeRemark = BooleanUtils.toBoolean(oProps.getProperty("AnalyzeRemark", "false"));
         final boolean useDate4Number = BooleanUtils.toBoolean(oProps.getProperty("UseDate4Number", "false"));
         final boolean useOrigDoc4Number = BooleanUtils.toBoolean(oProps.getProperty("UseOrigDoc4Number", "false"));
@@ -274,6 +274,7 @@ public abstract class JournalSC1617_Base
         final List<DataBean> beans = new ArrayList<>();
         while (multi.next()) {
             final Instance transInst = multi.getSelect(selTransInst);
+            final Instance posInst = multi.getCurrentInstance();
             final String remark = multi.getAttribute(CIAccounting.TransactionPositionAbstract.Remark);
             String descr = multi.<String>getSelect(selTransDescr);
             String contactName = multi.<String>getSelect(selContactName);
@@ -287,7 +288,18 @@ public abstract class JournalSC1617_Base
                 } else {
                     descr = remark;
                 }
-                if (analyzeRemark) {
+                final boolean swap;
+                final String debKey = InstanceUtils.isType(posInst, CIAccounting.TransactionPositionDebit)
+                                ? ".Debit" : ".Credit";
+                if (oProps.containsKey(docInst.getType().getName() + debKey + ".AnalyzeRemark")) {
+                    swap = BooleanUtils.toBoolean(oProps.getProperty(docInst.getType().getName() + debKey
+                                    + ".AnalyzeRemark"));
+                } else if (oProps.containsKey(docInst.getType().getName() + ".AnalyzeRemark")) {
+                    swap = BooleanUtils.toBoolean(oProps.getProperty(docInst.getType().getName() + ".AnalyzeRemark"));
+                } else {
+                    swap = analyzeRemark;
+                }
+                if (swap) {
                     final QueryBuilder tr2docQueryBldr = new QueryBuilder(CIAccounting.Transaction2ERPDocument);
                     tr2docQueryBldr.addWhereAttrEqValue(CIAccounting.Transaction2ERPDocument.FromLink, transInst);
 
@@ -322,7 +334,7 @@ public abstract class JournalSC1617_Base
             final DataBean bean = new DataBean()
                             .setReportKey(key)
                             .setTransInstance(transInst)
-                            .setPosInstance(multi.getCurrentInstance())
+                            .setPosInstance(posInst)
                             .setOrigin(oProps.getProperty("Value", "--"))
                             .setMarker(marker)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
