@@ -291,10 +291,12 @@ public abstract class JournalSC1617_Base
                 final boolean swap;
                 final String debKey = InstanceUtils.isType(posInst, CIAccounting.TransactionPositionDebit)
                                 ? ".Debit" : ".Credit";
-                if (oProps.containsKey(docInst.getType().getName() + debKey + ".AnalyzeRemark")) {
+                if (InstanceUtils.isValid(docInst)
+                                && oProps.containsKey(docInst.getType().getName() + debKey + ".AnalyzeRemark")) {
                     swap = BooleanUtils.toBoolean(oProps.getProperty(docInst.getType().getName() + debKey
                                     + ".AnalyzeRemark"));
-                } else if (oProps.containsKey(docInst.getType().getName() + ".AnalyzeRemark")) {
+                } else if (InstanceUtils.isValid(docInst) &&
+                                oProps.containsKey(docInst.getType().getName() + ".AnalyzeRemark")) {
                     swap = BooleanUtils.toBoolean(oProps.getProperty(docInst.getType().getName() + ".AnalyzeRemark"));
                 } else {
                     swap = analyzeRemark;
