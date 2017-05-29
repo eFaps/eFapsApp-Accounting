@@ -36,6 +36,7 @@
             <column name="STATUS"    type="INTEGER"      not-null="true"/>
             <column name="SUMMARIZE" type="INTEGER" />
             <column name="EXCHANGE"  type="INTEGER" />
+            <column name="ARCHIVE"   type="INTEGER" />
             <column name="LABEL"     type="STRING_SHORT"                  length="512" />
             <column name="CREATOR"   type="INTEGER"      not-null="true" />
             <column name="CREATED"   type="DATETIME"     not-null="true" />

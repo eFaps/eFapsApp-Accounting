@@ -93,6 +93,13 @@
             <sqlcolumn>EXCHANGE</sqlcolumn>
         </attribute>
         <attribute>
+            <name>ArchiveConfig</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.accounting.util.Accounting$ArchiveConfig</className>
+            <sqltable>Accounting_CaseSQLTable</sqltable>
+            <sqlcolumn>ARCHIVE</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Label</name>
             <type>String</type>
             <sqltable>Accounting_CaseSQLTable</sqltable>

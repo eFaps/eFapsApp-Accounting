@@ -78,6 +78,12 @@
             <property name="Attribute">ExchangeConfig</property>
             <property name="Required">true</property>
         </field>
+         <field name="archiveConfig">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">NONE</property>
+            <property name="Attribute">ArchiveConfig</property>
+        </field>
         <field name="label">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

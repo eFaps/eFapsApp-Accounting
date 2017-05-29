@@ -39,6 +39,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.Case;
 import org.efaps.esjp.accounting.Period;
+import org.efaps.esjp.accounting.util.Accounting.ArchiveConfig;
 import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeConfig;
@@ -329,15 +330,19 @@ public abstract class FieldUpdate_Base
             final Instance caseInst = Instance.get(_parameter.getParameterValue("case"));
             final SummarizeConfig config;
             final ExchangeConfig exchangeConfig;
+            final ArchiveConfig archiveConfig;
             if (caseInst.isValid()) {
                 final PrintQuery print = new CachedPrintQuery(caseInst, Case.CACHEKEY);
-                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig, CIAccounting.CaseAbstract.ExchangeConfig);
+                print.addAttribute(CIAccounting.CaseAbstract.SummarizeConfig, CIAccounting.CaseAbstract.ExchangeConfig,
+                                CIAccounting.CaseAbstract.ArchiveConfig);
                 print.executeWithoutAccessCheck();
                 config = print.getAttribute(CIAccounting.CaseAbstract.SummarizeConfig);
                 exchangeConfig = print.getAttribute(CIAccounting.CaseAbstract.ExchangeConfig);
+                archiveConfig = print.getAttribute(CIAccounting.CaseAbstract.ArchiveConfig);
             } else {
                 config = SummarizeConfig.NONE;
                 exchangeConfig = ExchangeConfig.TRANSDATESALE;
+                archiveConfig = null;
             }
 
             final String fieldName = CIFormAccounting.Accounting_TransactionCreate4ExternalForm
@@ -347,6 +352,10 @@ public abstract class FieldUpdate_Base
             map.put("exchangeConfig", exchangeConfig == null
                             ? ExchangeConfig.TRANSDATESALE.ordinal() : exchangeConfig.ordinal());
             map.put(fieldName, config.ordinal());
+
+            if (archiveConfig != null) {
+                map.put("archiveConfig", archiveConfig.getInt());
+            }
 
             if (SummarizeDefinition.CASE.equals(summarizeDef)) {
                 js.append(" query(\"input[name=\\\"").append(fieldName).append("\\\"]\").forEach(function(node){\n")
