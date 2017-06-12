@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -193,15 +193,17 @@ public abstract class ExportCase_Base
                 final int ret;
                 final String caseType1 = AbstractExport_Base.TYPE2TYPE.get(_o1.get(ColumnCase.CASETYPE.getKey()));
                 final String caseType2 = AbstractExport_Base.TYPE2TYPE.get(_o2.get(ColumnCase.CASETYPE.getKey()));
-
-                if (caseType1.equals(caseType2)) {
-                    final String caseName1 = (String) _o1.get(ColumnCase.CASENAME.getKey());
-                    final String caseName2 = (String) _o2.get(ColumnCase.CASENAME.getKey());
-                    ret = caseName1.compareTo(caseName2);
+                if (caseType1 != null && caseType2 != null) {
+                    if (caseType1 != null && caseType1.equals(caseType2)) {
+                        final String caseName1 = (String) _o1.get(ColumnCase.CASENAME.getKey());
+                        final String caseName2 = (String) _o2.get(ColumnCase.CASENAME.getKey());
+                        ret = caseName1.compareTo(caseName2);
+                    } else {
+                        ret = caseType1.compareTo(caseType2);
+                    }
                 } else {
-                    ret = caseType1.compareTo(caseType2);
+                    ret = 0;
                 }
-
                 return ret;
             }
         });
