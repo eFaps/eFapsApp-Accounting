@@ -151,12 +151,7 @@ public interface AccountingSettings
     /**
      * Name of the SubJournal to be applied for PaymentOut.
      */
-    String PERIOD_ACTIVATEPETTYCASHWD = "ActivatePettyCashWithoutDoc";
-
-    /**
-     * Name of the SubJournal to be applied for PaymentOut.
-     */
-    String PERIOD_ACTIVATEFTBSWD = "ActivateFundsToBeSettledWithoutDoc";
+    String PERIOD_ACTIVATEUNDEDUCTIBLE = "ActivateUndeductible";
 
     /**
      * Activate the TreeView relation for Cases.

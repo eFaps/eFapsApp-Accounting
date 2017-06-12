@@ -20,7 +20,6 @@ package org.efaps.esjp.accounting.transaction;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
@@ -40,11 +39,9 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.accounting.Label;
 import org.efaps.esjp.accounting.Period;
-import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4DocConfig;
 import org.efaps.esjp.accounting.util.Accounting.ActDef2Case4IncomingConfig;
 import org.efaps.esjp.accounting.util.Accounting.ArchiveConfig;
-import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
@@ -288,32 +285,16 @@ public abstract class Action_Base
                     boolean execute = true;
                     // for pettyCash receipt evaluation if legal document or not
                     if (ret.getDocInst().getType().isKindOf(CISales.PettyCashReceipt)) {
-                        final Properties props = Accounting.getSysConfig()
-                                        .getObjectAttributeValueAsProperties(periodInst);
-                        final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                        .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
-                        if (!withoutDoc && ret.getDocTypeInst() == null) {
-                            execute = false;
+                        if (ret.getDocTypeInst() == null) {
+                            execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
                         } else {
-                            if (ret.getDocTypeInst() == null) {
-                                execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                            } else {
-                                execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                            }
+                            execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
                         }
                     } else if (ret.getDocInst().getType().isKindOf(CISales.FundsToBeSettledReceipt)) {
-                        final Properties props = Accounting.getSysConfig()
-                                        .getObjectAttributeValueAsProperties(periodInst);
-                        final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                        .getProperty(AccountingSettings.PERIOD_ACTIVATEFTBSWD));
-                        if (!withoutDoc && ret.getDocTypeInst() == null) {
-                            execute = false;
+                        if (ret.getDocTypeInst() == null) {
+                            execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
                         } else {
-                            if (ret.getDocTypeInst() == null) {
-                                execute = configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                            } else {
-                                execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
-                            }
+                            execute = !configs.contains(ActDef2Case4IncomingConfig.WITHOUTDOC);
                         }
                     }
                     if (execute) {

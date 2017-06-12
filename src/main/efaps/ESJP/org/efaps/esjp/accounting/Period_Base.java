@@ -135,8 +135,7 @@ public abstract class Period_Base
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUBJOURNAL4PAYOUT, "??");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUBJOURNAL4PAYIN, "??");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEREMARK4TRANSPOS, "false");
-        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD, "false");
-        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEFTBSWD, "false");
+        Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_ACTIVATEUNDEDUCTIBLE, "false");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_RETENTIONCASE, "");
         Period_Base.DEFAULTSETTINGS4PERIOD.put(AccountingSettings.PERIOD_SUMMARIZETRANS,
                         SummarizeDefinition.CASEUSER.name());
@@ -665,26 +664,18 @@ public abstract class Period_Base
                 }
                 final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.FundsToBeSettledBalance.ID);
 
-                final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instance);
-                final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                .getProperty(AccountingSettings.PERIOD_ACTIVATEFTBSWD));
-
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
                 final AttributeQuery attrQuery2 = queryBldr2
                                 .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
 
-                if (withoutDoc) {
-                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery2);
-                } else {
-                    final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
-                    docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
                                     attrQuery2);
-                    final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
                                     CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
-                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
-                }
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
             }
         };
         return multi.execute(_parameter);
@@ -731,25 +722,73 @@ public abstract class Period_Base
                 }
                 final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
 
-                final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(instance);
-                final boolean withoutDoc = "true".equalsIgnoreCase(props
-                                .getProperty(AccountingSettings.PERIOD_ACTIVATEPETTYCASHWD));
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
+                queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
+                final AttributeQuery attrQuery2 = queryBldr2
+                                .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                                    attrQuery2);
+                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                                    CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
+
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+    /**
+     * Gets the undeductible.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the undeductible
+     * @throws EFapsException on error
+     */
+    public Return getUndeductible(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final PrintQuery print = new CachedPrintQuery(instance, Period_Base.CACHEKEY);
+                print.addAttribute(CIAccounting.Period.FromDate);
+                print.execute();
+                final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+
+                final List<Status> statusArrayBalance = new ArrayList<>();
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
+                if (containsProperty(_parameter, "PettyCashBalanceStatus")) {
+                    for (final String balanceStatus : analyseProperty(_parameter, "PettyCashBalanceStatus").values()) {
+                        statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, balanceStatus));
+                    }
+                } else {
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
+                }
+                if (!statusArrayBalance.isEmpty()) {
+                    queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
+                }
+                final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
 
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
                 final AttributeQuery attrQuery2 = queryBldr2
                                 .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
-                if (withoutDoc) {
-                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery2);
-                } else {
-                    final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
-                    docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
                                     attrQuery2);
-                    final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
+                final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
                                     CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
-                    _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
-                }
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
             }
         };
         return multi.execute(_parameter);
@@ -1000,7 +1039,7 @@ public abstract class Period_Base
     {
         final Return ret = new Return();
         final String key = Period.class.getName() + ".RequestKey4TargetDocInfo4PaymentFieldValue";
-        Map<Instance, String> values;
+        final Map<Instance, String> values;
         if (Context.getThreadContext().containsRequestAttribute(key)) {
             values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(key);
         } else {
