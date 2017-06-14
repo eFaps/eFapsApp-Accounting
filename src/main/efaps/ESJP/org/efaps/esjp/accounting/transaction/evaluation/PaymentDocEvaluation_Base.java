@@ -112,7 +112,7 @@ public abstract class PaymentDocEvaluation_Base
                                 acc2caseInfo.setRemark(remarkTmp);
                             } else {
                                 acc2caseInfo.setRemark(StringUtils.join(new String[] { acc2caseInfo.getRemark(),
-                                                                                   remarkTmp }, ", "));
+                                                                                       remarkTmp }, ", "));
                             }
                             if (!added) {
                                 added = true;

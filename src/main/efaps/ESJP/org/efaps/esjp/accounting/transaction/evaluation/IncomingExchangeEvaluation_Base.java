@@ -15,7 +15,6 @@
  *
  */
 
-
 package org.efaps.esjp.accounting.transaction.evaluation;
 
 import java.math.BigDecimal;
@@ -42,6 +41,7 @@ import org.efaps.esjp.accounting.transaction.AccountInfo;
 import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.Swap_Base.SwapInfo;
 import org.efaps.util.EFapsException;
@@ -56,6 +56,7 @@ import org.efaps.util.EFapsException;
 public abstract class IncomingExchangeEvaluation_Base
     extends AbstractEvaluation
 {
+
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _doc Document the calculation must be done for
@@ -80,6 +81,7 @@ public abstract class IncomingExchangeEvaluation_Base
 
             Collections.sort(infos, new Comparator<Account2CaseInfo>()
             {
+
                 @Override
                 public int compare(final Account2CaseInfo _o1,
                                    final Account2CaseInfo _o2)
@@ -101,24 +103,32 @@ public abstract class IncomingExchangeEvaluation_Base
                 if (acc2case.isCheckKey()) {
                     if (_doc.getKey2Amount(_parameter).containsKey(acc2case.getKey())) {
                         isDefault = true;
-                        acc2case.setAmount(DocumentInfo_Base.getAmount4Map(_doc.getKey2Amount(_parameter).get(
-                                        acc2case.getKey()), acc2case.getAmountConfig(), acc2case
-                                                        .getAccountInstance()));
+                        acc2case.setAmount(DocumentInfo_Base.getAmount4Map(_doc.getKey2Amount(_parameter).get(acc2case
+                                        .getKey()), acc2case.getAmountConfig(), acc2case.getAccountInstance()));
                     }
                 }
 
-                final boolean add = (isDefault || acc2case.isClassRelation() || acc2case.isCategoryProduct()
-                                || acc2case.isTreeView()) && currencyCheck;
+                final boolean add = (isDefault || acc2case.isClassRelation() || acc2case.isCategoryProduct() || acc2case
+                                .isTreeView()) && currencyCheck;
                 if (add) {
-                    final BigDecimal mul = new BigDecimal(acc2case.getNumerator()).setScale(12).divide(
-                                    new BigDecimal(acc2case.getDenominator()), RoundingMode.HALF_UP);
-                    final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct()
-                                    || acc2case.isCheckKey() || acc2case.isTreeView()
-                                    || acc2case.isEvalRelation() ? acc2case.getAmount()
-                                                    : _doc.getAmount(acc2case);
+                    final BigDecimal mul = new BigDecimal(acc2case.getNumerator()).setScale(12).divide(new BigDecimal(
+                                    acc2case.getDenominator()), RoundingMode.HALF_UP);
+                    final BigDecimal amountTmp = acc2case.isClassRelation() || acc2case.isCategoryProduct() || acc2case
+                                    .isCheckKey() || acc2case.isTreeView() || acc2case.isEvalRelation() ? acc2case
+                                                    .getAmount() : _doc.getAmount(acc2case);
                     final BigDecimal accAmount = mul.multiply(amountTmp).setScale(2, RoundingMode.HALF_UP);
-                    final BigDecimal accAmountRate = Currency.convertToCurrency(_parameter, accAmount, _doc
-                                    .getRateInfo(), _doc.getRatePropKey(), periodCurrenycInstance);
+                    RateInfo rateInfo;
+                    if (acc2case.isDeactCurrencyCheck() && !_doc.getRateInfo().getCurrencyInstance().equals(acc2case
+                                    .getCurrencyInstance()) && !acc2case.getCurrencyInstance().equals(
+                                                    periodCurrenycInstance)) {
+                        rateInfo = new Currency().evaluateRateInfo(_parameter, _doc.getDate(), acc2case
+                                        .getCurrencyInstance());
+                    } else {
+                        rateInfo = _doc.getRateInfo();
+                    }
+
+                    final BigDecimal accAmountRate = Currency.convertToCurrency(_parameter, accAmount, rateInfo, _doc
+                                    .getRatePropKey(), periodCurrenycInstance);
 
                     final AccountInfo account = new AccountInfo(acc2case.getAccountInstance(), accAmount);
                     account.setRemark(acc2case.getRemark());
@@ -127,9 +137,9 @@ public abstract class IncomingExchangeEvaluation_Base
                     }
                     account.setAmountRate(accAmountRate);
                     if (_doc.getInstance() != null) {
-                        account.setRateInfo(_doc.getRateInfo(), _doc.getRatePropKey());
+                        account.setRateInfo(rateInfo, _doc.getRatePropKey());
                     } else {
-                        account.setRateInfo(_doc.getRateInfo(), getProperty(_parameter, "Type4RateInfo"));
+                        account.setRateInfo(rateInfo, getProperty(_parameter, "Type4RateInfo"));
                     }
                     if (acc2case.isCredit()) {
                         account.setPostFix("_Credit");
@@ -175,7 +185,8 @@ public abstract class IncomingExchangeEvaluation_Base
                             final Account2CaseInfo acc2caseInfoTmp = Account2CaseInfo.getAccount2CaseInfo(acc2caseInfo
                                             .getInstance());
                             tempInfos.add(acc2caseInfoTmp);
-                            acc2caseInfoTmp.setAmount(info.getAmount()).setCurrencyInstance(info.getCurrencyInstance());
+                            acc2caseInfoTmp.setAmount(info.getAmount()).setCurrencyInstance(info.getCurrencyInstance())
+                                            .setDeactCurrencyCheck(true);
                             final Map<String, String> subMap = new HashMap<>();
                             subMap.put(Accounting.RemarkSubstitutorKeys.RELDOC_NAME.name(), info.getDocName());
                             final StrSubstitutor sub = new StrSubstitutor(subMap);
@@ -189,7 +200,7 @@ public abstract class IncomingExchangeEvaluation_Base
                                 acc2caseInfo.setRemark(remarkTmp);
                             } else {
                                 acc2caseInfo.setRemark(StringUtils.join(new String[] { acc2caseInfo.getRemark(),
-                                                                                   remarkTmp }, ", "));
+                                                remarkTmp }, ", "));
                             }
                             if (!added) {
                                 added = true;

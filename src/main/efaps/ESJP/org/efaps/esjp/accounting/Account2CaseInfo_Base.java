@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.efaps.admin.datamodel.Classification;
@@ -499,6 +500,22 @@ public abstract class Account2CaseInfo_Base
     {
         this.amountConfig = _amountConfig;
         return (Account2CaseInfo) this;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #deactCurrencyCheck}.
+     *
+     * @return value of instance variable {@link #deactCurrencyCheck}
+     */
+    public boolean isDeactCurrencyCheck()
+    {
+        return this.deactCurrencyCheck;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     /**
