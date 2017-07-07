@@ -34,6 +34,7 @@
         </target>
         <childs>
             <child>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</child>
+            <child>Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc</child>
             <child>Sales_IncomingReceiptMyDesk_Menu_Action_Create</child>
             <child>Sales_IncomingProfServReceiptMyDesk_Menu_Action_Create</child>
             <child>Sales_IncomingCreditNoteMyDesk_Menu_Action_Create</child>
