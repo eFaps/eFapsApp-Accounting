@@ -733,6 +733,8 @@ public abstract class Period_Base
                                     CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+
+                add2DocQueryBldr(_parameter, _queryBldr);
             }
         };
         return multi.execute(_parameter);
