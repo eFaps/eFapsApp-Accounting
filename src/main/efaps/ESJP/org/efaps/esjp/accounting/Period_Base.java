@@ -715,7 +715,7 @@ public abstract class Period_Base
                         statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, balanceStatus));
                     }
                 } else {
-                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Verified));
                 }
                 if (!statusArrayBalance.isEmpty()) {
                     queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
@@ -773,7 +773,7 @@ public abstract class Period_Base
                         statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.uuid, balanceStatus));
                     }
                 } else {
-                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Closed));
+                    statusArrayBalance.add(Status.find(CISales.PettyCashBalanceStatus.Verified));
                 }
                 if (!statusArrayBalance.isEmpty()) {
                     queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance.Status, statusArrayBalance.toArray());
