@@ -1066,12 +1066,31 @@ public abstract class Period_Base
                         targetInsts = (List<Instance>) obj;
                     }
                     for (final Instance targetInst : targetInsts) {
-                        if (InstanceUtils.isType(targetInst, CISales.IncomingExchange)) {
-                            final PrintQuery print2 = new PrintQuery(targetInst);
-                            final SelectBuilder selActName = SelectBuilder.get()
+                        final SelectBuilder selActName;
+                        if (InstanceUtils.isType(targetInst, CISales.PaymentOrder)) {
+                            selActName = SelectBuilder.get()
+                                            .linkfrom(CISales.ActionDefinitionPaymentOrder2Document.ToLinkAbstract)
+                                            .linkto(CISales.ActionDefinitionPaymentOrder2Document.FromLinkAbstract)
+                                            .attribute(CISales.ActionDefinitionPaymentOrder.Name);
+
+                        } else  if (InstanceUtils.isType(targetInst, CISales.CollectionOrder)) {
+                            selActName = SelectBuilder.get()
+                                            .linkfrom(CISales.ActionDefinitionCollectionOrder2Document.ToLinkAbstract)
+                                            .linkto(CISales.ActionDefinitionCollectionOrder2Document.FromLinkAbstract)
+                                            .attribute(CISales.ActionDefinitionCollectionOrder.Name);
+
+                        } else  if (InstanceUtils.isType(targetInst, CISales.IncomingExchange)) {
+                            selActName = SelectBuilder.get()
                                             .linkfrom(CISales.ActionDefinitionIncomingExchange2Document.ToLinkAbstract)
                                             .linkto(CISales.ActionDefinitionIncomingExchange2Document.FromLinkAbstract)
                                             .attribute(CISales.ActionDefinitionIncomingExchange.Name);
+
+                        } else {
+                            selActName = null;
+                        }
+
+                        if (selActName != null) {
+                            final PrintQuery print2 = new PrintQuery(targetInst);
                             print2.addSelect(selActName);
                             print2.execute();
 
