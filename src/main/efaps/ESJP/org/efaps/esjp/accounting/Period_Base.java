@@ -782,11 +782,10 @@ public abstract class Period_Base
 
                 final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Document2DocumentAbstract);
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
-                final AttributeQuery attrQuery2 = queryBldr2
-                                .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, queryBldr2.getAttributeQuery(
+                        CISales.Document2DocumentAbstract.ToAbstractLink));
+
                 final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
-                docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
-                                    attrQuery2);
                 final AttributeQuery docTypeAttrQuery = docTypeAttrQueryBldr.getAttributeQuery(
                                     CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
