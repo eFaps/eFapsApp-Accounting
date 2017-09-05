@@ -28,7 +28,7 @@
             <role>Accounting_Manager</role>
         </access>
         <target>
-            <form>Accounting_TransactionCreate4PaymentMassiveForm</form>
+            <form>Accounting_TransactionCreate4PaymentOutMassiveForm</form>
             <execute method="create4PaymentMassive" program="org.efaps.esjp.accounting.transaction.Create" />
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Accounting_PeriodTree_Payment_Menu_Action_MassiveRegister.UI_ACCESSCHECK"
