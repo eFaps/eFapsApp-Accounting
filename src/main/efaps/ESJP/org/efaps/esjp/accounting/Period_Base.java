@@ -648,6 +648,7 @@ public abstract class Period_Base
                 print.execute();
                 final DateTime from = print.<DateTime>getAttribute(CIAccounting.Period.FromDate);
                 _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+
                 final List<Status> statusArrayBalance = new ArrayList<>();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.FundsToBeSettledBalance);
@@ -657,7 +658,7 @@ public abstract class Period_Base
                         statusArrayBalance.add(Status.find(CISales.FundsToBeSettledBalanceStatus.uuid, balanceStatus));
                     }
                 } else {
-                    statusArrayBalance.add(Status.find(CISales.FundsToBeSettledBalanceStatus.Closed));
+                    statusArrayBalance.add(Status.find(CISales.FundsToBeSettledBalanceStatus.Verified));
                 }
                 if (!statusArrayBalance.isEmpty()) {
                     queryBldr.addWhereAttrEqValue(CISales.FundsToBeSettledBalance.Status, statusArrayBalance.toArray());
@@ -668,7 +669,6 @@ public abstract class Period_Base
                 queryBldr2.addWhereAttrInQuery(CISales.Document2DocumentAbstract.FromAbstractLink, attrQuery);
                 final AttributeQuery attrQuery2 = queryBldr2
                                 .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
-
                 final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
                 docTypeAttrQueryBldr.addWhereAttrInQuery(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
                                     attrQuery2);
@@ -676,6 +676,8 @@ public abstract class Period_Base
                                     CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract);
 
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, docTypeAttrQuery);
+
+                add2DocQueryBldr(_parameter, _queryBldr);
             }
         };
         return multi.execute(_parameter);
