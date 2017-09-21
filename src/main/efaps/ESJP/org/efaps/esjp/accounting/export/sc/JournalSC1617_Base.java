@@ -20,7 +20,6 @@ package org.efaps.esjp.accounting.export.sc;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -295,8 +294,8 @@ public abstract class JournalSC1617_Base
                                 && oProps.containsKey(docInst.getType().getName() + debKey + ".AnalyzeRemark")) {
                     swap = BooleanUtils.toBoolean(oProps.getProperty(docInst.getType().getName() + debKey
                                     + ".AnalyzeRemark"));
-                } else if (InstanceUtils.isValid(docInst) &&
-                                oProps.containsKey(docInst.getType().getName() + ".AnalyzeRemark")) {
+                } else if (InstanceUtils.isValid(docInst)
+                                && oProps.containsKey(docInst.getType().getName() + ".AnalyzeRemark")) {
                     swap = BooleanUtils.toBoolean(oProps.getProperty(docInst.getType().getName() + ".AnalyzeRemark"));
                 } else {
                     swap = analyzeRemark;
@@ -337,7 +336,7 @@ public abstract class JournalSC1617_Base
                             .setReportKey(key)
                             .setTransInstance(transInst)
                             .setPosInstance(posInst)
-                            .setOrigin(oProps.getProperty("Value", "--"))
+                            .setOrigin(origin)
                             .setMarker(marker)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
                             .setNumber(multi.getSelect(selTransIdentifier))
@@ -364,33 +363,12 @@ public abstract class JournalSC1617_Base
             beans.add(bean);
         }
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-        chain.addComparator(new Comparator<DataBean>() {
-
-            @Override
-            public int compare(final DataBean _o1,
-                               final DataBean _o2)
-            {
-                return _o1.getTransDate().compareTo(_o2.getTransDate());
-            }
-        });
-        chain.addComparator(new Comparator<DataBean>() {
-
-            @Override
-            public int compare(final DataBean _o1,
-                               final DataBean _o2)
-            {
-                return _o1.getNumber().compareTo(_o2.getNumber());
-            }
-        });
-        chain.addComparator(new Comparator<DataBean>() {
-
-            @Override
-            public int compare(final DataBean _o1,
-                               final DataBean _o2)
-            {
-                return _o1.getPosition().compareTo(_o2.getPosition());
-            }
-        });
+        chain.addComparator((_o1,
+         _o2) -> _o1.getTransDate().compareTo(_o2.getTransDate()));
+        chain.addComparator((_o1,
+         _o2) -> _o1.getNumber().compareTo(_o2.getNumber()));
+        chain.addComparator((_o1,
+         _o2) -> _o1.getPosition().compareTo(_o2.getPosition()));
         Collections.sort(beans, chain);
 
         int i = 1;
@@ -822,7 +800,31 @@ public abstract class JournalSC1617_Base
             }
             // check if still needs to be replaced
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
-                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), getTransDate(),
+                final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(),
+                                getReportKey());
+                final Properties oProps = PropertiesUtil.getProperties4Prefix(props, getOrigin(), true);
+                final String key4Rate;
+                if (oProps.containsKey(getDocInst().getType().getName() + ".Date4Rate")) {
+                    key4Rate = oProps.getProperty(getDocInst().getType().getName() + ".Date4Rate");
+                } else if (oProps.containsKey("Date4Rate")) {
+                    key4Rate = oProps.getProperty("Date4Rate");
+                } else {
+                    key4Rate = "TransDate";
+                }
+                final DateTime date4Rate;
+                switch (key4Rate) {
+                    case "DocDate":
+                        date4Rate = getDocDate();
+                        break;
+                    case "DocDueDate":
+                        date4Rate = getDocDueDate();
+                        break;
+                    case "TransDate":
+                    default:
+                        date4Rate = getTransDate();
+                        break;
+                }
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(new Parameter(), date4Rate,
                                     CurrencyInst.get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126"))
                                                     .getInstance());
                 ret = rateInfo.getSaleRateUI();

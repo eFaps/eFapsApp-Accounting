@@ -155,7 +155,9 @@ public final class Accounting
                                     + "COMPRAS.AnalyzeRemark=false\n"
                                     + "COMPRAS.TYPE.AnalyzeRemark=false\n"
                                     + "COMPRAS.TYPE.Credit.AnalyzeRemark=false\n"
-                                    + "COMPRAS.TYPE.Debit.AnalyzeRemark=false\n")
+                                    + "COMPRAS.TYPE.Debit.AnalyzeRemark=false\n"
+                                    + "COMPRAS.Date4Rate=DocDate|DocDueDate|TransDate\n"
+                                    + "COMPRAS.TYPE.Date4Rate=DocDate|DocDueDate|TransDate\n")
                     .addDefaultValue(CISales.IncomingInvoice.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingProfServReceipt.getType().getName() + ".Number", "DocName")
                     .addDefaultValue(CISales.IncomingExchange.getType().getName() + ".Number", "DocName")
