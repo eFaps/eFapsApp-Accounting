@@ -336,7 +336,8 @@ public abstract class JournalSC1617_Base
                             .setReportKey(key)
                             .setTransInstance(transInst)
                             .setPosInstance(posInst)
-                            .setOrigin(origin)
+                            .setOrigin(oProps.getProperty("Value", "--"))
+                            .setOriginKey(origin)
                             .setMarker(marker)
                             .setTransDate(multi.<DateTime>getSelect(selTransDate))
                             .setNumber(multi.getSelect(selTransIdentifier))
@@ -363,12 +364,9 @@ public abstract class JournalSC1617_Base
             beans.add(bean);
         }
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
-        chain.addComparator((_o1,
-         _o2) -> _o1.getTransDate().compareTo(_o2.getTransDate()));
-        chain.addComparator((_o1,
-         _o2) -> _o1.getNumber().compareTo(_o2.getNumber()));
-        chain.addComparator((_o1,
-         _o2) -> _o1.getPosition().compareTo(_o2.getPosition()));
+        chain.addComparator((_o1, _o2) -> _o1.getTransDate().compareTo(_o2.getTransDate()));
+        chain.addComparator((_o1, _o2) -> _o1.getNumber().compareTo(_o2.getNumber()));
+        chain.addComparator((_o1, _o2) -> _o1.getPosition().compareTo(_o2.getPosition()));
         Collections.sort(beans, chain);
 
         int i = 1;
@@ -501,6 +499,12 @@ public abstract class JournalSC1617_Base
          */
         private String origin;
 
+        /**
+         * The origin. (Origen, definido en sc (01: compras, 02:ventas, etc.)
+         */
+        private String originKey;
+
+
         /** Name of the transaction Document. (Numero de Comprobante ) */
         private String number;
 
@@ -578,6 +582,28 @@ public abstract class JournalSC1617_Base
 
         /** The zero. */
         private BigDecimal zero;
+
+        /**
+         * Gets the origin.
+         *
+         * @return the origin
+         */
+        public String getOriginKey()
+        {
+            return this.originKey;
+        }
+
+        /**
+         * Sets the origin key.
+         *
+         * @param _originKey the origin key
+         * @return the data bean
+         */
+        public DataBean setOriginKey(final String _originKey)
+        {
+            this.originKey = _originKey;
+            return this;
+        }
 
         /**
          * Getter method for the instance variable {@link #transDate}.
@@ -802,9 +828,10 @@ public abstract class JournalSC1617_Base
             if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
                 final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(),
                                 getReportKey());
-                final Properties oProps = PropertiesUtil.getProperties4Prefix(props, getOrigin(), true);
+                final Properties oProps = PropertiesUtil.getProperties4Prefix(props, getOriginKey(), true);
                 final String key4Rate;
-                if (oProps.containsKey(getDocInst().getType().getName() + ".Date4Rate")) {
+                if (InstanceUtils.isValid(getDocInst())
+                                && oProps.containsKey(getDocInst().getType().getName() + ".Date4Rate")) {
                     key4Rate = oProps.getProperty(getDocInst().getType().getName() + ".Date4Rate");
                 } else if (oProps.containsKey("Date4Rate")) {
                     key4Rate = oProps.getProperty("Date4Rate");
