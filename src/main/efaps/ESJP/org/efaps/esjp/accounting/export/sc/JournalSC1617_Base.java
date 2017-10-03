@@ -841,10 +841,10 @@ public abstract class JournalSC1617_Base
                 final DateTime date4Rate;
                 switch (key4Rate) {
                     case "DocDate":
-                        date4Rate = getDocDate();
+                        date4Rate = getDocDate() == null ? getTransDate() : getDocDate();
                         break;
                     case "DocDueDate":
-                        date4Rate = getDocDueDate();
+                        date4Rate = getDocDueDate()  == null ? getTransDate() : getDocDueDate();
                         break;
                     case "TransDate":
                     default:
