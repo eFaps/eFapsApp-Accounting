@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;

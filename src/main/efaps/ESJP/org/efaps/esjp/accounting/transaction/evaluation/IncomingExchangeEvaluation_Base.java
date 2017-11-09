@@ -21,13 +21,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StrSubstitutor;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -79,16 +78,8 @@ public abstract class IncomingExchangeEvaluation_Base
 
             final List<Account2CaseInfo> infos = Account2CaseInfo.getStandards(_parameter, caseInst);
 
-            Collections.sort(infos, new Comparator<Account2CaseInfo>()
-            {
-
-                @Override
-                public int compare(final Account2CaseInfo _o1,
-                                   final Account2CaseInfo _o2)
-                {
-                    return _o1.getOrder().compareTo(_o2.getOrder());
-                }
-            });
+            Collections.sort(infos, (_o1,
+             _o2) -> _o1.getOrder().compareTo(_o2.getOrder()));
             evalAccount2CaseInfo4Relation(_parameter, _doc, infos);
 
             for (final Account2CaseInfo acc2case : infos) {

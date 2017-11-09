@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StrSubstitutor;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;

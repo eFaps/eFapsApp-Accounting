@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -31,7 +28,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -229,8 +226,8 @@ public abstract class Recalculate_Base
             final RateFormatter frmt = getRateFormatter(_parameter);
 
             final String rateStr = frmt.getFrmt4Rate().format(rateInfo.getRate());
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, String>> list = new ArrayList<>();
+            final Map<String, String> map = new HashMap<>();
             map.put("rate", rateStr);
             final StringBuilder js = new StringBuilder();
             js.append("document.getElementsByName('transactions')[0].innerHTML='")
@@ -399,7 +396,7 @@ public abstract class Recalculate_Base
                 }
             }
         }
-        final Map<String, String[]> map = new HashMap<String, String[]>();
+        final Map<String, String[]> map = new HashMap<>();
         map.put("check", check);
         map.put("accs", accs);
         map.put("accountOids", accOids);
@@ -670,7 +667,7 @@ public abstract class Recalculate_Base
                             .linkto(CIAccounting.TransactionPositionAbstract.AccountLink).oid();
             multi.addSelect(selAcc);
             multi.execute();
-            final Map<String, AccountInfo> map = new HashMap<String, AccountInfo>();
+            final Map<String, AccountInfo> map = new HashMap<>();
             while (multi.next()) {
                 final Instance accountInst = Instance.get(multi.<String>getSelect(selAcc));
                 if (setAccounts.contains(accountInst.getOid())) {
@@ -827,7 +824,7 @@ public abstract class Recalculate_Base
     protected Set<String> getAccounts4DocumentConfig(final Parameter _parameter)
         throws EFapsException
     {
-        final Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<>();
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIAccounting.AccountConfigDocument2Period);
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                         CIAccounting.AccountConfigDocument2Period.FromLink);

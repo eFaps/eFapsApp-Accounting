@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.text.StrSubstitutor;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -355,7 +355,7 @@ public abstract class Account2CaseInfo_Base
      */
     public boolean isCheckCurrency()
     {
-        return this.deactCurrencyCheck ? false : (getCurrencyInstance() != null && getCurrencyInstance().isValid());
+        return this.deactCurrencyCheck ? false : getCurrencyInstance() != null && getCurrencyInstance().isValid();
     }
 
     /**

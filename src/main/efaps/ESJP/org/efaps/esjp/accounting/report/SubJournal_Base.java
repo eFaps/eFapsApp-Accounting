@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.report;
@@ -62,7 +59,7 @@ import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.Evaluation;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.StretchType;
 import net.sf.dynamicreports.report.definition.ReportParameters;
@@ -73,13 +70,20 @@ import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
  * TODO comment!
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("2fb19c5b-419b-4503-9f70-11d5d0544713")
 @EFapsApplication("eFapsApp-Accounting")
 public abstract class SubJournal_Base
 {
 
+    /**
+     * Creates the report.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return createReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -132,30 +136,57 @@ public abstract class SubJournal_Base
         return ret;
     }
 
-
-
+    /**
+     * Gets the report.
+     *
+     * @param _parameter the parameter
+     * @return the report
+     * @throws EFapsException the e faps exception
+     */
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new SubJournalReport();
     }
 
+    /**
+     * Gets the sub journal data.
+     *
+     * @param _parameter the parameter
+     * @return the sub journal data
+     */
     protected SubJournalData getSubJournalData(final Parameter _parameter)
     {
         return new SubJournalData();
     }
 
+    /**
+     * Gets the subreport design.
+     *
+     * @param _parameter the parameter
+     * @param _exType the ex type
+     * @return the subreport design
+     */
     protected SubreportDesign getSubreportDesign(final Parameter _parameter,
                                                  final ExportType _exType)
     {
         return new SubreportDesign(_exType);
     }
+
+    /**
+     * Gets the subreport data.
+     *
+     * @param _parameter the parameter
+     * @return the subreport data
+     */
     protected SubreportData getSubreportData(final Parameter _parameter)
     {
         return new SubreportData();
     }
 
-
+    /**
+     * The Class SubJournalReport.
+     */
     public class SubJournalReport
         extends AbstractDynamicReport
     {
@@ -248,6 +279,13 @@ public abstract class SubJournal_Base
             return new JRBeanCollectionDataSource(datasource);
         }
 
+        /**
+         * Gets the title.
+         *
+         * @param _parameter the parameter
+         * @param _key the key
+         * @return the title
+         */
         protected TextFieldBuilder<String> getTitle(final Parameter _parameter,
                                                     final String _key)
         {
@@ -291,7 +329,7 @@ public abstract class SubJournal_Base
             final SubreportBuilder subreport = DynamicReports.cmp
                             .subreport(getSubreportDesign(_parameter, getExType()))
                             .setDataSource(getSubreportData(_parameter))
-             .setStretchType(StretchType.RELATIVE_TO_BAND_HEIGHT)
+             .setStretchType(StretchType.CONTAINER_HEIGHT)
                             .setStyle(DynamicReports.stl.style().setBorder(DynamicReports.stl.pen1Point()));
 
             final ComponentColumnBuilder posColumn = DynamicReports.col.componentColumn(subreport);
@@ -306,13 +344,13 @@ public abstract class SubJournal_Base
 
             final TextFieldBuilder<String> nameTitle = getTitle(_parameter, "Name");
             final TextFieldBuilder<String> rowNumTitle = getTitle(_parameter, "RowNum");
-            final TextFieldBuilder<String> numberTitle = getTitle(_parameter,"Number");
-            final TextFieldBuilder<String> dateTitle = getTitle(_parameter,"Date");
-            final TextFieldBuilder<String> descrTitle = getTitle(_parameter,"Description");
-            final TextFieldBuilder<String> accNameTitle = getTitle(_parameter,"AccName");
-            final TextFieldBuilder<String> accDescrTitle = getTitle(_parameter,"AccDescr");
-            final TextFieldBuilder<String> debitTitle = getTitle(_parameter,"Debit");
-            final TextFieldBuilder<String> creditTitle = getTitle(_parameter,"Credit");
+            final TextFieldBuilder<String> numberTitle = getTitle(_parameter, "Number");
+            final TextFieldBuilder<String> dateTitle = getTitle(_parameter, "Date");
+            final TextFieldBuilder<String> descrTitle = getTitle(_parameter, "Description");
+            final TextFieldBuilder<String> accNameTitle = getTitle(_parameter, "AccName");
+            final TextFieldBuilder<String> accDescrTitle = getTitle(_parameter, "AccDescr");
+            final TextFieldBuilder<String> debitTitle = getTitle(_parameter, "Debit");
+            final TextFieldBuilder<String> creditTitle = getTitle(_parameter, "Credit");
 
             final HorizontalListBuilder header = DynamicReports.cmp.horizontalList();
             header.add(rowNumTitle).add(nameTitle).add(numberTitle).add(dateTitle).add(descrTitle).add(accNameTitle)
@@ -338,12 +376,12 @@ public abstract class SubJournal_Base
 
                 final HorizontalListBuilder sumList = DynamicReports.cmp.horizontalList();
                 sumList.add(DynamicReports.cmp.text("").setWidth(82))
-                       .add(debitSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
-                       .add(creditSbtPage.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
+                       .add(debitSbtPage.setWidth(9).setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT))
+                       .add(creditSbtPage.setWidth(9).setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT))
                        .newRow()
                        .add(DynamicReports.cmp.text("").setWidth(82))
-                       .add(debitSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT))
-                       .add(creditSbtTotal.setWidth(9).setHorizontalAlignment(HorizontalAlignment.RIGHT));
+                       .add(debitSbtTotal.setWidth(9).setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT))
+                       .add(creditSbtTotal.setWidth(9).setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT));
 
                 _builder.addColumnFooter(sumList);
             } else if (ExportType.EXCEL.equals(getExType())) {
@@ -372,15 +410,31 @@ public abstract class SubJournal_Base
         }
     }
 
+    /**
+     * The Class SubJournalData.
+     */
     public static class SubJournalData
     {
+
+        /** The debit sum. */
         private BigDecimal debitSum = BigDecimal.ZERO;
+
+        /** The credit sum. */
         private BigDecimal creditSum = BigDecimal.ZERO;
 
+        /** The number. */
         private String number;
+
+        /** The name. */
         private String name;
+
+        /** The descr. */
         private String descr;
+
+        /** The date. */
         private Date date;
+
+        /** The positions. */
         private final Collection<Map<String, Object>> positions = new ArrayList<>();
 
         /**
@@ -403,7 +457,6 @@ public abstract class SubJournal_Base
             this.number = _number;
         }
 
-
         /**
          * Getter method for the instance variable {@link #positions}.
          *
@@ -414,17 +467,15 @@ public abstract class SubJournal_Base
             return this.positions;
         }
 
-
         /**
          * Setter method for instance variable {@link #positions}.
          *
-         * @param _positions value for instance variable {@link #positions}
+         * @param _position the position
          */
         public void addPosition(final Map<String, Object> _position)
         {
             this.positions.add(_position);
         }
-
 
         /**
          * Getter method for the instance variable {@link #name}.
@@ -436,7 +487,6 @@ public abstract class SubJournal_Base
             return this.name;
         }
 
-
         /**
          * Setter method for instance variable {@link #name}.
          *
@@ -446,7 +496,6 @@ public abstract class SubJournal_Base
         {
             this.name = _name;
         }
-
 
         /**
          * Getter method for the instance variable {@link #descr}.
@@ -458,7 +507,6 @@ public abstract class SubJournal_Base
             return this.descr;
         }
 
-
         /**
          * Setter method for instance variable {@link #descr}.
          *
@@ -468,7 +516,6 @@ public abstract class SubJournal_Base
         {
             this.descr = _descr;
         }
-
 
         /**
          * Getter method for the instance variable {@link #date}.
@@ -480,7 +527,6 @@ public abstract class SubJournal_Base
             return this.date;
         }
 
-
         /**
          * Setter method for instance variable {@link #date}.
          *
@@ -490,7 +536,6 @@ public abstract class SubJournal_Base
         {
             this.date = _date;
         }
-
 
         /**
          * Getter method for the instance variable {@link #debitSum}.
@@ -502,7 +547,6 @@ public abstract class SubJournal_Base
             return this.debitSum;
         }
 
-
         /**
          * Setter method for instance variable {@link #debitSum}.
          *
@@ -512,7 +556,6 @@ public abstract class SubJournal_Base
         {
             this.debitSum = _debitSum;
         }
-
 
         /**
          * Getter method for the instance variable {@link #creditSum}.
@@ -524,7 +567,6 @@ public abstract class SubJournal_Base
             return this.creditSum;
         }
 
-
         /**
          * Setter method for instance variable {@link #creditSum}.
          *
@@ -535,11 +577,24 @@ public abstract class SubJournal_Base
             this.creditSum = _creditSum;
         }
 
+        /**
+         * Adds the credit.
+         *
+         * @param _credit the credit
+         * @return the sub journal data
+         */
         public SubJournalData addCredit(final BigDecimal _credit)
         {
             this.creditSum = this.creditSum.add(_credit);
             return this;
         }
+
+        /**
+         * Adds the debit.
+         *
+         * @param _debit the debit
+         * @return the sub journal data
+         */
         public SubJournalData addDebit(final BigDecimal _debit)
         {
             this.debitSum = this.debitSum.add(_debit);
@@ -551,10 +606,19 @@ public abstract class SubJournal_Base
         extends AbstractSimpleExpression<JasperReportBuilder>
     {
 
+        /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
+
+        /** The ex type. */
         private final ExportType exType;
 
-        public SubreportDesign(final ExportType _exType) {
+        /**
+         * Instantiates a new subreport design.
+         *
+         * @param _exType the ex type
+         */
+        public SubreportDesign(final ExportType _exType)
+        {
             this.exType = _exType;
         }
 
@@ -594,29 +658,44 @@ public abstract class SubJournal_Base
         }
     }
 
+    /**
+     * The Class SubreportData.
+     */
     public static class SubreportData
         extends AbstractSimpleExpression<JRDataSource>
     {
 
+        /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
 
         @Override
-        public JRDataSource evaluate(final ReportParameters reportParameters)
+        public JRDataSource evaluate(final ReportParameters _reportParameters)
         {
-            final Collection<Map<String, ?>> value = reportParameters.getValue("positions");
+            final Collection<Map<String, ?>> value = _reportParameters.getValue("positions");
             return new JRMapCollectionDataSource(value);
         }
     }
 
 
+    /**
+     * The Class CustomTextSubtotal.
+     */
     private class CustomTextSubtotal
         extends AbstractSimpleExpression<String>
     {
 
+        /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
+
+        /** The total. */
         private final VariableBuilder<BigDecimal>total;
 
-        public CustomTextSubtotal( final VariableBuilder<BigDecimal> _total)
+        /**
+         * Instantiates a new custom text subtotal.
+         *
+         * @param _total the total
+         */
+        CustomTextSubtotal(final VariableBuilder<BigDecimal> _total)
         {
             this.total = _total;
         }
@@ -627,5 +706,4 @@ public abstract class SubJournal_Base
             return DynamicReports.type.bigDecimalType().valueToString(this.total, _reportParameters);
         }
     }
-
 }

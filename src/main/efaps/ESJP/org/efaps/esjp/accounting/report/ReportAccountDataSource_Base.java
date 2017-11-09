@@ -55,7 +55,7 @@ import net.sf.jasperreports.engine.JasperReport;
  * TODO comment!
  *
  * @author The eFaps Team
- * 
+ *
  */
 @EFapsUUID("28b48013-d393-4e99-8068-89d57ae2d879")
 @EFapsApplication("eFapsApp-Accounting")
@@ -90,7 +90,7 @@ public abstract class ReportAccountDataSource_Base
         /**
          * @param _key key
          */
-        private Field(final String _key)
+        Field(final String _key)
         {
             this.key = _key;
         }
@@ -233,8 +233,10 @@ public abstract class ReportAccountDataSource_Base
                 final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
                 if (curInstTxnPos.getInstance().getId() != curInst.getInstance().getId()) {
                     if (curInstTxnPos.getInstance().getId() != curBase.getId()) {
-                        RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInstTxnPos.getInstance());
-                        BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, ReportAccountDataSource.class.getName());
+                        RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date,
+                                        curInstTxnPos.getInstance());
+                        BigDecimal rate = RateInfo.getRate(_parameter, rateInfo,
+                                        ReportAccountDataSource.class.getName());
                         final BigDecimal amountTmp = multi
                                     .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)
                                                 .divide(rate, BigDecimal.ROUND_HALF_UP);
@@ -243,7 +245,8 @@ public abstract class ReportAccountDataSource_Base
                         rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
                         amount = amountTmp.divide(rate, BigDecimal.ROUND_HALF_UP);
                     } else {
-                        final RateInfo rateInfo = getCurrency(_parameter).evaluateRateInfo(_parameter, date, curInst.getInstance());
+                        final RateInfo rateInfo = getCurrency(_parameter)
+                                        .evaluateRateInfo(_parameter, date, curInst.getInstance());
                         final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, Report.class.getName());
                         amount = multi
                                     .<BigDecimal>getAttribute(CIAccounting.TransactionPositionAbstract.RateAmount)

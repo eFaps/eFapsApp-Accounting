@@ -23,13 +23,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -66,6 +64,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.RandomUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -240,7 +239,7 @@ public abstract class AbstractEvaluation_Base
                         acc2case.setAmount(DocumentInfo_Base.getAmount4Map(entry.getValue(),
                                         acc2case.getAmountConfig(), acc2case.getAccountInstance()));
                         if (acc2case.getConfigs().contains(Accounting.Account2CaseConfig.SEPARATELY)) {
-                            inst2caseInfo.put(RandomStringUtils.random(4), acc2case);
+                            inst2caseInfo.put(RandomUtil.random(4), acc2case);
                         } else {
                             inst2caseInfo.put(acc2case.getInstance().getOid(), acc2case);
                         }
@@ -250,15 +249,8 @@ public abstract class AbstractEvaluation_Base
             final List<Account2CaseInfo> infos = Account2CaseInfo.getStandards(_parameter, caseInst);
             infos.addAll(inst2caseInfo.values());
 
-            Collections.sort(infos, new Comparator<Account2CaseInfo>()
-            {
-                @Override
-                public int compare(final Account2CaseInfo _o1,
-                                   final Account2CaseInfo _o2)
-                {
-                    return _o1.getOrder().compareTo(_o2.getOrder());
-                }
-            });
+            Collections.sort(infos, (_o1,
+             _o2) -> _o1.getOrder().compareTo(_o2.getOrder()));
 
             evalAccount2CaseInfo4Relation(_parameter, _doc, infos);
 
@@ -565,7 +557,7 @@ public abstract class AbstractEvaluation_Base
                                             final RateInfo rateInfo = RateInfo.getRateInfo(rate);
                                             // if different than base and not one to one
                                             if (!Currency.getBaseCurrency().equals(docCurInst)
-                                                            && rateInfo.getRate().compareTo(BigDecimal.ONE) != 0){
+                                                            && rateInfo.getRate().compareTo(BigDecimal.ONE) != 0) {
                                                 final BigDecimal amount = _doc.getAmount4Doc(docInst);
                                                 final BigDecimal rateAmount = amount.multiply(rateInfo.getRate());
                                                 acc = new AccountInfo().setInstance(accInst)
