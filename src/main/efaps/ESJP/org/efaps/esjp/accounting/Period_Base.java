@@ -57,6 +57,7 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.LabelDefinition;
 import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.accounting.util.AccountingSettings;
+import org.efaps.esjp.accounting.util.PeriodCarryOver;
 import org.efaps.esjp.admin.access.AccessCheck4UI;
 import org.efaps.esjp.admin.common.systemconfiguration.SystemConf;
 import org.efaps.esjp.ci.CIAccounting;
@@ -252,6 +253,22 @@ public abstract class Period_Base
             final Import imp = new Import();
             imp.createAccountTable(periodInst, accountTable);
         }
+        return new Return();
+    }
+
+    /**
+     * Creates the from period.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return createFromPeriod(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance basePeriodInst = Instance.get(_parameter.getParameterValue("period"));
+        final PeriodCarryOver carryOver = new PeriodCarryOver();
+        carryOver.createFromPeriod(_parameter, basePeriodInst);
         return new Return();
     }
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+  Copyright 2003 - 2017 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e587aafd-2df9-4c37-8189-c84ed90484c6</uuid>
+    <file-application>eFapsApp-Accounting</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Accounting_PeriodCreateFromForm</name>
+        <field name="period">
+            <property name="Label">Accounting_Period.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="autoComplete"
+                name="Accounting_PeriodCreateFromForm.period.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="SearchAttribute">Name</property>
+                <property name="Select4VALUE">attribute[Name]</property>
+                <property name="Select4CHOICE">attribute[Name]</property>
+                <property name="Type">Accounting_Period</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Name</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="fromDate">
+            <property name="Attribute">FromDate</property>
+            <property name="Required">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="toDate">
+            <property name="Attribute">ToDate</property>
+            <property name="Required">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+    </definition>
+</ui-form>

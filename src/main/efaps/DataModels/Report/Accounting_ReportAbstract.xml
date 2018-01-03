@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2018 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,26 +15,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e0729b90-cc85-4340-9469-70db2cb1705d</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
     <specification>DM00015</specification>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_ReportAbstract</name>
-        <purpose abstract="true"/>
+        <purpose abstract="true" />
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -84,6 +74,12 @@
             <type>String</type>
             <sqltable>Accounting_ReportSQLTable</sqltable>
             <sqlcolumn>NUMBERING</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Int1</name>
+            <type>Integer</type>
+            <sqltable>Accounting_ReportSQLTable</sqltable>
+            <sqlcolumn>INT1</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2018 The eFaps Team
+ Copyright 2003 - 2017 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,15 +16,24 @@
  limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2e180269-a50c-4dfa-a09c-c799c6fb6afc</uuid>
+    <uuid>077b65e5-e50f-454e-97f3-a85e2f2a330a</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_ReportSingularAbstract</name>
-        <parent>Accounting_ReportAbstract</parent>
-        <purpose abstract="true"/>
+        <name>Accounting_PeriodMyDesk_Menu_Action_CreateFrom</name>
+        <access>
+            <role>Accounting_Admin</role>
+        </access>
+        <target>
+            <form>Accounting_PeriodCreateFromForm</form>
+            <execute method="createFromPeriod" program="org.efaps.esjp.accounting.Period" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Accounting_Period</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
-</datamodel-type>
+</ui-command>

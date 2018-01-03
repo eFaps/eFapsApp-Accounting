@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.accounting;
 
@@ -41,12 +37,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * TODO comment!
  *
  * @author The eFaps Team
- * 
  */
 @EFapsUUID("ffd4cd11-e67b-4ba1-a16e-af2ae08b3460")
 @EFapsApplication("eFapsApp-Accounting")
@@ -57,6 +50,13 @@ public abstract class SubJournal_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(SubJournal.class);
 
+    /**
+     * Insert post trigger.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return insertPostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -101,14 +101,14 @@ public abstract class SubJournal_Base
             final Pattern pattern = Pattern.compile("\\d*$");
             final Matcher matcher =  pattern.matcher(numberStr.trim());
             if (matcher.find()) {
-                curr = Integer.parseInt( matcher.group());
+                curr = Integer.parseInt(matcher.group());
             }
         } catch (final NumberFormatException e) {
             SubJournal_Base.LOG.warn("Catched NumberFormatException");
         }
         curr = curr + 1;
 
-        numberStr = String.format("%s/%02d/%04d",repName, month, curr);
+        numberStr = String.format("%s/%02d/%04d", repName, month, curr);
 
         final Update update = new Update(_parameter.getInstance());
         update.add(CIAccounting.ReportSubJournal2Transaction.Number, numberStr);
