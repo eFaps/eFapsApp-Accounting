@@ -35,6 +35,22 @@
             <property name="Label">ERP_DocumentAbstract/Name.Label</property>
             <property name="HRef">TREE</property>
         </field>
+        <field name="revision">
+            <property name="Select">linkto[ToLink].attribute[Revision]</property>
+            <property name="Label">ERP_DocumentAbstract/Revision.Label</property>
+        </field>
+        <field name="code">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">ERP_PaymentDocumentAbstract/Code.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getLazyFieldValue"
+                name="Accounting_Period2ERPDocumentTable.code.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">ERP_PaymentDocumentAbstract</property>
+                <property name="Select">linkto[ToLink].attribute[Code]</property>
+                <property name="Select4Type">linkto[ToLink].type</property>
+            </trigger>
+        </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[ToLink].linkto[Contact].oid</property>
             <property name="HRef">TREE</property>
