@@ -238,6 +238,17 @@ public final class Accounting
                     .addDefaultValue("Type08", "Sales_PaymentRetention")
                     .description("Permit to overwrite the MultiPrint for IncomingExchange.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CANCELEDTAG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "CanceledTag")
+                    .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Replaced.toString())
+                    .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Replaced.toString())
+                    .description("List of Status that should be tagged as canceled");
+
     /**
      * Singelton.
      */
