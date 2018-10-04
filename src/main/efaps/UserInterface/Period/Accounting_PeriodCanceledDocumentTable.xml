@@ -26,6 +26,7 @@
         <field name="type">
             <property name="Select">linkto[ToLinkAbstract].type.label</property>
             <property name="Label">Sales_DocumentAbstract/Type.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="name">
             <property name="HRef">TREE</property>
@@ -40,6 +41,7 @@
         <field name="status">
             <property name="Select">linkto[ToLinkAbstract].status.label</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>
