@@ -244,9 +244,17 @@ public final class Accounting
                     .sysConfUUID(Accounting.SYSCONFUUID)
                     .key(Accounting.BASE + "CanceledTag")
                     .addDefaultValue("StatusGroup01", CISales.InvoiceStatus.getType().getName())
-                    .addDefaultValue("Status01", CISales.InvoiceStatus.Replaced.toString())
+                    .addDefaultValue("Status01", CISales.InvoiceStatus.Replaced.key)
                     .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
-                    .addDefaultValue("Status02", CISales.ReceiptStatus.Replaced.toString())
+                    .addDefaultValue("Status02", CISales.ReceiptStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup03", CISales.Reminder.getType().getName())
+                    .addDefaultValue("Status03", CISales.ReminderStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup04", CISales.CreditNote.getType().getName())
+                    .addDefaultValue("Status04", CISales.CreditNoteStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup05", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("Status05", CISales.IncomingInvoiceStatus.Replaced.key)
+                    .addDefaultValue("StatusGroup06", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("Status06", CISales.IncomingReceiptStatus.Replaced.key)
                     .description("List of Status that should be tagged as canceled");
 
     /**

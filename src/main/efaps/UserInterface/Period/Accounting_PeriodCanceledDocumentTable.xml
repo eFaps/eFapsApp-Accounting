@@ -24,22 +24,23 @@
         <version-expression>(version==latest)</version-expression>
         <name>Accounting_PeriodCanceledDocumentTable</name>
         <field name="type">
-            <property name="Select">linkto[ToLinkAbstract].type.label</property>
+            <property name="Select">type.label</property>
             <property name="Label">Sales_DocumentAbstract/Type.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="name">
             <property name="HRef">TREE</property>
-            <property name="Select">linkto[ToLinkAbstract].attribute[Name]</property>
+            <property name="Select">attribute[Name]</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
-            <property name="Attribute">Date</property>
-            <property name="Select">linkto[ToLinkAbstract].attribute[Date]</property>
+            <property name="Select">attribute[Date]</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DateUI</property>
         </field>
         <field name="status">
-            <property name="Select">linkto[ToLinkAbstract].status.label</property>
+            <property name="Select">status.label</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>

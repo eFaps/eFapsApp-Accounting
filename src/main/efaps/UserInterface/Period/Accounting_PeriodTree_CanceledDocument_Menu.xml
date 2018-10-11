@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2018 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,23 +15,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a0e496ac-2c91-45b0-ae19-26f2889b4c0c</uuid>
+    <uuid>8042ebff-ea77-4b36-89b3-3a29608ed44a</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Accounting_PeriodTree_CanceledDocument</name>
-        <target>
-            <menu>Accounting_PeriodTree_CanceledDocument_Menu</menu>
-            <table>Accounting_PeriodCanceledDocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Accounting_CanceledTag4Documents</property>
-                <property name="InstanceSelect">linkto[DocumentAbstractLink].instance</property>
-            </evaluate>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Accounting_PeriodTree_CanceledDocument_Menu</name>
+        <childs>
+            <child>Accounting_PeriodTree_CanceledDocument_Menu_Action</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>
