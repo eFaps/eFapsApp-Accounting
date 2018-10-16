@@ -247,13 +247,13 @@ public final class Accounting
                     .addDefaultValue("Status01", CISales.InvoiceStatus.Replaced.key)
                     .addDefaultValue("StatusGroup02", CISales.ReceiptStatus.getType().getName())
                     .addDefaultValue("Status02", CISales.ReceiptStatus.Replaced.key)
-                    .addDefaultValue("StatusGroup03", CISales.Reminder.getType().getName())
+                    .addDefaultValue("StatusGroup03", CISales.ReminderStatus.getType().getName())
                     .addDefaultValue("Status03", CISales.ReminderStatus.Replaced.key)
-                    .addDefaultValue("StatusGroup04", CISales.CreditNote.getType().getName())
+                    .addDefaultValue("StatusGroup04", CISales.CreditNoteStatus.getType().getName())
                     .addDefaultValue("Status04", CISales.CreditNoteStatus.Replaced.key)
-                    .addDefaultValue("StatusGroup05", CISales.IncomingInvoice.getType().getName())
+                    .addDefaultValue("StatusGroup05", CISales.IncomingInvoiceStatus.getType().getName())
                     .addDefaultValue("Status05", CISales.IncomingInvoiceStatus.Replaced.key)
-                    .addDefaultValue("StatusGroup06", CISales.IncomingReceipt.getType().getName())
+                    .addDefaultValue("StatusGroup06", CISales.IncomingReceiptStatus.getType().getName())
                     .addDefaultValue("Status06", CISales.IncomingReceiptStatus.Replaced.key)
                     .description("List of Status that should be tagged as canceled");
 

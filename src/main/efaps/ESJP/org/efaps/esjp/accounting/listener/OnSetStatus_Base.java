@@ -59,7 +59,9 @@ public abstract class OnSetStatus_Base
     }
 
     @Override
-    public Set<Status> getStatus() throws EFapsException {
+    public Set<Status> getStatus()
+        throws EFapsException
+    {
         return new HashSet<>(getStatusListFromProperties(ParameterUtil.instance(), Accounting.CANCELEDTAG.get()));
     }
 }
