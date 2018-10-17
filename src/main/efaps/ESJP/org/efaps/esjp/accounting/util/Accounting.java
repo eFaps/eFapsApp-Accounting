@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -50,6 +49,13 @@ public final class Accounting
 
     /** Accounting-Configuration. */
     public static final UUID SYSCONFUUID = UUID.fromString("ca0a1df1-2211-45d9-97c8-07af6636a9b9");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "Activate")
+                    .description("Main switch to turn on/off Accounting");
 
     /** See description. */
     @EFapsSysConfAttribute

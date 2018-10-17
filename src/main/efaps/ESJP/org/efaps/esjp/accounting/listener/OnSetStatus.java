@@ -22,7 +22,9 @@ import org.efaps.admin.program.esjp.EFapsListener;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
- * The Class OnSetStatus.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
  */
 @EFapsUUID("efb89d19-f14d-43b4-8061-7d072613716e")
 @EFapsApplication("eFapsApp-Accounting")
