@@ -66,6 +66,13 @@ public final class Accounting
                                     + "Means only one CurrencyRate for the system is used.");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PURCHASERECORD_ACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(Accounting.SYSCONFUUID)
+                    .key(Accounting.BASE + "PurchaseRecord.Activate")
+                    .description("Switch to turn on/off PurchaseRecord seperately.");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink CTP4VAT = new SysConfLink()
                     .sysConfUUID(Accounting.SYSCONFUUID)
