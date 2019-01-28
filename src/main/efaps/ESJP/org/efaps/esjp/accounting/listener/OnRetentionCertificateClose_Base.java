@@ -69,31 +69,33 @@ public abstract class OnRetentionCertificateClose_Base
                       final Status _status)
         throws EFapsException
     {
-        final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
-        final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
+        if (Accounting.ACTIVATE.get()) {
+            final Instance periodInst = new Period().evaluateCurrentPeriod(_parameter);
+            final Properties props = Accounting.getSysConfig().getObjectAttributeValueAsProperties(periodInst);
 
-        if (props.containsKey(AccountingSettings.PERIOD_RETENTIONCASE)) {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.CaseRetPer);
-            queryBldr.addWhereAttrMatchValue(CIAccounting.CaseRetPer.Name,
-                            props.get(AccountingSettings.PERIOD_RETENTIONCASE) + "*");
-            final InstanceQuery query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            if (query.next()) {
-                final Parameter parameter = ParameterUtil.clone(_parameter);
-                ParameterUtil.setParameterValues(parameter, "selectedRow", _instance.getOid());
+            if (props.containsKey(AccountingSettings.PERIOD_RETENTIONCASE)) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.CaseRetPer);
+                queryBldr.addWhereAttrMatchValue(CIAccounting.CaseRetPer.Name,
+                                props.get(AccountingSettings.PERIOD_RETENTIONCASE) + "*");
+                final InstanceQuery query = queryBldr.getQuery();
+                query.executeWithoutAccessCheck();
+                if (query.next()) {
+                    final Parameter parameter = ParameterUtil.clone(_parameter);
+                    ParameterUtil.setParameterValues(parameter, "selectedRow", _instance.getOid());
 
-                final List<Instance> instances = new FieldValue().getSelectedDocInst(parameter);
-                final String[] oids = new String[instances.size()];
-                int i = 0;
-                for (final Instance inst : instances) {
-                    oids[i] = inst.getOid();
-                    i++;
+                    final List<Instance> instances = new FieldValue().getSelectedDocInst(parameter);
+                    final String[] oids = new String[instances.size()];
+                    int i = 0;
+                    for (final Instance inst : instances) {
+                        oids[i] = inst.getOid();
+                        i++;
+                    }
+                    ParameterUtil.setParameterValues(parameter, "case", query.getCurrentValue().getOid());
+                    ParameterUtil.setParameterValues(parameter, "document", oids);
+
+                    final Create create = new Create();
+                    create.create4RetPerMassive(parameter);
                 }
-                ParameterUtil.setParameterValues(parameter, "case", query.getCurrentValue().getOid());
-                ParameterUtil.setParameterValues(parameter, "document", oids);
-
-                final Create create = new Create();
-                create.create4RetPerMassive(parameter);
             }
         }
     }

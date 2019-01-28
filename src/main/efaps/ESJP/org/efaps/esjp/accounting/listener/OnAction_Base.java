@@ -26,6 +26,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.accounting.transaction.Action;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.listener.ITypedClass;
@@ -58,7 +59,9 @@ public abstract class OnAction_Base
                             final Instance _actionRelInst)
         throws EFapsException
     {
-        excuteAction(_parameter, _typeClass.getCIType().getType(), _actionRelInst);
+        if (Accounting.ACTIVATE.get()) {
+            excuteAction(_parameter, _typeClass.getCIType().getType(), _actionRelInst);
+        }
     }
 
     /**
@@ -74,12 +77,14 @@ public abstract class OnAction_Base
                                  final Instance _docInst)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CIERP.ActionDefinition2DocumentAbstract);
-        queryBldr.addWhereAttrEqValue(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, _docInst);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
-        while (query.next()) {
-            excuteAction(_parameter, _docInst.getType(), query.getCurrentValue());
+        if (Accounting.ACTIVATE.get()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIERP.ActionDefinition2DocumentAbstract);
+            queryBldr.addWhereAttrEqValue(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, _docInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                excuteAction(_parameter, _docInst.getType(), query.getCurrentValue());
+            }
         }
     }
 

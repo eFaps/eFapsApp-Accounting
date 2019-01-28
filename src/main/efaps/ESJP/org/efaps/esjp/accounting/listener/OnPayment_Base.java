@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.accounting.listener;
@@ -27,6 +24,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.accounting.transaction.Create;
+import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.listener.ITypedClass;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -35,12 +33,9 @@ import org.efaps.esjp.sales.listener.IOnPayment;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.esjp.sales.util.Sales.AccountAutomation;
 import org.efaps.util.EFapsException;
+
 /**
- * TODO comment!
- *
  * @author The eFaps Team
- * @version $Id: OnCreateFromDocument_Base.java 13174 2014-06-26 20:52:08Z
- *          jan@moxter.net $
  */
 @EFapsUUID("7985e04b-a2e2-45f5-a516-f973a45548a1")
 @EFapsApplication("eFapsApp-Accounting")
@@ -54,7 +49,7 @@ public abstract class OnPayment_Base
                                   final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        if (_createdDoc.getInstance() != null && _createdDoc.getInstance().isValid()
+        if (Accounting.ACTIVATE.get() && _createdDoc.getInstance() != null && _createdDoc.getInstance().isValid()
                         && _createdDoc.getInstance().getType().isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
             final Instance paymentDocInst = _createdDoc.getInstance();
             if (_typedClass instanceof AbstractPaymentDocument) {
