@@ -44,7 +44,6 @@
             <property name="ModeSearch">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
             <property name="Select">linkto[PeriodAbstractLink].attribute[Name]</property>
             <property name="Label">Accounting_AccountAbstract/PeriodAbstractLink.Label</property>
         </field>
