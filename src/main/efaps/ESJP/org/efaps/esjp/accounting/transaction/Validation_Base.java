@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
  */
 @EFapsUUID("3af252ad-bfc4-4b28-af9b-aed39a65fdfc")
@@ -66,7 +64,7 @@ public abstract class Validation_Base
         final Return ret = new Return();
         final boolean areyousure = true;
 
-        final List<IWarning> warnings = new ArrayList<IWarning>();
+        final List<IWarning> warnings = new ArrayList<>();
         warnings.addAll(new org.efaps.esjp.sales.document.Validation().validateName(_parameter, null));
         warnings.addAll(validatePositions(_parameter, "Debit"));
         warnings.addAll(validatePositions(_parameter, "Credit"));
@@ -131,7 +129,7 @@ public abstract class Validation_Base
                     final String amount = amounts[i];
                     final String accountOid = accountOids[i];
                     final BigDecimal rate = amounts[i].length() > 0
-                                    ? (BigDecimal) frmt.getFrmt4RateUI().parse(rates[i]) : BigDecimal.ZERO;
+                                    ? (BigDecimal) frmt.getFrmt4RateUI(null).parse(rates[i]) : BigDecimal.ZERO;
                     if (!(amount.length() > 0 && accountOid.length() > 0 && rate.compareTo(BigDecimal.ZERO) != 0)) {
                         ret.add(new PositionWarning().setPosition(i));
                     }

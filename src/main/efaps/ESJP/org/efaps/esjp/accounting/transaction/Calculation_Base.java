@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -350,14 +350,14 @@ public abstract class Calculation_Base
 
                     final RateInfo rate = evaluateRate(_parameter, periodInstance, date, Instance.get(CIERP.Currency
                                     .getType(), currencies[i]));
-                    final DecimalFormat rateFormater = sale ? rate.getFormatter().getFrmt4SaleRateUI()
-                                    : rate.getFormatter().getFrmt4RateUI();
+                    final DecimalFormat rateFormater = sale ? rate.getFormatter().getFrmt4SaleRateUI(null)
+                                    : rate.getFormatter().getFrmt4RateUI(null);
                     final BigDecimal amountRate = amounts[i].isEmpty() ? BigDecimal.ZERO
                                     : (BigDecimal) rateFormater.parse(amounts[i]);
 
                     final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
 
-                    final String rateStr = sale ? rate.getSaleRateUIFrmt() : rate.getRateUIFrmt();
+                    final String rateStr = sale ? rate.getSaleRateUIFrmt(null) : rate.getRateUIFrmt(null);
                     final String rateInStr = "" + rate.isInvert();
                     final String amountStr = formater.format(amountRate.setScale(12).divide(sale ? rate.getSaleRate()
                                     : rate.getRate(), BigDecimal.ROUND_HALF_UP));

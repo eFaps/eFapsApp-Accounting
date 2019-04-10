@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,6 @@ import org.joda.time.DateTime;
 
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -209,8 +208,8 @@ public abstract class FieldUpdate_Base
             final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
             final RateInfo rate = evaluateRate(_parameter, periodInstance, date,
                             Instance.get(CIERP.Currency.getType(), currIds[pos]));
-            final DecimalFormat rateFormater = sale ? rate.getFormatter().getFrmt4SaleRateUI()
-                            : rate.getFormatter().getFrmt4RateUI();
+            final DecimalFormat rateFormater = sale ? rate.getFormatter().getFrmt4SaleRateUI(null)
+                            : rate.getFormatter().getFrmt4RateUI(null);
             final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
             final BigDecimal amountRate = amounts[pos].isEmpty() ? BigDecimal.ZERO
                             : (BigDecimal) rateFormater.parse(amounts[pos]);
@@ -225,7 +224,7 @@ public abstract class FieldUpdate_Base
 
             final List<Map<String, String>> list = new ArrayList<>();
             final Map<String, String> map = new HashMap<>();
-            map.put("rate_" + postfix, sale ? rate.getSaleRateUIFrmt() : rate.getRateUIFrmt());
+            map.put("rate_" + postfix, sale ? rate.getSaleRateUIFrmt(null) : rate.getRateUIFrmt(null));
             map.put("rate_" + postfix + RateUI.INVERTEDSUFFIX, "" + rate.isInvert());
             map.put("sum" + postfix, sumStr);
             map.put("amountRate_" + postfix, formater.format(amountRate.setScale(12)
@@ -448,7 +447,7 @@ public abstract class FieldUpdate_Base
                 final RateInfo rate = evaluateRate(_parameter, periodInstance, date,
                                 Instance.get(CIERP.Currency.getType(), currIds[i]));
                 ret.append("document.getElementsByName('").append(_targetFieldName).append("')[").append(i)
-                    .append("].value='").append(rate.getRateUIFrmt()).append("';")
+                    .append("].value='").append(rate.getRateUIFrmt(null)).append("';")
                     .append("document.getElementsByName('").append(_targetFieldName)
                     .append(RateUI.INVERTEDSUFFIX)
                     .append("')[").append(i).append("].value='").append(rate.isInvert())

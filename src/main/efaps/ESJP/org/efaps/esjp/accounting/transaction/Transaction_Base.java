@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +35,14 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.MsgPhrase;
@@ -94,14 +101,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
 
 /**
  * Base class for transaction in accounting.
@@ -398,7 +397,7 @@ public abstract class Transaction_Base
         BigDecimal rate = BigDecimal.ONE;
         try {
             final String[] rates = _parameter.getParameterValues("rate" + _postfix);
-            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate().parse(rates[_index]);
+            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate(null).parse(rates[_index]);
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
@@ -966,25 +965,19 @@ public abstract class Transaction_Base
                 throw new EFapsException(Transaction_Base.class, "executeQuery4InvalidTransactions", e);
             }
 
-            Collections.sort(lst, new Comparator<Map<String, Object>>()
-            {
-
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    final Date date1 = (Date) _o1.get("date");
-                    final Date date2 = (Date) _o2.get("date");
-                    final int ret;
-                    if (date1.equals(date2)) {
-                        final String txn1 = (String) _o1.get("transaction");
-                        final String txn2 = (String) _o2.get("transaction");
-                        ret = txn1.compareTo(txn2);
-                    } else {
-                        ret = date1.compareTo(date2);
-                    }
-                    return ret;
+            Collections.sort(lst, (_o1,
+             _o2) -> {
+                final Date date1 = (Date) _o1.get("date");
+                final Date date2 = (Date) _o2.get("date");
+                final int ret;
+                if (date1.equals(date2)) {
+                    final String txn1 = (String) _o1.get("transaction");
+                    final String txn2 = (String) _o2.get("transaction");
+                    ret = txn1.compareTo(txn2);
+                } else {
+                    ret = date1.compareTo(date2);
                 }
+                return ret;
             });
 
             for (final Map<String, Object> map : lst) {

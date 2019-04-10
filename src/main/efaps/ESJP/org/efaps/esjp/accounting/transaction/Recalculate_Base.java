@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -225,7 +225,7 @@ public abstract class Recalculate_Base
 
             final RateFormatter frmt = getRateFormatter(_parameter);
 
-            final String rateStr = frmt.getFrmt4Rate().format(rateInfo.getRate());
+            final String rateStr = frmt.getFrmt4Rate(null).format(rateInfo.getRate());
             final List<Map<String, String>> list = new ArrayList<>();
             final Map<String, String> map = new HashMap<>();
             map.put("rate", rateStr);
