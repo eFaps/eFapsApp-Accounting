@@ -111,6 +111,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Accounting_Account2CaseCredit4CategoryProduct/CategoryProductLink.Label</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.accounting.Case"
                 method="dropDownFieldValue"
                 name="Accounting_Account2CaseTable.categoryProductLink.UI_FIELD_VALUE"
@@ -128,7 +129,7 @@
             <property name="Select">linkto[CategoryProductLink].attribute[Name]</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Accounting_Account2CaseCredit4CategoryProduct/CategoryProductLink.Label</property>
-             <property name="HRef">TREE</property>
+            <property name="HRef">TREE</property>
             <trigger program="org.efaps.esjp.accounting.Case"
                 method="categoryProductLinkAccessCheck"
                 name="Accounting_Account2CaseTable.categoryProductLink4view.UI_ACCESSCHECK"
