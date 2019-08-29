@@ -36,6 +36,7 @@ import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 
 /**
@@ -118,7 +119,7 @@ public abstract class Case_Base
 
         if (value != null && value > 0) {
             final Type type = Type.get(value);
-            if (type == null) {
+            if (type == null || !(type instanceof Classification)) {
                 html.append("-");
             } else {
                 Classification clazz = (Classification) type;
@@ -147,9 +148,8 @@ public abstract class Case_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        if (_parameter.getInstance().getType().equals(CIAccounting.Account2CaseCredit4Classification.getType())
-                        || _parameter.getInstance().getType()
-                                        .equals(CIAccounting.Account2CaseDebit4Classification.getType())) {
+        if (InstanceUtils.isType(_parameter.getInstance(), CIAccounting.Account2CaseCredit4Classification)
+                        || InstanceUtils.isType(_parameter.getInstance(), CIAccounting.Account2CaseDebit4Classification)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -166,9 +166,9 @@ public abstract class Case_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        if (_parameter.getInstance().getType().equals(CIAccounting.Account2CaseCredit4CategoryProduct.getType())
-                        || _parameter.getInstance().getType()
-                                        .equals(CIAccounting.Account2CaseDebit4CategoryProduct.getType())) {
+        if (InstanceUtils.isType(_parameter.getInstance(), CIAccounting.Account2CaseCredit4CategoryProduct)
+                        || InstanceUtils.isType(_parameter.getInstance(), CIAccounting.Account2CaseDebit4CategoryProduct)
+                        || InstanceUtils.isType(_parameter.getInstance(), CIAccounting.CategoryProduct)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -185,9 +185,8 @@ public abstract class Case_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        if (_parameter.getInstance().getType().equals(CIAccounting.Account2CaseCredit4Key.getType())
-                        || _parameter.getInstance().getType()
-                                        .equals(CIAccounting.Account2CaseDebit4Key.getType())) {
+        if (InstanceUtils.isType(_parameter.getInstance(), CIAccounting.Account2CaseCredit4Key)
+                        || InstanceUtils.isType(_parameter.getInstance(), CIAccounting.Account2CaseDebit4Key)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;

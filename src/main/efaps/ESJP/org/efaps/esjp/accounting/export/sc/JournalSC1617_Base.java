@@ -590,7 +590,7 @@ public abstract class JournalSC1617_Base
          */
         public String getOriginKey()
         {
-            return this.originKey;
+            return originKey;
         }
 
         /**
@@ -601,7 +601,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setOriginKey(final String _originKey)
         {
-            this.originKey = _originKey;
+            originKey = _originKey;
             return this;
         }
 
@@ -612,7 +612,7 @@ public abstract class JournalSC1617_Base
          */
         public DateTime getTransDate()
         {
-            return this.transDate;
+            return transDate;
         }
 
         /**
@@ -628,9 +628,9 @@ public abstract class JournalSC1617_Base
             final CurrencyInst currencyInst = CurrencyInst.get(_currencyId);
             // only dolar and soles are working!
             if (currencyInst.getUUID().toString().equals("691758fc-a060-4bd5-b1fa-b33296638126")) {
-                this.currency = "D";
+                currency = "D";
             } else {
-                this.currency = "S";
+                currency = "S";
             }
             return this;
         }
@@ -643,7 +643,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setTransDate(final DateTime _transDate)
         {
-            this.transDate = _transDate;
+            transDate = _transDate;
             return this;
         }
 
@@ -654,7 +654,7 @@ public abstract class JournalSC1617_Base
          */
         public String getAccName()
         {
-            return this.accName;
+            return accName;
         }
 
         /**
@@ -665,7 +665,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setAccName(final String _accName)
         {
-            this.accName = _accName;
+            accName = _accName;
             return this;
         }
 
@@ -676,7 +676,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getAmountDebit()
         {
-            return this.amount.compareTo(BigDecimal.ZERO) < 0 ? this.amount.abs() : BigDecimal.ZERO;
+            return amount.compareTo(BigDecimal.ZERO) < 0 ? amount.abs() : BigDecimal.ZERO;
         }
 
         /**
@@ -686,7 +686,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getAmountCredit()
         {
-            return this.amount.compareTo(BigDecimal.ZERO) > 0 ? this.amount.abs() : BigDecimal.ZERO;
+            return amount.compareTo(BigDecimal.ZERO) > 0 ? amount.abs() : BigDecimal.ZERO;
         }
 
         /**
@@ -697,7 +697,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setAmount(final BigDecimal _amount)
         {
-            this.amount = _amount;
+            amount = _amount;
             return this;
         }
 
@@ -742,7 +742,7 @@ public abstract class JournalSC1617_Base
          */
         public String getNumber()
         {
-            return this.number == null ? null : StringUtils.substring(this.number, -5, this.number.length());
+            return number == null ? null : StringUtils.substring(number, -5, number.length());
         }
 
         /**
@@ -753,7 +753,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setNumber(final String _number)
         {
-            this.number = _number;
+            number = _number;
             return this;
         }
 
@@ -764,7 +764,7 @@ public abstract class JournalSC1617_Base
          */
         public String getCurrency()
         {
-            return this.currency;
+            return currency;
         }
 
         /**
@@ -775,7 +775,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setCurrency(final String _currency)
         {
-            this.currency = _currency;
+            currency = _currency;
             return this;
         }
 
@@ -788,8 +788,8 @@ public abstract class JournalSC1617_Base
         public BigDecimal getRate()
             throws EFapsException
         {
-            BigDecimal ret = this.rate;
-            if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)
+            BigDecimal ret = rate;
+            if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(currency)
                             && InstanceUtils.isKindOf(getOrigDocInst(), CIERP.PaymentDocumentAbstract)) {
                 final PrintQuery print = new PrintQuery(getPosInstance());
                 print.addAttribute(CIAccounting.TransactionPositionAbstract.Remark);
@@ -825,7 +825,7 @@ public abstract class JournalSC1617_Base
                 }
             }
             // check if still needs to be replaced
-            if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(this.currency)) {
+            if (BigDecimal.ONE.compareTo(ret) == 0 && "S".equals(currency)) {
                 final Properties props = PropertiesUtil.getProperties4Prefix(Accounting.EXPORT_SC1617.get(),
                                 getReportKey());
                 final Properties oProps = PropertiesUtil.getProperties4Prefix(props, getOriginKey(), true);
@@ -869,7 +869,7 @@ public abstract class JournalSC1617_Base
         public DataBean setRate(final Object[] _rate)
             throws EFapsException
         {
-            this.rate = new Currency().evalRate(_rate, true);
+            rate = new Currency().evalRate(_rate, true);
             return this;
         }
 
@@ -880,7 +880,7 @@ public abstract class JournalSC1617_Base
          */
         public String getDocName()
         {
-            return this.docName;
+            return docName;
         }
 
         /**
@@ -891,7 +891,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setDocName(final String _docName)
         {
-            this.docName = _docName;
+            docName = _docName;
             return this;
         }
 
@@ -902,7 +902,7 @@ public abstract class JournalSC1617_Base
          */
         public DateTime getDocDate()
         {
-            return this.docDate;
+            return docDate;
         }
 
         /**
@@ -913,7 +913,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setDocDate(final DateTime _docDate)
         {
-            this.docDate = _docDate;
+            docDate = _docDate;
             return this;
         }
 
@@ -924,7 +924,7 @@ public abstract class JournalSC1617_Base
          */
         public DateTime getDocDueDate()
         {
-            return this.docDueDate == null ? getDocDate() : this.docDate;
+            return docDueDate == null ? getDocDate() : docDueDate;
         }
 
         /**
@@ -935,7 +935,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setDocDueDate(final DateTime _docDueDate)
         {
-            this.docDueDate = _docDueDate;
+            docDueDate = _docDueDate;
             return this;
         }
 
@@ -946,7 +946,7 @@ public abstract class JournalSC1617_Base
          */
         public String getTransDescr()
         {
-            return this.transDescr;
+            return transDescr;
         }
 
         /**
@@ -957,7 +957,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setTransDescr(final String _transDescr)
         {
-            this.transDescr = _transDescr;
+            transDescr = _transDescr;
             return this;
         }
 
@@ -968,7 +968,7 @@ public abstract class JournalSC1617_Base
          */
         public String getEmpty()
         {
-            return this.empty;
+            return empty;
         }
 
         /**
@@ -979,7 +979,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setEmpty(final String _empty)
         {
-            this.empty = _empty;
+            empty = _empty;
             return this;
         }
 
@@ -990,7 +990,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getNetTotal()
         {
-            return this.netTotal;
+            return netTotal;
         }
 
         /**
@@ -1001,7 +1001,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setNetTotal(final BigDecimal _netTotal)
         {
-            this.netTotal = _netTotal;
+            netTotal = _netTotal;
             return this;
         }
 
@@ -1033,7 +1033,7 @@ public abstract class JournalSC1617_Base
          */
         public String getContactName()
         {
-            return this.contactName;
+            return contactName;
         }
 
         /**
@@ -1044,7 +1044,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setContactName(final String _contactName)
         {
-            this.contactName = _contactName;
+            contactName = _contactName;
             return this;
         }
 
@@ -1055,7 +1055,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getZero()
         {
-            return this.zero;
+            return zero;
         }
 
         /**
@@ -1066,7 +1066,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setZero(final BigDecimal _zero)
         {
-            this.zero = _zero;
+            zero = _zero;
             return this;
         }
 
@@ -1077,7 +1077,7 @@ public abstract class JournalSC1617_Base
          */
         public String getTaxNumber()
         {
-            return this.taxNumber;
+            return taxNumber;
         }
 
         /**
@@ -1088,7 +1088,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setTaxNumber(final String _taxNumber)
         {
-            this.taxNumber = _taxNumber;
+            taxNumber = _taxNumber;
             return this;
         }
 
@@ -1099,7 +1099,7 @@ public abstract class JournalSC1617_Base
          */
         public String getOrigin()
         {
-            return this.origin;
+            return origin;
         }
 
         /**
@@ -1110,7 +1110,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setOrigin(final String _origin)
         {
-            this.origin = _origin;
+            origin = _origin;
             return this;
         }
 
@@ -1121,7 +1121,7 @@ public abstract class JournalSC1617_Base
          */
         public String getLastName()
         {
-            return this.lastName;
+            return lastName;
         }
 
         /**
@@ -1132,7 +1132,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setLastName(final String _lastName)
         {
-            this.lastName = _lastName;
+            lastName = _lastName;
             return this;
         }
 
@@ -1143,7 +1143,7 @@ public abstract class JournalSC1617_Base
          */
         public String getSecondLastName()
         {
-            return this.secondLastName;
+            return secondLastName;
         }
 
         /**
@@ -1155,7 +1155,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setSecondLastName(final String _secondLastName)
         {
-            this.secondLastName = _secondLastName;
+            secondLastName = _secondLastName;
             return this;
         }
 
@@ -1166,7 +1166,7 @@ public abstract class JournalSC1617_Base
          */
         public String getFirstname()
         {
-            return this.firstname;
+            return firstname;
         }
 
         /**
@@ -1177,7 +1177,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setFirstname(final String _firstname)
         {
-            this.firstname = _firstname;
+            firstname = _firstname;
             return this;
         }
 
@@ -1188,7 +1188,7 @@ public abstract class JournalSC1617_Base
          */
         public BigDecimal getCrossTotal()
         {
-            return this.crossTotal;
+            return crossTotal;
         }
 
         /**
@@ -1199,7 +1199,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setCrossTotal(final BigDecimal _crossTotal)
         {
-            this.crossTotal = _crossTotal;
+            crossTotal = _crossTotal;
             return this;
         }
 
@@ -1210,7 +1210,7 @@ public abstract class JournalSC1617_Base
          */
         public Instance getDocInst()
         {
-            return this.docInst;
+            return docInst;
         }
 
         /**
@@ -1221,7 +1221,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setDocInst(final Instance _docInst)
         {
-            this.docInst = _docInst;
+            docInst = _docInst;
             return this;
         }
 
@@ -1232,7 +1232,7 @@ public abstract class JournalSC1617_Base
          */
         public Integer getPosition()
         {
-            return this.position;
+            return position;
         }
 
         /**
@@ -1243,7 +1243,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setPosition(final int _position)
         {
-            this.position = _position;
+            position = _position;
             return this;
         }
 
@@ -1254,7 +1254,7 @@ public abstract class JournalSC1617_Base
          */
         public String getDocRevision()
         {
-            return this.docRevision;
+            return docRevision;
         }
 
         /**
@@ -1265,7 +1265,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setDocRevision(final String _docRevision)
         {
-            this.docRevision = _docRevision;
+            docRevision = _docRevision;
             return this;
         }
 
@@ -1276,7 +1276,7 @@ public abstract class JournalSC1617_Base
          */
         public String getMarker()
         {
-            return this.marker;
+            return marker;
         }
 
         /**
@@ -1287,7 +1287,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setMarker(final String _marker)
         {
-            this.marker = _marker;
+            marker = _marker;
             return this;
         }
 
@@ -1317,7 +1317,7 @@ public abstract class JournalSC1617_Base
          */
         public String getReportKey()
         {
-            return this.reportKey;
+            return reportKey;
         }
 
         /**
@@ -1328,7 +1328,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setReportKey(final String _reportKey)
         {
-            this.reportKey = _reportKey;
+            reportKey = _reportKey;
             return this;
         }
 
@@ -1339,7 +1339,7 @@ public abstract class JournalSC1617_Base
          */
         public Instance getPosInstance()
         {
-            return this.posInstance;
+            return posInstance;
         }
 
         /**
@@ -1350,7 +1350,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setPosInstance(final Instance _posInstance)
         {
-            this.posInstance = _posInstance;
+            posInstance = _posInstance;
             return this;
         }
 
@@ -1361,7 +1361,7 @@ public abstract class JournalSC1617_Base
          */
         public Instance getTransInstance()
         {
-            return this.transInstance;
+            return transInstance;
         }
 
         /**
@@ -1372,7 +1372,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setTransInstance(final Instance _transInstance)
         {
-            this.transInstance = _transInstance;
+            transInstance = _transInstance;
             return this;
         }
 
@@ -1383,7 +1383,7 @@ public abstract class JournalSC1617_Base
          */
         public String getOrigDocName()
         {
-            return this.origDocName;
+            return origDocName;
         }
 
         /**
@@ -1394,7 +1394,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setOrigDocName(final String _origDocName)
         {
-            this.origDocName = _origDocName;
+            origDocName = _origDocName;
             return this;
         }
 
@@ -1405,7 +1405,7 @@ public abstract class JournalSC1617_Base
          */
         public Instance getOrigDocInst()
         {
-            return this.origDocInst;
+            return origDocInst;
         }
 
         /**
@@ -1416,7 +1416,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setOrigDocInst(final Instance _origDocInst)
         {
-            this.origDocInst = _origDocInst;
+            origDocInst = _origDocInst;
             return this;
         }
 
@@ -1427,7 +1427,7 @@ public abstract class JournalSC1617_Base
          */
         public String getOrigDocRevision()
         {
-            return this.origDocRevision;
+            return origDocRevision;
         }
 
         /**
@@ -1438,7 +1438,7 @@ public abstract class JournalSC1617_Base
          */
         public DataBean setOrigDocRevision(final String _origDocRevision)
         {
-            this.origDocRevision = _origDocRevision;
+            origDocRevision = _origDocRevision;
             return this;
         }
 

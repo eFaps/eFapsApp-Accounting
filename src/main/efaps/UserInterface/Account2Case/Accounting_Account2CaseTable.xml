@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2019 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -68,6 +68,19 @@
                 method="linkFieldValue"
                 name="Accounting_Account2CaseTable.link.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"></trigger>
+        </field>
+        <field name="categoryProductLink">
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Accounting_Account2CaseCredit4CategoryProduct/CategoryProductLink.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getLazyFieldValue"
+                name="Accounting_Account2CaseTable.categoryProductLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type01">Accounting_Account2CaseCredit4CategoryProduct</property>
+                <property name="Select01">linkto[CategoryProductLink].attribute[Name]</property>
+                <property name="Type02">Accounting_Account2CaseDebit4CategoryProduct</property>
+                <property name="Select02">linkto[CategoryProductLink].attribute[Name]</property>
+            </trigger>
         </field>
         <field name="remark">
             <property name="Label">Accounting_Account2CaseAbstract/Remark.Label</property>
