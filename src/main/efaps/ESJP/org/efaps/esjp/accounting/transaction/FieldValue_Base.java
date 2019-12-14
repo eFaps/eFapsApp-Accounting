@@ -19,6 +19,7 @@
 package org.efaps.esjp.accounting.transaction;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -1078,8 +1079,8 @@ public abstract class FieldValue_Base
                                         CIAccounting.AccountIncomeStatementExpenses2ProductClass,
                                         CIAccounting.AccountIncomeStatementExpenses);
                     }
-                    total = total.add(cost.setScale(12, BigDecimal.ROUND_HALF_UP)
-                                    .divide(rateTmp.getRate(), BigDecimal.ROUND_HALF_UP));
+                    total = total.add(cost.setScale(12, RoundingMode.HALF_UP)
+                                    .divide(rateTmp.getRate(), RoundingMode.HALF_UP));
                 } else {
                     html.append("<td></td>")
                         .append("<td></td>");
@@ -1132,7 +1133,7 @@ public abstract class FieldValue_Base
             final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
             final Object[] ratePos = multi.<Object[]>getAttribute(CISales.PositionSumAbstract.Rate);
             final BigDecimal newRatepos = ((BigDecimal) ratePos[0]).divide((BigDecimal) ratePos[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+                            RoundingMode.HALF_UP);
             final BigDecimal taxAmount = cross.subtract(net).multiply(newRatepos);
             final BigDecimal prodAmount = net.multiply(newRatepos);
             analyzeTax(_doc, false, multi.<Instance>getSelect(selTaxInst), taxAmount);
@@ -1449,7 +1450,13 @@ public abstract class FieldValue_Base
                                     .attribute(CISales.AccountAbstract.Name);
                     print.addSelect(selAccount, selDocName);
                     print.executeWithoutAccessCheck();
-                    final String accountName = print.<String>getSelect(selAccount);
+                    final Object accountVal = print.getSelect(selAccount);
+                    final String accountName;
+                    if (accountVal instanceof List) {
+                        accountName = (String) ((List<?>) accountVal).get(0);
+                    } else {
+                       accountName = (String) accountVal;
+                    }
                     final String docName = print.<String>getSelect(selDocName);
                     ret.put(multi.getCurrentInstance(), new String[] { accountName, docName });
                 }
