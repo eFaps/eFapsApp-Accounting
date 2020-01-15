@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,6 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -169,7 +168,6 @@ public abstract class JournalSC1617_Base
     }
 
     @Override
-    @SuppressWarnings("checkstyle:MethodLength")
     public void buildDataSource(final Parameter _parameter,
                                 final Exporter _exporter)
         throws EFapsException
@@ -259,10 +257,12 @@ public abstract class JournalSC1617_Base
         final SelectBuilder selContactName = new SelectBuilder(selContact).attribute(CIContacts.Contact.Name);
         final SelectBuilder selTaxNumber = new SelectBuilder(selContact).clazz(CIContacts.ClassOrganisation)
                         .attribute(CIContacts.ClassOrganisation.TaxNumber);
+        final SelectBuilder selIdentityCard = new SelectBuilder(selContact).clazz(CIContacts.ClassPerson)
+                        .attribute(CIContacts.ClassPerson.IdentityCard);
 
         multi.addSelect(selAccName, selTransIdentifier, selTransInst, selTransName, selTransDescr, selTransDate,
                         selDocInst, selDocName, selDocDate, selDocDueDate, selContactName, selTaxNumber, selNetTotal,
-                        selCrossTotal, selDocRev);
+                        selCrossTotal, selDocRev, selIdentityCard);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.RateAmount,
                         CIAccounting.TransactionPositionAbstract.Position,
                         CIAccounting.TransactionPositionAbstract.PositionType,
@@ -278,6 +278,7 @@ public abstract class JournalSC1617_Base
             String descr = multi.<String>getSelect(selTransDescr);
             String contactName = multi.<String>getSelect(selContactName);
             String taxNumber = multi.<String>getSelect(selTaxNumber);
+            final String identityCard = multi.<String>getSelect(selIdentityCard);
             Instance docInst = multi.<Instance>getSelect(selDocInst);
             String docName = multi.<String>getSelect(selDocName);
             String docRev = multi.<String>getSelect(selDocRev);
@@ -355,7 +356,7 @@ public abstract class JournalSC1617_Base
                             .setDocName(docName)
                             .setDocRevision(docRev)
                             .setContactName(contactName)
-                            .setTaxNumber(taxNumber)
+                            .setTaxNumber(StringUtils.isEmpty(taxNumber) ? identityCard : taxNumber)
                             .setDocDate(multi.<DateTime>getSelect(selDocDate))
                             .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
                             .setRate(multi.<Object[]>getAttribute(CIAccounting.TransactionPositionAbstract.Rate))
