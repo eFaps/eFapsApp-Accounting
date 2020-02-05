@@ -20,6 +20,7 @@ package org.efaps.esjp.accounting;
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -144,7 +145,7 @@ public abstract class ExternalVoucher_Base
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+                        RoundingMode.HALF_UP);
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("currencyExternal"));
 
@@ -183,14 +184,14 @@ public abstract class ExternalVoucher_Base
                             CIAccounting.ExternalVoucher.Note.name), note);
         }
 
-        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter));
         final int scale = frmt.getMaximumFractionDigits();
         final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList)
-                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
+                        .setScale(scale, RoundingMode.HALF_UP);
         docInsert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
 
-        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, RoundingMode.HALF_UP);
         docInsert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
@@ -198,13 +199,13 @@ public abstract class ExternalVoucher_Base
         docInsert.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList, rateCurrInst));
         docInsert.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
 
-        final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
+                        .setScale(scale, RoundingMode.HALF_UP);
         docInsert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
 
-        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
+        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, RoundingMode.HALF_UP)
+                        .setScale(scale, RoundingMode.HALF_UP);
         docInsert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
 
@@ -340,7 +341,7 @@ public abstract class ExternalVoucher_Base
         final BigDecimal net = amounts[0];
         final BigDecimal cross = amounts[1];
         BigDecimal taxfree = amounts[2];
-        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getType4SysConf(_parameter));
         final boolean prodPriceIsNet = Calculator.priceIsNet(_parameter, this);
 
         if (net.compareTo(cross) == 0) {
@@ -478,7 +479,7 @@ public abstract class ExternalVoucher_Base
             final String acc = accs[i];
             if (acc.equals(_accInst.getOid())) {
                 BigDecimal rateAmount = ((BigDecimal) _formater.parse(amounts[i]))
-                                                        .setScale(6, BigDecimal.ROUND_HALF_UP);
+                                                        .setScale(6, RoundingMode.HALF_UP);
                 if ("Debit".equalsIgnoreCase(_suffix)) {
                     rateAmount = rateAmount.negate();
                 }
@@ -553,9 +554,9 @@ public abstract class ExternalVoucher_Base
                     final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                     final BigDecimal percent = (BigDecimal) formatter.parse(percentStr);
                     final BigDecimal amount = cross.multiply(percent
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                    final String amountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                    final String amountStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(amount);
                     map.put(CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.perceptionValue.name,
                                     amountStr);
@@ -589,9 +590,9 @@ public abstract class ExternalVoucher_Base
                     final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                     final BigDecimal percent = (BigDecimal) formatter.parse(percentStr);
                     final BigDecimal amount = cross.multiply(percent
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                    final String amountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                    final String amountStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(amount);
                     map.put(CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.retentionValue.name,
                                     amountStr);
@@ -625,9 +626,9 @@ public abstract class ExternalVoucher_Base
                     final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                     final BigDecimal percent = (BigDecimal) formatter.parse(percentStr);
                     final BigDecimal amount = cross.multiply(percent
-                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
-                    final String amountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .setScale(8, RoundingMode.HALF_UP)
+                                    .divide(new BigDecimal(100), RoundingMode.HALF_UP));
+                    final String amountStr = NumberFormatter.get().getFrmt4Total(getType4SysConf(_parameter))
                                     .format(amount);
                     map.put(CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.detractionValue.name,
                                     amountStr);
