@@ -79,14 +79,14 @@
         <groupExpression><![CDATA[$F{taxNumber}]]></groupExpression>
         <groupHeader>
             <band height="14">
-                <textField isStretchWithOverflow="true" pattern="">
+                <textField textAdjust="StretchHeight" pattern="">
                     <reportElement uuid="ac32cac6-ac75-435c-8659-b36ca7194ec6" stretchType="RelativeToBandHeight" x="0" y="0" width="170" height="14" isPrintWhenDetailOverflows="true"/>
                     <textElement>
                         <font isBold="true"/>
                     </textElement>
                     <textFieldExpression><![CDATA["R.U.C.: " + $F{taxNumber}]]></textFieldExpression>
                 </textField>
-                <textField isStretchWithOverflow="true" pattern="">
+                <textField textAdjust="StretchHeight" pattern="">
                     <reportElement uuid="f4f1cb2f-eddc-444d-8ba8-933d5b7f4573" stretchType="RelativeToBandHeight" x="170" y="0" width="470" height="14" isPrintWhenDetailOverflows="true"/>
                     <textElement>
                         <font isBold="true"/>
@@ -125,7 +125,7 @@
         <groupExpression><![CDATA[$F{docName}]]></groupExpression>
         <groupHeader>
             <band height="34">
-                <textField isStretchWithOverflow="true" evaluationTime="Group" evaluationGroup="Group2" pattern="">
+                <textField textAdjust="StretchHeight" evaluationTime="Group" evaluationGroup="Group2" pattern="">
                     <reportElement uuid="34b733a8-a3fe-4750-8790-0fb2d692eeb2" stretchType="RelativeToBandHeight" x="90" y="0" width="80" height="14" isPrintWhenDetailOverflows="true"/>
                     <textElement>
                         <font isItalic="true" isUnderline="false"/>
@@ -198,17 +198,17 @@
         <groupExpression><![CDATA[$F{transOID}]]></groupExpression>
         <groupHeader>
             <band height="14">
-                <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+                <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy">
                     <reportElement uuid="bc80aa80-70aa-4adc-8b6d-d4be73b6fc4b" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="14" isPrintWhenDetailOverflows="true" printWhenGroupChanges="Group3"/>
                     <textElement/>
                     <textFieldExpression><![CDATA[$F{transDate}.toDate()]]></textFieldExpression>
                 </textField>
-                <textField isStretchWithOverflow="true" pattern="">
+                <textField textAdjust="StretchHeight" pattern="">
                     <reportElement uuid="b2a30042-0fd7-4330-9687-a5df3190ef2d" stretchType="RelativeToBandHeight" x="90" y="0" width="80" height="14" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" printWhenGroupChanges="Group3"/>
                     <textElement textAlignment="Right"/>
                     <textFieldExpression><![CDATA[$F{transName}]]></textFieldExpression>
                 </textField>
-                <textField isStretchWithOverflow="true" pattern="">
+                <textField textAdjust="StretchHeight" pattern="">
                     <reportElement uuid="a13ad6c7-a872-42c7-8650-178a000d9f69" stretchType="RelativeToBandHeight" x="170" y="0" width="470" height="14" isPrintWhenDetailOverflows="true" printWhenGroupChanges="Group3"/>
                     <textElement/>
                     <textFieldExpression><![CDATA[$F{transDescr}]]></textFieldExpression>
@@ -237,14 +237,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="57cef9d3-6c72-4ac5-9a1e-83352d72c642" x="119" y="16" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="2d60ac2d-70ff-4c9f-b945-278d9fa242ba" x="119" y="0" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -255,24 +255,24 @@
     </pageHeader>
     <detail>
         <band height="14">
-            <textField isStretchWithOverflow="true" pattern="">
+            <textField textAdjust="StretchHeight" pattern="">
                 <reportElement uuid="7968b17d-547d-433f-8f1a-712f2cbda3bd" stretchType="RelativeToBandHeight" x="340" y="0" width="80" height="14" isPrintWhenDetailOverflows="true"/>
                 <textElement/>
                 <textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="">
+            <textField textAdjust="StretchHeight" pattern="">
                 <reportElement uuid="d782f1b1-65a7-4891-be1d-21074a54b5ed" stretchType="RelativeToBandHeight" x="420" y="0" width="220" height="14" isPrintWhenDetailOverflows="true"/>
                 <textElement/>
                 <textFieldExpression><![CDATA[$F{accDescr}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00">
                 <reportElement uuid="a1ed4262-889b-4f05-aac5-f5a1ba640bf5" key="" stretchType="RelativeToBandHeight" x="710" y="0" width="70" height="14" isPrintWhenDetailOverflows="true">
                     <printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO)>0)]]></printWhenExpression>
                 </reportElement>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{amount}.abs()]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00">
                 <reportElement uuid="a39075d0-583e-4a3d-9664-b0a647e306e6" key="" stretchType="RelativeToBandHeight" x="640" y="0" width="70" height="14" isPrintWhenDetailOverflows="true">
                     <printWhenExpression><![CDATA[new Boolean($F{amount}.compareTo( java.math.BigDecimal.ZERO )<0)]]></printWhenExpression>
                 </reportElement>

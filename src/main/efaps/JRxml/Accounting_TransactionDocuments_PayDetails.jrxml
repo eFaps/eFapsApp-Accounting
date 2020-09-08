@@ -30,7 +30,7 @@ attribute[Rate].label as rate]]>
         <band height="12">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="48" y="0" width="40" height="12" uuid="4faa9d72-7c33-4928-be59-18a1e236e2d5">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -48,7 +48,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.000" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.000" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="20" y="0" width="28" height="12" uuid="1aa52352-df48-4402-bc91-29e92fc3ef8c">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -66,7 +66,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="20" height="12" uuid="c6f6f83b-794a-4402-b856-7e369d6d9c38">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>

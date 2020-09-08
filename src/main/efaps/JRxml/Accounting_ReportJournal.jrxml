@@ -80,14 +80,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="eef7bec3-7097-4b54-8dd6-c63059b7ed88" x="120" y="16" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="ca88b973-28ea-4650-ae8f-01070fbfb0f8" x="120" y="0" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -194,7 +194,7 @@
     </columnHeader>
     <detail>
         <band height="14" splitType="Prevent">
-            <textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd.MM.yyyy" isBlankWhenNull="true">
                 <reportElement uuid="66b00824-fb12-4115-a924-47a289ad06e1" stretchType="RelativeToBandHeight" mode="Transparent" x="46" y="0" width="67" height="14"/>
                 <box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="0">
                     <topPen lineWidth="1.0"/>
@@ -207,7 +207,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="585e5494-0431-4e95-9289-fc8f221effdb" stretchType="RelativeToTallestObject" x="0" y="0" width="46" height="14">
                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -223,7 +223,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="e3f98fe7-d91c-45be-a865-b22c95eb0979" stretchType="RelativeToBandHeight" x="113" y="0" width="286" height="14">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>

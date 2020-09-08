@@ -153,7 +153,7 @@
                 <textElement textAlignment="Center"/>
                 <text><![CDATA[-]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" pattern="">
+            <textField textAdjust="StretchHeight" pattern="">
                 <reportElement uuid="42865f79-c6d3-4401-a1d4-bd8ea86f19ef" x="173" y="36" width="118" height="14">
                     <property name="local_mesure_unity" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -188,14 +188,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="9fcb236f-2679-47d2-9a5c-ace35092f729" x="120" y="16" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="0f379eee-9df6-4981-aebb-0e7a03b63083" x="120" y="0" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -537,7 +537,7 @@ DOMICILIADO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{externalType}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="">
+            <textField textAdjust="StretchHeight" pattern="">
                 <reportElement uuid="6182397a-56fc-4e4e-9beb-3a2b47650b6d" stretchType="RelativeToTallestObject" x="30" y="0" width="73" height="12"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
@@ -565,7 +565,7 @@ DOMICILIADO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="9dc87cb5-5d3c-4b72-986e-0589dd9b0c70" stretchType="RelativeToTallestObject" x="291" y="0" width="161" height="12"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
@@ -579,7 +579,7 @@ DOMICILIADO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement uuid="168b5123-a41b-4d78-857f-97115871fdc8" key="" stretchType="RelativeToTallestObject" x="865" y="0" width="59" height="12">
                     <printWhenExpression><![CDATA[!$V{import}]]></printWhenExpression>
                 </reportElement>
@@ -594,7 +594,7 @@ DOMICILIADO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$V{crossTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement uuid="fdb7195f-cc7d-4488-bb4e-92cd97de31b4" key="" stretchType="RelativeToTallestObject" x="561" y="0" width="96" height="12">
                     <printWhenExpression><![CDATA[!$V{import}]]></printWhenExpression>
                 </reportElement>
@@ -609,7 +609,7 @@ DOMICILIADO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$V{netTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement uuid="c0d36a01-564d-4029-bdf6-d60861b6206d" key="" stretchType="RelativeToTallestObject" x="657" y="0" width="83" height="12">
                     <printWhenExpression><![CDATA[!$V{import}]]></printWhenExpression>
                 </reportElement>
@@ -638,7 +638,7 @@ DOMICILIADO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement uuid="1950950a-5bca-4f33-acf6-ca4cc843eb75" key="" stretchType="RelativeToTallestObject" x="740" y="0" width="64" height="12">
                     <printWhenExpression><![CDATA[$V{import}]]></printWhenExpression>
                 </reportElement>

@@ -57,7 +57,7 @@ linkto[PeriodLink].attribute[Name] as period]]>
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="70" y="16" width="497" height="16" uuid="3734b575-689a-48af-82f4-0dc28d2d6b9f">
                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
                 </reportElement>
@@ -66,7 +66,7 @@ linkto[PeriodLink].attribute[Name] as period]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="70" y="0" width="497" height="16" uuid="3eb75a7b-149c-4ebc-a756-74da899f703a">
                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
                 </reportElement>
@@ -87,7 +87,7 @@ linkto[PeriodLink].attribute[Name] as period]]>
                 </textElement>
                 <text><![CDATA[EJERCICIO:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="70" y="32" width="497" height="16" uuid="1b9d59b9-393c-4925-a359-d765fb3a8f35">
                     <property name="local_mesure_unity" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -105,7 +105,7 @@ linkto[PeriodLink].attribute[Name] as period]]>
                 </textElement>
                 <textFieldExpression><![CDATA["Voucher: " + $F{identifier}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="MMMM, yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="MMMM, yyyy" isBlankWhenNull="true">
                 <reportElement x="0" y="73" width="567" height="16" uuid="3fb0f5d7-e340-476e-b055-9a515949b28e"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
@@ -116,15 +116,15 @@ linkto[PeriodLink].attribute[Name] as period]]>
         <band height="54">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="110" y="16" width="140" height="16" isPrintWhenDetailOverflows="true" uuid="4facec97-ee7c-4a40-b0b4-8734d96f8ec5"/>
                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="110" y="32" width="457" height="16" uuid="8898dbe2-28b7-4606-a863-39a03d070e90"/>
                 <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement x="110" y="0" width="140" height="16" isPrintWhenDetailOverflows="true" uuid="915e9910-f869-448c-b8bb-24f9494b1d97"/>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
@@ -217,7 +217,7 @@ linkto[PeriodLink].attribute[Name] as period]]>
         <band height="41">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement x="440" y="0" width="99" height="16" uuid="1f731de8-9bc4-4f64-9640-1efdb4ea22d3"/>
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font size="8"/>

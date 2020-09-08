@@ -158,7 +158,7 @@
                 <text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACIÓN O RAZÓN SOCIAL:]]></text>
             </staticText>
             <textField
-                isStretchWithOverflow="true"
+                textAdjust="StretchHeight"
                 isBlankWhenNull="true">
                 <reportElement
                     x="70"
@@ -183,7 +183,7 @@
                 <textFieldExpression><![CDATA[$P{Period}]]></textFieldExpression>
             </textField>
             <textField
-                isStretchWithOverflow="true"
+                textAdjust="StretchHeight"
                 isBlankWhenNull="true">
                 <reportElement
                     x="70"
@@ -208,7 +208,7 @@
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
             <textField
-                isStretchWithOverflow="true"
+                textAdjust="StretchHeight"
                 isBlankWhenNull="true">
                 <reportElement
                     x="320"

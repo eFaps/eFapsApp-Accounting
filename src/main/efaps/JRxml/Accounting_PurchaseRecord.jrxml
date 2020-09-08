@@ -104,14 +104,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="120" y="16" width="482" height="16" uuid="e96adf58-9577-4ac4-ac68-fa9499487cf8"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement x="120" y="0" width="482" height="16" uuid="8e12feea-30b2-41f2-87d9-156a865e1aba"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>

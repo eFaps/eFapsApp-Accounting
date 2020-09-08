@@ -86,7 +86,7 @@ linkto[FromLink].attribute[Description] as description]]>
         <band height="12">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="80" height="12" uuid="8e2f3ca1-eb8e-4eba-ab16-54e4f30d0f5f">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -106,7 +106,7 @@ linkto[FromLink].attribute[Description] as description]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{number}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="80" y="0" width="100" height="12" uuid="e2c04456-11f9-4303-bd00-26ba8be8a14f">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     <property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -124,7 +124,7 @@ linkto[FromLink].attribute[Description] as description]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="180" y="0" width="358" height="12" uuid="58650b3d-431f-46b4-b2af-fe5b96375601">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                     <property name="com.jaspersoft.studio.unit.y" value="px"/>

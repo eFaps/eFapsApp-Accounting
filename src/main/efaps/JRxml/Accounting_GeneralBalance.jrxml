@@ -33,14 +33,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="ae31d38e-ea2a-4d6b-adca-de39d88e8cea" x="120" y="96" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="654ffa7c-01d7-4028-935f-75fcf4047576" x="120" y="80" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -65,7 +65,7 @@
                 </textElement>
                 <text><![CDATA[EJERCICIO:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="4ad6b46c-46e2-442a-83d7-518ac53d5435" x="120" y="40" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -81,7 +81,7 @@
                 </textElement>
                 <text><![CDATA[DEL:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement uuid="d8d9ebfb-c921-42c0-8e30-e74683fdf14c" x="30" y="56" width="90" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="false"/>
@@ -97,7 +97,7 @@
                 </textElement>
                 <text><![CDATA[AL:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement uuid="3f6442d2-07c5-41a4-a5d6-07d42bd9b11e" x="150" y="56" width="90" height="16">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>

@@ -42,7 +42,7 @@
         <band height="12">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="12" isPrintWhenDetailOverflows="true" uuid="a940c0d7-f62c-4622-bac4-013f3f13a7e3">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -60,7 +60,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{accName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="60" y="0" width="142" height="12" isPrintWhenDetailOverflows="true" uuid="b37ad0bc-9b38-41de-8184-d30e9cba67f8">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -78,7 +78,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{accDescr}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="202" y="0" width="55" height="12" isPrintWhenDetailOverflows="true" uuid="671082c6-010b-4160-8333-c47193cae688">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -96,7 +96,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$V{debit}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToTallestObject" x="257" y="0" width="55" height="12" isPrintWhenDetailOverflows="true" uuid="81d2d25f-04a3-486a-8906-7726b5258b66">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>

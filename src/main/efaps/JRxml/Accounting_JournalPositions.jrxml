@@ -54,7 +54,7 @@
     <detail>
         <band height="14" splitType="Prevent">
             <property name="local_mesure_unitheight" value="pixel"/>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="0" y="0" width="60" height="14" uuid="a09b7030-845d-48d8-a9df-902faa967ea1"/>
                 <box leftPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -66,7 +66,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="263" y="0" width="70" height="14" uuid="bf1fcc5a-5791-4e84-aa77-e4c4bbdc3511"/>
                 <box topPadding="0" leftPadding="2" bottomPadding="2" rightPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -78,7 +78,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[(($V{amount}.signum()==-1) ? $V{amount}.abs() : null)]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="333" y="0" width="70" height="14" uuid="78908d7e-e151-489b-a237-3cda9a18ceb0"/>
                 <box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -90,7 +90,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[(($V{amount}.signum()==1) ? $V{amount} : null)]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="60" y="0" width="203" height="14" uuid="518a7b20-a94d-43de-b004-e9ccaab46c9c"/>
                 <box leftPadding="2">
                     <leftPen lineWidth="1.0"/>

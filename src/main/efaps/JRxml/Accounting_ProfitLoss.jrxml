@@ -31,21 +31,21 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="ebd70492-2fcb-4127-97f6-a0cbf73a0e42" x="80" y="80" width="360" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="10" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="3d2db4c4-0fff-4ad8-bc73-451d5976688b" x="80" y="64" width="360" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="10" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement uuid="4e2715aa-0763-421f-bc73-775424d05f7e" x="150" y="46" width="90" height="16">
                     <property name="local_mesure_unitwidth" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -93,14 +93,14 @@
                 </textElement>
                 <text><![CDATA[AL:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="b74cbc9a-1bba-4341-935e-96d1b869895a" x="79" y="30" width="470" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{PeriodYear}.getYear()]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement uuid="f7ef9772-61c6-4f19-847b-7cf7d95283b1" x="30" y="46" width="90" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="false"/>

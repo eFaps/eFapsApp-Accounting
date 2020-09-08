@@ -88,14 +88,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="ddf95354-193a-4408-82e8-def4a73dc560" x="120" y="16" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="fb31b913-b963-4606-9190-e76e51c98b25" x="120" y="0" width="482" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -241,7 +241,7 @@
     </columnHeader>
     <detail>
         <band height="14" splitType="Prevent">
-            <textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd.MM.yyyy" isBlankWhenNull="true">
                 <reportElement uuid="6849b751-613d-45c8-aa6d-c250614e4a2b" stretchType="RelativeToBandHeight" mode="Transparent" x="46" y="0" width="53" height="14"/>
                 <box topPadding="2" leftPadding="2" bottomPadding="0" rightPadding="0">
                     <leftPen lineWidth="1.0"/>
@@ -253,7 +253,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="d93598a2-b0f1-4cd1-a7dd-00a2f82ad8ab" stretchType="RelativeToTallestObject" x="0" y="0" width="46" height="14">
                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -268,7 +268,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="f7dec412-5209-4420-b5e3-102c6c1da225" stretchType="RelativeToBandHeight" x="99" y="0" width="161" height="14"/>
                 <box topPadding="2" leftPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -290,7 +290,7 @@
                 <returnValue subreportVariable="creditSum" toVariable="creditTransactionTotal" calculation="Sum"/>
                 <subreportExpression><![CDATA["JasperReport.Accounting_JournalPositions"]]></subreportExpression>
             </subreport>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="53d14ee4-094f-40a1-a2aa-6a29cdfc50ad" stretchType="RelativeToBandHeight" x="663" y="0" width="100" height="14"/>
                 <box topPadding="2" leftPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -302,7 +302,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{externalVoucherName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="dd.MM.yyyy" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="dd.MM.yyyy" isBlankWhenNull="true">
                 <reportElement uuid="386bd642-eb19-454d-bf1b-c2031f5b21f9" stretchType="RelativeToBandHeight" x="763" y="0" width="50" height="14"/>
                 <box topPadding="2" leftPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -314,7 +314,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{externalVoucherDate}.toDate()]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="70bf7eb1-f55e-4dc2-9b1f-74226d5309b7" stretchType="RelativeToBandHeight" x="813" y="0" width="150" height="14"/>
                 <box topPadding="2" leftPadding="2">
                     <leftPen lineWidth="1.0"/>
@@ -326,7 +326,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{externalVoucherContactName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="ba2b63c0-5e8e-4a09-8d03-04ae07b0b01f" stretchType="RelativeToBandHeight" x="963" y="0" width="148" height="14"/>
                 <box topPadding="2" leftPadding="2">
                     <leftPen lineWidth="1.0"/>

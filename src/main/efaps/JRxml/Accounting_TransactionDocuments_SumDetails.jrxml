@@ -36,7 +36,7 @@ attribute[Rate].label as rate]]>
         <band height="12">
             <property name="local_mesure_unitheight" value="pixel"/>
             <property name="com.jaspersoft.studio.unit.height" value="px"/>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="48" y="0" width="40" height="12" uuid="4faa9d72-7c33-4928-be59-18a1e236e2d5">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -54,7 +54,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rateNetTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="88" y="0" width="40" height="12" uuid="6a326c9a-43dd-40c4-ae2c-c75ad6ce5347">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -71,7 +71,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rateCrossTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.000" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.000" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="20" y="0" width="28" height="12" uuid="1aa52352-df48-4402-bc91-29e92fc3ef8c">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -89,7 +89,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="0" y="0" width="20" height="12" uuid="c6f6f83b-794a-4402-b856-7e369d6d9c38">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -105,7 +105,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{rateCurrency}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="128" y="0" width="40" height="12" uuid="55229d0d-9b56-4fb3-bd29-92548ca7a318">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -122,7 +122,7 @@ attribute[Rate].label as rate]]>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{netTotal}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement stretchType="RelativeToBandHeight" x="168" y="0" width="40" height="12" uuid="16915046-4012-4534-91a6-e7606840cf95">
                     <property name="local_mesure_unitheight" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>

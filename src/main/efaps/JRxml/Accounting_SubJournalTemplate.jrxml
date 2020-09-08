@@ -46,17 +46,17 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement x="90" y="0" width="170" height="16" uuid="9bc0936b-3055-4bf9-9dfb-97e74a70a830"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement x="90" y="16" width="170" height="16" uuid="51cad138-3e19-44f3-8441-51b15710330c"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement x="0" y="32" width="260" height="20" uuid="51cad138-3e19-44f3-8441-51b15710222c"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$P{ReportName}]]></textFieldExpression>

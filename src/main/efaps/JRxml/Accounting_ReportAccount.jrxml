@@ -224,14 +224,14 @@
                 </textElement>
                 <text><![CDATA[EMPRESA:]]></text>
             </staticText>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="8474d549-cbb8-42ea-a23e-65fbaf80f432" x="120" y="16" width="682" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
                 <reportElement uuid="682ae5db-3c67-4ba7-9144-b558fb84e583" x="120" y="0" width="682" height="16"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
                     <font size="11" isBold="true"/>
@@ -498,7 +498,7 @@
     <detail>
         <band height="12" splitType="Stretch">
             <printWhenExpression><![CDATA[$V{show}]]></printWhenExpression>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="23b6b61c-8528-44ad-8f51-ccdf638ce6a8" style="rowStyle" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="42" height="12"/>
                 <box>
                     <topPen lineWidth="1.0"/>
@@ -511,7 +511,7 @@
                 </textElement>
                 <textFieldExpression><![CDATA[$F{accountName}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement uuid="f11a9cbd-8076-4e84-980a-76a1814541ff" style="rowStyle" stretchType="RelativeToTallestObject" mode="Opaque" x="42" y="0" width="150" height="12"/>
                 <box leftPadding="2">
                     <topPen lineWidth="1.0"/>

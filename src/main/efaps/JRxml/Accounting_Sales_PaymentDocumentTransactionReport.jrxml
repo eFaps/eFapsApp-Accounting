@@ -29,7 +29,7 @@ linkto[FromLinkAbstract].attribute[Identifier] as transIdentifier, linkto[FromLi
                 <reportElement x="280" y="14" width="100" height="16" uuid="2cefdcf7-07bb-4ee6-a995-6a3e8e6db303"/>
                 <textFieldExpression><![CDATA[$F{transIdentifier}]]></textFieldExpression>
             </textField>
-            <textField isStretchWithOverflow="true">
+            <textField textAdjust="StretchHeight">
                 <reportElement x="60" y="30" width="494" height="20" uuid="32207320-fa4b-45d6-964d-e286af9fc058"/>
                 <textFieldExpression><![CDATA[$F{transDescr}]]></textFieldExpression>
             </textField>
