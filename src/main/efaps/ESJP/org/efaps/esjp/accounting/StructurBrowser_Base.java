@@ -29,6 +29,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.eql.builder.Where;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
 import org.efaps.util.EFapsException;
@@ -37,7 +38,7 @@ import org.efaps.util.EFapsException;
  * TODO description!
  *
  * @author The eFasp Team
- * 
+ *
  */
 @EFapsUUID("21b4e990-00b8-44bb-9896-80719fcf8c81")
 @EFapsApplication("eFapsApp-Accounting")
@@ -67,6 +68,25 @@ public abstract class StructurBrowser_Base
             _queryBldr.addWhereAttrEqValue(CIAccounting.AccountAbstract.PeriodAbstractLink, instance);
         }
     }
+
+    @Override
+    protected void add2MainQuery(final Parameter _parameter, final Where _where)
+        throws EFapsException
+    {
+        _where.and();
+        _where.attribute(CIAccounting.AccountAbstract.ParentLink).isNull();
+        if (_parameter.getInstance().getType().isKindOf(CIAccounting.SubPeriod.getType())) {
+            final PrintQuery print = new CachedPrintQuery(_parameter.getInstance(), SubPeriod_Base.CACHEKEY);
+            final SelectBuilder selPeriodInst = SelectBuilder.get().linkto(CIAccounting.SubPeriod.PeriodLink)
+                            .instance();
+            print.addSelect(selPeriodInst);
+            print.execute();
+            final Instance instance = print.<Instance>getSelect(selPeriodInst);
+            _where.and();
+            _where.attribute(CIAccounting.AccountAbstract.PeriodAbstractLink).eq(instance);
+        }
+    }
+
 
     /**
      * Method is called from the StructurBrowser in edit mode before rendering
