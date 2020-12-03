@@ -27,6 +27,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.erp.AbstractPositionWarning;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
@@ -65,7 +66,8 @@ public abstract class Validation_Base
         final boolean areyousure = true;
 
         final List<IWarning> warnings = new ArrayList<>();
-        warnings.addAll(new org.efaps.esjp.sales.document.Validation().validateName(_parameter, null));
+        warnings.addAll(new org.efaps.esjp.sales.document.Validation().validateName(_parameter, null,
+                        PropertiesUtil.getProperties(_parameter)));
         warnings.addAll(validatePositions(_parameter, "Debit"));
         warnings.addAll(validatePositions(_parameter, "Credit"));
         warnings.addAll(validateSums(_parameter));
@@ -129,7 +131,8 @@ public abstract class Validation_Base
                     final String amount = amounts[i];
                     final String accountOid = accountOids[i];
                     final BigDecimal rate = amounts[i].length() > 0
-                                    ? (BigDecimal) frmt.getFrmt4RateUI(null).parse(rates[i]) : BigDecimal.ZERO;
+                                    ? (BigDecimal) frmt.getFrmt4RateUI(null).parse(rates[i])
+                                    : BigDecimal.ZERO;
                     if (!(amount.length() > 0 && accountOid.length() > 0 && rate.compareTo(BigDecimal.ZERO) != 0)) {
                         ret.add(new PositionWarning().setPosition(i));
                     }
