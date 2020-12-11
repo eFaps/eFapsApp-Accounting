@@ -29,6 +29,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.eql.builder.Print;
 import org.efaps.eql.builder.Where;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ui.structurbrowser.StandartStructurBrowser;
@@ -87,6 +88,11 @@ public abstract class StructurBrowser_Base
         }
     }
 
+    @Override
+    protected void add2ChildrenQuery(final Parameter _parameter, final Print _print)
+    {
+        _print.orderBy("name");
+    }
 
     /**
      * Method is called from the StructurBrowser in edit mode before rendering
