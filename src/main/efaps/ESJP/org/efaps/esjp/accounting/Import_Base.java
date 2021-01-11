@@ -33,6 +33,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -631,47 +632,47 @@ public abstract class Import_Base
                           final String[] _row)
         {
             try {
-                this.periodInst = _periodInst;
-                this.caseName = _row[_colName2Index.get(ColumnCase.CASENAME.getKey())].trim()
+                periodInst = _periodInst;
+                caseName = _row[_colName2Index.get(ColumnCase.CASENAME.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.caseDescription = _row[_colName2Index.get(ColumnCase.CASEDESC.getKey())].trim()
+                caseDescription = _row[_colName2Index.get(ColumnCase.CASEDESC.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.caseLabel = _row[_colName2Index.get(ColumnCase.CASELABEL.getKey())].trim().replaceAll("\n", "");
+                caseLabel = _row[_colName2Index.get(ColumnCase.CASELABEL.getKey())].trim().replaceAll("\n", "");
 
                 final String type = _row[_colName2Index.get(ColumnCase.CASETYPE.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.casetype = Type.get(Import_Base.TYPE2TYPE.get(type));
-                this.caseIsCross = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())])
+                casetype = Type.get(Import_Base.TYPE2TYPE.get(type));
+                caseIsCross = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())])
                                 || "true".equalsIgnoreCase(_row[_colName2Index.get(ColumnCase.CASEISCROSS.getKey())]);
                 final String configStr = _row[_colName2Index.get(ColumnCase.CASECONFIG.getKey())].trim();
                 if (!configStr.isEmpty()) {
-                    this.caseSummarizeConfig = SummarizeConfig.valueOf(configStr.toUpperCase());
+                    caseSummarizeConfig = SummarizeConfig.valueOf(configStr.toUpperCase());
                 }
                 final String a2c = _row[_colName2Index.get(ColumnCase.A2CTYPE.getKey())].trim()
                                 .replaceAll("\n", "");
 
-                this.a2cType = Type.get(Import_Base.ACC2CASE.get(a2c));
+                a2cType = Type.get(Import_Base.ACC2CASE.get(a2c));
 
-                this.a2cNum = _row[_colName2Index.get(ColumnCase.A2CNUM.getKey())].trim()
+                a2cNum = _row[_colName2Index.get(ColumnCase.A2CNUM.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.a2cDenum = _row[_colName2Index.get(ColumnCase.A2CDENUM.getKey())].trim()
+                a2cDenum = _row[_colName2Index.get(ColumnCase.A2CDENUM.getKey())].trim()
                                 .replaceAll("\n", "");
-                this.a2cDefault = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CDEFAULT.getKey())]);
-                this.a2cLabel = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL.getKey())]);
-                this.a2cEvalRel = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CEVALRELATION.getKey())]);
+                a2cDefault = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CDEFAULT.getKey())]);
+                a2cLabel = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CAPPLYLABEL.getKey())]);
+                a2cEvalRel = BooleanUtils.toBoolean(_row[_colName2Index.get(ColumnCase.A2CEVALRELATION.getKey())]);
 
                 final String accName = _row[_colName2Index.get(ColumnCase.A2CACC.getKey())].trim()
                                 .replaceAll("\n", "");
 
                 if (_colName2Index.containsKey(ColumnCase.A2CCLA.getKey())
-                    && (this.a2cType.isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
-                        || this.a2cType.isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
-                    this.a2cClass = _row[_colName2Index.get(ColumnCase.A2CCLA.getKey())].trim()
+                    && (a2cType.isKindOf(CIAccounting.Account2CaseDebit4Classification.getType())
+                        || a2cType.isKindOf(CIAccounting.Account2CaseCredit4Classification.getType()))) {
+                    a2cClass = _row[_colName2Index.get(ColumnCase.A2CCLA.getKey())].trim()
                                 .replaceAll("\n", "");
                 }
 
                 if (_colName2Index.containsKey(ColumnCase.A2CCURRENCY.getKey())) {
-                    this.currencyISO = _row[_colName2Index.get(ColumnCase.A2CCURRENCY.getKey())].trim()
+                    currencyISO = _row[_colName2Index.get(ColumnCase.A2CCURRENCY.getKey())].trim()
                                     .replaceAll("\n", "");
                 }
                 final QueryBuilder queryBuilder = new QueryBuilder(CIAccounting.AccountAbstract);
@@ -680,7 +681,7 @@ public abstract class Import_Base
                 final InstanceQuery query = queryBuilder.getQuery();
                 query.executeWithoutAccessCheck();
                 if (query.next()) {
-                    this.accInst = query.getCurrentValue();
+                    accInst = query.getCurrentValue();
                 }
             } catch (final Exception e) {
                 Import_Base.LOG.error("Catched error on Import.", e);
@@ -694,9 +695,9 @@ public abstract class Import_Base
          */
         public boolean validate()
         {
-            return this.caseName != null && this.casetype != null && this.a2cDenum != null && this.a2cNum != null
-                            && this.accInst != null
-                            && this.accInst.isValid();
+            return caseName != null && casetype != null && a2cDenum != null && a2cNum != null
+                            && accInst != null
+                            && accInst.isValid();
         }
 
         /**
@@ -708,54 +709,55 @@ public abstract class Import_Base
         public void update(final Set<Instance> _caseInsts)
             throws EFapsException
         {
-            final QueryBuilder queryBuilder = new QueryBuilder(this.casetype);
-            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.Name, this.caseName);
-            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
+            final QueryBuilder queryBuilder = new QueryBuilder(casetype);
+            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.Name, caseName);
+            queryBuilder.addWhereAttrEqValue(CIAccounting.CaseAbstract.PeriodAbstractLink, periodInst.getId());
             final InstanceQuery query = queryBuilder.getQuery();
             query.executeWithoutAccessCheck();
 
             if (query.next()) {
-                this.caseInst = query.getCurrentValue();
-                if (!_caseInsts.contains(this.caseInst)) {
-                    final Update update = new Update(this.caseInst);
-                    update.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
-                    update.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
+                caseInst = query.getCurrentValue();
+                if (!_caseInsts.contains(caseInst)) {
+                    final Update update = new Update(caseInst);
+                    update.add(CIAccounting.CaseAbstract.Description, caseDescription);
+                    update.add(CIAccounting.CaseAbstract.Label, caseLabel);
                     update.add(CIAccounting.CaseAbstract.SummarizeConfig,
-                                    this.caseSummarizeConfig == null ? SummarizeConfig.NONE : this.caseSummarizeConfig);
+                                    caseSummarizeConfig == null ? SummarizeConfig.NONE : caseSummarizeConfig);
                     update.execute();
 
                     final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.Account2CaseAbstract);
-                    queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, this.caseInst);
+                    queryBldr.addWhereAttrEqValue(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
                     for (final Instance inst : queryBldr.getQuery().execute()) {
                         new Delete(inst).execute();
                     }
                 }
             } else {
-                final Insert insert = new Insert(this.casetype);
-                insert.add(CIAccounting.CaseAbstract.Name, this.caseName);
-                insert.add(CIAccounting.CaseAbstract.Description, this.caseDescription);
-                insert.add(CIAccounting.CaseAbstract.Label, this.caseLabel);
-                insert.add(CIAccounting.CaseAbstract.PeriodAbstractLink, this.periodInst.getId());
+                final Insert insert = new Insert(casetype);
+                insert.add(CIAccounting.CaseAbstract.Name, caseName);
+                insert.add(CIAccounting.CaseAbstract.Description, caseDescription);
+                insert.add(CIAccounting.CaseAbstract.Label, caseLabel);
+                insert.add(CIAccounting.CaseAbstract.PeriodAbstractLink, periodInst.getId());
                 insert.add(CIAccounting.CaseAbstract.SummarizeConfig,
-                                this.caseSummarizeConfig == null ? SummarizeConfig.NONE : this.caseSummarizeConfig);
+                                caseSummarizeConfig == null ? SummarizeConfig.NONE : caseSummarizeConfig);
+                insert.add(CIAccounting.CaseAbstract.StatusAbstract, Status.find(CIAccounting.CaseStatus.Active));
                 insert.execute();
-                this.caseInst = insert.getInstance();
+                caseInst = insert.getInstance();
             }
 
-            final Insert insert = new Insert(this.a2cType);
-            insert.add(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, this.caseInst);
-            insert.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, this.accInst);
-            insert.add(CIAccounting.Account2CaseAbstract.Denominator, this.a2cDenum);
-            insert.add(CIAccounting.Account2CaseAbstract.Numerator, this.a2cNum);
+            final Insert insert = new Insert(a2cType);
+            insert.add(CIAccounting.Account2CaseAbstract.ToCaseAbstractLink, caseInst);
+            insert.add(CIAccounting.Account2CaseAbstract.FromAccountAbstractLink, accInst);
+            insert.add(CIAccounting.Account2CaseAbstract.Denominator, a2cDenum);
+            insert.add(CIAccounting.Account2CaseAbstract.Numerator, a2cNum);
 
             final List<Account2CaseConfig> configs = new ArrayList<>();
-            if (this.a2cDefault) {
+            if (a2cDefault) {
                 configs.add(Account2CaseConfig.DEFAULTSELECTED);
             }
-            if (this.a2cLabel) {
+            if (a2cLabel) {
                 configs.add(Account2CaseConfig.APPLYLABEL);
             }
-            if (this.a2cEvalRel) {
+            if (a2cEvalRel) {
                 configs.add(Account2CaseConfig.EVALRELATION);
             }
             if (configs.isEmpty()) {
@@ -764,12 +766,12 @@ public abstract class Import_Base
                 insert.add(CIAccounting.Account2CaseAbstract.Config, configs.toArray());
             }
 
-            if (this.a2cClass != null) {
-                insert.add(CIAccounting.Account2CaseAbstract.LinkValue, Classification.get(this.a2cClass).getId());
+            if (a2cClass != null) {
+                insert.add(CIAccounting.Account2CaseAbstract.LinkValue, Classification.get(a2cClass).getId());
             }
-            if (this.currencyISO != null && !this.currencyISO.isEmpty()) {
+            if (currencyISO != null && !currencyISO.isEmpty()) {
                 for (final CurrencyInst currencyInst : CurrencyInst.getAvailable()) {
-                    if (currencyInst.getISOCode().equals(this.currencyISO)) {
+                    if (currencyInst.getISOCode().equals(currencyISO)) {
                         insert.add(CIAccounting.Account2CaseAbstract.CurrencyLink, currencyInst.getInstance());
                     }
                 }
@@ -791,7 +793,7 @@ public abstract class Import_Base
          */
         public Instance getCaseInst()
         {
-            return this.caseInst;
+            return caseInst;
         }
 
 
@@ -802,7 +804,7 @@ public abstract class Import_Base
          */
         public void setCaseInst(final Instance _caseInst)
         {
-            this.caseInst = _caseInst;
+            caseInst = _caseInst;
         }
     }
 
@@ -878,18 +880,18 @@ public abstract class Import_Base
                              final Map<String, ImportAccount> _accounts)
             throws EFapsException
         {
-            this.lstTypeConn = new ArrayList<>();
-            this.lstTargetConn = new ArrayList<>();
-            this.lstNumerator = new ArrayList<>();
-            this.lstDenominator = new ArrayList<>();
+            lstTypeConn = new ArrayList<>();
+            lstTargetConn = new ArrayList<>();
+            lstNumerator = new ArrayList<>();
+            lstDenominator = new ArrayList<>();
 
-            this.value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
-            this.description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
+            value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
+            description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
             final String type = _row[_colName2Index.get(ColumnAccount.TYPE.getKey())].trim().replaceAll("\n", "");
             final boolean summary = "yes".equalsIgnoreCase(_row[_colName2Index.get(ColumnAccount.SUMMARY.getKey())]);
             final String parentTmp = _row[_colName2Index.get(ColumnAccount.PARENT.getKey())];
 
-            this.key = _row[_colName2Index.get(ColumnAccount.KEY.getKey())].trim().replaceAll("\n", "");
+            key = _row[_colName2Index.get(ColumnAccount.KEY.getKey())].trim().replaceAll("\n", "");
 
             if (_relAccountColumns != null) {
                 for (final Entry<String, List<String>> entry : _relAccountColumns.entrySet()) {
@@ -903,26 +905,26 @@ public abstract class Import_Base
                                     .replace("]", entry.getKey() + "]"))].trim().replaceAll("\n", "");
                     if (typeConnTmp != null && !typeConnTmp.isEmpty()
                                     && targetConnTmp != null && !targetConnTmp.isEmpty()) {
-                        this.lstTypeConn.add(Type.get(Import_Base.ACC2ACC.get(typeConnTmp)));
-                        this.lstTargetConn.add(targetConnTmp);
-                        this.lstNumerator.add(new BigDecimal(numeratorTmp));
-                        this.lstDenominator.add(new BigDecimal(denominatorTmp));
+                        lstTypeConn.add(Type.get(Import_Base.ACC2ACC.get(typeConnTmp)));
+                        lstTargetConn.add(targetConnTmp);
+                        lstNumerator.add(new BigDecimal(numeratorTmp));
+                        lstDenominator.add(new BigDecimal(denominatorTmp));
                     }
                 }
             }
 
             if (_accounts != null) {
-                this.path = _accounts.get(this.key).getPath();
+                path = _accounts.get(key).getPath();
             } else {
-                this.path = null;
+                path = null;
             }
 
-            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
+            parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
 
             Update update = null;
             if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.AccountAbstract.getType())) {
                 final QueryBuilder queryBldr = new QueryBuilder(CIAccounting.AccountAbstract);
-                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, this.value);
+                queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.Name, value);
                 queryBldr.addWhereAttrEqValue(CIAccounting.AccountBaseAbstract.PeriodAbstractLink, _period.getId());
                 final InstanceQuery query = queryBldr.getQuery();
                 query.execute();
@@ -932,8 +934,8 @@ public abstract class Import_Base
                     update = new Insert(Import_Base.TYPE2TYPE.get(type));
                 }
             } else if (Type.get(Import_Base.TYPE2TYPE.get(type)).isKindOf(CIAccounting.ViewAbstract.getType())) {
-                final String[] parts = this.path.split("_");
-                final Instance updateInst = validateUpdate(this.value, null, _period, 0, parts);
+                final String[] parts = path.split("_");
+                final Instance updateInst = validateUpdate(value, null, _period, 0, parts);
 
                 if (updateInst != null) {
                     update = new Update(updateInst);
@@ -947,10 +949,10 @@ public abstract class Import_Base
             }
 
             update.add(CIAccounting.AccountBaseAbstract.PeriodAbstractLink, _period.getId());
-            update.add(CIAccounting.AccountBaseAbstract.Name, this.value);
-            update.add(CIAccounting.AccountBaseAbstract.Description, this.description);
+            update.add(CIAccounting.AccountBaseAbstract.Name, value);
+            update.add(CIAccounting.AccountBaseAbstract.Description, description);
             update.execute();
-            this.instance = update.getInstance();
+            instance = update.getInstance();
         }
 
         /**
@@ -962,19 +964,19 @@ public abstract class Import_Base
         public ImportAccount(final Map<String, Integer> _colName2Index,
                               final String[] _row)
         {
-            this.lstTypeConn = new ArrayList<>();
-            this.lstTargetConn = new ArrayList<>();
-            this.lstNumerator = new ArrayList<>();
-            this.lstDenominator = new ArrayList<>();
+            lstTypeConn = new ArrayList<>();
+            lstTargetConn = new ArrayList<>();
+            lstNumerator = new ArrayList<>();
+            lstDenominator = new ArrayList<>();
 
-            this.value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
-            this.description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
-            this.key = _row[_colName2Index.get(ColumnAccount.KEY.getKey())].trim().replaceAll("\n", "");
+            value = _row[_colName2Index.get(ColumnAccount.VALUE.getKey())].trim().replaceAll("\n", "");
+            description = _row[_colName2Index.get(ColumnAccount.NAME.getKey())].trim().replaceAll("\n", "");
+            key = _row[_colName2Index.get(ColumnAccount.KEY.getKey())].trim().replaceAll("\n", "");
 
             final String parentTmp = _row[_colName2Index.get(ColumnAccount.PARENT.getKey())];
-            this.parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
-            this.instance = null;
-            this.path = this.value;
+            parent = parentTmp == null ? null : parentTmp.trim().replaceAll("\n", "");
+            instance = null;
+            path = value;
         }
 
         /**
@@ -989,16 +991,16 @@ public abstract class Import_Base
                              final String _name,
                              final String _description)
         {
-            this.instance = _accountIns;
-            this.parent = _parentName;
-            this.value = _name;
-            this.description = _description;
-            this.lstTypeConn = null;
-            this.lstTargetConn = null;
-            this.lstNumerator = null;
-            this.lstDenominator = null;
-            this.key = null;
-            this.path = null;
+            instance = _accountIns;
+            parent = _parentName;
+            value = _name;
+            description = _description;
+            lstTypeConn = null;
+            lstTargetConn = null;
+            lstNumerator = null;
+            lstDenominator = null;
+            key = null;
+            path = null;
         }
 
         /**
@@ -1008,7 +1010,7 @@ public abstract class Import_Base
          */
         public String getValue()
         {
-            return this.value;
+            return value;
         }
 
         /**
@@ -1018,7 +1020,7 @@ public abstract class Import_Base
          */
         public String getDescription()
         {
-            return this.description;
+            return description;
         }
 
         /**
@@ -1028,7 +1030,7 @@ public abstract class Import_Base
          */
         public String getParent()
         {
-            return this.parent;
+            return parent;
         }
 
         /**
@@ -1038,7 +1040,7 @@ public abstract class Import_Base
          */
         public String getKey()
         {
-            return this.key;
+            return key;
         }
 
         /**
@@ -1048,7 +1050,7 @@ public abstract class Import_Base
          */
         public Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
 
         /**
@@ -1058,7 +1060,7 @@ public abstract class Import_Base
          */
         private List<Type> getLstTypeConn()
         {
-            return this.lstTypeConn;
+            return lstTypeConn;
         }
 
         /**
@@ -1068,7 +1070,7 @@ public abstract class Import_Base
          */
         private List<String> getLstTargetConn()
         {
-            return this.lstTargetConn;
+            return lstTargetConn;
         }
 
         /**
@@ -1076,7 +1078,7 @@ public abstract class Import_Base
          */
         private List<BigDecimal> getLstNumerator()
         {
-            return this.lstNumerator;
+            return lstNumerator;
         }
 
         /**
@@ -1084,7 +1086,7 @@ public abstract class Import_Base
          */
         private List<BigDecimal> getLstDenominator()
         {
-            return this.lstDenominator;
+            return lstDenominator;
         }
 
         /**
@@ -1092,7 +1094,7 @@ public abstract class Import_Base
          */
         private String getPath()
         {
-            return this.path;
+            return path;
         }
 
         /**
@@ -1100,7 +1102,7 @@ public abstract class Import_Base
          */
         private void setPath(final String _path)
         {
-            this.path = _path;
+            path = _path;
         }
 
         /**
@@ -1198,7 +1200,7 @@ public abstract class Import_Base
             insert.add(CIAccounting.ReportAbstract.Description, _description);
             insert.add(CIAccounting.ReportAbstract.Numbering, _numbering);
             insert.execute();
-            this.instance = insert.getInstance();
+            instance = insert.getInstance();
         }
 
         /**
@@ -1230,17 +1232,17 @@ public abstract class Import_Base
 
             final Instance parentInst;
             if (level < 1) {
-                parentInst = this.instance;
+                parentInst = instance;
             } else {
-                final List<ImportNode> lis = this.level2Nodes.get(level - 1);
+                final List<ImportNode> lis = level2Nodes.get(level - 1);
                 parentInst = lis.get(lis.size() - 1).getInstance();
             }
             final List<ImportNode> nodes;
-            if (this.level2Nodes.containsKey(level)) {
-                nodes = this.level2Nodes.get(level);
+            if (level2Nodes.containsKey(level)) {
+                nodes = level2Nodes.get(level);
             } else {
                 nodes = new ArrayList<>();
-                this.level2Nodes.put(level, nodes);
+                level2Nodes.put(level, nodes);
             }
             final ImportNode node = new ImportNode(_colName2Index, _row, levelkey, parentInst, _accounts, nodes.size());
             nodes.add(node);
@@ -1329,7 +1331,7 @@ public abstract class Import_Base
                 }
             }
 
-            this.instance = insert.getInstance();
+            instance = insert.getInstance();
         }
 
         /**
@@ -1339,7 +1341,7 @@ public abstract class Import_Base
          */
         public Instance getInstance()
         {
-            return this.instance;
+            return instance;
         }
     }
 }

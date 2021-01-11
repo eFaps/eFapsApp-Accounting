@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package org.efaps.esjp.accounting.export;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +40,6 @@ import org.efaps.esjp.data.columns.export.FrmtColumn;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.util.EFapsException;
 
-/**
- * TODO comment!
- *
- * @author The eFaps Team
- */
 @EFapsUUID("4ba89008-3b9d-433d-a022-2830831b995a")
 @EFapsApplication("eFapsApp-Accounting")
 public abstract class ExportCase_Base
@@ -184,28 +178,26 @@ public abstract class ExportCase_Base
             lstCols.add(row);
         }
 
-        Collections.sort(lstCols, new Comparator<Map<String, Object>>()
-        {
-            @Override
-            public int compare(final Map<String, Object> _o1,
-                               final Map<String, Object> _o2)
-            {
-                final int ret;
-                final String caseType1 = AbstractExport_Base.TYPE2TYPE.get(_o1.get(ColumnCase.CASETYPE.getKey()));
-                final String caseType2 = AbstractExport_Base.TYPE2TYPE.get(_o2.get(ColumnCase.CASETYPE.getKey()));
-                if (caseType1 != null && caseType2 != null) {
-                    if (caseType1 != null && caseType1.equals(caseType2)) {
-                        final String caseName1 = (String) _o1.get(ColumnCase.CASENAME.getKey());
-                        final String caseName2 = (String) _o2.get(ColumnCase.CASENAME.getKey());
-                        ret = caseName1.compareTo(caseName2);
-                    } else {
-                        ret = caseType1.compareTo(caseType2);
-                    }
+        Collections.sort(lstCols, (_o1, _o2) -> {
+            final int ret;
+            final String caseType1 = AbstractExport_Base.TYPE2TYPE.get(_o1.get(ColumnCase.CASETYPE.getKey()));
+            final String caseType2 = AbstractExport_Base.TYPE2TYPE.get(_o2.get(ColumnCase.CASETYPE.getKey()));
+            if (caseType1 == null && caseType2 != null) {
+                ret = -1;
+            } else if (caseType1 != null && caseType2 == null) {
+                ret = 1;
+            } else  if (caseType1 != null && caseType2 != null) {
+                if (caseType1.equals(caseType2)) {
+                    final String caseName1 = (String) _o1.get(ColumnCase.CASENAME.getKey());
+                    final String caseName2 = (String) _o2.get(ColumnCase.CASENAME.getKey());
+                    ret = caseName1.compareTo(caseName2);
                 } else {
-                    ret = 0;
+                    ret = caseType1.compareTo(caseType2);
                 }
-                return ret;
+            } else {
+                ret = 0;
             }
+            return ret;
         });
 
         for (final Map<String, Object> map : lstCols) {

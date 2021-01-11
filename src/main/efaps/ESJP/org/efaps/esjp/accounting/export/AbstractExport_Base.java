@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,11 +40,6 @@ import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.util.EFapsException;
 
-/**
- * TODO comment!
- *
- * @author The eFaps Team
- */
 @EFapsUUID("e9b019b5-3e7d-4c9c-9c4b-24ae3a50bbf9")
 @EFapsApplication("eFapsApp-Accounting")
 public abstract class AbstractExport_Base
@@ -85,11 +80,15 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseOthersCollect.uuid, "CaseOthersCollect");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseOthersPay.uuid, "CaseOthersPay");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CasePayroll.uuid, "CasePayroll");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CasePaymentInDoc.uuid, "CasePaymentInDoc");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CasePaymentOutDoc.uuid, "CasePaymentOutDoc");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CasePettyCashReceiptRegister.uuid, "CasePettyCashRegister");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseRetPer.uuid, "CaseRetentionPerception");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseSecurities.uuid, "CaseSecurities");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseStockBooking.uuid, "CaseStockBooking");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseSwap.uuid, "CaseSwap");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseTransferDocument.uuid, "CaseTransferDocument");
+        AbstractExport_Base.TYPE2TYPE.put(CIAccounting.CaseUndeductible.uuid, "CaseUndeductible");
 
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseCredit.uuid, "Credit");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.Account2CaseDebit.uuid, "Debit");
@@ -109,8 +108,6 @@ public abstract class AbstractExport_Base
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeRoot.uuid, "Root");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeTree.uuid, "Tree");
         AbstractExport_Base.TYPE2TYPE.put(CIAccounting.ReportNodeAccount.uuid, "Account");
-
-
     }
 
     /**
