@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2021 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -881,7 +881,7 @@ public abstract class Period_Base
                 ret.addAll(query2.execute());
 
                 return new ArrayList<>(ret);
-            };
+            }
         }.execute(_parameter);
     }
 
@@ -903,7 +903,7 @@ public abstract class Period_Base
                 throws EFapsException
             {
                 add2DocQueryBldr(_parameter, _queryBldr);
-            };
+            }
         }.execute(_parameter);
     }
     /**
@@ -1119,7 +1119,7 @@ public abstract class Period_Base
                                 labels.add(targetInst.getType().getLabel() + " - " + actname);
                             }
                         } else {
-                            labels.add(targetInst.getType().getLabel());
+                            labels.add(InstanceUtils.isValid(targetInst) ? targetInst.getType().getLabel() : "Unknown");
                         }
                     }
                     final Map<String, Long> map = labels.stream().collect(Collectors.groupingBy(Function.identity(),
