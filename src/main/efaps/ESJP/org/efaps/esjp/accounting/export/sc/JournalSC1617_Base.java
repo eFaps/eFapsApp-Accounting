@@ -19,11 +19,13 @@ package org.efaps.esjp.accounting.export.sc;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.BooleanUtils;
@@ -100,7 +102,7 @@ public abstract class JournalSC1617_Base
         // CÓDIGO
         _exporter.addColumns(new FrmtColumn("taxNumber", 15));
         // CC
-        _exporter.addColumns(new FrmtColumn("empty", 10));
+        _exporter.addColumns(new FrmtColumn("label", 10));
         // FE
         _exporter.addColumns(new FrmtColumn("empty", 4));
         // PRE
@@ -259,10 +261,13 @@ public abstract class JournalSC1617_Base
                         .attribute(CIContacts.ClassOrganisation.TaxNumber);
         final SelectBuilder selIdentityCard = new SelectBuilder(selContact).clazz(CIContacts.ClassPerson)
                         .attribute(CIContacts.ClassPerson.IdentityCard);
-
+        final SelectBuilder selLabels = SelectBuilder.get()
+                        .linkfrom(CIAccounting.TransactionPosition2LabelAbstract.FromLinkAbstract)
+                        .linkto(CIAccounting.TransactionPosition2LabelAbstract.ToLinkAbstract)
+                        .attribute(CIAccounting.LabelAbstract.Name);
         multi.addSelect(selAccName, selTransIdentifier, selTransInst, selTransName, selTransDescr, selTransDate,
                         selDocInst, selDocName, selDocDate, selDocDueDate, selContactName, selTaxNumber, selNetTotal,
-                        selCrossTotal, selDocRev, selIdentityCard);
+                        selCrossTotal, selDocRev, selIdentityCard, selLabels);
         multi.addAttribute(CIAccounting.TransactionPositionAbstract.RateAmount,
                         CIAccounting.TransactionPositionAbstract.Position,
                         CIAccounting.TransactionPositionAbstract.PositionType,
@@ -361,7 +366,8 @@ public abstract class JournalSC1617_Base
                             .setDocDueDate(multi.<DateTime>getSelect(selDocDueDate))
                             .setRate(multi.<Object[]>getAttribute(CIAccounting.TransactionPositionAbstract.Rate))
                             .setNetTotal(multi.<BigDecimal>getSelect(selNetTotal))
-                            .setCrossTotal(multi.<BigDecimal>getSelect(selCrossTotal));
+                            .setCrossTotal(multi.<BigDecimal>getSelect(selCrossTotal))
+                            .setLabel(multi.getSelect(selLabels));
             beans.add(bean);
         }
         final ComparatorChain<DataBean> chain = new ComparatorChain<>();
@@ -583,6 +589,26 @@ public abstract class JournalSC1617_Base
 
         /** The zero. */
         private BigDecimal zero;
+
+        private String label;
+
+        public String getLabel()
+        {
+            return label;
+        }
+
+        @SuppressWarnings("unchecked")
+        public DataBean setLabel(final Object labels)
+        {
+            if (labels != null) {
+                if (labels instanceof String) {
+                    label = (String) labels;
+                } else if (labels instanceof Collection) {
+                    ((Collection<String>) labels).stream().collect(Collectors.joining(" - "));
+                }
+            }
+            return this;
+        }
 
         /**
          * Gets the origin.
