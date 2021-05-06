@@ -29,7 +29,7 @@ import java.util.Properties;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
