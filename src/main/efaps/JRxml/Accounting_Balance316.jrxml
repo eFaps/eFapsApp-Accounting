@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
     name="Accounting_Balance316"
-    language="groovy"
+    language="java"
     pageWidth="842"
     pageHeight="595"
     orientation="Landscape"
