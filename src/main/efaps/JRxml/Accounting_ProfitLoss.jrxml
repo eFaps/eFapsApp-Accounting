@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ProfitLoss" language="groovy" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="390d6c86-f632-4013-bb7b-f4b208e9afca">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_ProfitLoss" language="java" pageWidth="595" pageHeight="842" columnWidth="539" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="390d6c86-f632-4013-bb7b-f4b208e9afca">
     <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Accounting"/>
     <property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageFooter"/>
     <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="pageHeader"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 5.5.1  -->
 <!-- 2015-09-16T10:12:21 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_JournalPositions" language="groovy" pageWidth="403" pageHeight="555" orientation="Landscape" columnWidth="392" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5be105c8-66a8-46ca-8c0b-aa83b96d5941">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Accounting_JournalPositions" language="java" pageWidth="403" pageHeight="555" orientation="Landscape" columnWidth="392" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5be105c8-66a8-46ca-8c0b-aa83b96d5941">
     <property name="org.efaps.admin.program.jasper.EFapsApplication" value="eFapsApp-Accounting"/>
     <import value="org.efaps.db.Instance"/>
     <import value="org.efaps.esjp.accounting.report.Report"/>
