@@ -1111,8 +1111,8 @@ public abstract class Period_Base
                             final PrintQuery print2 = new PrintQuery(targetInst);
                             print2.addSelect(selActName);
                             print2.execute();
-
-                            final String actname = print2.getSelect(selActName);
+                            // use object, because it might be a list
+                            final Object actname = print2.getSelect(selActName);
                             if (actname == null) {
                                 labels.add(targetInst.getType().getLabel());
                             } else {
