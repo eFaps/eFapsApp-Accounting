@@ -1,20 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
- Copyright 2003 - 2017 The eFaps Team
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
--->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f08a9d1c-9ec3-4c7d-9e3d-cf5de4d940cf</uuid>
@@ -30,7 +15,8 @@
             <menu>Accounting_PeriodTree_CollectMenu_Payment_Menu</menu>
             <table>Accounting_PaymentDocumentTable</table>
             <evaluate method="multiPrint" program="org.efaps.esjp.accounting.Period">
-                <!-- Accounting-Configuration -->
+                
+
                 <property name="PropertiesConfig">ca0a1df1-2211-45d9-97c8-07af6636a9b9</property>
                 <property name="PropertiesConfigAttribute">org.efaps.accounting.Period.Collect.Payment</property>
                 <property name="Type01">Sales_PaymentCash</property>

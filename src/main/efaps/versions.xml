@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
 
-  Copyright 2003 - 2016 The eFaps Team
 
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-
--->
 
 <install xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -77,49 +62,67 @@
 
             UIUpdate update = new UIUpdate();
 
-            <!-- connect the Accounting_ERP_CurrencyTree_Rate_Menu_Action_Create Menu to the ERP_CurrencyTree_Rate_Menu_Action menu -->
+            
+
             update.add2Menu("d9480319-83fb-45ae-9a0b-877271acc034", "590181bd-a12f-4969-b403-5dc68d5089ef", -1);
 
-            <!-- connect the Accounting_Sales_TaxTree_Account Menu to the Sales_TaxTree menu -->
+            
+
             update.add2Menu("bc6cce90-6292-40ec-85c4-81c0e2110ae7", "d40d45b3-b2a1-45e8-ae72-fc991cb945f7", -1);
 
-            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction Sales_PaymentScheduleTree  -->
+            
+
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "60732b90-3b07-4ca4-af15-6fb0712c8670", -1);
 
-            <!-- connect the Accounting_Sales_PaymentDocTree_Transaction  Sales_PaymentSupplierOutTree -->
+            
+
             update.add2Menu("4d17bb1a-51ef-4a2d-a511-052b1a88def3", "9e1ea83a-7670-47ee-9a73-134f07ef3585", -1);
 
-            <!-- connect the Accounting_Sales_Document_PLEReport to Sales_Document_ReportMyDesk menu -->
+            
+
             update.add2Menu("0bbae7f9-a7ae-4569-a08f-083930135f12", "218a4858-af25-4ad8-8a28-7283cd629766", -1);
 
-            <!-- Accounting_Accounting, Admin_Help_MainMenu -->
+            
+
             update.add2Help("906bd8c4-2e7f-4234-936b-6a1ee74bdf37", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
 
-            <!-- add to Accounting_Admin role -->
+            
+
             RoleUpdate rolUp = new RoleUpdate("c687443f-e47e-4689-8a51-7eacdeac1e09");
-            <!-- Sales_IncomingDetractionMyDesk -->
+            
+
             rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
-            <!-- Sales_IncomingRetentionMyDesk -->
+            
+
             rolUp.addUI("ef7ab984-44aa-45de-ba12-148ee783ba43");
-            <!-- Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut -->
+            
+
             rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
 
-            <!-- add to Accounting_Manager role -->
+            
+
             rolUp = new RoleUpdate("757f9274-acd0-416a-a336-20470409e8af");
-            <!-- Sales_IncomingDetractionMyDesk -->
+            
+
             rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
-            <!-- Sales_IncomingRetentionMyDesk -->
+            
+
             rolUp.addUI("ef7ab984-44aa-45de-ba12-148ee783ba43");
-            <!-- Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut -->
+            
+
             rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
 
-            <!-- add to Accounting_Executive role -->
+            
+
             rolUp = new RoleUpdate("fc3af4de-83c9-4165-b466-5478329847eb");
-            <!-- Sales_IncomingDetractionMyDesk -->
+            
+
             rolUp.addUI("43f18157-a158-4426-8082-e7f4ce4851ed");
-            <!-- Sales_IncomingRetentionMyDesk -->
+            
+
             rolUp.addUI("ef7ab984-44aa-45de-ba12-148ee783ba43");
-            <!-- Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut -->
+            
+
             rolUp.addUI("f21aa796-f233-41f3-b0dc-dc9fff2f4892");
 
         </script>

@@ -1,34 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
 
- Copyright 2003 - 2012 The eFaps Team
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
--->
 
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9376e55e-cb85-4bd6-88da-f7c381595426</uuid>
     <file-application>eFapsApp-Accounting</file-application>
-    <file-revision>$Rev$</file-revision>
+    
     <specification>DM00006</specification>
 
     <definition>
@@ -37,7 +17,8 @@
         <typeid-column>TYPEID</typeid-column>
         <database>
             <table-name>T_ACCACCOUNT</table-name>
-            <!-- columns -->
+            
+
             <column name="TYPEID"       type="INTEGER"      not-null="true" />
             <column name="COMPANYID"    type="INTEGER"      not-null="true" />
             <column name="PERIODID"    type="INTEGER"      not-null="true" />
@@ -53,7 +34,8 @@
             <column name="CREATED"      type="DATETIME"     not-null="true" />
             <column name="MODIFIER"     type="INTEGER"      not-null="true" />
             <column name="MODIFIED"     type="DATETIME"     not-null="true" />
-            <!-- <unique name="T_ACCACCOUNT_UK_PERIODIDNAME" columns="PERIODID,NAME" /> -->
+            
+
             <foreign name="T_ACCACCOUNT_FK_PERIODID"   key="PERIODID" reference="T_ACCPERIOD(ID)" />
             <foreign name="T_ACCACCOUNT_FK_CRTR"        key="CREATOR"   reference="T_USERPERSON(ID)" />
             <foreign name="T_ACCACCOUNT_FK_MDFR"        key="MODIFIER"  reference="T_USERPERSON(ID)" />

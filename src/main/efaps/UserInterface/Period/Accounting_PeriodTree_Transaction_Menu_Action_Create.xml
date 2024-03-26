@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
 
- Copyright 2003 - 2016 The eFaps Team
 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-      http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
--->
 
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -77,7 +62,8 @@
                 <property name="UseNumberGenerator4Name">true</property>
                 <property name="NoDataSource">true</property>
 
-                <!-- Projects_ProjectService2TransactionDocument -->
+                
+
                 <property name="ConnectType01">522dc62d-0caf-47c1-8488-53fc7e1fab33</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
