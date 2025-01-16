@@ -638,12 +638,12 @@ public abstract class FieldValue_Base
                 final Instance docInst = Instance.get(oid);
                 if (docInst.isValid()) {
                     if (docInst.getType().isCIType(CISales.RetentionCertificate)) {
-                        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-                        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink, docInst);
+                        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+                        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, docInst);
                         final MultiPrintQuery multi = queryBldr.getCachedPrint(Context.getThreadContext()
                                         .getRequestId());
                         final SelectBuilder sel = SelectBuilder.get()
-                                        .linkto(CISales.RetentionCertificate2IncomingRetention.ToLink)
+                                        .linkto(CISales.RetentionCertificate2PaymentRetentionOut.ToLink)
                                         .instance();
                         multi.addSelect(sel);
                         multi.execute();
