@@ -34,14 +34,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.common.SystemConfiguration;
@@ -94,11 +86,18 @@ import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
 
 /**
  * Base class for transaction in accounting.
@@ -854,9 +853,9 @@ public abstract class Transaction_Base
             final String choice = multi.getMsgPhrase(msgPhrase);
 
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            map.put("eFapsAutoCompleteKEY", multi.getCurrentInstance().getOid());
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", choice);
             tmpMap.put(name, map);
         }
         list.addAll(tmpMap.values());
@@ -926,15 +925,16 @@ public abstract class Transaction_Base
                             "accountDescription", "debit", "credit");
             final List<Map<String, Object>> lst = new ArrayList<>();
             ConnectionResource con = null;
-            final String complStmt = "select date,descr,accName,accDescr,amount,rateamount,S1"
-                        + " from t_acctransaction t0 inner join "
-                        + " (select t1.transactionid,amount,rateamount,t2.name as accName,t2.descr as accDescr,S1"
-                        + " from t_acctransactionpos t1 inner join"
-                        + " t_accaccount t2 on t1.accountid=t2.id"
-                        + " inner join"
-                        + " (select transactionid, sum(amount) as S1 from t_acctransactionpos group by transactionid)"
-                        + " as t3 on t1.transactionid=t3.transactionid where t3.S1>0 or t3.S1<0) as t4"
-                        + " on t0.id=t4.transactionid";
+            final String complStmt = """
+                select date,descr,accName,accDescr,amount,rateamount,S1\
+                 from t_acctransaction t0 inner join \
+                 (select t1.transactionid,amount,rateamount,t2.name as accName,t2.descr as accDescr,S1\
+                 from t_acctransactionpos t1 inner join\
+                 t_accaccount t2 on t1.accountid=t2.id\
+                 inner join\
+                 (select transactionid, sum(amount) as S1 from t_acctransactionpos group by transactionid)\
+                 as t3 on t1.transactionid=t3.transactionid where t3.S1>0 or t3.S1<0) as t4\
+                 on t0.id=t4.transactionid""";
             try {
                 con = Context.getThreadContext().getConnectionResource();
                 Statement stmt = null;

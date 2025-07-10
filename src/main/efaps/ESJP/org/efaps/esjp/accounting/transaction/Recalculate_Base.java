@@ -59,7 +59,6 @@ import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentSum;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -230,7 +229,7 @@ public abstract class Recalculate_Base
             js.append("document.getElementsByName('transactions')[0].innerHTML='")
                 .append(StringEscapeUtils.escapeEcmaScript(getRecalculateInfo(_parameter, docInst)))
                 .append("';");
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            map.put("eFapsFieldUpdateJS", js.toString());
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }

@@ -52,7 +52,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -300,7 +299,7 @@ public abstract class FieldUpdate_Base
                     .append("});");
             }
         }
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        map.put("eFapsFieldUpdateJS", js.toString());
         list.add(map);
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);

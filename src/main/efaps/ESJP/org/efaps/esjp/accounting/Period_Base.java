@@ -67,7 +67,6 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -167,21 +166,11 @@ public abstract class Period_Base
         final Return ret = new Return();
         final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
         final SummarizeDefinition summarize = getSummarizeDefinition(_parameter);
-        final boolean access;
-        switch (summarize) {
-            case NEVER:
-            case ALWAYS:
-                access = false;
-                break;
-            case CASE:
-            case CASEUSER:
-            case USER:
-                access = true;
-                break;
-            default:
-                access = false;
-                break;
-        }
+        final boolean access = switch (summarize) {
+            case NEVER, ALWAYS -> false;
+            case CASE, CASEUSER, USER -> true;
+            default -> false;
+        };
         if (!inverse && access || inverse && !access) {
             ret.put(ReturnValues.TRUE, true);
         }
@@ -399,9 +388,9 @@ public abstract class Period_Base
 
             final String choice = name + ": " + fromDateStr + " - " + toDateStr;
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), keyVal);
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            map.put("eFapsAutoCompleteKEY", keyVal);
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", choice);
             orderMap.put(choice, map);
         }
 

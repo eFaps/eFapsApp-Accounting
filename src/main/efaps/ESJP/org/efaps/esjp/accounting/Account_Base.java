@@ -53,7 +53,6 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.db.InstanceUtils;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -227,9 +226,9 @@ public abstract class Account_Base
                 choice = description + " - " + name;
             }
             final Map<String, String> map = new HashMap<>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getCurrentInstance().getOid());
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
+            map.put("eFapsAutoCompleteKEY", multi.getCurrentInstance().getOid());
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", choice);
             orderMap.put(choice, map);
         }
 
