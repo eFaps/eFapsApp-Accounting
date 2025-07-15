@@ -180,7 +180,7 @@ public abstract class AbstractEvaluation_Base
                             if (_parameter.getParameterValue("date") != null) {
                                 docInfo.setRateDate(new DateTime(_parameter.getParameterValue("date")));
                             } else if (_parameter.getParameterValue("date_eFapsDate") != null) {
-                                docInfo.setRateDate(DateUtil.getDateFromParameter(
+                                docInfo.setRateDate(JodaTimeUtils.getDateFromParameter(
                                                 _parameter.getParameterValue("date_eFapsDate")));
                             } else {
                                 docInfo.setRateDate(docInfo.getDate());

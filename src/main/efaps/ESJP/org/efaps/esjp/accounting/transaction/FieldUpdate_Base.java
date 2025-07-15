@@ -282,7 +282,7 @@ public abstract class FieldUpdate_Base
                 newDate = toDate;
             }
             if (newDate != null) {
-                final String newDateStr = JodaTimeUtils.getDate4Parameter(newDate);
+                final String newDateStr = newDate.toString();
                 map.put("date_eFapsDate", newDateStr);
                 _parameter.getParameters().put("date_eFapsDate", new String[]{ newDateStr });
                 js.append("require([\"dojo/query\",\"dojo/_base/fx\", \"dojo/dom-style\"], function(query,fx,style){\n")
