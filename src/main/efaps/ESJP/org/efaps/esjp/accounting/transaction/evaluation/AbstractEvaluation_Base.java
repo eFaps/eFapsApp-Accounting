@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +56,12 @@ import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.RandomUtil;
 import org.joda.time.DateTime;
@@ -160,7 +161,7 @@ public abstract class AbstractEvaluation_Base
                         if (_parameter.getParameterValue("date") != null) {
                             docInfo.setDate(new DateTime(_parameter.getParameterValue("date")));
                         } else {
-                            docInfo.setDate(DateUtil.getDateFromParameter(
+                            docInfo.setDate(JodaTimeUtils.getDateFromParameter(
                                             _parameter.getParameterValue("date_eFapsDate")));
                         }
                     }
@@ -247,8 +248,7 @@ public abstract class AbstractEvaluation_Base
             final List<Account2CaseInfo> infos = Account2CaseInfo.getStandards(_parameter, caseInst);
             infos.addAll(inst2caseInfo.values());
 
-            Collections.sort(infos, (_o1,
-             _o2) -> _o1.getOrder().compareTo(_o2.getOrder()));
+            Collections.sort(infos, Comparator.comparing(Account2CaseInfo::getOrder));
 
             evalAccount2CaseInfo4Relation(_parameter, _doc, infos);
 
@@ -428,10 +428,8 @@ public abstract class AbstractEvaluation_Base
                     if (addDebit) {
                         _doc.addDebit(account);
                     }
-                } else {
-                    if (addCredit) {
-                        _doc.addCredit(account);
-                    }
+                } else if (addCredit) {
+                    _doc.addCredit(account);
                 }
             }
         }
@@ -742,7 +740,7 @@ public abstract class AbstractEvaluation_Base
             if (linkHtml != null && linkHtml.length() > 0) {
                 onJs.append("document.getElementsByName('account2account_")
                                 .append(_postFix).append("')[").append(i).append("].innerHTML='")
-                                .append(linkHtml.toString().replaceAll("'", "\\\\\\'")).append("';");
+                                .append(linkHtml.toString().replace("'", "\\'")).append("';");
             }
 
             if (account.getDocLink() != null && account.getDocLink().isValid()) {

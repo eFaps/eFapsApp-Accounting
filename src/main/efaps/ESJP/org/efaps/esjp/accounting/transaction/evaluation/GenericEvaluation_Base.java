@@ -25,9 +25,9 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -68,7 +68,7 @@ public abstract class GenericEvaluation_Base
         if (_parameter.getParameterValue("date") != null) {
             docInfo.setDate(new DateTime(_parameter.getParameterValue("date")));
         } else {
-            docInfo.setDate(DateUtil.getDateFromParameter(
+            docInfo.setDate(JodaTimeUtils.getDateFromParameter(
                             _parameter.getParameterValue("date_eFapsDate")));
         }
         final RateInfo rateInfo = evaluateRate(_parameter, docInfo.getRateDate(), currInst);

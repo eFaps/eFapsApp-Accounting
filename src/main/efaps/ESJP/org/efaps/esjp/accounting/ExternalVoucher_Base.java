@@ -55,6 +55,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.contacts.ContactsPicker;
 import org.efaps.esjp.erp.Currency;
@@ -67,7 +68,6 @@ import org.efaps.esjp.sales.document.IncomingInvoice;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -414,7 +414,7 @@ public abstract class ExternalVoucher_Base
             final String dateStr = _parameter.getParameterValue(
                             CIFormAccounting.Accounting_TransactionCreate4ExternalVoucherForm.extDate.name
                             + "_eFapsDate");
-            final Collection<? extends Tax> taxes = taxcat.getTaxes(dateStr != null && !dateStr.isEmpty() ? DateUtil
+            final Collection<? extends Tax> taxes = taxcat.getTaxes(dateStr != null && !dateStr.isEmpty() ? JodaTimeUtils
                             .getDateFromParameter(dateStr) : new DateTime());
 
             if (!taxes.isEmpty()) {

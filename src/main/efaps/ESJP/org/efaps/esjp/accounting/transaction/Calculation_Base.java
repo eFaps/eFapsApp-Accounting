@@ -41,12 +41,12 @@ import org.efaps.esjp.accounting.util.Accounting;
 import org.efaps.esjp.accounting.util.Accounting.CalculateConfig;
 import org.efaps.esjp.accounting.util.Accounting.ExchangeConfig;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -332,14 +332,14 @@ public abstract class Calculation_Base
                                 date = print.getAttribute(CIERP.DocumentAbstract.Date);
                             } else {
                                 final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                                date = DateUtil.getDateFromParameter(dateStr);
+                                date = JodaTimeUtils.getDateFromParameter(dateStr);
                             }
                             break;
                         case TRANSDATESALE:
                         case TRANSDATEPURCHASE:
                         default:
                             final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                            date = DateUtil.getDateFromParameter(dateStr);
+                            date = JodaTimeUtils.getDateFromParameter(dateStr);
                             break;
                     }
 

@@ -56,6 +56,7 @@ import org.efaps.esjp.accounting.util.AccountingSettings;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -63,7 +64,6 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -1317,7 +1317,7 @@ public abstract class DocumentInfo_Base
         final DateTime transdate;
         if (transdateStr == null) {
             if (_parameter.getParameterValue("date_eFapsDate") != null) {
-                transdate = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+                transdate = JodaTimeUtils.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
             } else {
                 transdate = new DateTime();
             }

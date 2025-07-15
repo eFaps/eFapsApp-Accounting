@@ -44,6 +44,7 @@ import org.efaps.esjp.accounting.util.Accounting.SummarizeDefinition;
 import org.efaps.esjp.ci.CIAccounting;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormAccounting;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
@@ -51,7 +52,6 @@ import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -187,14 +187,14 @@ public abstract class FieldUpdate_Base
                         date = print.getAttribute(CIERP.DocumentAbstract.Date);
                     } else {
                         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                        date = DateUtil.getDateFromParameter(dateStr);
+                        date = JodaTimeUtils.getDateFromParameter(dateStr);
                     }
                     break;
                 case TRANSDATESALE:
                 case TRANSDATEPURCHASE:
                 default:
                     final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-                    date = DateUtil.getDateFromParameter(dateStr);
+                    date = JodaTimeUtils.getDateFromParameter(dateStr);
                     break;
             }
 
@@ -267,7 +267,7 @@ public abstract class FieldUpdate_Base
         final Map<String, String> map = new HashMap<>();
 
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-        final DateTime date = DateUtil.getDateFromParameter(dateStr);
+        final DateTime date = JodaTimeUtils.getDateFromParameter(dateStr);
 
         // validate and correct the date, put it in _parameter so that other methods use the correct date
         final DateTime[] dates = getDateMaxMin(_parameter);
@@ -282,7 +282,7 @@ public abstract class FieldUpdate_Base
                 newDate = toDate;
             }
             if (newDate != null) {
-                final String newDateStr = DateUtil.getDate4Parameter(newDate);
+                final String newDateStr = JodaTimeUtils.getDate4Parameter(newDate);
                 map.put("date_eFapsDate", newDateStr);
                 _parameter.getParameters().put("date_eFapsDate", new String[]{ newDateStr });
                 js.append("require([\"dojo/query\",\"dojo/_base/fx\", \"dojo/dom-style\"], function(query,fx,style){\n")
@@ -436,7 +436,7 @@ public abstract class FieldUpdate_Base
         final String[] currIds = _parameter.getParameterValues(_fieldName);
         final StringBuilder ret = new StringBuilder();
         final String dateStr = _parameter.getParameterValue("date_eFapsDate");
-        final DateTime date = DateUtil.getDateFromParameter(dateStr);
+        final DateTime date = JodaTimeUtils.getDateFromParameter(dateStr);
         final Instance periodInstance = new Period().evaluateCurrentPeriod(_parameter);
         if (currIds != null) {
             for (int i = 0; i < currIds.length; i++) {
